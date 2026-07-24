@@ -96,7 +96,7 @@ Retur dapat diajukan dalam **7 hari** setelah produk diterima dengan ketentuan:
     title: 'Syarat & Ketentuan',
     content: `# Syarat & Ketentuan
 
-Dengan menggunakan layanan Energi.Click, Anda menyetujui syarat dan ketentuan berikut.
+Dengan menggunakan layanan EBTPlaza, Anda menyetujui syarat dan ketentuan berikut.
 
 ## 1. Umum
 

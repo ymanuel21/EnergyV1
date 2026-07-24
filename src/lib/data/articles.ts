@@ -49,7 +49,7 @@ Panel surya berkualitas memiliki:
 
 Pastikan total daya panel tidak melebihi kapasitas inverter. Idealnya 80-120% dari rating inverter.`,
     category: 'Panduan',
-    author: 'Tim Energi.Click',
+    author: 'Tim EBTPlaza',
     date: '2025-12-15',
     readTime: 5,
   },
@@ -80,7 +80,7 @@ Pastikan total daya panel tidak melebihi kapasitas inverter. Idealnya 80-120% da
 - Investasi tertinggi, fleksibilitas maksimal
 - Cocok untuk: Rumah yang ingin backup power`,
     category: 'Panduan',
-    author: 'Tim Energi.Click',
+    author: 'Tim EBTPlaza',
     date: '2025-11-20',
     readTime: 4,
   },
@@ -115,7 +115,7 @@ Dengan biaya sistem ~Rp 20 juta:
 - ROI = Rp 20.000.000 ÷ Rp 4.158.720 = ~4,8 tahun
 - Setelah 5 tahun, listrik GRATIS untuk 20+ tahun berikutnya`,
     category: 'Edukasi',
-    author: 'Tim Energi.Click',
+    author: 'Tim EBTPlaza',
     date: '2025-10-05',
     readTime: 6,
   },
@@ -149,7 +149,7 @@ Dengan biaya sistem ~Rp 20 juta:
 - Panggil teknisi setiap 5 tahun untuk inspeksi menyeluruh
 - Termasuk pengecekan grounding dan sistem proteksi`,
     category: 'Tips',
-    author: 'Tim Energi.Click',
+    author: 'Tim EBTPlaza',
     date: '2025-09-18',
     readTime: 4,
   },

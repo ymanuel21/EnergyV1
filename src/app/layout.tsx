@@ -21,14 +21,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://energi.click'),
   title: {
-    default: 'Energi.Click — Energi Cerdas, Tinggal Klik!',
-    template: '%s — Energi.Click',
+    default: 'EBTPlaza — Energi Terbarukan, Harga Terjangkau!',
+    template: '%s — EBTPlaza',
   },
   description:
     'Pusat produk energi terbarukan: panel surya, inverter, baterai lithium, paket PLTS, dan kebutuhan proyek.',
   openGraph: {
     type: 'website',
-    siteName: 'Energi.Click',
+    siteName: 'EBTPlaza',
     locale: 'id_ID',
   },
   twitter: {

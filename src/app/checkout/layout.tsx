@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Checkout',
-  description: 'Selesaikan pembelian Anda di Energi.Click.',
+  description: 'Selesaikan pembelian Anda di EBTPlaza.',
   alternates: { canonical: '/checkout' },
   robots: { index: false, follow: false },
 };

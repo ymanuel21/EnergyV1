@@ -1,7 +1,7 @@
 export const SITE = {
-  name: 'Energi.Click',
-  tagline: 'Energi Cerdas, Tinggal Klik!',
-  description: 'Pusat produk energi terbarukan: panel surya, inverter, baterai lithium, paket PLTS, dan kebutuhan proyek.',
+  name: 'EBTPlaza',
+  tagline: 'Energi Terbarukan, Harga Terjangkau!',
+  description: 'Pusat produk energi terbarukan EBTPlaza: panel surya, inverter, baterai lithium, paket PLTS, dan kebutuhan proyek.',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://energi.click',
   email: 'info@energi.click',
   phone: '(022) 20522279',

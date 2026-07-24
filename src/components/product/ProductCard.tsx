@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage } from '@ui/SafeImage';
 import { Badge } from '@ui/Badge';
 import { Price } from '@ui/Price';
 import { HeartIcon } from '@ui/Icons';
@@ -30,7 +30,7 @@ export function ProductCard({ product, variant = 'grid', className = '' }: Produ
     <article className={`card group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:shadow-md ${className}`}>
       {/* Image */}
       <Link href={`/produk/${product.slug}`} className="relative aspect-square overflow-hidden bg-gray-100">
-        <Image
+        <SafeImage
           src={product.images[0]}
           alt={product.name}
           width={400}

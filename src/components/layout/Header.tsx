@@ -11,7 +11,7 @@ export function Header() {
       <Container>
         <div className="flex h-16 items-center gap-4">
           {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="Beranda Energi.Click">
+          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="Beranda EBTPlaza">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700">
                 <span className="text-sm font-extrabold text-white">E</span>

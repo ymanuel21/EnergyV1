@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage } from '@ui/SafeImage';
 import { Container } from '@ui/Container';
 import { SectionHeading } from '@ui/SectionHeading';
 import type { NeedCard } from '@/types/product';
@@ -25,7 +25,7 @@ export function NeedCards({ cards }: NeedCardsProps) {
               className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
             >
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50">
-                <Image
+                <SafeImage
                   src={card.image}
                   alt=""
                   width={32}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
+import { SafeImage } from '@ui/SafeImage';
 import Link from 'next/link';
 import type { Banner } from '@/types/product';
 
@@ -37,7 +37,7 @@ export function HeroSlider({ banners }: HeroSliderProps) {
             i === current ? 'opacity-100' : 'absolute inset-0 opacity-0'
           }`}
         >
-          <Image
+          <SafeImage
             src={banner.src}
             alt={banner.alt}
             width={banner.width}

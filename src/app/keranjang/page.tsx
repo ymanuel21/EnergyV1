@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage } from '@ui/SafeImage';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { Button } from '@ui/Button';
@@ -50,7 +50,7 @@ export default function CartPage() {
                 href={`/produk/${item.slug}`}
                 className="h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-100"
               >
-                <Image
+                <SafeImage
                   src={item.image}
                   alt={item.name}
                   width={96}

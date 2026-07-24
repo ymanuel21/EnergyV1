@@ -10,7 +10,7 @@ import { validateSort, validatePage } from '@/lib/utils/validation';
 
 export const metadata: Metadata = {
   title: 'Clearance',
-  description: 'Stok terbatas produk energi terbarukan di Energi.Click. Termurah!',
+  description: 'Stok terbatas produk energi terbarukan di EBTPlaza. Termurah!',
   alternates: { canonical: '/barang-clearance' },
 };
 

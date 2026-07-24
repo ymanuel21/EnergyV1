@@ -7,7 +7,7 @@ import { SITE } from '@lib/constants';
 
 export const metadata: Metadata = {
   title: 'Program Afiliasi',
-  description: 'Dapatkan komisi hingga 5% dengan membagikan produk Energi.Click. Gabung gratis, tanpa minimal penjualan.',
+  description: 'Dapatkan komisi hingga 5% dengan membagikan produk EBTPlaza. Gabung gratis, tanpa minimal penjualan.',
   alternates: { canonical: '/afiliasi' },
 };
 
@@ -18,12 +18,12 @@ export default function AffiliatePage() {
 
       {/* Hero */}
       <div className="mt-6 rounded-2xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white sm:p-12">
-        <h1 className="text-2xl font-bold sm:text-3xl">Program Afiliasi Energi.Click</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Program Afiliasi EBTPlaza</h1>
         <p className="mt-3 max-w-lg text-brand-100">
           Bagikan produk energi terbarukan dan dapatkan komisi hingga 5% dari setiap penjualan. Gabung gratis, tanpa minimal penjualan.
         </p>
         <a
-          href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Halo, saya tertarik menjadi afiliator Energi.Click')}`}
+          href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Halo, saya tertarik menjadi afiliator EBTPlaza')}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-6 inline-flex items-center gap-2 rounded-lg bg-accent-500 px-6 py-3 text-sm font-medium text-white hover:bg-accent-600 transition-colors"
@@ -115,7 +115,7 @@ export default function AffiliatePage() {
         <h2 className="text-xl font-bold text-brand-900">Siap menghasilkan passive income?</h2>
         <p className="mt-2 text-brand-700">Daftar sekarang dan mulai bagikan produk energi terbarukan.</p>
         <a
-          href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Halo, saya tertarik menjadi afiliator Energi.Click')}`}
+          href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Halo, saya tertarik menjadi afiliator EBTPlaza')}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 inline-flex items-center gap-2 rounded-lg bg-green-500 px-6 py-3 text-sm font-medium text-white hover:bg-green-600 transition-colors"

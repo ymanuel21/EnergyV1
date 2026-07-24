@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { cn } from '@lib/utils/cn';
 import { Modal } from '@ui/Modal';
+import { SafeImage } from '@ui/SafeImage';
 
 interface ImageGalleryProps {
   images: string[];
@@ -30,7 +30,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
         className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100"
         aria-label={`${productName} — Klik untuk zoom`}
       >
-        <Image
+        <SafeImage
           src={images[selected]}
           alt={productName}
           width={800}
@@ -56,7 +56,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
                 i === selected ? 'border-brand-600' : 'border-gray-200 hover:border-gray-400'
               )}
             >
-              <Image
+              <SafeImage
                 src={img}
                 alt={`${productName} ${i + 1}`}
                 width={80}
@@ -73,7 +73,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
       {/* Zoom modal */}
       <Modal open={zoomOpen} onClose={() => setZoomOpen(false)} size="lg" showCloseButton>
         <div className="relative">
-          <Image
+          <SafeImage
             src={images[selected]}
             alt={productName}
             width={1200}

@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: brand.name,
-    description: `Jelajahi produk ${brand.name} di Energi.Click.`,
+    description: `Jelajahi produk ${brand.name} di EBTPlaza.`,
     alternates: { canonical: `/brand/${slug}` },
   };
 }

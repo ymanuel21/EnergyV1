@@ -6,13 +6,13 @@ import { Accordion } from '@ui/Accordion';
 
 export const metadata: Metadata = {
   title: 'FAQ (Bantuan)',
-  description: 'Pertanyaan yang sering diajukan tentang Energi.Click — pengiriman, pembayaran, garansi, dan lainnya.',
+  description: 'Pertanyaan yang sering diajukan tentang EBTPlaza — pengiriman, pembayaran, garansi, dan lainnya.',
   alternates: { canonical: '/faq' },
 };
 
 const faqItems = [
   {
-    q: 'Bagaimana cara membeli produk di Energi.Click?',
+    q: 'Bagaimana cara membeli produk di EBTPlaza?',
     a: 'Pilih produk yang diinginkan, klik "Tambah ke Keranjang", lalu lanjutkan ke checkout. Anda akan diminta mengisi informasi pengiriman dan memilih metode pembayaran.',
   },
   {
@@ -32,7 +32,7 @@ const faqItems = [
     a: 'Kunjungi halaman Permintaan Penawaran, isi formulir dengan detail proyek Anda, dan tim kami akan menghubungi Anda dengan penawaran harga.',
   },
   {
-    q: 'Apakah Energi.Click menyediakan jasa instalasi?',
+    q: 'Apakah EBTPlaza menyediakan jasa instalasi?',
     a: 'Kami dapat merekomendasikan mitra instalasi. Centang opsi "Membutuhkan jasa instalasi" saat mengisi formulir RFQ, dan kami akan membantu menghubungkan Anda.',
   },
   {

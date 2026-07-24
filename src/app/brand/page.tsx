@@ -7,7 +7,7 @@ import { products } from '@/lib/data/products';
 
 export const metadata: Metadata = {
   title: 'Brand',
-  description: 'Jelajahi produk berdasarkan brand di Energi.Click.',
+  description: 'Jelajahi produk berdasarkan brand di EBTPlaza.',
   alternates: { canonical: '/brand' },
 };
 

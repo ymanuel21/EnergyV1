@@ -10,7 +10,7 @@ import { validateSort, validatePage } from '@/lib/utils/validation';
 
 export const metadata: Metadata = {
   title: 'Promo & Penawaran',
-  description: 'Harga spesial produk energi terbarukan di Energi.Click. Hemat lebih banyak!',
+  description: 'Harga spesial produk energi terbarukan di EBTPlaza. Hemat lebih banyak!',
   alternates: { canonical: '/promo' },
 };
 

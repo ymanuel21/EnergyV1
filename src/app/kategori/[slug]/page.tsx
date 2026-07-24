@@ -29,11 +29,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: category.name,
-    description: `Jelajahi koleksi ${category.name} di Energi.Click. ${category.productCount} produk tersedia.`,
+    description: `Jelajahi koleksi ${category.name} di EBTPlaza. ${category.productCount} produk tersedia.`,
     alternates: { canonical: `/kategori/${slug}` },
     openGraph: {
-      title: `${category.name} — Energi.Click`,
-      description: `Jelajahi koleksi ${category.name} di Energi.Click. ${category.productCount} produk tersedia.`,
+      title: `${category.name} — EBTPlaza`,
+      description: `Jelajahi koleksi ${category.name} di EBTPlaza. ${category.productCount} produk tersedia.`,
     },
     robots: { index: true, follow: true },
   };

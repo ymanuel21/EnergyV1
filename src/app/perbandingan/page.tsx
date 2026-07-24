@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage } from '@ui/SafeImage';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { Button } from '@ui/Button';
@@ -89,7 +89,7 @@ export default function ComparePage() {
                 <th key={p.id} className="min-w-[200px] p-3 text-left">
                   <div className="space-y-2">
                     <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
-                      <Image
+                      <SafeImage
                         src={p.images[0]}
                         alt={p.name}
                         width={200}
