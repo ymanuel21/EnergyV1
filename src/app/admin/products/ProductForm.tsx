@@ -86,7 +86,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
             {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
-        <ImageUpload name="image" defaultValue={defaultValues?.images?.[0]} />
+        <ImageUpload name="image" label="Gambar Produk" defaultValue={defaultValues?.images?.[0]} />
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Badges (comma separated)</label>
           <input name="badges" defaultValue={defaultValues?.badges?.join(',')} placeholder="clearance, promo, new, cheapest" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />

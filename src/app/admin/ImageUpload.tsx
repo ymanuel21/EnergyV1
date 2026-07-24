@@ -4,11 +4,12 @@ import { useState, useRef } from 'react';
 
 interface ImageUploadProps {
   name?: string;
+  label?: string;
   defaultValue?: string;
   className?: string;
 }
 
-export function ImageUpload({ name = 'image', defaultValue = '', className = '' }: ImageUploadProps) {
+export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '', className = '' }: ImageUploadProps) {
   const [preview, setPreview] = useState<string>(defaultValue);
   const [fileName, setFileName] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -19,11 +20,9 @@ export function ImageUpload({ name = 'image', defaultValue = '', className = '' 
 
     setFileName(file.name);
 
-    // Create a local preview URL
     const url = URL.createObjectURL(file);
     setPreview(url);
 
-    // Revoke the previous object URL to avoid memory leaks
     return () => URL.revokeObjectURL(url);
   }
 
@@ -35,7 +34,7 @@ export function ImageUpload({ name = 'image', defaultValue = '', className = '' 
 
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">Gambar Produk</label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
 
       {preview ? (
         <div className="relative mb-2 inline-block">
