@@ -12,7 +12,6 @@ export function MegaMenu() {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const categories = getCategoryTree();
-
   const close = useCallback(() => setOpen(false), []);
 
   // Close on Escape
@@ -36,12 +35,14 @@ export function MegaMenu() {
         close();
       }
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [close]);
+    if (open) {
+      document.addEventListener('mousedown', handleClick);
+      return () => document.removeEventListener('mousedown', handleClick);
+    }
+  }, [open, close]);
 
   return (
-    <div className="relative hidden lg:block">
+    <>
       <button
         ref={buttonRef}
         onClick={() => setOpen((v) => !v)}
@@ -54,24 +55,26 @@ export function MegaMenu() {
         Semua Kategori
       </button>
 
-      {/* Mega menu dropdown */}
+      {/* Mega menu: rendered outside the flex flow, positioned relative to header */}
       <div
         id="mega-menu"
         ref={menuRef}
         role="menu"
-        className={`absolute left-0 right-0 top-full z-[9997] mt-1 rounded-b-xl border border-gray-200 bg-white shadow-lg transition-all duration-200 ${
+        className={`absolute left-0 right-0 top-full z-[9997] bg-white border-b border-gray-200 shadow-xl transition-all duration-200 ${
           open
             ? 'opacity-100 translate-y-0 visible pointer-events-auto'
             : 'opacity-0 -translate-y-2 invisible pointer-events-none'
         }`}
       >
-        <div className="grid grid-cols-3 gap-x-8 gap-y-4 p-6 max-h-[70vh] overflow-y-auto">
-          {categories.map((cat) => (
-            <CategoryColumn key={cat.id} category={cat} onClick={close} />
-          ))}
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-x-8 gap-y-4 py-6 max-h-[60vh] overflow-y-auto">
+            {categories.map((cat) => (
+              <CategoryColumn key={cat.id} category={cat} onClick={close} />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
