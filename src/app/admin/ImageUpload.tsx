@@ -14,25 +14,47 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
   const [fileName, setFileName] = useState<string>('');
   const [urlMode, setUrlMode] = useState(false);
   const [urlValue, setUrlValue] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [storedUrl, setStoredUrl] = useState<string>(defaultValue);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setFileName(file.name);
+    setUploading(true);
 
-    // Convert to base64 data URL — persists across devices and in DB
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    // Show local preview immediately
+    const localUrl = URL.createObjectURL(file);
+    setPreview(localUrl);
+
+    try {
+      // Upload to server — stores permanently in database
+      const form = new FormData();
+      form.append('file', file);
+
+      const res = await fetch('/api/upload', { method: 'POST', body: form });
+      if (!res.ok) throw new Error('Upload failed');
+
+      const { url } = await res.json();
+      setStoredUrl(url);
+      setPreview(url); // Replace blob preview with permanent URL
+    } catch (err) {
+      console.error('Upload error:', err);
+      setPreview('');
+      setFileName('');
+      alert('Upload gagal. Coba lagi.');
+    } finally {
+      setUploading(false);
+      URL.revokeObjectURL(localUrl);
+    }
   }
 
   function handleRemove() {
     setPreview('');
     setFileName('');
+    setStoredUrl('');
     setUrlValue('');
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
@@ -40,6 +62,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
   function handleUrlSubmit() {
     if (urlValue.trim()) {
       setPreview(urlValue.trim());
+      setStoredUrl(urlValue.trim());
       setFileName(urlValue.trim().split('/').pop() || '');
     }
   }
@@ -84,9 +107,10 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+          disabled={uploading}
+          className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
         >
-          Pilih File
+          {uploading ? 'Mengupload...' : 'Pilih File'}
         </button>
         <button
           type="button"
@@ -116,8 +140,8 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
         </div>
       )}
 
-      {/* Hidden input submits the base64 URL or external URL */}
-      <input type="hidden" name={name} value={preview} />
+      {/* Hidden input submits the permanent URL (from upload or manual entry) */}
+      <input type="hidden" name={name} value={storedUrl} />
 
       {fileName && (
         <p className="mt-1 text-xs text-gray-500">{fileName}</p>

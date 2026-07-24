@@ -12,8 +12,8 @@ import { ClipboardCopyButton } from '@components/product/ShareButton';
 import { WishlistToggleButton } from '@components/product/WishlistToggleButton';
 import { CompareToggleButton } from '@components/product/CompareToggleButton';
 import { ProductCarouselSection } from '@components/home/ProductCarouselSection';
-import { products } from '@/lib/data/products';
-import { categories } from '@/lib/data/categories';
+import { getProductBySlug, getAllProducts } from '@/lib/api/products';
+import { getAllCategories } from '@/lib/api/categories';
 import { getBrandById } from '@/lib/api/brands';
 import { SITE } from '@lib/constants';
 import { notFound } from 'next/navigation';
@@ -25,45 +25,48 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
+  const allProducts = await getAllProducts();
+  return allProducts.map((p: any) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = await getProductBySlug(slug);
   if (!product) return { title: 'Produk Tidak Ditemukan' };
 
   const brand = await getBrandById(product.brandId);
 
   return {
     title: product.name,
-    description: `${brand?.name ?? ''} ${product.name} — Rp ${product.price.toLocaleString('id-ID')}. ${product.condition === 'new' ? 'Baru' : 'Bekas'}. Beli sekarang di ${SITE.name}.`,
-    alternates: {
-      canonical: `/produk/${slug}`,
-    },
+    description: `${brand?.name ?? ''} ${product.name} — Rp ${product.price.toLocaleString('id-ID')}. Beli sekarang di ${SITE.name}.`,
+    alternates: { canonical: `/produk/${slug}` },
     openGraph: {
       title: product.name,
-      description: product.description.substring(0, 160),
-      // metadataBase from root layout auto-resolves relative paths to absolute URLs
-      images: product.images[0] ? [{ url: product.images[0] }] : undefined,
+      description: (product.description || '').substring(0, 160),
+      images: product.images?.[0] ? [{ url: product.images[0] }] : undefined,
     },
   };
 }
 
 export default async function ProductDetail({ params }: Props) {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) notFound();
 
-  const brand = await getBrandById(product.brandId);
-  const category = categories.find((c) => c.id === product.categoryId);
+  const [brand, allCategories, allProducts] = await Promise.all([
+    getBrandById(product.brandId),
+    getAllCategories(),
+    getAllProducts(),
+  ]);
+
+  const category = allCategories.find((c: any) => c.id === product.categoryId);
   const subcategory = product.subcategoryId
-    ? categories.flatMap((c) => c.children ?? []).find((c) => c.id === product.subcategoryId)
+    ? allCategories.flatMap((c: any) => c.children ?? []).find((c: any) => c.id === product.subcategoryId)
     : undefined;
 
-  const relatedProducts = products
-    .filter((p) => p.id !== product.id && p.categoryId === product.categoryId)
+  const relatedProducts = allProducts
+    .filter((p: any) => p.id !== product.id && p.categoryId === product.categoryId)
     .slice(0, 5);
 
   return (
@@ -76,7 +79,7 @@ export default async function ProductDetail({ params }: Props) {
             '@context': 'https://schema.org',
             '@type': 'Product',
             name: product.name,
-            image: product.images[0],
+            image: product.images?.[0],
             description: product.description,
             sku: product.sku,
             mpn: product.model,
@@ -106,10 +109,10 @@ export default async function ProductDetail({ params }: Props) {
 
         {/* Product layout */}
         <div className="mt-4 grid gap-8 lg:grid-cols-2">
-          <ImageGallery images={product.images} productName={product.name} />
+          <ImageGallery images={product.images || []} productName={product.name} />
 
           <div className="space-y-4">
-            <ProductBadgeGroup badges={product.badges} />
+            <ProductBadgeGroup badges={product.badges || []} />
 
             {brand && (
               <Link
@@ -137,13 +140,15 @@ export default async function ProductDetail({ params }: Props) {
             </div>
 
             {/* Affiliate */}
-            <div className="rounded-lg bg-brand-50 p-3 text-sm">
-              Komisi Afiliator {product.affiliateCommission.percent}% (Rp{' '}
-              {product.affiliateCommission.amount.toLocaleString('id-ID')}) —{' '}
-              <Link href="/afiliasi" className="font-medium text-brand-700 hover:underline">
-                Gabung gratis
-              </Link>
-            </div>
+            {product.affiliateCommission && (
+              <div className="rounded-lg bg-brand-50 p-3 text-sm">
+                Komisi Afiliator {product.affiliateCommission.percent}% (Rp{' '}
+                {product.affiliateCommission.amount?.toLocaleString('id-ID') || '0'}) —{' '}
+                <Link href="/afiliasi" className="font-medium text-brand-700 hover:underline">
+                  Gabung gratis
+                </Link>
+              </div>
+            )}
 
             <PriceBlock
               price={product.price}
@@ -156,7 +161,7 @@ export default async function ProductDetail({ params }: Props) {
               slug={product.slug}
               name={product.name}
               brandName={brand?.name ?? ''}
-              image={product.images[0]}
+              image={product.images?.[0] || '/images/placeholder/product-placeholder.png'}
               price={product.price}
               maxQuantity={product.stock}
               weight={product.weight}
@@ -193,7 +198,7 @@ export default async function ProductDetail({ params }: Props) {
                     <p>{product.description}</p>
                     <h3>Keunggulan</h3>
                     <ul>
-                      {product.specifications.map((spec) => (
+                      {(product.specifications || []).map((spec: any) => (
                         <li key={spec.label}>
                           <strong>{spec.label}:</strong> {spec.value}
                         </li>
@@ -209,7 +214,7 @@ export default async function ProductDetail({ params }: Props) {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <tbody>
-                        {product.specifications.map((spec) => (
+                        {(product.specifications || []).map((spec: any) => (
                           <tr key={spec.label} className="border-b border-gray-100">
                             <td className="py-2 pr-4 font-medium text-gray-700">{spec.label}</td>
                             <td className="py-2 text-gray-600">{spec.value}</td>
@@ -227,7 +232,7 @@ export default async function ProductDetail({ params }: Props) {
                       label: `Dokumen (${product.documents.length})`,
                       content: (
                         <ul className="space-y-2">
-                          {product.documents.map((doc) => (
+                          {product.documents.map((doc: any) => (
                             <li key={doc.name}>
                               <a
                                 href={doc.url}

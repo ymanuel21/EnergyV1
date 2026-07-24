@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { IconButton } from '@ui/IconButton';
 import { SearchBar } from '@components/forms/SearchBar';
-import { HeartIcon, UserIcon, HamburgerIcon, CompareIcon } from '@ui/Icons';
+import { HeartIcon, UserIcon, CompareIcon } from '@ui/Icons';
 import { CartHeaderButton } from './CartHeaderButton';
 import { CategoryDropdown } from './CategoryDropdown';
+import { MobileMenu } from './MobileMenu';
 import { SITE_CONFIG } from '@/lib/site';
 
 export function Header() {
@@ -52,9 +53,7 @@ export function Header() {
             </IconButton>
 
             {/* Mobile hamburger */}
-            <button className="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:text-brand-700 hover:bg-gray-100 lg:hidden" aria-label="Menu">
-              <HamburgerIcon />
-            </button>
+            <MobileMenu />
           </div>
         </div>
       </Container>

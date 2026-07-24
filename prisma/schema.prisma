@@ -125,3 +125,13 @@ model Banner {
 
   @@map("banners")
 }
+
+model Asset {
+  id        String   @id @default(uuid())
+  data      String   // base64 encoded image data
+  mimeType  String   @map("mime_type") // e.g. image/webp, image/png
+  size      Int      // file size in bytes
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("assets")
+}
