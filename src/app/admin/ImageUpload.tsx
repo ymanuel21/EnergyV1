@@ -12,6 +12,8 @@ interface ImageUploadProps {
 export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '', className = '' }: ImageUploadProps) {
   const [preview, setPreview] = useState<string>(defaultValue);
   const [fileName, setFileName] = useState<string>('');
+  const [urlMode, setUrlMode] = useState(false);
+  const [urlValue, setUrlValue] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -20,16 +22,26 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
 
     setFileName(file.name);
 
-    const url = URL.createObjectURL(file);
-    setPreview(url);
-
-    return () => URL.revokeObjectURL(url);
+    // Convert to base64 data URL — persists across devices and in DB
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   }
 
   function handleRemove() {
     setPreview('');
     setFileName('');
+    setUrlValue('');
     if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
+  function handleUrlSubmit() {
+    if (urlValue.trim()) {
+      setPreview(urlValue.trim());
+      setFileName(urlValue.trim().split('/').pop() || '');
+    }
   }
 
   return (
@@ -61,15 +73,50 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
         </div>
       )}
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        className="hidden"
-      />
+      <div className="flex items-center gap-2 mb-2">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+        >
+          Pilih File
+        </button>
+        <button
+          type="button"
+          onClick={() => setUrlMode(!urlMode)}
+          className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+        >
+          {urlMode ? 'Sembunyikan URL' : 'Atau Masukkan URL'}
+        </button>
+      </div>
 
-      {/* Hidden input that submits the URL */}
+      {urlMode && (
+        <div className="flex gap-2 mb-2">
+          <input
+            type="text"
+            placeholder="https://... atau /images/..."
+            value={urlValue}
+            onChange={(e) => setUrlValue(e.target.value)}
+            className="flex-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs"
+          />
+          <button
+            type="button"
+            onClick={handleUrlSubmit}
+            className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
+          >
+            Gunakan URL
+          </button>
+        </div>
+      )}
+
+      {/* Hidden input submits the base64 URL or external URL */}
       <input type="hidden" name={name} value={preview} />
 
       {fileName && (
