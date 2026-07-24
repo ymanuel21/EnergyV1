@@ -9,10 +9,10 @@ import { Button } from '@ui/Button';
 import { EmptyState } from '@ui/EmptyState';
 import { useCompare } from '@providers/CompareProvider';
 import { useCart } from '@providers/CartProvider';
-import { products } from '@/lib/data/products';
+import { products as staticProducts } from '@/lib/data/products';
 import { getBrandById } from '@/lib/data/brands';
-import type { Product } from '@/types/product';
 import { CompareIcon } from '@ui/Icons';
+import type { Product } from '@/types/product';
 
 export default function ComparePage() {
   const { items, removeItem, clearAll } = useCompare();
@@ -21,9 +21,9 @@ export default function ComparePage() {
 
   useEffect(() => { setHydrated(true); }, []);
 
-  const compareProducts = products.filter((p) => items.includes(p.id));
+  const compareProducts = staticProducts.filter((p) => items.includes(p.id));
 
-  // Prevent hydration mismatch — server renders empty, client mounts with real data
+  // Prevent hydration mismatch
   if (!hydrated) {
     return (
       <Container className="py-6">
@@ -34,7 +34,7 @@ export default function ComparePage() {
   }
 
   function addToCart(productId: string) {
-    const product = products.find((p) => p.id === productId);
+    const product = staticProducts.find((p) => p.id === productId);
     if (!product) return;
     const brand = getBrandById(product.brandId);
     addItem({
@@ -133,7 +133,7 @@ export default function ComparePage() {
               ['Garansi', (p: Product) => p.warranty],
               ['Stok', (p: Product) => `${p.stock} pcs`],
               ['Berat', (p: Product) => `${p.weight} kg`],
-              ['Rating', (p: Product) => `${p.rating}/5 (${p.reviewCount} ulasan)`],
+              ['Rating', (p: Product) => `${(p as any).rating || 0}/5 (${(p as any).reviewCount || 0} ulasan)`],
             ] as [string, (p: Product) => string][]).map(([label, getValue]) => (
               <tr key={label} className="border-t border-gray-100">
                 <td className="p-3 font-medium text-gray-700">{label}</td>

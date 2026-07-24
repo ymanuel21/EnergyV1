@@ -6,6 +6,7 @@ import { HeartIcon, UserIcon, CompareIcon } from '@ui/Icons';
 import { CartHeaderButton } from './CartHeaderButton';
 import { CategoryDropdown } from './CategoryDropdown';
 import { MobileMenu } from './MobileMenu';
+import { CompareHeaderButton } from './CompareHeaderButton';
 import { SITE_CONFIG } from '@/lib/site';
 
 export function Header() {
@@ -37,11 +38,7 @@ export function Header() {
 
           {/* Icons */}
           <div className="flex items-center gap-1">
-            <Link href="/perbandingan">
-              <IconButton label="Perbandingan">
-                <CompareIcon />
-              </IconButton>
-            </Link>
+            <CompareHeaderButton />
             <Link href="/wishlist">
               <IconButton label="Wishlist">
                 <HeartIcon />
