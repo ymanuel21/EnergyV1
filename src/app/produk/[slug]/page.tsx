@@ -1,0 +1,271 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Container } from '@ui/Container';
+import { Breadcrumb } from '@ui/Breadcrumb';
+import { Button } from '@ui/Button';
+import { Tabs } from '@ui/Tabs';
+import { ImageGallery } from '@components/product/ImageGallery';
+import { PriceBlock } from '@components/product/PriceBlock';
+import { ProductBadgeGroup } from '@components/product/ProductBadge';
+import { AddToCartButton } from '@components/product/AddToCartButton';
+import { ClipboardCopyButton } from '@components/product/ShareButton';
+import { WishlistToggleButton } from '@components/product/WishlistToggleButton';
+import { CompareToggleButton } from '@components/product/CompareToggleButton';
+import { ProductCarouselSection } from '@components/home/ProductCarouselSection';
+import { products } from '@/lib/data/products';
+import { categories } from '@/lib/data/categories';
+import { getBrandById } from '@/lib/api/brands';
+import { SITE } from '@lib/constants';
+import { notFound } from 'next/navigation';
+
+export const revalidate = 3600; // ISR: revalidate every hour
+
+interface Props {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  return products.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const product = products.find((p) => p.slug === slug);
+  if (!product) return { title: 'Produk Tidak Ditemukan' };
+
+  const brand = getBrandById(product.brandId);
+
+  return {
+    title: product.name,
+    description: `${brand?.name ?? ''} ${product.name} — Rp ${product.price.toLocaleString('id-ID')}. ${product.condition === 'new' ? 'Baru' : 'Bekas'}. Beli sekarang di ${SITE.name}.`,
+    alternates: {
+      canonical: `/produk/${slug}`,
+    },
+    openGraph: {
+      title: product.name,
+      description: product.description.substring(0, 160),
+      // metadataBase from root layout auto-resolves relative paths to absolute URLs
+      images: product.images[0] ? [{ url: product.images[0] }] : undefined,
+    },
+  };
+}
+
+export default async function ProductDetail({ params }: Props) {
+  const { slug } = await params;
+  const product = products.find((p) => p.slug === slug);
+
+  if (!product) notFound();
+
+  const brand = getBrandById(product.brandId);
+  const category = categories.find((c) => c.id === product.categoryId);
+  const subcategory = product.subcategoryId
+    ? categories.flatMap((c) => c.children ?? []).find((c) => c.id === product.subcategoryId)
+    : undefined;
+
+  const relatedProducts = products
+    .filter((p) => p.id !== product.id && p.categoryId === product.categoryId)
+    .slice(0, 5);
+
+  return (
+    <>
+      {/* Structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: product.name,
+            image: product.images[0],
+            description: product.description,
+            sku: product.sku,
+            mpn: product.model,
+            brand: brand ? { '@type': 'Brand', name: brand.name } : undefined,
+            offers: {
+              '@type': 'Offer',
+              price: product.price,
+              priceCurrency: 'IDR',
+              availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            },
+          }),
+        }}
+      />
+
+      <Container className="py-6">
+        {/* Breadcrumb */}
+        <Breadcrumb
+          items={[
+            { label: 'Beranda', href: '/' },
+            ...(category ? [{ label: category.name, href: `/kategori/${category.slug}` }] : []),
+            ...(subcategory
+              ? [{ label: subcategory.name, href: `/kategori/${subcategory.slug}` }]
+              : []),
+            { label: product.name },
+          ]}
+        />
+
+        {/* Product layout */}
+        <div className="mt-4 grid gap-8 lg:grid-cols-2">
+          <ImageGallery images={product.images} productName={product.name} />
+
+          <div className="space-y-4">
+            <ProductBadgeGroup badges={product.badges} />
+
+            {brand && (
+              <Link
+                href={`/brand/${brand.slug}`}
+                className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-brand-700"
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+                  {brand.name.charAt(0)}
+                </span>
+                {brand.name}
+              </Link>
+            )}
+
+            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">{product.name}</h1>
+
+            <p className="text-sm text-gray-500">
+              SKU: {product.sku}
+              {product.model && ` • Model: ${product.model}`}
+            </p>
+
+            {/* Share */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Bagikan:</span>
+              <ClipboardCopyButton />
+            </div>
+
+            {/* Affiliate */}
+            <div className="rounded-lg bg-brand-50 p-3 text-sm">
+              Komisi Afiliator {product.affiliateCommission.percent}% (Rp{' '}
+              {product.affiliateCommission.amount.toLocaleString('id-ID')}) —{' '}
+              <Link href="/afiliasi" className="font-medium text-brand-700 hover:underline">
+                Gabung gratis
+              </Link>
+            </div>
+
+            <PriceBlock
+              price={product.price}
+              originalPrice={product.originalPrice}
+              stock={product.stock}
+            />
+
+            <AddToCartButton
+              productId={product.id}
+              slug={product.slug}
+              name={product.name}
+              brandName={brand?.name ?? ''}
+              image={product.images[0]}
+              price={product.price}
+              maxQuantity={product.stock}
+              weight={product.weight}
+            />
+
+            <Link
+              href={`https://wa.me/${SITE.whatsapp}`}
+              target="_blank"
+              className="block w-full rounded-lg border border-green-500 py-2.5 text-center text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
+            >
+              Konsultasi via WhatsApp
+            </Link>
+
+            <div className="flex gap-3">
+              <WishlistToggleButton productId={product.id} />
+              <CompareToggleButton productId={product.id} />
+            </div>
+
+            <p className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-600">
+              Kondisi: {product.condition === 'new' ? 'Baru' : product.condition === 'used' ? 'Bekas' : 'Baru - Sisa Proyek'} • Garansi: {product.warranty}
+            </p>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="mt-10">
+          <Tabs
+            tabs={[
+              {
+                id: 'description',
+                label: 'Deskripsi',
+                content: (
+                  <div className="prose max-w-none text-sm text-gray-700">
+                    <p>{product.description}</p>
+                    <h3>Keunggulan</h3>
+                    <ul>
+                      {product.specifications.map((spec) => (
+                        <li key={spec.label}>
+                          <strong>{spec.label}:</strong> {spec.value}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ),
+              },
+              {
+                id: 'specs',
+                label: 'Spesifikasi',
+                content: (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <tbody>
+                        {product.specifications.map((spec) => (
+                          <tr key={spec.label} className="border-b border-gray-100">
+                            <td className="py-2 pr-4 font-medium text-gray-700">{spec.label}</td>
+                            <td className="py-2 text-gray-600">{spec.value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ),
+              },
+              ...(product.documents?.length
+                ? [
+                    {
+                      id: 'documents',
+                      label: `Dokumen (${product.documents.length})`,
+                      content: (
+                        <ul className="space-y-2">
+                          {product.documents.map((doc) => (
+                            <li key={doc.name}>
+                              <a
+                                href={doc.url}
+                                className="text-brand-700 hover:underline text-sm"
+                                target="_blank"
+                                rel="noopener"
+                              >
+                                📄 {doc.name} {doc.size && `(${doc.size})`}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      ),
+                    },
+                  ]
+                : []),
+              {
+                id: 'shipping',
+                label: 'Pengiriman & Garansi',
+                content: (
+                  <div className="text-sm text-gray-600 space-y-2">
+                    <p>Garansi: {product.warranty}</p>
+                    <p>Pengiriman ke seluruh Indonesia. Biaya pengiriman dihitung saat checkout.</p>
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </div>
+      </Container>
+
+      {/* Related Products */}
+      {relatedProducts.length > 0 && (
+        <ProductCarouselSection
+          title="Produk Terkait"
+          products={relatedProducts}
+        />
+      )}
+    </>
+  );
+}

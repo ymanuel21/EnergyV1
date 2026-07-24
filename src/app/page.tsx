@@ -1,65 +1,50 @@
-import Image from "next/image";
+import { HeroSlider } from '@components/home/HeroSlider';
+import { NeedCards } from '@components/home/NeedCards';
+import { ProductCarouselSection } from '@components/home/ProductCarouselSection';
+import { banners, needCards } from '@/lib/data/banners';
+import { products } from '@/lib/data/products';
+import { OrganizationSchema } from '@components/ui/StructuredData';
+import type { Metadata } from 'next';
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: 'Energi Cerdas, Tinggal Klik!',
+  alternates: { canonical: '/' },
+};
+
+const clearanceProducts = products.filter((p) => p.badges.includes('clearance')).slice(0, 5);
+const promoProducts = products.filter((p) => p.badges.includes('promo')).slice(0, 8);
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      <OrganizationSchema />
+      <HeroSlider banners={banners} />
+
+      <NeedCards cards={needCards} />
+
+      <ProductCarouselSection
+        title="CLEARANCE"
+        description="Stok terbatas • Termurah!"
+        linkTo="/barang-clearance"
+        products={clearanceProducts}
+        titleIcon={
+          <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+          </svg>
+        }
+      />
+
+      <ProductCarouselSection
+        title="PROMO & PENAWARAN"
+        description="Harga spesial • Hemat lebih banyak!"
+        linkTo="/promo"
+        products={promoProducts}
+        titleIcon={
+          <svg className="h-5 w-5 text-accent-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+          </svg>
+        }
+      />
+    </>
   );
 }
