@@ -168,8 +168,11 @@ export default async function ProductDetail({ params }: Props) {
             />
 
             <Link
-              href={`https://wa.me/${SITE.whatsapp}`}
+              href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(
+                `Halo Admin EBTPlaza 👋\n\nSaya tertarik dengan produk berikut:\n\n📦 Produk: ${product.name}\n🏷️ Brand: ${brand?.name ?? '-'}\n💰 Harga: Rp ${product.price.toLocaleString('id-ID')}\n🔗 Link Produk: ${SITE.url}/produk/${slug}\n\nApakah produk ini masih tersedia?\n\nMohon informasi mengenai:\n• Stok terbaru\n• Estimasi pengiriman\n• Garansi\n• Ongkos kirim ke lokasi saya\n\nTerima kasih.`
+              )}`}
               target="_blank"
+              rel="noopener noreferrer"
               className="block w-full rounded-lg border border-green-500 py-2.5 text-center text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
             >
               Konsultasi via WhatsApp
