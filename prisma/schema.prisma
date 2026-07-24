@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id                 String   @id
+  slug               String   @unique
+  name               String
+  description        String
+  price              Int
+  originalPrice      Int?
+  stock              Int      @default(0)
+  sku                String?
+  model              String?
+  weight             Float?
+  warranty           String?
+  condition          String?
+  images             Json     @default("[]")
+  badges             Json     @default("[]")
+  specifications     Json     @default("[]")
+  affiliateCommission Json?
+  isActive           Boolean  @default(true) @map("is_active")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  brandId      String    @map("brand_id")
+  brand        Brand     @relation(fields: [brandId], references: [id])
+  categoryId   String    @map("category_id")
+  category     Category  @relation(fields: [categoryId], references: [id])
+  subcategoryId String?  @map("subcategory_id")
+
+  @@map("products")
+}
+
+model Category {
+  id         String     @id
+  slug       String     @unique
+  name       String
+  sortOrder  Int        @default(0) @map("sort_order")
+  isActive   Boolean    @default(true) @map("is_active")
+
+  parentId   String?    @map("parent_id")
+  parent     Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children   Category[] @relation("CategoryTree")
+
+  products   Product[]
+
+  @@map("categories")
+}
+
+model Brand {
+  id        String    @id
+  slug      String    @unique
+  name      String
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  products  Product[]
+
+  @@map("brands")
+}
+
+model Article {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  excerpt     String?
+  content     String
+  category    String?
+  author      String   @default("Tim EBTPlaza")
+  image       String?
+  readTime    Int?     @map("read_time")
+  isPublished Boolean  @default(false) @map("is_published")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("articles")
+}
+
+model Faq {
+  id        Int     @id @default(autoincrement())
+  question  String
+  answer    String
+  sortOrder Int     @default(0) @map("sort_order")
+  isActive  Boolean @default(true) @map("is_active")
+
+  @@map("faqs")
+}
+
+model StaticPage {
+  id        String   @id
+  slug      String   @unique
+  title     String
+  content   String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("pages")
+}
+
+model SiteSetting {
+  key   String @id
+  value String
+
+  @@map("settings")
+}
+
+model Banner {
+  id        String  @id
+  type      String  @default("hero")
+  title     String?
+  src       String?
+  image     String?
+  alt       String?
+  link      String?
+  label     String?
+  description String?
+  isActive  Boolean @default(true) @map("is_active")
+  sortOrder Int     @default(0) @map("sort_order")
+
+  @@map("banners")
+}

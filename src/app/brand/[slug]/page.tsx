@@ -14,12 +14,12 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return getAllBrands().map((b) => ({ slug: b.slug }));
+  return (await getAllBrands()).map((b) => ({ slug: b.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const brand = getBrandBySlug(slug);
+  const brand = await getBrandBySlug(slug);
   if (!brand) return { title: 'Brand Tidak Ditemukan' };
 
   return {
@@ -31,10 +31,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BrandProductPage({ params }: Props) {
   const { slug } = await params;
-  const brand = getBrandBySlug(slug);
+  const brand = await getBrandBySlug(slug);
   if (!brand) notFound();
 
-  const brandProducts = filterByBrand(getAllProducts(), brand.id);
+  const brandProducts = filterByBrand(await getAllProducts(), brand.id);
 
   return (
     <Container className="py-6">

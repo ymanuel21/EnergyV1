@@ -36,7 +36,7 @@ export default async function SearchPage({ searchParams }: Props) {
   const sort = validateSort(sp.sort);
   const page = validatePage(sp.page);
 
-  const matched = q.length >= 2 ? searchProducts(getAllProducts(), q) : [];
+  const matched = q.length >= 2 ? searchProducts(await getAllProducts(), q) : [];
   const sorted = sortProducts(matched, sort);
   const { items: paginated, totalPages } = paginate(sorted, page);
 

@@ -9,7 +9,7 @@ import { ProductCard } from '@components/product/ProductCard';
 import { useWishlist } from '@providers/WishlistProvider';
 import { useCart } from '@providers/CartProvider';
 import { products } from '@/lib/data/products';
-import { getBrandById } from '@/lib/api/brands';
+import { getBrandById } from '@/lib/data/brands';
 import { HeartIcon } from '@ui/Icons';
 
 export default function WishlistPage() {

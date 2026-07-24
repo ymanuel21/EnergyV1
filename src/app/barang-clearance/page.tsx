@@ -23,7 +23,7 @@ export default async function ClearancePage({ searchParams }: Props) {
   const sort = validateSort(sp.sort);
   const page = validatePage(sp.page);
 
-  const filtered = filterByBadge(getAllProducts(), 'clearance');
+  const filtered = filterByBadge(await getAllProducts(), 'clearance');
   const sorted = sortProducts(filtered, sort);
   const { items: paginated, totalPages } = paginate(sorted, page);
 

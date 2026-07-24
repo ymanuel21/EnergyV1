@@ -26,7 +26,7 @@ export default async function AllProductsPage({ searchParams }: Props) {
   const sort = validateSort(sp.sort as string | undefined);
   const page = validatePage(sp.page as string | undefined);
 
-  const products = getAllProducts();
+  const products = await getAllProducts();
   const sorted = sortProducts(products, sort);
   const { items, totalPages } = paginate(sorted, page, PAGE_SIZE);
 

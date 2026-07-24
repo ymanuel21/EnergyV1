@@ -1,22 +1,6 @@
-import type { Brand } from '@/types/product';
-import { brands as brandArray } from '@/lib/data/brands';
+import { brands as brandData } from '@/lib/data/brands';
 
-// O(1) lookup — prevents quadratic behavior when N products × M brands
-const byId = new Map(brandArray.map((b) => [b.id, b]));
-const bySlug = new Map(brandArray.map((b) => [b.slug, b]));
-
-export function getBrandById(id: string): Brand | undefined {
-  return byId.get(id);
-}
-
-export function getBrandBySlug(slug: string): Brand | undefined {
-  return bySlug.get(slug);
-}
-
-export function getAllBrands(): Brand[] {
-  return brandArray;
-}
-
-export function getActiveBrands(): Brand[] {
-  return brandArray.filter((b) => b.productCount > 0);
-}
+export async function getAllBrands() { return brandData; }
+export async function getBrandById(id: string) { return brandData.find((b) => b.id === id); }
+export async function getBrandBySlug(slug: string) { return brandData.find((b) => b.slug === slug); }
+export async function getActiveBrands() { return brandData; }

@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = products.find((p) => p.slug === slug);
   if (!product) return { title: 'Produk Tidak Ditemukan' };
 
-  const brand = getBrandById(product.brandId);
+  const brand = await getBrandById(product.brandId);
 
   return {
     title: product.name,
@@ -56,7 +56,7 @@ export default async function ProductDetail({ params }: Props) {
 
   if (!product) notFound();
 
-  const brand = getBrandById(product.brandId);
+  const brand = await getBrandById(product.brandId);
   const category = categories.find((c) => c.id === product.categoryId);
   const subcategory = product.subcategoryId
     ? categories.flatMap((c) => c.children ?? []).find((c) => c.id === product.subcategoryId)

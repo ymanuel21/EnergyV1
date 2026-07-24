@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   alternates: { canonical: '/brand' },
 };
 
-export default function BrandPage() {
-  const brands = getAllBrands();
+export default async function BrandPage() {
+  const brands = await getAllBrands();
 
   return (
     <Container className="py-6">

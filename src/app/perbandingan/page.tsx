@@ -10,7 +10,7 @@ import { EmptyState } from '@ui/EmptyState';
 import { useCompare } from '@providers/CompareProvider';
 import { useCart } from '@providers/CartProvider';
 import { products } from '@/lib/data/products';
-import { getBrandById } from '@/lib/api/brands';
+import { getBrandById } from '@/lib/data/brands';
 import type { Product } from '@/types/product';
 import { CompareIcon } from '@ui/Icons';
 

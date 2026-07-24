@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) return { title: 'Kategori Tidak Ditemukan' };
 
   return {
@@ -42,14 +42,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const sp = await searchParams;
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (!category) notFound();
 
   const sort = validateSort(sp.sort);
   const page = validatePage(sp.page);
   const isSubcategory = !!category.parentId;
 
-  const filtered = filterByCategory(getAllProducts(), category.id, isSubcategory);
+  const filtered = filterByCategory(await getAllProducts(), category.id, isSubcategory);
   const sorted = sortProducts(filtered, sort);
   const { items: paginated, totalPages } = paginate(sorted, page);
 

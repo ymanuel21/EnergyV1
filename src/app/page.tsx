@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 const clearanceProducts = products.filter((p) => p.badges.includes('clearance')).slice(0, 5);
 const promoProducts = products.filter((p) => p.badges.includes('promo')).slice(0, 8);
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <>
       <OrganizationSchema />

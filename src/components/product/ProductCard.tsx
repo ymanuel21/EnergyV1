@@ -4,7 +4,7 @@ import { Badge } from '@ui/Badge';
 import { Price } from '@ui/Price';
 import { HeartIcon } from '@ui/Icons';
 import type { Product, ProductBadgeVariant } from '@/types/product';
-import { getBrandById } from '@/lib/api/brands';
+import { getBrandById } from '@/lib/data/brands';
 
 const BADGE_LABELS: Record<ProductBadgeVariant, string> = {
   clearance: 'Clearance',
