@@ -23,10 +23,13 @@ export function Header() {
           </Link>
 
           {/* Category button */}
-          <button className="hidden shrink-0 items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors lg:inline-flex">
+          <Link
+            href="/produk"
+            className="hidden shrink-0 items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors lg:inline-flex"
+          >
             <HamburgerIcon className="h-5 w-5" />
             Semua Kategori
-          </button>
+          </Link>
 
           {/* Search */}
           <div className="flex-1">
