@@ -4,6 +4,7 @@ import { IconButton } from '@ui/IconButton';
 import { SearchBar } from '@components/forms/SearchBar';
 import { HeartIcon, UserIcon, HamburgerIcon, CompareIcon } from '@ui/Icons';
 import { CartHeaderButton } from './CartHeaderButton';
+import { CategoryDropdown } from './CategoryDropdown';
 
 export function Header() {
   return (
@@ -22,14 +23,8 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Category button */}
-          <Link
-            href="/produk"
-            className="hidden shrink-0 items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors lg:inline-flex"
-          >
-            <HamburgerIcon className="h-5 w-5" />
-            Semua Kategori
-          </Link>
+          {/* Category dropdown */}
+          <CategoryDropdown />
 
           {/* Search */}
           <div className="flex-1">
