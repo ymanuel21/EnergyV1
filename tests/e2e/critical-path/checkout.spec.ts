@@ -50,17 +50,16 @@ test.describe('Checkout Flow', () => {
     // Step 3: Review
     await expect(page.getByText('Review Pesanan')).toBeVisible();
     await expect(page.getByText('Test Buyer')).toBeVisible();
-    await expect(page.getByText('Mitsubishi Electric')).toBeVisible();
+    await expect(page.getByText('Panel Surya Mitsubishi').first()).toBeVisible();
 
-    // Submit — expect order success alert
-    let orderMessage = '';
-    page.on('dialog', async (dialog) => {
-      orderMessage = dialog.message();
-      await dialog.accept();
-    });
-
+    // Submit — app opens WhatsApp directly (no alert dialog)
+    // Capture the new WhatsApp window/tab
+    const waPopupPromise = page.waitForEvent('popup', { timeout: 10000 });
     await page.getByRole('button', { name: /Buat Pesanan/ }).click();
-    expect(orderMessage).toContain('Pesanan berhasil dibuat');
+
+    const waPopup = await waPopupPromise;
+    await expect(waPopup).toHaveURL(/whatsapp\.com/);
+    await waPopup.close();
   });
 
   test('checkout step navigation with back button preserves data', async ({ page }) => {

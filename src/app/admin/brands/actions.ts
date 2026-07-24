@@ -1,0 +1,24 @@
+'use server';
+
+import { getAdminPrisma, requireAuth } from '../lib/admin-prisma';
+
+export async function getBrands() {
+  await requireAuth();
+  const prisma = await getAdminPrisma();
+  return prisma.brand.findMany({ orderBy: { name: 'asc' } });
+}
+export async function createBrand(data: any) {
+  await requireAuth();
+  const prisma = await getAdminPrisma();
+  return prisma.brand.create({ data: { id: `b-${Date.now()}`, ...data } });
+}
+export async function updateBrand(id: string, data: any) {
+  await requireAuth();
+  const prisma = await getAdminPrisma();
+  return prisma.brand.update({ where: { id }, data });
+}
+export async function deleteBrand(id: string) {
+  await requireAuth();
+  const prisma = await getAdminPrisma();
+  return prisma.brand.delete({ where: { id } });
+}

@@ -49,6 +49,7 @@ export interface Product {
   slug: string;
   name: string;
   brandId: string;
+  brand?: { name: string; slug: string };
   categoryId: string;
   subcategoryId?: string;
   images: string[];

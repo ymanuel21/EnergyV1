@@ -7,11 +7,11 @@ test.describe('Product Detail', () => {
     // Product name as heading
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Mitsubishi');
 
-    // Price should be visible
-    await expect(page.getByText('Rp')).toBeVisible();
+    // Price should be visible (find currency amounts)
+    await expect(page.getByText(/Rp\s*[\d.]+/).first()).toBeVisible();
 
-    // SKU should be visible
-    await expect(page.getByText('SKU:')).toBeVisible();
+    // SKU line contains "SKU:" and model info
+    await expect(page.getByText('SKU: MITSUBISHI')).toBeVisible({ timeout: 5000 });
   });
 
   test('tabs switch content', async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('Product Detail', () => {
 
     // Click "Pengiriman & Garansi" tab
     await page.getByRole('tab', { name: /Pengiriman/ }).click();
-    await expect(page.getByText('Garansi:')).toBeVisible();
+    await expect(page.getByText('Garansi: 5 Tahun').last()).toBeVisible();
   });
 
   test('quantity selector works', async ({ page }) => {

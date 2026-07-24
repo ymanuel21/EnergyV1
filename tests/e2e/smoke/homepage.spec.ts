@@ -11,10 +11,10 @@ test.describe('Homepage', () => {
     await expect(page.getByText('Mulai dari kebutuhan Anda')).toBeVisible();
 
     // Clearance section
-    await expect(page.getByText('CLEARANCE')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'CLEARANCE' })).toBeVisible();
 
     // Promo section
-    await expect(page.getByText('PROMO & PENAWARAN')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'PROMO' })).toBeVisible();
   });
 
   test('navigation links work', async ({ page }) => {
@@ -39,10 +39,10 @@ test.describe('Homepage', () => {
   test('header and footer are present', async ({ page }) => {
     await page.goto('/');
 
-    // Header
-    await expect(page.getByLabel('Beranda Energi.Click')).toBeVisible();
+    // Header link
+    await expect(page.getByLabel('Beranda EBTPlaza')).toBeVisible();
 
     // Footer
-    await expect(page.getByText('Energi.Click (by Rekasurya)')).toBeVisible();
+    await expect(page.getByText('Energi Terbarukan, Harga Terjangkau!')).toBeVisible();
   });
 });

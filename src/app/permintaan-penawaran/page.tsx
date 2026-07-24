@@ -179,8 +179,9 @@ export default function RfqPage() {
           <h2 className="text-lg font-semibold text-gray-900">Informasi Kontak</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nama *</label>
+              <label htmlFor="rfq-name" className="block text-sm font-medium text-gray-700 mb-1">Nama *</label>
               <input
+                id="rfq-name"
                 type="text"
                 value={form.name}
                 onChange={(e) => updateField('name', e.target.value)}
@@ -192,8 +193,9 @@ export default function RfqPage() {
               {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+              <label htmlFor="rfq-email" className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
               <input
+                id="rfq-email"
                 type="email"
                 value={form.email}
                 onChange={(e) => updateField('email', e.target.value)}

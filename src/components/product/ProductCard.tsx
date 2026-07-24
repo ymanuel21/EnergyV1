@@ -17,10 +17,14 @@ interface ProductCardProps {
   product: Product;
   variant?: 'grid' | 'carousel';
   className?: string;
+  brandName?: string;
+  brandSlug?: string;
 }
 
-export function ProductCard({ product, variant = 'grid', className = '' }: ProductCardProps) {
-  const brand = getBrandById(product.brandId);
+export function ProductCard({ product, variant = 'grid', className = '', brandName, brandSlug }: ProductCardProps) {
+  const brand = (brandName && brandSlug)
+    ? { name: brandName, slug: brandSlug, id: product.brandId, productCount: 0 }
+    : getBrandById(product.brandId);
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
   const discountPercent = hasDiscount
     ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)

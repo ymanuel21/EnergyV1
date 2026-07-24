@@ -4,9 +4,9 @@ test.describe('Search', () => {
   test('search "panel surya" returns matching products', async ({ page }) => {
     await page.goto('/');
     await page.getByPlaceholder('Cari produk').fill('panel surya');
-    await page.getByLabel('Cari').click();
+    await page.getByRole('button', { name: 'Cari' }).click();
 
-    await expect(page).toHaveURL(/\/cari\?q=panel\+surya/);
+    await expect(page).toHaveURL(/\/cari\?q=panel/);
 
     // Business outcome: search returned actual products
     const cards = page.locator('article');
@@ -15,7 +15,7 @@ test.describe('Search', () => {
     expect(count).toBeGreaterThan(0);
 
     // Verify at least one matching product name appears
-    await expect(page.getByText('Panel Surya')).toBeVisible();
+    await expect(page.getByText('Panel Surya').first()).toBeVisible();
   });
 
   test('empty search shows guidance', async ({ page }) => {

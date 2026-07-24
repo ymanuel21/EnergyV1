@@ -126,8 +126,9 @@ export default function CheckoutPage() {
               <h2 className="text-lg font-semibold text-gray-900">Informasi Pengiriman</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nama *</label>
+                  <label htmlFor="checkout-name" className="block text-sm font-medium text-gray-700 mb-1">Nama *</label>
                   <input
+                    id="checkout-name"
                     type="text"
                     required
                     value={formData.name}
@@ -136,8 +137,9 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                  <label htmlFor="checkout-email" className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                   <input
+                    id="checkout-email"
                     type="email"
                     required
                     value={formData.email}
@@ -155,8 +157,9 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Kota *</label>
+                  <label htmlFor="checkout-city" className="block text-sm font-medium text-gray-700 mb-1">Kota *</label>
                   <input
+                    id="checkout-city"
                     type="text"
                     required
                     value={formData.city}
@@ -166,8 +169,9 @@ export default function CheckoutPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Alamat *</label>
+                <label htmlFor="checkout-address" className="block text-sm font-medium text-gray-700 mb-1">Alamat *</label>
                 <textarea
+                  id="checkout-address"
                   required
                   rows={3}
                   value={formData.address}

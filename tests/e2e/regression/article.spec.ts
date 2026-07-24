@@ -4,7 +4,7 @@ test.describe('Article Navigation', () => {
   test('article listing shows articles', async ({ page }) => {
     await page.goto('/artikel');
 
-    await expect(page.getByText('Panduan Energi Surya')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Panduan Energi Surya' })).toBeVisible();
     await expect(page.getByText('4 artikel')).toBeVisible();
   });
 
