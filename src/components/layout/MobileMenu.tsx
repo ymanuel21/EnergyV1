@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { HamburgerIcon } from '@ui/Icons';
 import { NAV_LINKS } from '@lib/constants';
@@ -8,7 +9,13 @@ import { SITE_CONFIG } from '@/lib/site';
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+
+  // Portal needs client-side mounting
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close on Escape
   useEffect(() => {
@@ -29,33 +36,19 @@ export function MobileMenu() {
     setOpen(false);
   }
 
-  return (
+  const menuPortal = mounted && open ? createPortal(
     <>
-      {/* Hamburger button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:text-brand-700 hover:bg-gray-100 lg:hidden"
-        aria-label="Buka menu"
-        aria-expanded={open}
-      >
-        <HamburgerIcon className="h-5 w-5" />
-      </button>
-
       {/* Overlay */}
-      {open && (
-        <div
-          className="fixed inset-0 z-50 bg-black/40 lg:hidden"
-          onClick={handleClose}
-          aria-hidden="true"
-        />
-      )}
+      <div
+        className="fixed inset-0 z-[9998] bg-black/50 lg:hidden"
+        onClick={handleClose}
+        aria-hidden="true"
+      />
 
       {/* Drawer */}
       <div
         ref={drawerRef}
-        className={`fixed inset-y-0 right-0 z-50 w-72 bg-white shadow-xl transform transition-transform duration-300 ease-in-out lg:hidden ${
-          open ? 'translate-x-0' : 'translate-x-full invisible'
-        }`}
+        className="fixed inset-y-0 right-0 z-[9999] w-72 bg-white shadow-2xl lg:hidden"
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
@@ -79,7 +72,7 @@ export function MobileMenu() {
         </div>
 
         {/* Drawer body */}
-        <nav className="overflow-y-auto px-5 py-4" aria-label="Mobile navigation">
+        <nav className="h-[calc(100%-57px)] overflow-y-auto px-5 py-4" aria-label="Mobile navigation">
           {/* Primary links */}
           <div className="mb-6">
             <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -141,6 +134,23 @@ export function MobileMenu() {
           </div>
         </nav>
       </div>
+    </>,
+    document.body
+  ) : null;
+
+  return (
+    <>
+      {/* Hamburger button */}
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:text-brand-700 hover:bg-gray-100 lg:hidden"
+        aria-label="Buka menu"
+        aria-expanded={open}
+      >
+        <HamburgerIcon className="h-5 w-5" />
+      </button>
+
+      {menuPortal}
     </>
   );
 }

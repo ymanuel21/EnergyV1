@@ -50,8 +50,8 @@ test.describe('Mobile Menu', () => {
     const drawer = page.locator('.fixed.inset-y-0.right-0');
     await expect(drawer).toBeVisible();
 
-    // Click the dark overlay
-    await page.locator('.fixed.inset-0.z-50.bg-black\\/40').click();
+    // Click the dark overlay (on the left side, away from the drawer)
+    await page.locator('.fixed.inset-0[class*=\"bg-black\"]').click({ position: { x: 10, y: 10 } });
     await expect(drawer).not.toBeVisible();
   });
 
