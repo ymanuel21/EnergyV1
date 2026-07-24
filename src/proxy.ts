@@ -7,7 +7,8 @@ export default auth((req) => {
   const isApiAuth = req.nextUrl.pathname.startsWith('/api/auth');
 
   if (isAdmin && !isLogin && !isApiAuth && !req.auth) {
-    return NextResponse.redirect(new URL('/admin/login', req.url));
+    const loginUrl = new URL('/admin/login', req.url);
+    return NextResponse.redirect(loginUrl);
   }
 });
 
