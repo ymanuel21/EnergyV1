@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
+import { BrandLogo } from '@ui/BrandLogo';
 import { getAllBrands } from '@lib/api/brands';
 import { products } from '@/lib/data/products';
 
@@ -32,9 +33,7 @@ export default async function BrandPage() {
               href={`/brand/${brand.slug}`}
               className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 p-6 text-center transition hover:shadow-md hover:border-brand-200"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-50 text-xl font-bold text-brand-700">
-                {brand.name.charAt(0)}
-              </div>
+              <BrandLogo name={brand.name} logo={brand.logo} size="md" />
               <div>
                 <h3 className="text-sm font-semibold text-gray-900">{brand.name}</h3>
                 <p className="text-xs text-gray-500">{count} produk</p>

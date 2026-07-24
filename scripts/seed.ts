@@ -43,7 +43,12 @@ async function main() {
 
   // Brands
   await prisma.brand.createMany({
-    data: brandData.map(b => ({ id: b.id, slug: b.slug, name: b.name })),
+    data: brandData.map(b => ({
+      id: b.id,
+      slug: b.slug,
+      name: b.name,
+      logo: `/images/brands/${b.slug}.svg`,
+    })),
     skipDuplicates: true,
   });
   console.log(`  ✓ brands: ${brandData.length}`);
