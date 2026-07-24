@@ -4,7 +4,7 @@ import { IconButton } from '@ui/IconButton';
 import { SearchBar } from '@components/forms/SearchBar';
 import { HeartIcon, UserIcon, CompareIcon } from '@ui/Icons';
 import { CartHeaderButton } from './CartHeaderButton';
-import { CategoryDropdown } from './CategoryDropdown';
+import { MegaMenu } from './MegaMenu';
 import { MobileMenu } from './MobileMenu';
 import { CompareHeaderButton } from './CompareHeaderButton';
 import { SITE_CONFIG } from '@/lib/site';
@@ -28,8 +28,8 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Category dropdown */}
-          <CategoryDropdown />
+          {/* Mega menu */}
+          <MegaMenu />
 
           {/* Search */}
           <div className="flex-1">
