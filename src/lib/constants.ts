@@ -1,14 +1,7 @@
-export const SITE = {
-  name: 'EBTPlaza',
-  tagline: 'Energi Terbarukan, Harga Terjangkau!',
-  description: 'Pusat produk energi terbarukan EBTPlaza: panel surya, inverter, baterai lithium, paket PLTS, dan kebutuhan proyek.',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://energi.click',
-  email: 'info@energi.click',
-  phone: '(022) 20522279',
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '6281234567890',
-  address: 'Rekasurya EcoBuilding, Jl. Terusan Jakarta, Puri Dago Raya No.342 Kav 31, Sukamiskin, Kec. Arcamanik, Kota Bandung, Jawa Barat 40293',
-  company: 'Rekasurya',
-} as const;
+import { SITE_CONFIG } from './site';
+
+export const SITE = SITE_CONFIG;
+export { SITE_CONFIG };
 
 export const NAV_LINKS = {
   utility: [

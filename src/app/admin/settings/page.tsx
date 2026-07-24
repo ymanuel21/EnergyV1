@@ -22,7 +22,7 @@ export default function SettingsPage() {
   const settings = [
     { key: 'name', label: 'Nama Situs', defaultValue: 'EBTPlaza' },
     { key: 'tagline', label: 'Tagline', defaultValue: 'Energi Terbarukan, Harga Terjangkau!' },
-    { key: 'email', label: 'Email', defaultValue: 'info@energi.click' },
+    { key: 'email', label: 'Email', defaultValue: 'info@ebtplaza.com' },
     { key: 'phone', label: 'Telepon', defaultValue: '(022) 20522279' },
     { key: 'whatsapp', label: 'WhatsApp', defaultValue: '6282112850215' },
     { key: 'address', label: 'Alamat', defaultValue: 'Rekasurya EcoBuilding, Bandung' },

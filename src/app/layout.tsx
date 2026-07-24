@@ -11,6 +11,7 @@ import { CartProvider } from '@providers/CartProvider';
 import { WishlistProvider } from '@providers/WishlistProvider';
 import { CompareProvider } from '@providers/CompareProvider';
 import { ToastProvider } from '@providers/ToastProvider';
+import { SITE_CONFIG } from '@/lib/site';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -19,20 +20,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://energi.click'),
+  metadataBase: new URL(SITE_CONFIG.url),
   title: {
-    default: 'EBTPlaza — Energi Terbarukan, Harga Terjangkau!',
-    template: '%s — EBTPlaza',
+    default: `${SITE_CONFIG.name} — ${SITE_CONFIG.tagline}`,
+    template: `%s — ${SITE_CONFIG.name}`,
   },
-  description:
-    'Pusat produk energi terbarukan: panel surya, inverter, baterai lithium, paket PLTS, dan kebutuhan proyek.',
+  description: SITE_CONFIG.description,
   openGraph: {
-    type: 'website',
-    siteName: 'EBTPlaza',
-    locale: 'id_ID',
+    type: SITE_CONFIG.og.type,
+    siteName: SITE_CONFIG.og.siteName,
+    locale: SITE_CONFIG.og.locale,
   },
   twitter: {
-    card: 'summary_large_image',
+    card: SITE_CONFIG.og.twitterCard,
   },
   robots: {
     index: true,

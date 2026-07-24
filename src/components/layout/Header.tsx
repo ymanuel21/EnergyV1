@@ -5,20 +5,23 @@ import { SearchBar } from '@components/forms/SearchBar';
 import { HeartIcon, UserIcon, HamburgerIcon, CompareIcon } from '@ui/Icons';
 import { CartHeaderButton } from './CartHeaderButton';
 import { CategoryDropdown } from './CategoryDropdown';
+import { SITE_CONFIG } from '@/lib/site';
 
 export function Header() {
+  const { logo } = SITE_CONFIG;
+
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
       <Container>
         <div className="flex h-16 items-center gap-4">
           {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="Beranda EBTPlaza">
+          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label={`Beranda ${SITE_CONFIG.name}`}>
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700">
-                <span className="text-sm font-extrabold text-white">E</span>
+                <span className="text-sm font-extrabold text-white">{logo.letter}</span>
               </div>
               <span className="hidden text-lg font-extrabold text-brand-700 sm:inline">
-                Energi<span className="text-accent-500">.Click</span>
+                {logo.text}
               </span>
             </div>
           </Link>

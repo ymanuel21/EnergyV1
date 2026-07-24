@@ -4,9 +4,10 @@ import { getAllCategories } from '@/lib/api/categories';
 import { getAllBrands } from '@/lib/api/brands';
 import { getAllArticles } from '@/lib/api/articles';
 import { getAllPages } from '@/lib/api/static-pages';
+import { SITE_CONFIG } from '@/lib/site';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://energi.click';
+  const baseUrl = SITE_CONFIG.url;
   const now = new Date();
 
   const entries: MetadataRoute.Sitemap = [

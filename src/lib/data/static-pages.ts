@@ -31,9 +31,9 @@ Kota Bandung, Jawa Barat 40293
 
 ## Kontak
 
-- Email: info@energi.click
+- Email: info@ebtplaza.com
 - Telepon: (022) 20522279
-- Website: https://energi.click`,
+- Website: https://ebtplaza.vercel.app`,
   },
   {
     slug: 'kebijakan-pengiriman',
@@ -150,6 +150,6 @@ Data Anda digunakan untuk:
 
 ## Kontak
 
-Untuk pertanyaan tentang privasi: info@energi.click`,
+Untuk pertanyaan tentang privasi: info@ebtplaza.com`,
   },
 ];
