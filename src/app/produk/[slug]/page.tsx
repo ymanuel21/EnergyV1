@@ -12,6 +12,7 @@ import { ClipboardCopyButton } from '@components/product/ShareButton';
 import { WishlistToggleButton } from '@components/product/WishlistToggleButton';
 import { CompareToggleButton } from '@components/product/CompareToggleButton';
 import { ProductCarouselSection } from '@components/home/ProductCarouselSection';
+import { BrandLogo } from '@ui/BrandLogo';
 import { getProductBySlug, getAllProducts } from '@/lib/api/products';
 import { getAllCategories } from '@/lib/api/categories';
 import { getBrandById } from '@/lib/api/brands';
@@ -119,9 +120,7 @@ export default async function ProductDetail({ params }: Props) {
                 href={`/brand/${brand.slug}`}
                 className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-brand-700"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
-                  {brand.name.charAt(0)}
-                </span>
+                <BrandLogo name={brand.name} logo={brand.logo} size="sm" />
                 {brand.name}
               </Link>
             )}

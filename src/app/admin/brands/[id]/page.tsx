@@ -5,7 +5,6 @@ import { getBrand, updateBrand, deleteBrand } from '../actions';
 import { revalidatePath } from 'next/cache';
 import { SubmitButton } from '../../SubmitButton';
 import { SlugInput } from '../../SlugInput';
-import { ImageUpload } from '../../ImageUpload';
 import { BrandLogo } from '@ui/BrandLogo';
 
 interface Props {
@@ -67,11 +66,16 @@ export default async function EditBrandPage({ params }: Props) {
           </div>
         </div>
 
-        <ImageUpload
-          name="logo"
-          label="Upload Logo Baru"
-          defaultValue={brand.logo || '/images/placeholder/product-placeholder.png'}
-        />
+        {/* Logo URL input (simple text field, no upload component) */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
+          <input
+            name="logo"
+            defaultValue={brand.logo || ''}
+            placeholder="/images/brands/brand.svg"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          />
+        </div>
 
         <div className="flex gap-3">
           <SubmitButton label="Simpan" />
@@ -86,12 +90,7 @@ export default async function EditBrandPage({ params }: Props) {
 
       {/* Delete */}
       <div className="mt-8 border-t pt-6">
-        <form
-          action={handleDelete}
-          onSubmit={(e) => {
-            if (!confirm(`Yakin hapus brand "${brand.name}"?`)) e.preventDefault();
-          }}
-        >
+          <form action={handleDelete}>
           <button
             type="submit"
             className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
