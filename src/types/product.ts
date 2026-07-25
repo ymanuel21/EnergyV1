@@ -13,7 +13,10 @@ export type SortOption =
   | 'newest'
   | 'price-asc'
   | 'price-desc'
+  | 'name-asc'
   | 'rating'
+  | 'popular'
+  | 'discount'
   | 'bestseller'
   | 'most-viewed'
   | 'biggest-discount';
