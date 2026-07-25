@@ -1,11 +1,30 @@
 import type { Product, SortOption } from '@/types/product';
+import type { Category } from '@/types/product';
 
-export function filterByCategory(products: Product[], categoryId: string, isSubcategory = false): Product[] {
-  if (isSubcategory) {
-    return products.filter((p) => p.subcategoryId === categoryId);
+function getAllChildIds(category: Category): string[] {
+  const ids = [category.id];
+  if (category.children) {
+    for (const child of category.children) {
+      ids.push(...getAllChildIds(child as Category));
+    }
   }
+  return ids;
+}
+
+export function filterByCategory(
+  products: Product[],
+  categoryId: string,
+  category?: Category | null
+): Product[] {
+  // If we have the full category tree, use it to include child products
+  if (category) {
+    const allIds = getAllChildIds(category);
+    return products.filter((p) => allIds.includes(p.categoryId) || allIds.includes(p.subcategoryId as string));
+  }
+
+  // Fallback: filter by categoryId or subcategoryId
   return products.filter(
-    (p) => p.categoryId === categoryId || p.subcategoryId === categoryId
+    (p) => p.categoryId === categoryId || (p as any).subcategoryId === categoryId
   );
 }
 
@@ -18,37 +37,10 @@ export function filterByBrand(products: Product[], brandId: string): Product[] {
 }
 
 export function searchProducts(products: Product[], query: string): Product[] {
-  if (!query || query.trim().length < 2) return products;
-
-  const q = query.toLowerCase().trim();
-  const terms = q.split(/\s+/);
-
-  return products
-    .map((product) => ({
-      product,
-      score: calculateRelevance(product, terms),
-    }))
-    .filter((r) => r.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .map((r) => r.product);
-}
-
-function calculateRelevance(product: Product, terms: string[]): number {
-  const text = [
-    product.name,
-    product.sku,
-    product.model ?? '',
-    ...product.specifications.map((s) => s.value),
-  ].join(' ').toLowerCase();
-
-  let score = 0;
-  for (const term of terms) {
-    if (product.name.toLowerCase().includes(term)) score += 10;
-    if (product.sku.toLowerCase().includes(term)) score += 8;
-    if (text.includes(term)) score += 5;
-    if (terms.length > 1) score += 2;
-  }
-  return score;
+  const q = query.toLowerCase();
+  return products.filter(
+    (p) => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q)
+  );
 }
 
 export function sortProducts(products: Product[], sort: SortOption): Product[] {
@@ -58,31 +50,27 @@ export function sortProducts(products: Product[], sort: SortOption): Product[] {
       return sorted.sort((a, b) => a.price - b.price);
     case 'price-desc':
       return sorted.sort((a, b) => b.price - a.price);
+    case 'name-asc':
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
     case 'newest':
-      return sorted.sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+      return sorted.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
     case 'rating':
-      return sorted.sort((a, b) => b.rating - a.rating);
-    case 'biggest-discount':
+      return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    case 'popular':
+      return sorted.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0));
+    case 'discount':
       return sorted.sort((a, b) => {
-        const da = a.originalPrice ? (a.originalPrice - a.price) / a.originalPrice : 0;
-        const db = b.originalPrice ? (b.originalPrice - b.price) / b.originalPrice : 0;
-        return db - da;
+        const aDisc = a.originalPrice ? (a.originalPrice - a.price) / a.originalPrice : 0;
+        const bDisc = b.originalPrice ? (b.originalPrice - b.price) / b.originalPrice : 0;
+        return bDisc - aDisc;
       });
-    case 'bestseller':
-    case 'most-viewed':
-    case 'relevance':
     default:
       return sorted;
   }
 }
 
 export function paginate<T>(items: T[], page: number, perPage = 12): { items: T[]; totalPages: number } {
-  const totalPages = Math.ceil(items.length / perPage);
-  const start = (page - 1) * perPage;
-  return {
-    items: items.slice(start, start + perPage),
-    totalPages,
-  };
+  const totalPages = Math.max(1, Math.ceil(items.length / perPage));
+  const start = (Math.min(page, totalPages) - 1) * perPage;
+  return { items: items.slice(start, start + perPage), totalPages };
 }

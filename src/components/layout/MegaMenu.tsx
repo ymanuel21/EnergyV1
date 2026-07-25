@@ -3,15 +3,22 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { HamburgerIcon } from '@ui/Icons';
-import { getCategoryTree } from '@/lib/data/categories';
+import { categories as defaultCategories } from '@/lib/data/categories';
 import type { Category } from '@/types/product';
 
 export function MegaMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const [categories, setCategories] = useState<Category[]>(defaultCategories);
 
-  const categories = getCategoryTree();
+  useEffect(() => {
+    // Try fetching live categories from API, fallback to static
+    fetch('/api/categories')
+      .then(r => r.json())
+      .then(data => { if (data.length) setCategories(data); })
+      .catch(() => {});
+  }, []);
   const close = useCallback(() => setOpen(false), []);
 
   // Close on Escape

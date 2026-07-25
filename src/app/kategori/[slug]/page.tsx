@@ -6,7 +6,7 @@ import { SortDropdown } from '@components/category/SortDropdown';
 import { Pagination } from '@ui/Pagination';
 import { filterByCategory, sortProducts, paginate } from '@/lib/api/filters';
 import { getAllProducts } from '@/lib/api/products';
-import { getCategoryBySlug } from '@/lib/data/categories';
+import { getCategoryBySlug } from '@/lib/api/categories';
 import { validateSort, validatePage } from '@/lib/utils/validation';
 import { notFound } from 'next/navigation';
 
@@ -47,9 +47,8 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   const sort = validateSort(sp.sort);
   const page = validatePage(sp.page);
-  const isSubcategory = !!category.parentId;
 
-  const filtered = filterByCategory(await getAllProducts(), category.id, isSubcategory);
+  const filtered = filterByCategory(await getAllProducts(), category.id, category);
   const sorted = sortProducts(filtered, sort);
   const { items: paginated, totalPages } = paginate(sorted, page);
 
