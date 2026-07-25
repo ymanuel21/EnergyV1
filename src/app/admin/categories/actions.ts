@@ -11,33 +11,35 @@ export async function getCategories() {
   });
 }
 
-export async function createCategory(data: Record<string, any>) {
+export async function createCategory(data: { name: string; slug: string; parentId?: string | null }) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  const { parentId, ...rest } = data;
   return prisma.category.create({
     data: {
       id: `cat-${Date.now()}`,
-      ...rest,
-      parentId: parentId || null,
+      name: data.name,
+      slug: data.slug,
+      parentId: data.parentId || null,
     },
   });
 }
 
-export async function updateCategory(id: string, data: Record<string, any>) {
+export async function updateCategory(id: string, data: { name?: string; slug?: string; parentId?: string | null }) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  const { parentId, ...rest } = data;
   return prisma.category.update({
     where: { id },
-    data: { ...rest, parentId: parentId === '' ? null : parentId || undefined },
+    data: {
+      ...(data.name !== undefined ? { name: data.name } : {}),
+      ...(data.slug !== undefined ? { slug: data.slug } : {}),
+      parentId: data.parentId === '' ? null : data.parentId === undefined ? undefined : data.parentId,
+    },
   });
 }
 
 export async function deleteCategory(id: string) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  // Remove children's parent reference before deleting
   await prisma.category.updateMany({ where: { parentId: id }, data: { parentId: null } });
   return prisma.category.delete({ where: { id } });
 }
