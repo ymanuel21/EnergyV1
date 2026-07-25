@@ -10,18 +10,39 @@ export function MegaMenu() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [categories, setCategories] = useState<Category[]>(defaultCategories);
+  const [showGradient, setShowGradient] = useState(false);
 
   useEffect(() => {
-    // Try fetching live categories from API, fallback to static
     fetch('/api/categories')
       .then(r => r.json())
-      .then(data => { if (data.length) setCategories(data); })
+      .then(data => {
+        if (data.length) {
+          // Only show root categories (no parentId) — children render inside parent columns
+          setCategories(data.filter((c: any) => !c.parentId));
+        }
+      })
       .catch(() => {});
   }, []);
+
+  // Check if scrollable content overflows
+  useEffect(() => {
+    function checkOverflow() {
+      if (scrollRef.current) {
+        const el = scrollRef.current;
+        setShowGradient(el.scrollHeight > el.clientHeight && el.scrollTop + el.clientHeight < el.scrollHeight - 20);
+      }
+    }
+    if (open) {
+      requestAnimationFrame(checkOverflow);
+      scrollRef.current?.addEventListener('scroll', checkOverflow);
+    }
+    return () => scrollRef.current?.removeEventListener('scroll', checkOverflow);
+  }, [open]);
+
   const close = useCallback(() => setOpen(false), []);
 
-  // Close on Escape
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') close();
@@ -30,7 +51,6 @@ export function MegaMenu() {
     return () => document.removeEventListener('keydown', handleKey);
   }, [close]);
 
-  // Close on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (
@@ -62,7 +82,6 @@ export function MegaMenu() {
         Semua Kategori
       </button>
 
-      {/* Mega menu: rendered outside the flex flow, positioned relative to header */}
       <div
         id="mega-menu"
         ref={menuRef}
@@ -74,12 +93,51 @@ export function MegaMenu() {
         }`}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="grid grid-cols-3 md:grid-cols-4 gap-x-8 gap-y-4 py-6 max-h-[60vh] overflow-y-auto">
-            {categories.map((cat) => (
-              <CategoryColumn key={cat.id} category={cat} onClick={close} />
-            ))}
+          <div className="relative">
+            {/* Scrollable grid */}
+            <div
+              ref={scrollRef}
+              className="grid grid-cols-3 md:grid-cols-4 gap-x-8 gap-y-4 py-6 max-h-[60vh] overflow-y-auto"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: '#d1d5db #f3f4f6',
+              }}
+            >
+              {categories.map((cat) => (
+                <CategoryColumn key={cat.id} category={cat} onClick={close} />
+              ))}
+            </div>
+
+            {/* Gradient fade at bottom to indicate scrollable content */}
+            {showGradient && (
+              <div
+                className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 rounded-b-lg"
+                style={{
+                  background: 'linear-gradient(to bottom, transparent, white)',
+                }}
+                aria-hidden="true"
+              />
+            )}
           </div>
         </div>
+
+        {/* Cross-browser scrollbar styling */}
+        <style>{`
+          #mega-menu div[style*="scrollbarWidth"]::-webkit-scrollbar {
+            width: 6px;
+          }
+          #mega-menu div[style*="scrollbarWidth"]::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 3px;
+          }
+          #mega-menu div[style*="scrollbarWidth"]::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+          }
+          #mega-menu div[style*="scrollbarWidth"]::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+          }
+        `}</style>
       </div>
     </>
   );
