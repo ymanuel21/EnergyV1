@@ -1,15 +1,13 @@
 export const dynamic = "force-dynamic";
 
-import { getCategories, createCategory, deleteCategory } from './actions';
+import { getCategories, createCategory } from './actions';
 import { revalidatePath } from 'next/cache';
-import { DeleteButton } from '../DeleteButton';
 import { SubmitButton } from '../SubmitButton';
 import { SlugInput } from '../SlugInput';
+import { CategoryRow } from './CategoryRow';
 
 export default async function CategoriesPage() {
   const allCategories = await getCategories();
-
-  // Build tree: top-level categories sorted
   const topLevel = allCategories.filter((c: any) => !c.parentId);
 
   async function handleCreate(data: FormData) {
@@ -19,12 +17,6 @@ export default async function CategoriesPage() {
     const parentId = data.get('parentId') as string;
     if (!name || !slug) return;
     await createCategory({ name, slug, sortOrder: 0, parentId: parentId || null });
-    revalidatePath('/admin/categories');
-  }
-
-  async function handleDelete(id: string) {
-    'use server';
-    await deleteCategory(id);
     revalidatePath('/admin/categories');
   }
 
@@ -45,23 +37,13 @@ export default async function CategoriesPage() {
         <SubmitButton label="Tambah" />
       </form>
 
-      {/* Tree display */}
+      {/* Category list */}
       <div className="mt-4 rounded-xl border bg-white">
         {topLevel.map((cat: any) => (
           <div key={cat.id}>
-            <div className="flex items-center justify-between border-b px-4 py-3 text-sm">
-              <span className="font-semibold text-brand-700">{cat.name}</span>
-              <span className="text-gray-400">{cat.slug}</span>
-              <span className="text-gray-400 text-xs">{cat.children?.length || 0} sub</span>
-              <DeleteButton itemName={cat.name} onDelete={handleDelete.bind(null, cat.id)} />
-            </div>
-            {/* Children */}
+            <CategoryRow category={cat} allCategories={allCategories} />
             {cat.children?.map((child: any) => (
-              <div key={child.id} className="flex items-center justify-between border-b border-gray-50 bg-gray-50 px-4 py-2.5 text-sm">
-                <span className="pl-6 text-gray-700">└ {child.name}</span>
-                <span className="text-gray-400 text-xs">{child.slug}</span>
-                <DeleteButton itemName={child.name} onDelete={handleDelete.bind(null, child.id)} />
-              </div>
+              <CategoryRow key={child.id} category={child} allCategories={allCategories} />
             ))}
           </div>
         ))}
