@@ -16,7 +16,7 @@ export default async function CategoriesPage() {
     const slug = data.get('slug') as string;
     const parentId = data.get('parentId') as string;
     if (!name || !slug) return;
-    await createCategory({ name, slug, sortOrder: 0, parentId: parentId || null });
+    await createCategory({ name, slug, parentId: parentId || null });
     revalidatePath('/admin/categories');
   }
 
