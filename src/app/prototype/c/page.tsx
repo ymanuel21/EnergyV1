@@ -1,189 +1,143 @@
-const IMG = {
-  hero: '/images/prototype/hero-pro.jpg',
-  panel: '/images/prototype/solar-panel-open.png',
-  wall: '/images/prototype/battery-wall.png',
-  charger: '/images/prototype/charger-dc.png',
-};
-
-export default function PrototypeC() {
+export default function PrototypeCPage() {
   return (
-    <div className="font-sans text-gray-700">
-      {/* ===== MEGA NAV ===== */}
-      <nav className="sticky top-0 z-50 border-b-2 border-teal-700 bg-white">
-        <div className="bg-teal-900 text-white text-xs">
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-1.5">
-            <span>📞 (022) 2052-2279 • ✉️ info@ebtplaza.com</span>
-            <div className="flex gap-4">
-              <a href="#" className="hover:text-teal-200">Customer Portal</a>
-              <a href="#" className="hover:text-teal-200">Track Order</a>
-              <a href="#" className="hover:text-teal-200">EN 🇬🇧</a>
-            </div>
+    <div className="min-h-screen bg-black font-sans text-white">
+      {/* Nav — glass */}
+      <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/60 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+          <span className="text-xl font-bold tracking-tight">EBT<span className="text-green-400">Plaza</span></span>
+          <div className="hidden items-center gap-8 md:flex">
+            {['Produk','Solusi','Proyek','Tentang'].map(l => (
+              <a key={l} href="#" className="text-sm text-gray-400 hover:text-white transition">{l}</a>
+            ))}
+            <a href="#" className="rounded-full bg-green-500 px-5 py-2 text-sm font-medium text-black hover:bg-green-400 transition">Mulai</a>
           </div>
-        </div>
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-10">
-            <span className="text-xl font-bold text-teal-900">EBTPlaza</span>
-            <div className="hidden gap-1 lg:flex">
-              {[
-                { n:'Produk', s:true },
-                { n:'Solusi', s:false },
-                { n:'Proyek', s:false },
-                { n:'Layanan', s:false },
-                { n:'Resources', s:false },
-                { n:'Tentang Kami', s:false },
-              ].map(l => (
-                <a key={l.n} href="#" className={`px-3 py-2 text-sm font-medium rounded transition ${l.s ? 'bg-teal-50 text-teal-700' : 'text-gray-600 hover:text-teal-700'}`}>{l.n}{l.s && ' ▾'}</a>
-              ))}
-            </div>
-          </div>
-          <a href="#" className="rounded bg-teal-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-teal-700 transition">Hubungi Kami</a>
         </div>
       </nav>
 
-      {/* ===== HERO — Stats-driven ===== */}
-      <section className="relative bg-teal-900 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(30deg, white 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-        </div>
-        <div className="relative mx-auto max-w-7xl px-6 py-20 lg:py-28">
-          <div className="max-w-3xl">
-            <div className="mb-3 inline-block rounded border border-teal-400/50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-300">B2B Energy Solutions</div>
-            <h1 className="text-4xl font-bold leading-tight lg:text-5xl lg:leading-tight">
-              Pengadaan Energi Terbarukan untuk{' '}
-              <span className="text-teal-300">Skala Enterprise</span>
-            </h1>
-            <p className="mt-6 text-lg leading-relaxed text-teal-200/80 max-w-2xl">
-              Mitra terpercaya untuk kontraktor, pengembang properti, dan perusahaan dalam pengadaan panel surya, inverter, dan sistem penyimpanan energi.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a href="#" className="rounded bg-white px-8 py-4 text-center font-bold text-teal-900 hover:bg-teal-50 transition">Minta Penawaran</a>
-              <a href="#" className="rounded border-2 border-teal-500 px-8 py-4 text-center font-bold text-white hover:bg-teal-700 transition">Download Company Profile</a>
-            </div>
+      {/* Hero — full viewport */}
+      <section className="relative flex min-h-screen items-center overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-900/40 via-black to-black" />
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="relative mx-auto max-w-4xl px-4 pt-20 text-center">
+          <div className="mb-6 inline-block rounded-full border border-green-500/30 bg-green-500/10 px-4 py-1.5 text-sm font-medium text-green-400">🇮🇩 Platform Energi Terbarukan Indonesia</div>
+          <h1 className="mb-6 text-5xl font-bold leading-tight md:text-7xl">
+            Masa Depan Energi<br />
+            <span className="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">Dimulai di Sini</span>
+          </h1>
+          <p className="mx-auto mb-10 max-w-2xl text-lg text-gray-400">Dari panel surya hingga sistem penyimpanan energi — kami menyediakan teknologi terbarukan untuk rumah, bisnis, dan industri.</p>
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <a href="#" className="rounded-full bg-green-500 px-8 py-4 font-semibold text-black hover:bg-green-400 transition">Jelajahi Katalog</a>
+            <a href="#" className="rounded-full border border-white/20 px-8 py-4 font-semibold text-white hover:border-white/50 transition backdrop-blur">Konsultasi Gratis →</a>
           </div>
+        </div>
+      </section>
 
-          {/* Stats row */}
-          <div className="mt-16 grid gap-8 border-t border-teal-700 pt-12 sm:grid-cols-4">
+      {/* Stats */}
+      <section className="border-y border-white/10 py-16">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid gap-8 text-center sm:grid-cols-3">
             {[
-              { v:'200+', l:'Produk Tersedia' },
-              { v:'500+', l:'Proyek Selesai' },
-              { v:'34', l:'Provinsi Terjangkau' },
               { v:'10+', l:'Brand Resmi' },
+              { v:'200+', l:'Produk Tersedia' },
+              { v:'34', l:'Provinsi Terjangkau' },
             ].map(s => (
               <div key={s.l}>
-                <div className="text-3xl font-bold text-teal-300">{s.v}</div>
-                <div className="mt-1 text-sm text-teal-200/60">{s.l}</div>
+                <div className="text-5xl font-bold bg-gradient-to-b from-green-400 to-white bg-clip-text text-transparent">{s.v}</div>
+                <p className="mt-2 text-sm text-gray-500">{s.l}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== SOLUTIONS — Card grid with icons ===== */}
-      <section className="py-20 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-16">
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-teal-500">Solusi</p>
-            <h2 className="mt-3 text-3xl font-bold text-gray-900">Produk untuk Setiap Kebutuhan</h2>
-            <p className="mt-4 text-gray-500 max-w-2xl">Dari instalasi skala kecil hingga proyek infrastruktur besar — kami menyediakan solusi lengkap.</p>
+      {/* Product Spotlight */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-1 backdrop-blur">
+              <div className="aspect-square rounded-2xl bg-gradient-to-br from-green-900/50 to-black animate-pulse" />
+            </div>
+            <div>
+              <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-400">PRODUK UNGGULAN</span>
+              <h2 className="mt-4 text-3xl font-bold">Inverter Hybrid 6kW</h2>
+              <p className="mt-4 leading-relaxed text-gray-400">Teknologi hybrid terbaru — mendukung On-Grid dan Off-Grid dengan efisiensi 98%. Dilengkapi MPPT ganda dan monitoring real-time.</p>
+              <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+                {[
+                  { l:'Output', v:'6000W' },{ l:'Efisiensi', v:'98%' },
+                  { l:'MPPT', v:'2 Input' },{ l:'Garansi', v:'5 Tahun' },
+                ].map(s => (
+                  <div key={s.l} className="rounded-xl border border-white/10 p-3">
+                    <p className="text-gray-500">{s.l}</p>
+                    <p className="text-lg font-bold">{s.v}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 flex items-center gap-4">
+                <span className="text-3xl font-bold text-green-400">Rp 15.900.000</span>
+                <a href="#" className="rounded-full bg-green-500 px-6 py-3 font-semibold text-black hover:bg-green-400 transition">Beli Sekarang</a>
+              </div>
+            </div>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        </div>
+      </section>
+
+      {/* Categories — glass cards */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <h2 className="mb-4 text-center text-3xl font-bold">Kategori Produk</h2>
+          <p className="mb-12 text-center text-gray-500">Pilih teknologi yang tepat untuk kebutuhan Anda</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { n:'Panel Surya', d:'Monocrystalline, Polycrystalline, Bifacial. Efisiensi hingga 22%.', u:'Lihat Produk →', img:IMG.panel },
-              { n:'Inverter', d:'Hybrid, On-Grid, Off-Grid. Single & three phase. Garansi 5 tahun.', u:'Lihat Produk →', img:IMG.charger },
-              { n:'Baterai', d:'LiFePO4. Rack, Wall Mounted, ESS. 6000+ siklus.', u:'Lihat Produk →', img:IMG.wall },
-              { n:'Paket PLTS', d:'Rumah, Kantor, Industri. Sistem turnkey dengan instalasi.', u:'Lihat Produk →', img:IMG.hero },
+              { n:'Panel Surya', d:'Monocrystalline, Polycrystalline, Bifacial', i:'☀️' },
+              { n:'Inverter', d:'Hybrid, On-Grid, Off-Grid, Micro', i:'⚡' },
+              { n:'Baterai', d:'Lithium, Rack, Wall Mounted, ESS', i:'🔋' },
+              { n:'Charge Controller', d:'MPPT, PWM — semua rating', i:'🎛️' },
+              { n:'Paket PLTS', d:'Rumah, Kantor, Industri', i:'🏠' },
+              { n:'Mounting', d:'Atap, Ground, Carport', i:'🔩' },
+              { n:'Kabel & Proteksi', d:'PV Cable, MC4, MCB, SPD', i:'🔌' },
+              { n:'Pompa Air', d:'Submersible, Surface', i:'💧' },
             ].map(c => (
-              <div key={c.n} className="overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:shadow-lg">
-                <div className="h-44 bg-gray-100 overflow-hidden">
-                  <img src={c.img} alt="" className="h-full w-full object-contain p-6" />
-                </div>
-                <div className="p-6">
-                  <h3 className="font-bold text-gray-900">{c.n}</h3>
-                  <p className="mt-2 text-sm text-gray-500 leading-relaxed">{c.d}</p>
-                  <a href="#" className="mt-4 inline-block text-sm font-bold text-teal-600 hover:text-teal-900">{c.u}</a>
-                </div>
+              <div key={c.n} className="group cursor-pointer rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-green-500/30 hover:bg-white/10">
+                <span className="text-3xl">{c.i}</span>
+                <h3 className="mt-4 font-semibold">{c.n}</h3>
+                <p className="mt-2 text-sm text-gray-500">{c.d}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== WHY US — Alternating rows ===== */}
-      <section className="py-20 bg-white">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-16 text-center">
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-teal-500">Keunggulan</p>
-            <h2 className="mt-3 text-3xl font-bold text-gray-900">Mengapa Perusahaan Memilih Kami</h2>
-          </div>
-          <div className="grid gap-12 lg:grid-cols-3">
-            {[
-              { t:'Garansi & Sertifikasi', d:'Semua produk bergaransi resmi dengan sertifikat keaslian. Didukung distributor authorized.', i:'📜' },
-              { t:'Logistik Nasional', d:'Jaringan pengiriman ke 34 provinsi dengan asuransi penuh. Tracking real-time.', i:'🚛' },
-              { t:'Harga Proyek', d:'Pricing khusus untuk pembelian volume besar. Transparan, tanpa biaya tersembunyi.', i:'📊' },
-              { t:'Dukungan Teknis', d:'Tim engineer siap membantu desain sistem, kalkulasi beban, dan spesifikasi teknis.', i:'🔧' },
-              { t:'After-Sales', d:'Garansi klaim mudah, dukungan pasca instalasi, dan program pemeliharaan.', i:'🤝' },
-              { t:'Pembayaran Bisnis', d:'Invoice 30 hari, transfer bank, dan fasilitas kredit untuk pelanggan korporat.', i:'🏦' },
-            ].map(w => (
-              <div key={w.t} className="flex gap-4 rounded-lg border border-gray-100 p-6 transition hover:border-teal-200">
-                <span className="text-2xl shrink-0">{w.i}</span>
-                <div>
-                  <h3 className="font-bold text-gray-900">{w.t}</h3>
-                  <p className="mt-2 text-sm text-gray-500 leading-relaxed">{w.d}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== CLIENTS ===== */}
-      <section className="border-y border-gray-200 bg-gray-50 py-16">
-        <div className="mx-auto max-w-7xl px-6 text-center">
-          <p className="text-xs font-bold uppercase tracking-[.2em] text-gray-400">Dipercaya Oleh</p>
-          <div className="mt-8 grid grid-cols-3 gap-8 opacity-40 sm:grid-cols-5 lg:grid-cols-10">
-            {['MITSUBISHI\nELECTRIC','CANADIAN\nSOLAR','LONGi','BLUETTI','BEZVOLT','AIKO','GH SOLAR','SRNE','REKASURYA','SANKELUX'].map(b => (
-              <div key={b} className="flex items-center justify-center">
-                <span className="text-xs font-bold text-gray-400 whitespace-pre-line text-center">{b}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== CTA ===== */}
-      <section className="bg-teal-900 py-20">
-        <div className="mx-auto max-w-3xl px-6 text-center text-white">
-          <h2 className="text-3xl font-bold lg:text-4xl">Mulai Proyek Anda Hari Ini</h2>
-          <p className="mt-4 text-lg text-teal-200">Kirimkan spesifikasi kebutuhan dan tim kami akan memberikan penawaran dalam 24 jam.</p>
-          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <a href="#" className="rounded bg-white px-8 py-4 font-bold text-teal-900 hover:bg-teal-50 transition">Ajukan Permintaan</a>
-            <a href="#" className="rounded border-2 border-teal-500 px-8 py-4 font-bold text-white hover:bg-teal-700 transition">Jadwalkan Demo</a>
-          </div>
+      {/* CTA */}
+      <section className="relative overflow-hidden py-24">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-800" />
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+        <div className="relative mx-auto max-w-2xl px-4 text-center">
+          <h2 className="mb-4 text-3xl font-bold">Siap untuk Proyek Anda?</h2>
+          <p className="mb-8 text-green-100">Dapatkan konsultasi gratis dari tim ahli kami.</p>
+          <a href="#" className="inline-block rounded-full bg-white px-8 py-4 font-semibold text-green-700 hover:bg-green-50 transition">Hubungi Kami Sekarang</a>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid gap-12 lg:grid-cols-4">
+      <footer className="border-t border-white/10 py-12">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="grid gap-8 md:grid-cols-4">
             <div>
-              <h3 className="text-lg font-bold text-white">EBTPlaza</h3>
-              <p className="mt-4 text-sm leading-relaxed">Solusi pengadaan energi terbarukan untuk bisnis dan industri di Indonesia.</p>
-              <p className="mt-4 text-sm">📞 (022) 2052-2279</p>
-              <p className="text-sm">✉️ info@ebtplaza.com</p>
+              <h3 className="font-bold text-green-400">EBTPlaza</h3>
+              <p className="mt-2 text-sm text-gray-500">Teknologi energi terbarukan untuk Indonesia.</p>
             </div>
             {[
-              ['Produk','Panel Surya','Inverter','Baterai','Paket PLTS','Aksesoris'],
-              ['Perusahaan','Tentang Kami','Karir','Blog','Media','Kontak'],
-              ['Support','Technical Support','Garansi','Pengiriman','FAQ','Dokumentasi'],
-            ].map((col,i) => (
-              <div key={i}><h3 className="font-bold text-white mb-4">{col[0]}</h3><ul className="space-y-2 text-sm">{col.slice(1).map(l => <li key={l}><a href="#" className="hover:text-white transition">{l}</a></li>)}</ul></div>
+              { t:'Produk', l:['Panel Surya','Inverter','Baterai','Paket PLTS'] },
+              { t:'Perusahaan', l:['Tentang','Blog','Karir','Kontak'] },
+              { t:'Legal', l:['Privasi','Syarat','Pengiriman','Garansi'] },
+            ].map(c => (
+              <div key={c.t}>
+                <h3 className="text-sm font-semibold text-gray-400">{c.t}</h3>
+                <ul className="mt-3 space-y-2 text-sm text-gray-600">{c.l.map(l => <li key={l}><a href="#" className="hover:text-white transition">{l}</a></li>)}</ul>
+              </div>
             ))}
           </div>
-          <div className="mt-12 border-t border-gray-800 pt-8 flex flex-col gap-4 sm:flex-row sm:justify-between text-sm">
-            <span>© 2026 EBTPlaza. All rights reserved.</span>
-            <div className="flex gap-6">{['Privacy Policy','Terms of Service','Sitemap'].map(l => <a key={l} href="#" className="hover:text-white transition">{l}</a>)}</div>
-          </div>
+          <div className="mt-12 border-t border-white/10 pt-6 text-center text-sm text-gray-600">© 2026 EBTPlaza</div>
         </div>
       </footer>
     </div>
