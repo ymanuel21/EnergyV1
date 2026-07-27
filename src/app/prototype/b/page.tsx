@@ -1,123 +1,119 @@
 const IMG = {
-  hero: '/images/prototype/hero-pro.jpg',
   panel: '/images/prototype/solar-panel-open.png',
   battery: '/images/prototype/battery-large.png',
-  wall: '/images/prototype/battery-wall.png',
-  charger: '/images/prototype/charger-dc.png',
+  hero: '/images/prototype/hero-power-station.png',
 };
 
-export default function ConceptB() {
+export default function PrototypeB() {
   return (
     <div className="font-sans text-gray-900 bg-white">
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <span className="text-xl font-light tracking-widest text-gray-800">EBT<span className="font-bold text-emerald-600">PLAZA</span></span>
-          <div className="hidden items-center gap-10 md:flex">
-            {['Katalog','Solusi','Proyek','Tentang'].map(l => (
-              <a key={l} href="#" className="text-sm tracking-wide text-gray-500 hover:text-gray-900 transition">{l}</a>
+      {/* ===== MINIMAL NAV ===== */}
+      <nav className="fixed top-0 z-50 w-full bg-white/70 backdrop-blur-2xl">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-8">
+          <span className="text-lg font-semibold tracking-tight">EBTPlaza</span>
+          <div className="hidden items-center gap-8 sm:flex">
+            {['Katalog','Tentang','Kontak'].map(l => (
+              <a key={l} href="#" className="text-sm text-gray-500 hover:text-gray-900 transition">{l}</a>
             ))}
-            <a href="#" className="rounded-full border-2 border-gray-900 px-6 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-900 hover:text-white transition-all">Kontak</a>
+            <a href="#" className="rounded-full bg-gray-900 px-5 py-2 text-xs font-medium text-white hover:bg-gray-800 transition">Mulai</a>
           </div>
         </div>
       </nav>
 
-      <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 md:grid-cols-2">
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-[.3em] text-emerald-600">Renewable Energy Marketplace</p>
-          <h1 className="text-4xl font-light leading-tight text-gray-900 md:text-5xl lg:text-6xl">
-            Tenaga Surya<br />
-            <span className="font-bold">untuk Semua</span>
-          </h1>
-          <p className="mt-6 text-lg leading-relaxed text-gray-500">Produk energi terbarukan berkualitas premium — dikurasi untuk performa, garansi, dan harga terbaik.</p>
-          <div className="mt-8 flex gap-4">
-            <a href="#" className="rounded-full bg-gray-900 px-8 py-3.5 text-sm font-semibold text-white hover:bg-gray-800 transition">Jelajahi Katalog</a>
-            <a href="#" className="rounded-full border-2 border-gray-200 px-8 py-3.5 text-sm font-semibold text-gray-600 hover:border-gray-400 transition">Lihat Proyek</a>
+      {/* ===== HERO — Full viewport, editorial ===== */}
+      <section className="flex min-h-screen flex-col justify-center pt-14">
+        <div className="mx-auto grid max-w-5xl items-center gap-16 px-8 py-16 lg:grid-cols-2">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[.25em] text-gray-400">Energi Terbarukan</p>
+            <h1 className="mt-6 text-4xl font-light leading-tight tracking-tight text-gray-900 lg:text-6xl">
+              Tenaga surya<br />
+              <span className="font-semibold">untuk semua.</span>
+            </h1>
+            <p className="mt-8 text-lg leading-relaxed text-gray-500 max-w-md">
+              Produk berkualitas premium, dikurasi dengan cermat. Dari panel hingga sistem lengkap — kami membuat energi bersih menjadi sederhana.
+            </p>
+            <div className="mt-10 flex gap-3">
+              <a href="#" className="rounded-full bg-gray-900 px-8 py-3.5 text-sm font-medium text-white hover:bg-gray-800 transition">Jelajahi Katalog</a>
+              <a href="#" className="rounded-full px-8 py-3.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition">Pelajari →</a>
+            </div>
           </div>
-        </div>
-        <div className="relative">
-          <div className="overflow-hidden rounded-3xl bg-gray-100 shadow-2xl">
-            <img src={IMG.hero} alt="" className="h-96 w-full object-contain p-6" />
-          </div>
-          <div className="absolute -bottom-4 -left-4 rounded-2xl bg-white p-4 shadow-xl">
-            <p className="text-xs text-gray-400">Kapasitas Terpasang</p>
-            <p className="text-2xl font-bold">50+ MW</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gray-50 py-24">
-        <div className="mx-auto max-w-6xl px-6">
-          <p className="text-center text-xs font-semibold uppercase tracking-[.3em] text-emerald-600 mb-2">Kategori</p>
-          <h2 className="text-center text-3xl font-light mb-4">Temukan yang Anda Butuhkan</h2>
-          <p className="text-center text-gray-400 mb-12">Semua produk energi surya dalam satu platform</p>
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            {[
-              { n:'Panel Surya', s:'12 Produk' },{ n:'Inverter', s:'8 Produk' },
-              { n:'Baterai', s:'15 Produk' },{ n:'Charge Controller', s:'6 Produk' },
-              { n:'Paket PLTS', s:'9 Produk' },{ n:'Mounting', s:'5 Produk' },
-              { n:'Kabel & Proteksi', s:'10 Produk' },{ n:'Pompa Air', s:'4 Produk' },
-            ].map(c => (
-              <div key={c.n} className="group cursor-pointer rounded-2xl bg-white p-8 text-center shadow-sm transition hover:shadow-md">
-                <div className="mx-auto mb-4 h-2 w-8 rounded-full bg-emerald-200 group-hover:w-16 group-hover:bg-emerald-400 transition-all" />
-                <h3 className="font-semibold text-gray-900">{c.n}</h3>
-                <p className="mt-1 text-sm text-gray-400">{c.s}</p>
-              </div>
-            ))}
+          <div className="relative">
+            <div className="aspect-square overflow-hidden rounded-3xl bg-gray-50">
+              <img src={IMG.hero} alt="" className="h-full w-full object-contain p-8" />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Showcase — Large image cards */}
-      <section className="py-24">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="grid gap-12 md:grid-cols-3">
+      {/* ===== CATEGORIES — Large cards, editorial ===== */}
+      <section className="py-32">
+        <div className="mx-auto max-w-5xl px-8">
+          <p className="text-xs font-medium uppercase tracking-[.25em] text-gray-400 mb-4">Kategori</p>
+          <h2 className="text-3xl font-light tracking-tight lg:text-4xl">Temukan yang Anda butuhkan</h2>
+          <div className="mt-16 grid gap-2">
             {[
-              { img:IMG.panel, t:'Panel Surya Premium', d:'Efisiensi tinggi, garansi 25 tahun.' },
-              { img:IMG.battery, t:'Penyimpanan Energi', d:'Baterai lithium untuk rumah dan bisnis.' },
-              { img:IMG.wall, t:'Solusi Skala Besar', d:'Sistem untuk industri dan utilitas.' },
-            ].map(c => (
-              <div key={c.t} className="group cursor-pointer">
-                <div className="overflow-hidden rounded-2xl bg-gray-100">
-                  <img src={c.img} alt="" className="h-64 w-full object-contain p-6 transition group-hover:scale-105" />
+              { n:'Panel Surya', d:'Monocrystalline, Polycrystalline, Bifacial — efisiensi tinggi untuk setiap kebutuhan', c:'12 produk' },
+              { n:'Inverter', d:'Hybrid, On-Grid, Off-Grid, Micro — konversi daya yang andal', c:'8 produk' },
+              { n:'Baterai', d:'Lithium LiFePO4, Rack Mounted, Wall, All-in-One ESS', c:'15 produk' },
+              { n:'Paket PLTS', d:'Solusi lengkap untuk rumah, kantor, dan industri', c:'9 produk' },
+            ].map((cat,i) => (
+              <div key={cat.n} className="group flex cursor-pointer items-center justify-between border-b border-gray-100 py-8 transition hover:border-gray-300">
+                <div>
+                  <span className="text-xs text-gray-300 mr-3">0{i+1}</span>
+                  <h3 className="inline text-xl font-medium">{cat.n}</h3>
+                  <p className="mt-2 text-sm text-gray-400 max-w-xl">{cat.d}</p>
                 </div>
-                <h3 className="mt-5 text-lg font-semibold">{c.t}</h3>
-                <p className="mt-2 text-sm text-gray-500">{c.d}</p>
-                <a href="#" className="mt-3 inline-block text-sm font-semibold text-emerald-600 hover:underline">Selengkapnya →</a>
+                <div className="flex items-center gap-6 shrink-0">
+                  <span className="text-sm text-gray-300">{cat.c}</span>
+                  <span className="text-2xl text-gray-300 group-hover:text-gray-900 group-hover:translate-x-1 transition-all">→</span>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-y border-gray-100 py-16">
-        <div className="mx-auto max-w-6xl px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[.3em] text-gray-400 mb-8">Brand Resmi</p>
-          <div className="flex flex-wrap items-center justify-center gap-10 opacity-30">
-            {['MITSUBISHI ELECTRIC','CANADIAN SOLAR','LONGi','BLUETTI','BEZVOLT','AIKO','GH SOLAR','SRNE','REKASURYA'].map(b => (
-              <span key={b} className="text-lg font-bold tracking-wider">{b}</span>
-            ))}
+      {/* ===== FEATURED — Side by side, large photo ===== */}
+      <section className="py-32 bg-gray-50">
+        <div className="mx-auto max-w-5xl px-8">
+          <div className="grid items-center gap-16 lg:grid-cols-2">
+            <div className="overflow-hidden rounded-3xl bg-white h-96">
+              <img src={IMG.panel} alt="" className="h-full w-full object-contain p-8" />
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[.25em] text-gray-400">Produk Unggulan</p>
+              <h2 className="mt-4 text-3xl font-light tracking-tight">Panel Surya 275W Mono</h2>
+              <p className="mt-6 text-gray-500 leading-relaxed">Modul monocrystalline premium buatan Jepang. Efisiensi tinggi, garansi 5 tahun. Cocok untuk instalasi residensial dan komersial skala menengah.</p>
+              <div className="mt-8 flex items-baseline gap-4">
+                <span className="text-3xl font-light">Rp 1.450.000</span>
+                <span className="text-sm text-gray-400 line-through">Rp 2.250.000</span>
+              </div>
+              <div className="mt-8 flex gap-3">
+                <a href="#" className="rounded-full bg-gray-900 px-8 py-3 text-sm font-medium text-white hover:bg-gray-800 transition">Beli Sekarang</a>
+                <a href="#" className="rounded-full px-8 py-3 text-sm font-medium text-gray-500 hover:text-gray-900 transition">Detail →</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden">
-        <img src={IMG.charger} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gray-900/80" />
-        <div className="relative mx-auto max-w-3xl px-6 py-24 text-center">
-          <h2 className="text-3xl font-light text-white">Butuh Solusi Khusus?</h2>
-          <p className="mt-4 text-gray-300">Tim kami siap membantu merancang sistem tenaga surya untuk kebutuhan spesifik Anda.</p>
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <a href="#" className="rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-100 transition">Konsultasi Gratis</a>
-            <a href="#" className="rounded-full border-2 border-white/30 px-8 py-3.5 text-sm font-semibold text-white hover:border-white/60 transition">Lihat Portofolio</a>
-          </div>
+      {/* ===== CTA ===== */}
+      <section className="py-32">
+        <div className="mx-auto max-w-2xl px-8 text-center">
+          <h2 className="text-3xl font-light tracking-tight lg:text-4xl">Butuh bantuan memilih?</h2>
+          <p className="mt-6 text-lg text-gray-500">Tim kami siap membantu Anda menemukan produk yang tepat.</p>
+          <a href="#" className="mt-8 inline-block rounded-full bg-gray-900 px-10 py-4 text-sm font-medium text-white hover:bg-gray-800 transition">Konsultasi Gratis</a>
         </div>
       </section>
 
-      <footer className="bg-white py-12">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+      {/* Footer */}
+      <footer className="border-t border-gray-100">
+        <div className="mx-auto max-w-5xl px-8 py-12">
+          <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
             <span className="text-sm text-gray-400">© 2026 EBTPlaza</span>
-            <div className="flex gap-6 text-sm text-gray-500">{['Privasi','Syarat','Kontak','FAQ'].map(l => <a key={l} href="#" className="hover:text-gray-900 transition">{l}</a>)}</div>
+            <div className="flex gap-6 text-sm text-gray-400">
+              {['Privasi','Syarat','Kontak'].map(l => <a key={l} href="#" className="hover:text-gray-900 transition">{l}</a>)}
+            </div>
           </div>
         </div>
       </footer>
