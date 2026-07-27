@@ -36,6 +36,9 @@ model Product {
   // Many-to-many with categories
   categories   ProductCategory[]
 
+  // Many-to-many with badges
+  badgeRelations ProductBadge[]
+
   @@map("products")
 }
 
@@ -149,4 +152,32 @@ model Asset {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("assets")
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  color       String   @default("#3B82F6")       // text color
+  bgColor     String   @default("#EFF6FF") @map("bg_color") // background color
+  icon        String?                              // optional emoji or icon name
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  products    ProductBadge[]
+
+  @@map("badges")
+}
+
+model ProductBadge {
+  productId String
+  badgeId   String
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  badge     Badge   @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@id([productId, badgeId])
+  @@map("product_badges")
 }
