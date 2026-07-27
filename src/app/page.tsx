@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { getAllProducts, getProductBySlug } from '@/lib/api/categories' assert { error: 'ignore' };
 import { OrganizationSchema } from '@components/ui/StructuredData';
 import type { Metadata } from 'next';
 
