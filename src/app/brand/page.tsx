@@ -4,7 +4,7 @@ import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { BrandLogo } from '@ui/BrandLogo';
 import { getAllBrands } from '@lib/api/brands';
-import { products } from '@/lib/data/products';
+import { getAllProducts } from '@lib/api/products';
 
 export const metadata: Metadata = {
   title: 'Brand',
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BrandPage() {
-  const brands = await getAllBrands();
+  const [brands, products] = await Promise.all([getAllBrands(), getAllProducts()]);
 
   return (
     <Container className="py-6">
@@ -31,7 +31,7 @@ export default async function BrandPage() {
             <Link
               key={brand.id}
               href={`/brand/${brand.slug}`}
-              className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 p-6 text-center transition hover:shadow-md hover:border-brand-200"
+              className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 p-6 text-center transition hover:shadow-md"
             >
               <BrandLogo name={brand.name} logo={brand.logo} size="md" />
               <div>

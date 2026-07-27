@@ -25,6 +25,9 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
   const brand = (brandName && brandSlug)
     ? { name: brandName, slug: brandSlug, id: product.brandId, productCount: 0 }
     : getBrandById(product.brandId);
+
+  // Use ProductBadge relations from DB if available, fall back to legacy badges JSON array
+  const productBadges = (product as any).badgeRelations?.map((r: any) => r.badge?.variant || r.badge?.name) || product.badges || [];
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
   const discountPercent = hasDiscount
     ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)
@@ -44,9 +47,9 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
         />
 
         {/* Badges */}
-        {product.badges.length > 0 && (
+        {productBadges.length > 0 && (
           <div className="absolute left-2 top-2 flex flex-col gap-1">
-            {product.badges.map((badge) => (
+            {productBadges.map((badge: string, i: number) => (
               <Badge key={badge} variant={badge}>
                 {BADGE_LABELS[badge]}
               </Badge>

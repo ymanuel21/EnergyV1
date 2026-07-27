@@ -6,7 +6,7 @@ export async function getAllProducts(): Promise<Product[]> {
   try {
     if (process.env.DATABASE_URL) {
       const prisma = await getPrisma();
-      const rows = await prisma.product.findMany({ where: { isActive: true }, include: { brand: true } });
+      const rows = await prisma.product.findMany({ where: { isActive: true }, include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } } } });
       if (rows.length > 0) return rows as any as Product[];
     }
   } catch (e) { console.error('Prisma getAllProducts failed:', (e as Error).message); }
