@@ -57,7 +57,7 @@ export default async function HomePage() {
           <div className="relative">
             <div className="aspect-square overflow-hidden rounded-3xl bg-white shadow-2xl shadow-gray-900/5 ring-1 ring-gray-900/5">
               {heroBanner ? (
-                <img src={heroBanner.image} alt={heroBanner.alt || 'Hero'} className="h-full w-full object-contain p-8" />
+                <img src={heroBanner.image ?? ''} alt={heroBanner.alt ?? 'Hero'} className="h-full w-full object-contain p-8" />
               ) : (
                 <img src="/images/prototype/hero-power-station.png" alt="Power Station" className="h-full w-full object-contain p-8" />
               )}
