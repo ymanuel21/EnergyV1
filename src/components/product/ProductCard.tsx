@@ -31,15 +31,15 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
     : 0;
 
   return (
-    <article className={`card group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition hover:shadow-md ${className}`}>
+    <article className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white transition hover:shadow-lg ${className}`}>
       {/* Image */}
-      <Link href={`/produk/${product.slug}`} className="relative aspect-square overflow-hidden bg-gray-100">
+      <Link href={`/produk/${product.slug}`} className="relative aspect-square overflow-hidden bg-gray-50">
         <SafeImage
           src={product.images[0]}
           alt={product.name}
           width={400}
           height={400}
-          className="h-full w-full object-cover transition group-hover:scale-105"
+          className="h-full w-full object-contain p-4 transition group-hover:scale-105"
           sizes={variant === 'carousel' ? '240px' : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw'}
         />
 
@@ -63,7 +63,7 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
 
         {/* Wishlist button */}
         <button
-          className="absolute right-2 bottom-2 rounded-full bg-white/90 p-1.5 text-gray-400 hover:text-red-500 transition-colors shadow-sm"
+          className="absolute right-2 bottom-2 rounded-full bg-white/90 p-1.5 text-gray-400 hover:text-red-500 transition-colors"
           aria-label={`Simpan ${product.name} ke wishlist`}
         >
           <HeartIcon className="h-4 w-4" />
@@ -71,18 +71,18 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
       </Link>
 
       {/* Info */}
-      <div className="flex flex-col gap-1 p-3">
+      <div className="flex flex-col gap-1 p-4">
         {brand && (
           <Link
             href={`/brand/${brand.slug}`}
-            className="text-xs text-gray-500 hover:text-brand-700 transition-colors"
+            className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
           >
             {brand.name}
           </Link>
         )}
         <Link
           href={`/produk/${product.slug}`}
-          className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-brand-700 transition-colors"
+          className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-gray-700 transition-colors"
         >
           {product.name}
         </Link>
