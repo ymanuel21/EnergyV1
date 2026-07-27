@@ -16,16 +16,26 @@ export function filterByCategory(
   categoryId: string,
   category?: Category | null
 ): Product[] {
-  // If we have the full category tree, use it to include child products
+  // Many-to-many: product.categories is ProductCategory[]
   if (category) {
     const allIds = getAllChildIds(category);
-    return products.filter((p) => allIds.includes(p.categoryId) || allIds.includes(p.subcategoryId as string));
+    return products.filter((p) => {
+      const catIds = ((p as any).categories || []).map((pc: any) => pc.categoryId);
+      if (catIds.length > 0) {
+        return catIds.some((id: string) => allIds.includes(id));
+      }
+      // Fallback to legacy single categoryId
+      return allIds.includes(p.categoryId);
+    });
   }
 
-  // Fallback: filter by categoryId or subcategoryId
-  return products.filter(
-    (p) => p.categoryId === categoryId || (p as any).subcategoryId === categoryId
-  );
+  return products.filter((p) => {
+    const catIds = ((p as any).categories || []).map((pc: any) => pc.categoryId);
+    if (catIds.length > 0) {
+      return catIds.includes(categoryId);
+    }
+    return p.categoryId === categoryId;
+  });
 }
 
 export function filterByBadge(products: Product[], badge: Product['badges'][number]): Product[] {

@@ -29,13 +29,13 @@ export async function getProductsByCategory(categoryId: string): Promise<Product
     if (process.env.DATABASE_URL) {
       const prisma = await getPrisma();
       const rows = await prisma.product.findMany({
-        where: { isActive: true, OR: [{ categoryId }, { subcategoryId: categoryId }] },
+        where: { isActive: true, categories: { some: { categoryId } } },
         include: { brand: true },
       });
       if (rows.length > 0) return rows as any as Product[];
     }
   } catch (e) { console.error('Prisma getProductsByCategory failed:', (e as Error).message); }
   return (await import('@/lib/data/products')).products.filter(
-    (p: any) => p.categoryId === categoryId || p.subcategoryId === categoryId,
+    (p: any) => p.categoryId === categoryId,
   );
 }

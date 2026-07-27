@@ -29,11 +29,25 @@ model Product {
 
   brandId      String    @map("brand_id")
   brand        Brand     @relation(fields: [brandId], references: [id])
-  categoryId   String    @map("category_id")
-  category     Category  @relation(fields: [categoryId], references: [id])
-  subcategoryId String?  @map("subcategory_id")
+
+  // Legacy single-category field — kept for backward compat during transition
+  categoryId   String?   @map("category_id")
+
+  // Many-to-many with categories
+  categories   ProductCategory[]
 
   @@map("products")
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@map("product_categories")
 }
 
 model Category {
@@ -47,7 +61,8 @@ model Category {
   parent     Category?  @relation("CategoryTree", fields: [parentId], references: [id])
   children   Category[] @relation("CategoryTree")
 
-  products   Product[]
+  // Many-to-many with products
+  products   ProductCategory[]
 
   @@map("categories")
 }

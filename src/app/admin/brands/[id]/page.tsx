@@ -42,7 +42,7 @@ export default async function EditBrandPage({ params }: Props) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nama Brand *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nama Brand <span className="text-red-500">*</span></label>
             <input
               name="name"
               defaultValue={brand.name}

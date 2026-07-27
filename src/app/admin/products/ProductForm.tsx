@@ -12,14 +12,30 @@ interface ProductFormProps {
   onSubmit: (data: any) => Promise<void>;
 }
 
+function ReqStar() {
+  return <span className="text-red-500 ml-0.5">*</span>;
+}
+
 export function ProductForm({ defaultValues, brands, categories, onSubmit }: ProductFormProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+
+  // Pre-select categories from ProductCategory relation or legacy categoryId
+  const defaultCatIds: string[] = defaultValues?.categories?.map((pc: any) => pc.categoryId)
+    || (defaultValues?.categoryId ? [defaultValues.categoryId] : []);
+
+  const topCategories = categories.filter((c: any) => !c.parentId);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     const form = new FormData(e.currentTarget as HTMLFormElement);
+
+    // Collect all checked category IDs
+    const categoryIds = categories
+      .filter((c: any) => form.get(`cat-${c.id}`) === 'on')
+      .map((c: any) => c.id);
+
     const data: any = {
       name: form.get('name'),
       slug: form.get('slug'),
@@ -35,13 +51,13 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
           const parsed = JSON.parse(raw);
           return Array.isArray(parsed) && parsed.length > 0 ? parsed : ['/images/placeholder/product-placeholder.png'];
         } catch {
-          // Backwards compat: single string
           return [raw || '/images/placeholder/product-placeholder.png'];
         }
       })(),
       badges: form.get('badges') ? (form.get('badges') as string).split(',').map((s: string) => s.trim()) : [],
       brandId: form.get('brandId'),
-      categoryId: form.get('categoryId'),
+      categoryIds,
+      categoryId: categoryIds[0] || null, // Legacy single category for backward compat
       condition: form.get('condition') || 'new',
       warranty: form.get('warranty') || '1 Tahun',
       weight: parseFloat(form.get('weight') as string) || 0,
@@ -59,15 +75,15 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nama Produk *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Nama Produk <ReqStar /></label>
           <input name="name" defaultValue={defaultValues?.name} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Slug *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Slug <ReqStar /></label>
           <SlugInput name="slug" defaultValue={defaultValues?.slug} sourceName="name" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Harga *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Harga <ReqStar /></label>
           <input name="price" type="number" defaultValue={defaultValues?.price} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
         </div>
         <div>
@@ -75,7 +91,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
           <input name="originalPrice" type="number" defaultValue={defaultValues?.originalPrice} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Stok *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Stok <ReqStar /></label>
           <input name="stock" type="number" defaultValue={defaultValues?.stock ?? 0} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
         </div>
         <div>
@@ -83,18 +99,42 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
           <input name="sku" defaultValue={defaultValues?.sku} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Brand *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Brand <ReqStar /></label>
           <select name="brandId" defaultValue={defaultValues?.brandId} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
             <option value="">Pilih Brand</option>
             {brands.map((b: any) => <option key={b.id} value={b.id}>{b.name}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Kategori *</label>
-          <select name="categoryId" defaultValue={defaultValues?.categoryId} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-            <option value="">Pilih Kategori</option>
-            {categories.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Kategori <ReqStar /></label>
+          <div className="space-y-1 max-h-48 overflow-y-auto rounded-lg border border-gray-300 p-3 bg-white">
+            {topCategories.length === 0 && <p className="text-xs text-gray-400">Tidak ada kategori</p>}
+            {topCategories.map((cat: any) => (
+              <div key={cat.id}>
+                <label className="flex items-center gap-2 py-0.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name={`cat-${cat.id}`}
+                    defaultChecked={defaultCatIds.includes(cat.id)}
+                    className="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                  />
+                  <span className="text-sm font-medium text-gray-700">{cat.name}</span>
+                </label>
+                {/* Children */}
+                {cat.children?.map((child: any) => (
+                  <label key={child.id} className="flex items-center gap-2 py-0.5 pl-6 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name={`cat-${child.id}`}
+                      defaultChecked={defaultCatIds.includes(child.id)}
+                      className="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                    />
+                    <span className="text-sm text-gray-600">{child.name}</span>
+                  </label>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
         <MultiImageUpload name="images" label="Gambar Produk" defaultValue={defaultValues?.images || []} />
         <div>
