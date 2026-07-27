@@ -55,7 +55,7 @@ export default async function HomePage() {
           <div className="relative">
             <div className="aspect-square overflow-hidden rounded-3xl bg-white shadow-2xl shadow-gray-900/5 ring-1 ring-gray-900/5">
               {heroBanner ? (
-                <SafeImage src={heroBanner.image} alt={heroBanner.alt || 'Hero'} width={600} height={600} className="h-full w-full object-contain p-8" />
+                <SafeImage src={heroBanner.image || ''} alt={heroBanner.alt || 'Hero'} width={600} height={600} className="h-full w-full object-contain p-8" />
               ) : (
                 <img src="/images/prototype/hero-power-station.png" alt="Power Station" className="h-full w-full object-contain p-8" />
               )}
@@ -101,7 +101,7 @@ export default async function HomePage() {
                 <p className="mt-6 text-gray-500 leading-relaxed">{featuredProduct.description?.substring(0, 180) || 'Produk berkualitas tinggi dengan garansi resmi.'}</p>
                 <div className="mt-8 flex items-baseline gap-4">
                   <span className="text-3xl font-light">Rp {featuredProduct.price?.toLocaleString('id-ID')}</span>
-                  {featuredProduct.originalPrice > featuredProduct.price && (
+                  {featuredProduct.originalPrice && featuredProduct.originalPrice > featuredProduct.price && (
                     <span className="text-sm text-gray-400 line-through">Rp {featuredProduct.originalPrice?.toLocaleString('id-ID')}</span>
                   )}
                 </div>
