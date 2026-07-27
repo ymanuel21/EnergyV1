@@ -27,7 +27,7 @@ export default async function BadgesPage() {
       name: data.get('name') as string,
       color: data.get('color') as string,
       bgColor: data.get('bgColor') as string,
-      icon: (data.get('icon') as string) || null,
+      icon: (data.get('icon') as string) || undefined,
       sortOrder: parseInt(data.get('sortOrder') as string) || 0,
     });
     revalidatePath('/admin/badges');
