@@ -68,7 +68,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="flex flex-col items-center justify-between gap-3 border-t border-gray-100 py-6 text-sm text-gray-400 sm:flex-row">
-          <p>© 2026 {name} (by {company}). Seluruh hak cipta dilindungi.</p>
+          <p>© 2026 {name}. Seluruh hak cipta dilindungi.</p>
           <div className="flex gap-4">
             <Link href="/halaman/syarat-ketentuan" className="hover:text-brand-700 transition-colors">
               Syarat &amp; Ketentuan
