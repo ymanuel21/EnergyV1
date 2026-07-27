@@ -1,10 +1,10 @@
 const IMG = {
-  hero: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1400&q=80',
-  roof: 'https://images.unsplash.com/photo-1558449028-b53a39d100fc?w=600&q=80',
-  panels: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80',
-  farm: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=600&q=80',
-  battery: 'https://images.unsplash.com/photo-1629654297299-c8506223fa1f?w=600&q=80',
-  office: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
+  hero: '/images/prototype/hero-power-station.png',
+  panels: '/images/prototype/solar-panel-folded.png',
+  roof: '/images/prototype/solar-panel-open.png',
+  battery: '/images/prototype/battery-large.png',
+  wall: '/images/prototype/battery-wall.png',
+  stack: '/images/prototype/battery-stack.png',
 };
 
 export default function ConceptC() {
@@ -47,20 +47,15 @@ export default function ConceptC() {
               <a href="#" className="rounded-lg border border-slate-600 px-8 py-4 text-center font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition">Minta Penawaran</a>
             </div>
             <div className="mt-10 flex gap-8 text-sm">
-              {[
-                { v:'200+', l:'Produk' },
-                { v:'10+', l:'Brand Resmi' },
-                { v:'500+', l:'Klien Bisnis' },
-              ].map(s => (
-                <div key={s.l}>
-                  <p className="text-2xl font-bold text-teal-400">{s.v}</p>
-                  <p className="text-slate-400">{s.l}</p>
-                </div>
+              {[{ v:'200+', l:'Produk' },{ v:'10+', l:'Brand Resmi' },{ v:'500+', l:'Klien Bisnis' }].map(s => (
+                <div key={s.l}><p className="text-2xl font-bold text-teal-400">{s.v}</p><p className="text-slate-400">{s.l}</p></div>
               ))}
             </div>
           </div>
           <div className="relative">
-            <img src={IMG.hero} alt="" className="rounded-2xl shadow-2xl shadow-teal-900/50" />
+            <div className="overflow-hidden rounded-2xl bg-white/10 shadow-2xl shadow-teal-900/50">
+              <img src={IMG.hero} alt="" className="h-80 w-full object-contain p-4" />
+            </div>
             <div className="absolute -bottom-6 -left-6 rounded-xl bg-white p-4 shadow-xl text-gray-900">
               <p className="text-xs text-gray-400">Rating Pelanggan</p>
               <p className="text-lg font-bold">★★★★★ <span className="text-teal-600">4.9</span></p>
@@ -94,11 +89,11 @@ export default function ConceptC() {
               { n:'Panel Surya', d:'Monocrystalline, Polycrystalline, Bifacial — berbagai rating daya', u:'12 Produk', img:IMG.panels },
               { n:'Inverter', d:'Hybrid, On-Grid, Off-Grid — single & three phase', u:'8 Produk', img:IMG.roof },
               { n:'Baterai', d:'Lithium LiFePO4, Rack, Wall Mounted, All-in-One ESS', u:'15 Produk', img:IMG.battery },
-              { n:'Paket PLTS', d:'Paket lengkap untuk rumah, kantor, dan industri', u:'9 Produk', img:IMG.farm },
+              { n:'Paket PLTS', d:'Paket lengkap untuk rumah, kantor, dan industri', u:'9 Produk', img:IMG.wall },
             ].map(c => (
               <div key={c.n} className="group cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white transition hover:shadow-xl hover:border-teal-200">
-                <div className="h-40 overflow-hidden">
-                  <img src={c.img} alt="" className="h-full w-full object-cover transition group-hover:scale-105" />
+                <div className="h-40 overflow-hidden bg-gray-100">
+                  <img src={c.img} alt="" className="h-full w-full object-contain p-4 transition group-hover:scale-105" />
                 </div>
                 <div className="p-6">
                   <h3 className="text-lg font-bold text-gray-900">{c.n}</h3>
@@ -114,7 +109,7 @@ export default function ConceptC() {
         </div>
       </section>
 
-      {/* Why Choose Us */}
+      {/* Why */}
       <section className="bg-gray-50 py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="grid items-center gap-12 lg:grid-cols-2">
@@ -131,15 +126,14 @@ export default function ConceptC() {
                 ].map(w => (
                   <div key={w.t} className="flex gap-3">
                     <span className="text-2xl shrink-0">{w.i}</span>
-                    <div>
-                      <h3 className="font-semibold">{w.t}</h3>
-                      <p className="mt-1 text-sm text-gray-500">{w.d}</p>
-                    </div>
+                    <div><h3 className="font-semibold">{w.t}</h3><p className="mt-1 text-sm text-gray-500">{w.d}</p></div>
                   </div>
                 ))}
               </div>
             </div>
-            <img src={IMG.office} alt="" className="rounded-2xl shadow-xl" />
+            <div className="overflow-hidden rounded-2xl bg-gray-100 shadow-xl">
+              <img src={IMG.stack} alt="" className="w-full object-contain p-8" />
+            </div>
           </div>
         </div>
       </section>
@@ -169,10 +163,7 @@ export default function ConceptC() {
               { t:'Perusahaan', l:['Tentang Kami','Karir','Blog','Media','Kontak'] },
               { t:'Bantuan', l:['FAQ','Pengiriman','Garansi','Syarat & Ketentuan','Privasi'] },
             ].map(c => (
-              <div key={c.t}>
-                <h3 className="font-semibold text-white">{c.t}</h3>
-                <ul className="mt-4 space-y-2 text-sm">{c.l.map(l => <li key={l}><a href="#" className="hover:text-teal-400 transition">{l}</a></li>)}</ul>
-              </div>
+              <div key={c.t}><h3 className="font-semibold text-white">{c.t}</h3><ul className="mt-4 space-y-2 text-sm">{c.l.map(l => <li key={l}><a href="#" className="hover:text-teal-400 transition">{l}</a></li>)}</ul></div>
             ))}
           </div>
           <div className="mt-12 border-t border-slate-800 pt-8 text-center text-sm">© 2026 EBTPlaza. Hak cipta dilindungi.</div>

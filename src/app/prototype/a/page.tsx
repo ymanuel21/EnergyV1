@@ -1,9 +1,9 @@
 const IMG = {
-  hero: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&q=80',
-  rooftop: 'https://images.unsplash.com/photo-1558449028-b53a39d100fc?w=600&q=80',
-  farm: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=600&q=80',
-  install: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80',
-  battery: 'https://images.unsplash.com/photo-1629654297299-c8506223fa1f?w=400&q=80',
+  hero: '/images/prototype/hero-power-station.png',
+  panel: '/images/prototype/solar-panel-folded.png',
+  battery: '/images/prototype/battery-compact.png',
+  wall: '/images/prototype/battery-wall.png',
+  stack: '/images/prototype/battery-stack.png',
 };
 
 export default function ConceptA() {
@@ -88,13 +88,20 @@ export default function ConceptA() {
             <a href="#" className="hidden sm:block text-sm font-bold text-blue-600 hover:underline">Lihat Semua →</a>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[1,2,3,4].map(i => (
+            {[
+              { i:IMG.panel, b:'NEW', n:'Panel Surya 550W Mono', p:'Rp 1.550.000' },
+              { i:IMG.battery, b:'BEST SELLER', n:'Inverter Hybrid 6kW', p:'Rp 15.900.000' },
+              { i:IMG.wall, b:'PROMO', n:'Baterai Lithium 5.12kWh', p:'Rp 16.900.000' },
+              { i:IMG.stack, b:'CLEARANCE', n:'Power Station 504Wh', p:'Rp 6.590.000' },
+            ].map((p,i) => (
               <div key={i} className="group cursor-pointer rounded-2xl bg-white shadow-sm transition hover:shadow-xl overflow-hidden">
-                <img src={[IMG.rooftop, IMG.farm, IMG.install, IMG.battery][i-1]} alt="" className="h-48 w-full object-cover" />
+                <div className="h-48 overflow-hidden bg-gray-100">
+                  <img src={p.i} alt="" className="h-full w-full object-contain p-4" />
+                </div>
                 <div className="p-5">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">{['NEW','BEST SELLER','PROMO','CLEARANCE'][i-1]}</span>
-                  <h3 className="mt-3 font-bold leading-snug">{['Panel Surya 550W Mono','Inverter Hybrid 6kW','Baterai Lithium 5.12kWh','Power Station 504Wh'][i-1]}</h3>
-                  <p className="mt-2 text-xl font-black text-blue-600">{['Rp 1.550.000','Rp 15.900.000','Rp 16.900.000','Rp 6.590.000'][i-1]}</p>
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">{p.b}</span>
+                  <h3 className="mt-3 font-bold leading-snug">{p.n}</h3>
+                  <p className="mt-2 text-xl font-black text-blue-600">{p.p}</p>
                   <button className="mt-4 w-full rounded-lg bg-blue-600 py-2.5 text-sm font-bold text-white hover:bg-blue-700 transition">+ Keranjang</button>
                 </div>
               </div>
@@ -130,7 +137,7 @@ export default function ConceptA() {
 
       {/* CTA */}
       <section className="relative overflow-hidden bg-blue-900 py-20">
-        <img src={IMG.farm} alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
+        <img src={IMG.panel} alt="" className="absolute inset-0 h-full w-full object-cover opacity-20" />
         <div className="relative mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-3xl font-black text-white md:text-4xl">Siap Beralih ke Energi Surya?</h2>
           <p className="mt-4 text-lg text-blue-200">Dapatkan konsultasi gratis dan penawaran terbaik untuk proyek Anda.</p>
