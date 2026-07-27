@@ -6,11 +6,11 @@ const IMG = {
 
 export default function PrototypeB() {
   return (
-    <div className="font-sans text-gray-900 bg-white">
-      {/* ===== MINIMAL NAV ===== */}
-      <nav className="fixed top-0 z-50 w-full bg-white/70 backdrop-blur-2xl">
+    <div className="font-sans text-gray-900">
+      {/* ===== NAV — Frosted glass ===== */}
+      <nav className="fixed top-0 z-50 w-full bg-white/70 backdrop-blur-2xl border-b border-gray-100/50">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-8">
-          <span className="text-lg font-semibold tracking-tight">EBTPlaza</span>
+          <span className="text-lg font-semibold tracking-tight text-gray-900">EBTPlaza</span>
           <div className="hidden items-center gap-8 sm:flex">
             {['Katalog','Tentang','Kontak'].map(l => (
               <a key={l} href="#" className="text-sm text-gray-500 hover:text-gray-900 transition">{l}</a>
@@ -20,9 +20,13 @@ export default function PrototypeB() {
         </div>
       </nav>
 
-      {/* ===== HERO — Full viewport, editorial ===== */}
-      <section className="flex min-h-screen flex-col justify-center pt-14">
-        <div className="mx-auto grid max-w-5xl items-center gap-16 px-8 py-16 lg:grid-cols-2">
+      {/* ===== HERO — Warm gradient ===== */}
+      <section className="relative flex min-h-screen flex-col justify-center overflow-hidden pt-14" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FAFAF5 40%, #F5F5F0 100%)' }}>
+        {/* Subtle blurred circles */}
+        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-emerald-100/40 blur-3xl" />
+        <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-amber-50/50 blur-3xl" />
+
+        <div className="relative mx-auto grid max-w-5xl items-center gap-16 px-8 py-16 lg:grid-cols-2">
           <div>
             <p className="text-xs font-medium uppercase tracking-[.25em] text-gray-400">Energi Terbarukan</p>
             <h1 className="mt-6 text-4xl font-light leading-tight tracking-tight text-gray-900 lg:text-6xl">
@@ -33,33 +37,33 @@ export default function PrototypeB() {
               Produk berkualitas premium, dikurasi dengan cermat. Dari panel hingga sistem lengkap — kami membuat energi bersih menjadi sederhana.
             </p>
             <div className="mt-10 flex gap-3">
-              <a href="#" className="rounded-full bg-gray-900 px-8 py-3.5 text-sm font-medium text-white hover:bg-gray-800 transition">Jelajahi Katalog</a>
+              <a href="#" className="rounded-full bg-gray-900 px-8 py-3.5 text-sm font-medium text-white hover:bg-gray-800 shadow-lg shadow-gray-900/10 transition">Jelajahi Katalog</a>
               <a href="#" className="rounded-full px-8 py-3.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition">Pelajari →</a>
             </div>
           </div>
           <div className="relative">
-            <div className="aspect-square overflow-hidden rounded-3xl bg-gray-50">
+            <div className="aspect-square overflow-hidden rounded-3xl bg-white shadow-2xl shadow-gray-900/5 ring-1 ring-gray-900/5">
               <img src={IMG.hero} alt="" className="h-full w-full object-contain p-8" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ===== CATEGORIES — Large cards, editorial ===== */}
-      <section className="py-32">
+      {/* ===== CATEGORIES — White background ===== */}
+      <section className="relative bg-white py-32">
         <div className="mx-auto max-w-5xl px-8">
           <p className="text-xs font-medium uppercase tracking-[.25em] text-gray-400 mb-4">Kategori</p>
           <h2 className="text-3xl font-light tracking-tight lg:text-4xl">Temukan yang Anda butuhkan</h2>
-          <div className="mt-16 grid gap-2">
+          <div className="mt-16 grid gap-0 divide-y divide-gray-100">
             {[
               { n:'Panel Surya', d:'Monocrystalline, Polycrystalline, Bifacial — efisiensi tinggi untuk setiap kebutuhan', c:'12 produk' },
               { n:'Inverter', d:'Hybrid, On-Grid, Off-Grid, Micro — konversi daya yang andal', c:'8 produk' },
               { n:'Baterai', d:'Lithium LiFePO4, Rack Mounted, Wall, All-in-One ESS', c:'15 produk' },
               { n:'Paket PLTS', d:'Solusi lengkap untuk rumah, kantor, dan industri', c:'9 produk' },
             ].map((cat,i) => (
-              <div key={cat.n} className="group flex cursor-pointer items-center justify-between border-b border-gray-100 py-8 transition hover:border-gray-300">
+              <div key={cat.n} className="group flex cursor-pointer items-center justify-between py-8 transition hover:bg-gray-50/50 -mx-4 px-4 rounded-xl">
                 <div>
-                  <span className="text-xs text-gray-300 mr-3">0{i+1}</span>
+                  <span className="text-xs text-gray-200 mr-3 font-mono">0{i+1}</span>
                   <h3 className="inline text-xl font-medium">{cat.n}</h3>
                   <p className="mt-2 text-sm text-gray-400 max-w-xl">{cat.d}</p>
                 </div>
@@ -73,11 +77,13 @@ export default function PrototypeB() {
         </div>
       </section>
 
-      {/* ===== FEATURED — Side by side, large photo ===== */}
-      <section className="py-32 bg-gray-50">
-        <div className="mx-auto max-w-5xl px-8">
+      {/* ===== FEATURED — Warm neutral background ===== */}
+      <section className="relative py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
+        <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-emerald-50/60 blur-3xl" />
+
+        <div className="relative mx-auto max-w-5xl px-8">
           <div className="grid items-center gap-16 lg:grid-cols-2">
-            <div className="overflow-hidden rounded-3xl bg-white h-96">
+            <div className="overflow-hidden rounded-3xl bg-white h-96 shadow-xl shadow-gray-900/5 ring-1 ring-gray-900/5">
               <img src={IMG.panel} alt="" className="h-full w-full object-contain p-8" />
             </div>
             <div>
@@ -89,7 +95,7 @@ export default function PrototypeB() {
                 <span className="text-sm text-gray-400 line-through">Rp 2.250.000</span>
               </div>
               <div className="mt-8 flex gap-3">
-                <a href="#" className="rounded-full bg-gray-900 px-8 py-3 text-sm font-medium text-white hover:bg-gray-800 transition">Beli Sekarang</a>
+                <a href="#" className="rounded-full bg-gray-900 px-8 py-3 text-sm font-medium text-white hover:bg-gray-800 shadow-lg shadow-gray-900/10 transition">Beli Sekarang</a>
                 <a href="#" className="rounded-full px-8 py-3 text-sm font-medium text-gray-500 hover:text-gray-900 transition">Detail →</a>
               </div>
             </div>
@@ -97,24 +103,45 @@ export default function PrototypeB() {
         </div>
       </section>
 
-      {/* ===== CTA ===== */}
-      <section className="py-32">
-        <div className="mx-auto max-w-2xl px-8 text-center">
-          <h2 className="text-3xl font-light tracking-tight lg:text-4xl">Butuh bantuan memilih?</h2>
-          <p className="mt-6 text-lg text-gray-500">Tim kami siap membantu Anda menemukan produk yang tepat.</p>
-          <a href="#" className="mt-8 inline-block rounded-full bg-gray-900 px-10 py-4 text-sm font-medium text-white hover:bg-gray-800 transition">Konsultasi Gratis</a>
+      {/* ===== BRANDS — Very light green tint ===== */}
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-5xl px-8">
+          <p className="text-xs font-medium uppercase tracking-[.25em] text-gray-400 mb-8 text-center">Brand Resmi</p>
+          <div className="flex flex-wrap items-center justify-center gap-10 opacity-30">
+            {['MITSUBISHI ELECTRIC','CANADIAN SOLAR','LONGi','BLUETTI','BEZVOLT','AIKO','GH SOLAR','SRNE'].map(b => (
+              <span key={b} className="text-sm font-bold tracking-wider text-gray-400">{b}</span>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-100">
+      {/* ===== CTA — Dark section ===== */}
+      <section className="relative overflow-hidden bg-gray-900">
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-emerald-500/20 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-teal-500/10 blur-3xl" />
+        </div>
+
+        <div className="relative mx-auto max-w-2xl px-8 py-32 text-center">
+          <h2 className="text-3xl font-light tracking-tight text-white lg:text-4xl">Butuh bantuan memilih?</h2>
+          <p className="mt-6 text-lg text-gray-400">Tim kami siap membantu Anda menemukan produk yang tepat untuk kebutuhan energi Anda.</p>
+          <a href="#" className="mt-8 inline-block rounded-full bg-white px-10 py-4 text-sm font-medium text-gray-900 hover:bg-gray-100 shadow-lg shadow-white/5 transition">Konsultasi Gratis</a>
+        </div>
+      </section>
+
+      {/* ===== FOOTER — Dark ===== */}
+      <footer className="bg-gray-900 border-t border-gray-800">
         <div className="mx-auto max-w-5xl px-8 py-12">
           <div className="flex flex-col gap-8 sm:flex-row sm:justify-between">
-            <span className="text-sm text-gray-400">© 2026 EBTPlaza</span>
-            <div className="flex gap-6 text-sm text-gray-400">
-              {['Privasi','Syarat','Kontak'].map(l => <a key={l} href="#" className="hover:text-gray-900 transition">{l}</a>)}
+            <div>
+              <span className="text-sm font-semibold text-white">EBTPlaza</span>
+              <p className="mt-1 text-sm text-gray-500">Energi terbarukan untuk semua.</p>
+            </div>
+            <div className="flex gap-6 text-sm text-gray-500">
+              {['Privasi','Syarat','Kontak'].map(l => <a key={l} href="#" className="hover:text-gray-300 transition">{l}</a>)}
             </div>
           </div>
+          <div className="mt-8 pt-8 border-t border-gray-800 text-center text-xs text-gray-600">© 2026 EBTPlaza</div>
         </div>
       </footer>
     </div>
