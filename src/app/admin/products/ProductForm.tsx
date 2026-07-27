@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MultiImageUpload } from '../MultiImageUpload';
 import { SlugInput } from '../SlugInput';
+import { CurrencyInput } from '../CurrencyInput';
 
 interface ProductFormProps {
   defaultValues?: any;
@@ -83,12 +84,10 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
           <SlugInput name="slug" defaultValue={defaultValues?.slug} sourceName="name" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Harga <ReqStar /></label>
-          <input name="price" type="number" defaultValue={defaultValues?.price} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+        <CurrencyInput name="price" label="Harga" required defaultValue={defaultValues?.price} />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Harga Asli</label>
-          <input name="originalPrice" type="number" defaultValue={defaultValues?.originalPrice} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+        <CurrencyInput name="originalPrice" label="Harga Asli" defaultValue={defaultValues?.originalPrice ?? undefined} />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Stok <ReqStar /></label>
