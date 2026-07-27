@@ -1,4 +1,4 @@
-import { ProtoMegaMenu } from '../../ProtoMegaMenu';
+import { ProtoMegaMenu } from '../ProtoMegaMenu';
 
 export default function PrototypeCPage() {
   return (

@@ -1,4 +1,4 @@
-import { ProtoMegaMenu } from '../../ProtoMegaMenu';
+import { ProtoMegaMenu } from '../ProtoMegaMenu';
 
 const IMG = {
   panel: '/images/prototype/solar-panel-folded.png',
