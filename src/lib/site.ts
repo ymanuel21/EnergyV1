@@ -22,10 +22,10 @@ export const SITE_CONFIG = {
   phone: '(022) 20522279',
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '6282112850215',
   /** Company / legal entity */
-  company: 'Rekasurya',
+  company: 'EBTPlaza',
   /** Full address */
   address:
-    'Rekasurya EcoBuilding, Jl. Terusan Jakarta, Puri Dago Raya No.342 Kav 31, Sukamiskin, Kec. Arcamanik, Kota Bandung, Jawa Barat 40293',
+    'Jl. Terusan Jakarta, Puri Dago Raya No.342 Kav 31, Sukamiskin, Kec. Arcamanik, Kota Bandung, Jawa Barat 40293',
   /** Logo */
   logo: {
     /** Single-letter icon shown in the colored square */

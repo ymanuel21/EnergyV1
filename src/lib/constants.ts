@@ -36,7 +36,7 @@ export const NAV_LINKS = {
       { label: 'Program Afiliasi', href: '/afiliasi' },
       { label: 'Panduan Energi Surya', href: '/artikel' },
       { label: 'FAQ', href: '/faq' },
-      { label: 'Tentang Rekasurya', href: '/halaman/tentang-kami' },
+      { label: 'Tentang Kami', href: '/halaman/tentang-kami' },
       { label: 'Kebijakan Pengiriman', href: '/halaman/kebijakan-pengiriman' },
       { label: 'Kebijakan Retur', href: '/halaman/kebijakan-retur' },
     ],

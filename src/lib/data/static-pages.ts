@@ -7,10 +7,10 @@ export interface StaticPage {
 export const staticPages: StaticPage[] = [
   {
     slug: 'tentang-kami',
-    title: 'Tentang Rekasurya',
-    content: `# Tentang Rekasurya
+    title: 'Tentang Kami',
+    content: `# Tentang Kami
 
-Rekasurya adalah perusahaan energi terbarukan yang berfokus pada penyediaan solusi tenaga surya untuk rumah, bisnis, dan proyek skala besar di Indonesia.
+EBTPlaza adalah platform energi terbarukan yang berfokus pada penyediaan solusi tenaga surya untuk rumah, bisnis, dan proyek skala besar di Indonesia.
 
 ## Visi Kami
 
@@ -24,7 +24,6 @@ Menjadi mitra terpercaya dalam transisi energi Indonesia menuju masa depan yang 
 
 ## Lokasi
 
-Rekasurya EcoBuilding
 Jl. Terusan Jakarta, Puri Dago Raya No.342 Kav 31
 Sukamiskin, Kec. Arcamanik
 Kota Bandung, Jawa Barat 40293

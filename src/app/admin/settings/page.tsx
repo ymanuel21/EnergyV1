@@ -25,7 +25,7 @@ export default function SettingsPage() {
     { key: 'email', label: 'Email', defaultValue: 'info@ebtplaza.com' },
     { key: 'phone', label: 'Telepon', defaultValue: '(022) 20522279' },
     { key: 'whatsapp', label: 'WhatsApp', defaultValue: '6282112850215' },
-    { key: 'address', label: 'Alamat', defaultValue: 'Rekasurya EcoBuilding, Bandung' },
+    { key: 'address', label: 'Alamat', defaultValue: 'Jl. Terusan Jakarta, Puri Dago Raya No.342, Bandung' },
     { key: 'description', label: 'SEO Description', defaultValue: 'Pusat produk energi terbarukan...' },
   ];
 
