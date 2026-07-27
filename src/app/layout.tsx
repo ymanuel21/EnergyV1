@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { TopBar } from '@components/layout/TopBar';
 import { Header } from '@components/layout/Header';
-import { CategoryNav } from '@components/layout/CategoryNav';
 import { Footer } from '@components/layout/Footer';
 import { FloatingWhatsApp } from '@components/layout/FloatingWhatsApp';
 import { SkipToContent } from '@components/layout/SkipToContent';
@@ -58,7 +57,6 @@ export default function RootLayout({
             <CompareProvider>
               <TopBar />
               <Header />
-              <CategoryNav />
               <main id="main-content" className="flex-1">
                 {children}
               </main>
