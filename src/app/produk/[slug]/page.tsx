@@ -118,7 +118,7 @@ export default async function ProductDetail({ params }: Props) {
             {brand && (
               <Link
                 href={`/brand/${brand.slug}`}
-                className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-brand-700"
+                className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
               >
                 <BrandLogo name={brand.name} logo={brand.logo} size="sm" />
                 {brand.name}
@@ -140,10 +140,10 @@ export default async function ProductDetail({ params }: Props) {
 
             {/* Affiliate */}
             {product.affiliateCommission && (
-              <div className="rounded-lg bg-brand-50 p-3 text-sm">
+              <div className="rounded-lg bg-gray-50 p-3 text-sm">
                 Komisi Afiliator {product.affiliateCommission.percent}% (Rp{' '}
                 {product.affiliateCommission.amount?.toLocaleString('id-ID') || '0'}) —{' '}
-                <Link href="/afiliasi" className="font-medium text-brand-700 hover:underline">
+                <Link href="/afiliasi" className="font-medium text-gray-900 hover:underline">
                   Gabung gratis
                 </Link>
               </div>
@@ -238,7 +238,7 @@ export default async function ProductDetail({ params }: Props) {
                             <li key={doc.name}>
                               <a
                                 href={doc.url}
-                                className="text-brand-700 hover:underline text-sm"
+                                className="text-gray-900 hover:underline text-sm"
                                 target="_blank"
                                 rel="noopener"
                               >

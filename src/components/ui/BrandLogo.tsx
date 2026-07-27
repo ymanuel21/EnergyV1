@@ -31,7 +31,7 @@ export function BrandLogo({ name, logo, size = 'md', className = '' }: BrandLogo
   // Fallback: initial letter
   return (
     <div
-      className={`flex shrink-0 items-center justify-center rounded-full bg-brand-50 font-bold text-brand-700 ${sizeClasses[size]} ${className}`}
+      className={`flex shrink-0 items-center justify-center rounded-full bg-gray-50 font-bold text-gray-900 ${sizeClasses[size]} ${className}`}
       aria-label={name}
     >
       {name.charAt(0)}

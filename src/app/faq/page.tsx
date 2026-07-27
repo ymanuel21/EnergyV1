@@ -63,9 +63,9 @@ export default function FaqPage() {
         ))}
       </div>
 
-      <div className="mt-8 rounded-lg bg-brand-50 p-6">
-        <h2 className="text-lg font-semibold text-brand-900">Masih ada pertanyaan?</h2>
-        <p className="mt-1 text-sm text-brand-700">
+      <div className="mt-8 rounded-lg bg-gray-50 p-6">
+        <h2 className="text-lg font-semibold text-gray-900">Masih ada pertanyaan?</h2>
+        <p className="mt-1 text-sm text-gray-900">
           Hubungi kami via WhatsApp atau email.
         </p>
         <div className="mt-4 flex gap-3">
@@ -79,7 +79,7 @@ export default function FaqPage() {
           </a>
           <Link
             href="/permintaan-penawaran"
-            className="rounded-lg border border-brand-600 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100 transition-colors"
+            className="rounded-lg border border-gray-800 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 transition-colors"
           >
             Ajukan Pertanyaan
           </Link>

@@ -53,7 +53,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
               onClick={() => setSelected(i)}
               className={cn(
                 'relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-colors',
-                i === selected ? 'border-brand-600' : 'border-gray-200 hover:border-gray-400'
+                i === selected ? 'border-gray-800' : 'border-gray-200 hover:border-gray-400'
               )}
             >
               <SafeImage

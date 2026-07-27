@@ -25,7 +25,7 @@ export default function ArticlesPage() {
           <Link
             key={article.slug}
             href={`/artikel/${article.slug}`}
-            className="group rounded-xl border border-gray-200 p-6 transition hover:shadow-md hover:border-brand-200"
+            className="group rounded-xl border border-gray-200 p-6 transition hover:shadow-md hover:border-gray-200"
           >
             <div className="flex items-center gap-2 text-xs text-gray-400">
               <span>{article.category}</span>
@@ -34,11 +34,11 @@ export default function ArticlesPage() {
               <span>•</span>
               <span>{article.readTime} menit</span>
             </div>
-            <h2 className="mt-2 text-lg font-semibold text-gray-900 group-hover:text-brand-700 transition-colors">
+            <h2 className="mt-2 text-lg font-semibold text-gray-900 group-hover:text-gray-900 transition-colors">
               {article.title}
             </h2>
             <p className="mt-2 text-sm text-gray-500 line-clamp-2">{article.excerpt}</p>
-            <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-700 group-hover:gap-2 transition-all">
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-gray-900 group-hover:gap-2 transition-all">
               Baca selengkapnya
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

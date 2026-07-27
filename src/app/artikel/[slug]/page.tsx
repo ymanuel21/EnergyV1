@@ -92,7 +92,7 @@ export default async function ArticleDetail({ params }: Props) {
               <Link
                 key={r.slug}
                 href={`/artikel/${r.slug}`}
-                className="rounded-lg border border-gray-200 p-4 hover:border-brand-200 hover:shadow-sm transition-colors"
+                className="rounded-lg border border-gray-200 p-4 hover:border-gray-200 hover:shadow-sm transition-colors"
               >
                 <p className="text-xs text-gray-400">{r.category} • {r.readTime} menit</p>
                 <h3 className="mt-1 text-sm font-medium text-gray-900 line-clamp-2">{r.title}</h3>

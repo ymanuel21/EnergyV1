@@ -28,7 +28,7 @@ export default function NewArticlePage() {
         <label className="flex items-center gap-2 text-sm">
           <input name="publish" type="checkbox" /> Publish langsung
         </label>
-        <button type="submit" className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">Simpan</button>
+        <button type="submit" className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white">Simpan</button>
       </form>
     </div>
   );

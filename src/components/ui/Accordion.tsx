@@ -22,7 +22,7 @@ export function Accordion({
     <div className={cn('border-b border-gray-200', className)}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between py-4 text-left text-sm font-medium text-gray-900 hover:text-brand-700 transition-colors"
+        className="flex w-full items-center justify-between py-4 text-left text-sm font-medium text-gray-900 hover:text-gray-900 transition-colors"
       >
         {title}
         <svg

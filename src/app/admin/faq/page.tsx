@@ -41,7 +41,7 @@ export default async function FaqPage() {
               <input name="question" defaultValue={f.question} className="w-full rounded-lg border px-3 py-2 text-sm font-medium" />
               <textarea name="answer" defaultValue={f.answer} rows={2} className="w-full rounded-lg border px-3 py-2 text-sm" />
               <div className="flex justify-end gap-2">
-                <SubmitButton label="Simpan" loadingLabel="Menyimpan..." className="rounded-lg bg-brand-600 px-3 py-1 text-xs font-medium text-white hover:bg-brand-700 disabled:opacity-50" />
+                <SubmitButton label="Simpan" loadingLabel="Menyimpan..." className="rounded-lg bg-gray-800 px-3 py-1 text-xs font-medium text-white hover:bg-gray-900 disabled:opacity-50" />
                 <DeleteButton label="Hapus" itemName={f.question} onDelete={handleDelete.bind(null, f.id)} />
               </div>
             </form>

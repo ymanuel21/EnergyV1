@@ -26,7 +26,7 @@ export function NewsletterForm() {
           type="email"
           required
           placeholder="Email Anda"
-          className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
+          className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none"
         />
         <Button type="submit" variant="primary" size="sm">
           Ikuti

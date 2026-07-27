@@ -17,9 +17,9 @@ export default function AffiliatePage() {
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Afiliator' }]} />
 
       {/* Hero */}
-      <div className="mt-6 rounded-2xl bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white sm:p-12">
+      <div className="mt-6 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-900 p-8 text-white sm:p-12">
         <h1 className="text-2xl font-bold sm:text-3xl">Program Afiliasi EBTPlaza</h1>
-        <p className="mt-3 max-w-lg text-brand-100">
+        <p className="mt-3 max-w-lg text-gray-100">
           Bagikan produk energi terbarukan dan dapatkan komisi hingga 5% dari setiap penjualan. Gabung gratis, tanpa minimal penjualan.
         </p>
         <a
@@ -69,7 +69,7 @@ export default function AffiliatePage() {
             { step: '3', title: 'Dapatkan Komisi', desc: 'Terima komisi setiap ada penjualan dari link Anda.' },
           ].map((item) => (
             <div key={item.step} className="flex gap-4 rounded-lg border border-gray-200 p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-900">
                 {item.step}
               </div>
               <div>
@@ -111,9 +111,9 @@ export default function AffiliatePage() {
       </div>
 
       {/* CTA */}
-      <div className="mt-10 rounded-2xl bg-brand-50 p-8 text-center">
-        <h2 className="text-xl font-bold text-brand-900">Siap menghasilkan passive income?</h2>
-        <p className="mt-2 text-brand-700">Daftar sekarang dan mulai bagikan produk energi terbarukan.</p>
+      <div className="mt-10 rounded-2xl bg-gray-50 p-8 text-center">
+        <h2 className="text-xl font-bold text-gray-900">Siap menghasilkan passive income?</h2>
+        <p className="mt-2 text-gray-900">Daftar sekarang dan mulai bagikan produk energi terbarukan.</p>
         <a
           href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Halo, saya tertarik menjadi afiliator EBTPlaza')}`}
           target="_blank"

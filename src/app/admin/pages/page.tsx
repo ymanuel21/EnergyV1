@@ -26,7 +26,7 @@ export default async function PagesPage() {
               <input name="title" defaultValue={p.title} className="w-full rounded-lg border px-3 py-2 text-sm font-medium" />
               <textarea name="content" defaultValue={p.content} rows={10} className="w-full rounded-lg border px-3 py-2 text-sm font-mono" />
               <div className="flex justify-end">
-                <SubmitButton label="Simpan" loadingLabel="Menyimpan..." className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50" />
+                <SubmitButton label="Simpan" loadingLabel="Menyimpan..." className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 disabled:opacity-50" />
               </div>
             </form>
           </div>

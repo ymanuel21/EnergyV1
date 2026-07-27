@@ -73,7 +73,7 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
             {/* Badges */}
             <div className="absolute top-1 left-1 flex gap-1">
               {i === 0 && (
-                <span className="rounded bg-brand-600 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                <span className="rounded bg-gray-800 px-1.5 py-0.5 text-[10px] font-medium text-white">
                   Utama
                 </span>
               )}
@@ -117,7 +117,7 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-brand-500 hover:text-brand-500 disabled:opacity-50"
+          className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-gray-700 hover:text-gray-700 disabled:opacity-50"
         >
           <span className="text-center text-xs">
             {uploading ? 'Mengupload...' : '+ Tambah\nGambar'}

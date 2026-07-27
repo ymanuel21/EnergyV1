@@ -55,7 +55,7 @@ export default async function BrandsPage() {
             <BrandLogo name={b.name} logo={b.logo} size="sm" />
             <span className="font-medium flex-1">{b.name}</span>
             <span className="text-gray-400 hidden sm:inline">{b.slug}</span>
-            <Link href={`/admin/brands/${b.id}`} className="text-brand-600 hover:text-brand-800 font-medium text-sm">
+            <Link href={`/admin/brands/${b.id}`} className="text-gray-800 hover:text-gray-800 font-medium text-sm">
               Edit
             </Link>
             <DeleteButton itemName={b.name} onDelete={handleDelete.bind(null, b.id)} />

@@ -11,7 +11,7 @@ export function Container({
   ...props
 }: ContainerProps) {
   const sizeClasses = {
-    default: 'max-w-7xl',
+    default: 'max-w-5xl',
     narrow: 'max-w-4xl',
     wide: 'max-w-[90rem]',
   };

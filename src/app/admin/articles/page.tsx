@@ -17,7 +17,7 @@ export default async function ArticlesPage() {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Artikel</h1>
-        <Link href="/admin/articles/new" className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">
+        <Link href="/admin/articles/new" className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900">
           + Tulis Artikel
         </Link>
       </div>
@@ -42,7 +42,7 @@ export default async function ArticlesPage() {
                   </span>
                 </td>
                 <td className="px-4 py-3 flex gap-2">
-                  <Link href={`/admin/articles/${a.id}`} className="text-brand-600 hover:underline text-xs">Edit</Link>
+                  <Link href={`/admin/articles/${a.id}`} className="text-gray-800 hover:underline text-xs">Edit</Link>
                   <form action={handleDelete.bind(null, a.id)}>
                     <button className="text-red-500 hover:underline text-xs">Hapus</button>
                   </form>

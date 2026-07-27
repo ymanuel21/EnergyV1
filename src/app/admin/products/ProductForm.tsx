@@ -117,7 +117,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
                     type="checkbox"
                     name={`cat-${cat.id}`}
                     defaultChecked={defaultCatIds.includes(cat.id)}
-                    className="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                    className="rounded border-gray-300 text-gray-800 focus:ring-gray-700"
                   />
                   <span className="text-sm font-medium text-gray-700">{cat.name}</span>
                 </label>
@@ -128,7 +128,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
                       type="checkbox"
                       name={`cat-${child.id}`}
                       defaultChecked={defaultCatIds.includes(child.id)}
-                      className="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                      className="rounded border-gray-300 text-gray-800 focus:ring-gray-700"
                     />
                     <span className="text-sm text-gray-600">{child.name}</span>
                   </label>
@@ -170,7 +170,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
         <button type="button" onClick={() => router.back()} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
           Batal
         </button>
-        <button type="submit" disabled={saving} className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 disabled:opacity-50">
           {saving ? 'Menyimpan...' : 'Simpan'}
         </button>
       </div>

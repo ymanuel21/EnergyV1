@@ -63,7 +63,7 @@ export default function CartPage() {
                 <div>
                   <Link
                     href={`/produk/${item.slug}`}
-                    className="text-sm font-medium text-gray-900 hover:text-brand-700 line-clamp-1"
+                    className="text-sm font-medium text-gray-900 hover:text-gray-900 line-clamp-1"
                   >
                     {item.name}
                   </Link>
@@ -133,7 +133,7 @@ export default function CartPage() {
 
           <Link
             href="/produk"
-            className="block text-center text-sm text-brand-700 hover:underline"
+            className="block text-center text-sm text-gray-900 hover:underline"
           >
             ← Lanjutkan belanja
           </Link>

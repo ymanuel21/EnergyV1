@@ -154,7 +154,7 @@ function CategoryColumn({ category, onClick }: { category: Category; onClick: ()
       <Link
         href={`/kategori/${category.slug}`}
         onClick={onClick}
-        className="mb-2 block text-sm font-semibold text-brand-700 hover:text-brand-800 transition-colors"
+        className="mb-2 block text-sm font-semibold text-gray-900 hover:text-gray-800 transition-colors"
         role="menuitem"
       >
         {category.name}
@@ -167,7 +167,7 @@ function CategoryColumn({ category, onClick }: { category: Category; onClick: ()
               <Link
                 href={`/kategori/${child.slug}`}
                 onClick={onClick}
-                className="block text-sm text-gray-600 hover:text-brand-700 transition-colors py-0.5"
+                className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-0.5"
                 role="menuitem"
               >
                 {child.name}

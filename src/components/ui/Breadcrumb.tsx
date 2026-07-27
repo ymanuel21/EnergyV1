@@ -23,7 +23,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
               </svg>
             )}
             {item.href ? (
-              <Link href={item.href} className="hover:text-brand-700 transition-colors">
+              <Link href={item.href} className="hover:text-gray-900 transition-colors">
                 {item.label}
               </Link>
             ) : (

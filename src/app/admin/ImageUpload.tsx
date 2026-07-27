@@ -90,7 +90,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
       ) : (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="mb-2 flex h-32 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-brand-500 hover:text-brand-500"
+          className="mb-2 flex h-32 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-gray-700 hover:text-gray-700"
         >
           <span className="text-center text-xs">Klik untuk{'\n'}upload</span>
         </div>
@@ -133,7 +133,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
           <button
             type="button"
             onClick={handleUrlSubmit}
-            className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
+            className="rounded-lg bg-gray-800 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-900"
           >
             Gunakan URL
           </button>

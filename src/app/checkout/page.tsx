@@ -102,9 +102,9 @@ export default function CheckoutPage() {
             <span
               className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
                 step === s
-                  ? 'bg-brand-600 text-white'
+                  ? 'bg-gray-800 text-white'
                   : s < step || (s === 'shipping' && step !== 'shipping')
-                  ? 'bg-brand-100 text-brand-700'
+                  ? 'bg-gray-100 text-gray-900'
                   : 'bg-gray-100 text-gray-400'
               }`}
             >
@@ -133,7 +133,7 @@ export default function CheckoutPage() {
                     required
                     value={formData.name}
                     onChange={(e) => updateField('name', e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none"
                   />
                 </div>
                 <div>
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
                     required
                     value={formData.email}
                     onChange={(e) => updateField('email', e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none"
                   />
                 </div>
                 <div>
@@ -153,7 +153,7 @@ export default function CheckoutPage() {
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => updateField('phone', e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none"
                   />
                 </div>
                 <div>
@@ -164,7 +164,7 @@ export default function CheckoutPage() {
                     required
                     value={formData.city}
                     onChange={(e) => updateField('city', e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none"
                   />
                 </div>
               </div>
@@ -176,7 +176,7 @@ export default function CheckoutPage() {
                   rows={3}
                   value={formData.address}
                   onChange={(e) => updateField('address', e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none resize-none"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none resize-none"
                 />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -186,7 +186,7 @@ export default function CheckoutPage() {
                     type="text"
                     value={formData.postalCode}
                     onChange={(e) => updateField('postalCode', e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none"
                   />
                 </div>
               </div>
@@ -197,7 +197,7 @@ export default function CheckoutPage() {
                   value={formData.notes}
                   onChange={(e) => updateField('notes', e.target.value)}
                   placeholder="Opsional: catatan untuk kurir"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none resize-none"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none resize-none"
                 />
               </div>
               <div className="flex justify-end">
@@ -240,7 +240,7 @@ export default function CheckoutPage() {
                     key={method.value}
                     className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${
                       formData.paymentMethod === method.value
-                        ? 'border-brand-500 bg-brand-50'
+                        ? 'border-gray-700 bg-gray-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                       value={method.value}
                       checked={formData.paymentMethod === method.value}
                       onChange={(e) => updateField('paymentMethod', e.target.value)}
-                      className="text-brand-600 focus:ring-brand-500"
+                      className="text-gray-800 focus:ring-gray-700"
                     />
                     <span className="text-lg">{method.icon}</span>
                     <span className="text-sm font-medium text-gray-900">{method.label}</span>

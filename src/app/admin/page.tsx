@@ -41,8 +41,8 @@ export default async function DashboardPage() {
       <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
         <h2 className="text-sm font-semibold text-gray-700">Quick Actions</h2>
         <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/admin/products/new" className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">+ Tambah Produk</Link>
-          <Link href="/admin/articles/new" className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">+ Tulis Artikel</Link>
+          <Link href="/admin/products/new" className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white">+ Tambah Produk</Link>
+          <Link href="/admin/articles/new" className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white">+ Tulis Artikel</Link>
           <Link href="/admin/settings" className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600">Pengaturan</Link>
         </div>
       </div>
@@ -53,7 +53,7 @@ export default async function DashboardPage() {
 function Card({ label, value, href }: { label: string; value: number; href: string }) {
   return (
     <Link href={href} className="rounded-xl border border-gray-200 bg-white p-6 hover:shadow-sm transition-shadow">
-      <p className="text-3xl font-bold text-brand-700">{value}</p>
+      <p className="text-3xl font-bold text-gray-900">{value}</p>
       <p className="mt-1 text-sm text-gray-500">{label}</p>
     </Link>
   );

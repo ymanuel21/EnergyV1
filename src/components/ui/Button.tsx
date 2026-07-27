@@ -3,15 +3,15 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { SpinnerIcon } from './Icons';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm',
-        outline: 'border border-brand-600 text-brand-700 hover:bg-brand-50',
-        ghost: 'text-gray-600 hover:text-brand-700 hover:bg-gray-100',
+        primary: 'bg-gray-800 text-white hover:bg-gray-900 shadow-sm',
+        outline: 'border border-gray-800 text-gray-900 hover:bg-gray-50',
+        ghost: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
         whatsapp: 'bg-green-500 text-white hover:bg-green-600 shadow-sm',
-        link: 'text-brand-700 underline-offset-4 hover:underline',
+        link: 'text-gray-900 underline-offset-4 hover:underline',
         danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
       },
       size: {

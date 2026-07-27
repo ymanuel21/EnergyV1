@@ -8,7 +8,7 @@ const badgeVariants = cva(
       variant: {
         clearance: 'bg-red-100 text-red-700',
         promo: 'bg-accent-100 text-accent-700',
-        new: 'bg-brand-100 text-brand-700',
+        new: 'bg-gray-100 text-gray-900',
         cheapest: 'bg-yellow-100 text-yellow-800',
       },
     },

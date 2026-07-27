@@ -16,7 +16,7 @@ export default function NotFound() {
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: '404' }]} />
 
       <div className="mx-auto max-w-md">
-        <p className="text-6xl font-extrabold text-brand-200">404</p>
+        <p className="text-6xl font-extrabold text-gray-200">404</p>
         <h1 className="mt-4 text-2xl font-bold text-gray-900">
           Halaman tidak ditemukan
         </h1>

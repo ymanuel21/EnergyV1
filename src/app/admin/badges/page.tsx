@@ -78,7 +78,7 @@ export default async function BadgesPage() {
               <input name="bgColor" type="color" defaultValue={b.bgColor} className="h-8 w-10 rounded border" />
               <input name="icon" defaultValue={b.icon || ''} placeholder="Emoji" className="w-16 rounded-lg border px-2 py-1 text-sm" />
               <input name="sortOrder" type="number" defaultValue={b.sortOrder} className="w-16 rounded-lg border px-2 py-1 text-sm" />
-              <SubmitButton label="Simpan" loadingLabel="..." className="rounded-lg bg-brand-600 px-2 py-1 text-xs font-medium text-white hover:bg-brand-700" />
+              <SubmitButton label="Simpan" loadingLabel="..." className="rounded-lg bg-gray-800 px-2 py-1 text-xs font-medium text-white hover:bg-gray-900" />
               <DeleteButton itemName={b.name} onDelete={handleDelete.bind(null, b.id)} />
             </form>
           </div>

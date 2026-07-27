@@ -186,7 +186,7 @@ export default function RfqPage() {
                 value={form.name}
                 onChange={(e) => updateField('name', e.target.value)}
                 className={`w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-1 ${
-                  errors.name ? 'border-red-400 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-brand-500 focus:ring-brand-500'
+                  errors.name ? 'border-red-400 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-700 focus:ring-gray-700'
                 }`}
                 data-track="rfq-field-name"
               />
@@ -200,7 +200,7 @@ export default function RfqPage() {
                 value={form.email}
                 onChange={(e) => updateField('email', e.target.value)}
                 className={`w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-1 ${
-                  errors.email ? 'border-red-400 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-brand-500 focus:ring-brand-500'
+                  errors.email ? 'border-red-400 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-700 focus:ring-gray-700'
                 }`}
                 data-track="rfq-field-email"
               />
@@ -212,7 +212,7 @@ export default function RfqPage() {
                 type="tel"
                 value={form.phone}
                 onChange={(e) => updateField('phone', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
               />
             </div>
             <div>
@@ -221,7 +221,7 @@ export default function RfqPage() {
                 type="text"
                 value={form.company}
                 onChange={(e) => updateField('company', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
               />
             </div>
             <div>
@@ -230,7 +230,7 @@ export default function RfqPage() {
                 type="text"
                 value={form.npwp}
                 onChange={(e) => updateField('npwp', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
               />
             </div>
           </div>
@@ -246,7 +246,7 @@ export default function RfqPage() {
                 type="text"
                 value={form.projectName}
                 onChange={(e) => updateField('projectName', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
               />
             </div>
             <div>
@@ -255,7 +255,7 @@ export default function RfqPage() {
                 type="text"
                 value={form.location}
                 onChange={(e) => updateField('location', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
               />
             </div>
             <div>
@@ -264,7 +264,7 @@ export default function RfqPage() {
                 type="date"
                 value={form.targetDate}
                 onChange={(e) => updateField('targetDate', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
               />
             </div>
             <div className="flex items-end pb-2">
@@ -273,7 +273,7 @@ export default function RfqPage() {
                   type="checkbox"
                   checked={form.needsInstallation}
                   onChange={(e) => updateField('needsInstallation', e.target.checked)}
-                  className="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                  className="rounded border-gray-300 text-gray-800 focus:ring-gray-700"
                 />
                 <span className="text-sm text-gray-700">Membutuhkan jasa instalasi</span>
               </label>
@@ -285,7 +285,7 @@ export default function RfqPage() {
               rows={3}
               value={form.notes}
               onChange={(e) => updateField('notes', e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 resize-none"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700 resize-none"
               placeholder="Spesifikasi teknis, preferensi brand, atau kebutuhan khusus..."
             />
           </div>
@@ -334,14 +334,14 @@ export default function RfqPage() {
               value={newItem.name}
               onChange={(e) => setNewItem((prev) => ({ ...prev, name: e.target.value }))}
               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addItem(); } }}
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
             />
             <input
               type="number"
               min={1}
               value={newItem.quantity}
               onChange={(e) => setNewItem((prev) => ({ ...prev, quantity: parseInt(e.target.value) || 1 }))}
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
             />
             <Button type="button" variant="outline" size="sm" onClick={addItem} data-track="rfq-add-item">
               + Tambah
@@ -352,7 +352,7 @@ export default function RfqPage() {
             placeholder="Catatan item (opsional)"
             value={newItem.notes}
             onChange={(e) => setNewItem((prev) => ({ ...prev, notes: e.target.value }))}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
           />
         </section>
 

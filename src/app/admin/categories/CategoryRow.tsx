@@ -61,7 +61,7 @@ export function CategoryRow({ category, allCategories }: { category: any; allCat
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded bg-brand-600 px-3 py-1 text-xs font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+            className="rounded bg-gray-800 px-3 py-1 text-xs font-medium text-white hover:bg-gray-900 disabled:opacity-50"
           >
             {saving ? 'Menyimpan...' : 'Simpan'}
           </button>
@@ -74,7 +74,7 @@ export function CategoryRow({ category, allCategories }: { category: any; allCat
         </div>
       ) : (
         <>
-          <span className={isChild ? 'pl-6 text-gray-700' : 'font-semibold text-brand-700'}>
+          <span className={isChild ? 'pl-6 text-gray-700' : 'font-semibold text-gray-900'}>
             {isChild ? `└ ${category.name}` : category.name}
           </span>
           <span className="text-gray-400 text-xs">{category.slug}</span>

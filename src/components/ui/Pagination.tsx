@@ -65,7 +65,7 @@ export function Pagination({
         className={`rounded-lg px-3 py-2 text-sm transition-colors ${
           current <= 1
             ? 'pointer-events-none text-gray-300'
-            : 'text-gray-500 hover:text-brand-700 hover:bg-gray-100'
+            : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
         }`}
         aria-disabled={current <= 1}
         tabIndex={current <= 1 ? -1 : undefined}
@@ -89,8 +89,8 @@ export function Pagination({
             className={cn(
               'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
               page === current
-                ? 'bg-brand-600 text-white pointer-events-none'
-                : 'text-gray-600 hover:text-brand-700 hover:bg-gray-100'
+                ? 'bg-gray-800 text-white pointer-events-none'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             )}
             aria-current={page === current ? 'page' : undefined}
           >
@@ -104,7 +104,7 @@ export function Pagination({
         className={`rounded-lg px-3 py-2 text-sm transition-colors ${
           current >= totalPages
             ? 'pointer-events-none text-gray-300'
-            : 'text-gray-500 hover:text-brand-700 hover:bg-gray-100'
+            : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
         }`}
         aria-disabled={current >= totalPages}
         tabIndex={current >= totalPages ? -1 : undefined}
