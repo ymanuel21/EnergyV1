@@ -13,18 +13,21 @@ export default async function BannersPage() {
     'use server';
     await createBanner({ id: `banner-${Date.now()}`, type: data.get('type'), title: data.get('title'), image: data.get('image'), link: data.get('link'), alt: data.get('alt'), sortOrder: parseInt(data.get('sortOrder') as string) || 0 });
     revalidatePath('/admin/banners');
+    revalidatePath('/');
   }
 
   async function handleUpdate(id: string, data: FormData) {
     'use server';
     await updateBanner(id, { title: data.get('title'), image: data.get('image'), link: data.get('link'), alt: data.get('alt') });
     revalidatePath('/admin/banners');
+    revalidatePath('/');
   }
 
   async function handleDelete(id: string) {
     'use server';
     await deleteBanner(id);
     revalidatePath('/admin/banners');
+    revalidatePath('/');
   }
 
   return (

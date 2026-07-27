@@ -6,6 +6,8 @@ import { OrganizationSchema } from '@components/ui/StructuredData';
 import { SafeImage } from '@ui/SafeImage';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Energi Cerdas, Tinggal Klik!',
   alternates: { canonical: '/' },
