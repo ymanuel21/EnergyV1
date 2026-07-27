@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { ProductionOnly } from '@components/layout/ProductionOnly';
 import { TopBar } from '@components/layout/TopBar';
 import { Header } from '@components/layout/Header';
 import { ConditionalCategoryNav } from '@components/layout/ConditionalCategoryNav';
@@ -57,18 +56,14 @@ export default function RootLayout({
         <CartProvider>
           <WishlistProvider>
             <CompareProvider>
-              <ProductionOnly>
-                <TopBar />
-                <Header />
-                <ConditionalCategoryNav />
-              </ProductionOnly>
+              <TopBar />
+              <Header />
+              <ConditionalCategoryNav />
               <main id="main-content" className="flex-1">
                 {children}
               </main>
-              <ProductionOnly>
-                <Footer />
-                <FloatingWhatsApp />
-              </ProductionOnly>
+              <Footer />
+              <FloatingWhatsApp />
             </CompareProvider>
           </WishlistProvider>
         </CartProvider>
