@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { TopBar } from '@components/layout/TopBar';
 import { Header } from '@components/layout/Header';
-import { ConditionalCategoryNav } from '@components/layout/ConditionalCategoryNav';
 import { Footer } from '@components/layout/Footer';
 import { FloatingWhatsApp } from '@components/layout/FloatingWhatsApp';
 import { SkipToContent } from '@components/layout/SkipToContent';
@@ -54,7 +53,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <CompareProvider>
               <TopBar />
               <Header />
-              <ConditionalCategoryNav />
               <main id="main-content" className="flex-1">
                 {children}
               </main>
