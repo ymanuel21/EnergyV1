@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { TopBar } from '@components/layout/TopBar';
 import { Header } from '@components/layout/Header';
 import { Footer } from '@components/layout/Footer';
 import { FloatingWhatsApp } from '@components/layout/FloatingWhatsApp';
@@ -51,7 +50,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <CartProvider>
           <WishlistProvider>
             <CompareProvider>
-              <TopBar />
               <Header />
               <main id="main-content" className="flex-1">
                 {children}
