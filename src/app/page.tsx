@@ -44,7 +44,7 @@ export default async function HomePage() {
             <p className="text-xs font-medium uppercase tracking-[.25em] text-gray-400">Energi Terbarukan</p>
             <h1 className="mt-6 text-4xl font-light leading-tight tracking-tight text-gray-900 lg:text-6xl">
               Tenaga surya<br />
-              <span className="font-semibold">untuk semua.</span>
+              <span className="font-semibold">untuk semua. V2</span>
             </h1>
             <p className="mt-8 text-lg leading-relaxed text-gray-500 max-w-md">
               Produk berkualitas premium, dikurasi dengan cermat. Dari panel hingga sistem lengkap — kami membuat energi bersih menjadi sederhana.
