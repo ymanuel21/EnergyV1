@@ -2,15 +2,15 @@ import type { Banner, NeedCard } from '@/types/product';
 
 export const banners: Banner[] = [
   {
-    src: '/images/placeholder/product-placeholder.png',
-    alt: 'Header — Energi Cerdas, Tinggal Klik!',
+    src: '/images/banners/hero-energi-cerdas.svg',
+    alt: 'Energi Cerdas, Tinggal Klik! — EBTPlaza',
     href: '/produk',
     width: 1280,
     height: 427,
   },
   {
-    src: '/images/placeholder/product-placeholder.png',
-    alt: 'Afiliasi — Dapatkan komisi',
+    src: '/images/banners/hero-afiliasi.svg',
+    alt: 'Dapatkan Komisi — Program Afiliasi EBTPlaza',
     href: '/afiliasi',
     width: 1280,
     height: 427,

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 427">
+  <defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1b5e20"/><stop offset="100%" style="stop-color:#388e3c"/></linearGradient></defs>
+  <rect width="1280" height="427" fill="url(#g)"/>
+  <g transform="translate(800,200)" fill="white" opacity="0.15">
+    <circle cx="0" cy="0" r="60"/><circle cx="120" cy="-30" r="50"/><circle cx="180" cy="50" r="40"/><circle cx="50" cy="80" r="45"/>
+  </g>
+  <text x="100" y="180" font-size="42" fill="white" font-family="system-ui" font-weight="800">Dapatkan Komisi</text>
+  <text x="100" y="240" font-size="24" fill="#a5d6a7" font-family="system-ui">Bergabung sebagai Afiliator EBTPlaza</text>
+  <text x="100" y="290" font-size="16" fill="#81c784" font-family="system-ui">Bagikan produk, dapatkan komisi tiap penjualan</text>
+</svg>

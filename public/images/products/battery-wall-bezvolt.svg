@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1a237e;stop-opacity:0.08"/><stop offset="100%" style="stop-color:#283593;stop-opacity:0.04"/></linearGradient></defs>
+  <rect width="400" height="400" rx="16" fill="url(#bg)"/>
+  <rect x="60" y="40" width="280" height="320" rx="12" fill="#37474f" stroke="#546e7a" stroke-width="2"/>
+  <g fill="#42a5f5">
+    <rect x="80" y="60" width="240" height="50" rx="4" fill="#42a5f5" opacity="0.95"/>
+    <rect x="80" y="120" width="240" height="50" rx="4" fill="#42a5f5" opacity="0.8"/>
+    <rect x="80" y="180" width="240" height="50" rx="4" fill="#42a5f5" opacity="0.65"/>
+    <rect x="80" y="240" width="240" height="50" rx="4" fill="#42a5f5" opacity="0.5"/>
+    <rect x="80" y="300" width="240" height="40" rx="4" fill="#42a5f5" opacity="0.35"/>
+  </g>
+  <text x="200" y="92" text-anchor="middle" font-size="13" fill="white" font-family="system-ui" font-weight="bold">Power Wall 5.12 kWh</text>
+  <circle cx="200" cy="365" r="6" fill="#42a5f5" opacity="0.6"/>
+</svg>
