@@ -27,7 +27,7 @@ export default async function HomePage() {
     getPublicBanners().catch(() => []),
   ]);
 
-  const heroBanner = Array.isArray(banners) ? banners.find((b: any) => b.image) : null;
+  const heroBanner = Array.isArray(banners) ? banners.find((b: any) => b.image && !b.image.includes('placeholder') && !b.image.includes('product-placeholder')) : null;
   const featuredProduct = products.find((p: any) => p.badges?.includes('promo') || p.badges?.includes('new')) || products[0];
 
   return (
