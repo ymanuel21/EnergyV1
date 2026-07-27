@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getAllProducts } from '@/lib/api/products';
 import { getAllBrands } from '@/lib/api/brands';
-import { getBanners } from '@/app/admin/banners/actions';
+import { getPublicBanners } from '@/lib/api/banners';
 import { OrganizationSchema } from '@components/ui/StructuredData';
 import { SafeImage } from '@ui/SafeImage';
 import type { Metadata } from 'next';
@@ -24,7 +24,7 @@ export default async function HomePage() {
   const [products, brands, banners] = await Promise.all([
     getAllProducts(),
     getAllBrands(),
-    getBanners().catch(() => []),
+    getPublicBanners().catch(() => []),
   ]);
 
   const heroBanner = Array.isArray(banners) ? banners.find((b: any) => b.image) : null;
