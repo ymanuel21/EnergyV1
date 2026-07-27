@@ -4,6 +4,7 @@ import { getBanners, createBanner, updateBanner, deleteBanner } from './actions'
 import { revalidatePath } from 'next/cache';
 import { DeleteButton } from '../DeleteButton';
 import { SubmitButton } from '../SubmitButton';
+import { ImageUpload } from '../ImageUpload';
 
 export default async function BannersPage() {
   const banners = await getBanners();
@@ -36,7 +37,7 @@ export default async function BannersPage() {
             <option value="hero">Hero</option>
             <option value="need-card">Need Card</option>
           </select>
-          <input name="image" placeholder="URL Gambar" className="rounded-lg border px-3 py-2 text-sm" />
+          <ImageUpload name="image" label="Gambar Banner" />
           <input name="link" placeholder="Link" className="rounded-lg border px-3 py-2 text-sm" />
           <input name="alt" placeholder="Alt text" className="rounded-lg border px-3 py-2 text-sm" />
           <input name="sortOrder" type="number" placeholder="Urutan" className="rounded-lg border px-3 py-2 text-sm" />
@@ -49,7 +50,7 @@ export default async function BannersPage() {
             <form action={handleUpdate.bind(null, b.id)} className="grid gap-3 sm:grid-cols-2">
               <input name="title" defaultValue={b.title} className="rounded-lg border px-3 py-2 text-sm" />
               <span className="text-sm text-gray-400">{b.type}</span>
-              <input name="image" defaultValue={b.image} className="rounded-lg border px-3 py-2 text-sm" />
+              <ImageUpload name="image" label="Gambar Banner" defaultValue={b.image || ''} />
               <input name="link" defaultValue={b.link} className="rounded-lg border px-3 py-2 text-sm" />
               <input name="alt" defaultValue={b.alt} className="rounded-lg border px-3 py-2 text-sm" />
               <div className="flex justify-end gap-2">
