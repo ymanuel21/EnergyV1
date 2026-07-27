@@ -81,20 +81,20 @@ export default function ComparePage() {
       </div>
 
       <div className="mt-6 overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full table-fixed text-sm">
           <thead>
             <tr>
               <th className="w-40 p-3 text-left font-medium text-gray-700">Spesifikasi</th>
               {compareProducts.map((p) => (
-                <th key={p.id} className="min-w-[200px] p-3 text-left">
+                <th key={p.id} className="p-3 text-left align-top">
                   <div className="space-y-2">
-                    <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
+                    <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
                       <SafeImage
                         src={p.images[0]}
                         alt={p.name}
-                        width={200}
-                        height={200}
-                        className="h-full w-full object-cover"
+                        fill
+                        className="object-contain p-2"
+                        sizes="(max-width: 768px) 25vw, 200px"
                       />
                       <button
                         onClick={() => removeItem(p.id)}
