@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { TopBar } from '@components/layout/TopBar';
-import { Header } from '@components/layout/Header';
+import { ConditionalHeader } from '@components/layout/ConditionalHeader';
 import { ConditionalCategoryNav } from '@components/layout/ConditionalCategoryNav';
+import { HideOnHomepage } from '@components/layout/HideOnHomepage';
 import { Footer } from '@components/layout/Footer';
 import { FloatingWhatsApp } from '@components/layout/FloatingWhatsApp';
 import { SkipToContent } from '@components/layout/SkipToContent';
@@ -43,11 +44,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={inter.variable}>
       <body className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased">
@@ -56,9 +53,13 @@ export default function RootLayout({
         <CartProvider>
           <WishlistProvider>
             <CompareProvider>
-              <TopBar />
-              <Header />
-              <ConditionalCategoryNav />
+              <HideOnHomepage>
+                <TopBar />
+              </HideOnHomepage>
+              <ConditionalHeader />
+              <HideOnHomepage>
+                <ConditionalCategoryNav />
+              </HideOnHomepage>
               <main id="main-content" className="flex-1">
                 {children}
               </main>
