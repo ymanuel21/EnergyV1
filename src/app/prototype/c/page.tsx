@@ -55,7 +55,7 @@ export default function PrototypeCPage() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div className="rounded-3xl border border-white/10 bg-white/5 p-1 backdrop-blur">
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-green-900/50 to-black animate-pulse" />
+              <img src="/images/prototype/hero-power-station.png" alt="Inverter Hybrid 6kW" className="aspect-square rounded-2xl w-full object-contain p-6" />
             </div>
             <div>
               <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-400">PRODUK UNGGULAN</span>
