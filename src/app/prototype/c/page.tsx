@@ -1,11 +1,14 @@
+import { PrototypeCMegaMenu } from './PrototypeCMegaMenu';
+
 export default function PrototypeCPage() {
   return (
     <div className="min-h-screen bg-black font-sans text-white">
       {/* Nav — glass */}
       <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/60 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 relative">
           <span className="text-xl font-bold tracking-tight">EBT<span className="text-green-400">Plaza</span></span>
           <div className="hidden items-center gap-8 md:flex">
+            <PrototypeCMegaMenu />
             {['Produk','Solusi','Proyek','Tentang'].map(l => (
               <a key={l} href="#" className="text-sm text-gray-400 hover:text-white transition">{l}</a>
             ))}
