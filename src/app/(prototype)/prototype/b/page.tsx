@@ -1,3 +1,5 @@
+import { ProtoMegaMenu } from '../../ProtoMegaMenu';
+
 const IMG = {
   panel: '/images/prototype/solar-panel-open.png',
   battery: '/images/prototype/battery-large.png',
@@ -12,6 +14,7 @@ export default function PrototypeB() {
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-8">
           <span className="text-lg font-semibold tracking-tight text-gray-900">EBTPlaza</span>
           <div className="hidden items-center gap-8 sm:flex">
+            <ProtoMegaMenu />
             {['Katalog','Tentang','Kontak'].map(l => (
               <a key={l} href="#" className="text-sm text-gray-500 hover:text-gray-900 transition">{l}</a>
             ))}

@@ -1,3 +1,5 @@
+import { ProtoMegaMenu } from '../../ProtoMegaMenu';
+
 const IMG = {
   panel: '/images/prototype/solar-panel-folded.png',
   battery: '/images/prototype/battery-large.png',
@@ -23,9 +25,10 @@ export default function PrototypeA() {
       </div>
 
       {/* ===== HEADER ===== */}
-      <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <header className="sticky top-0 z-50 bg-white shadow-sm relative">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-3 py-3">
           <span className="text-xl font-black text-orange-600 shrink-0">EBTPlaza</span>
+          <ProtoMegaMenu />
           <div className="flex-1">
             <div className="relative">
               <input
