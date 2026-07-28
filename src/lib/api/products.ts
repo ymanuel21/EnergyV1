@@ -44,7 +44,7 @@ export async function getAllProducts(params?: ListParams): Promise<Product[]> {
       take: params?.limit || undefined,
       skip: params?.offset || undefined,
       include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } } },
-    });
+    }) as unknown as Product[];
   } catch {
     // Fallback to static data only if DB unavailable
     try {
