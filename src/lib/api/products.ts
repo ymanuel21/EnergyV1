@@ -33,10 +33,10 @@ export async function getAllProducts(params?: ListParams): Promise<Product[]> {
     if (params?.search) {
       where.name = { contains: params.search };
     }
-    const orderBy: any = { createdAt: 'desc' };
-    if (params?.sort === 'price_asc') Object.assign(orderBy, { price: 'asc' });
-    else if (params?.sort === 'price_desc') Object.assign(orderBy, { price: 'desc' });
-    else if (params?.sort === 'name') Object.assign(orderBy, { name: 'asc' });
+    const orderBy = params?.sort === 'price_asc' ? { price: 'asc' as const } :
+                     params?.sort === 'price_desc' ? { price: 'desc' as const } :
+                     params?.sort === 'name' ? { name: 'asc' as const } :
+                     { createdAt: 'desc' as const };
 
     return prisma.product.findMany({
       where,
