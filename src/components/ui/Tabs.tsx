@@ -20,7 +20,7 @@ export function Tabs({ tabs, defaultTab, className }: TabsProps) {
 
   return (
     <div className={className}>
-      <div className="border-b border-gray-200" role="tablist">
+      <div className="border-b border-border" role="tablist">
         <div className="flex gap-0 -mb-px">
           {tabs.map((tab) => (
             <button

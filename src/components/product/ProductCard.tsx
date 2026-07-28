@@ -4,7 +4,6 @@ import { Badge } from '@ui/Badge';
 import { Price } from '@ui/Price';
 import { HeartIcon } from '@ui/Icons';
 import type { Product, ProductBadgeVariant } from '@/types/product';
-import { getBrandById } from '@/lib/data/brands';
 
 const BADGE_LABELS: Record<ProductBadgeVariant, string> = {
   clearance: 'Clearance',
@@ -23,8 +22,10 @@ interface ProductCardProps {
 
 export function ProductCard({ product, variant = 'grid', className = '', brandName, brandSlug }: ProductCardProps) {
   const brand = (brandName && brandSlug)
-    ? { name: brandName, slug: brandSlug, id: product.brandId, productCount: 0 }
-    : getBrandById(product.brandId);
+    ? { name: brandName, slug: brandSlug, logo: '' }
+    : (product as any).brand
+    ? { name: (product as any).brand.name, slug: (product as any).brand.slug, logo: (product as any).brand.logo }
+    : null;
 
   // Use ProductBadge relations from DB if available, fall back to legacy badges JSON array
   const productBadges: string[] = (product as any).badgeRelations?.map((r: any) => r.badge?.variant || r.badge?.name) || (product.badges as string[]) || [];

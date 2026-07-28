@@ -51,7 +51,7 @@ export function MobileMenu() {
         className="fixed inset-y-0 right-0 z-[9999] w-72 bg-white shadow-2xl lg:hidden"
       >
         {/* Drawer header */}
-        <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <Link href="/" onClick={handleClose} className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
               <span className="text-xs font-extrabold text-white">E</span>
