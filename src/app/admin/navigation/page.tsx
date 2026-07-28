@@ -28,11 +28,14 @@ export default async function NavigationPage() {
     revalidatePath('/');
   }
 
-  async function handleDelete(id: string) {
+  async function handleDelete(formData: FormData) {
     'use server';
-    await deleteNavLink(id);
-    revalidatePath('/admin/navigation');
-    revalidatePath('/');
+    const id = formData.get('id') as string;
+    if (id) {
+      await deleteNavLink(id);
+      revalidatePath('/admin/navigation');
+      revalidatePath('/');
+    }
   }
 
   return (
