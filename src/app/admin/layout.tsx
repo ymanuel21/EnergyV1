@@ -9,10 +9,12 @@ const NAV = [
   { label: 'Produk', href: '/admin/products' },
   { label: 'Kategori', href: '/admin/categories' },
   { label: 'Brand', href: '/admin/brands' },
+  { label: 'Banner', href: '/admin/banners' },
+  { label: 'Badges', href: '/admin/badges' },
   { label: 'Artikel', href: '/admin/articles' },
   { label: 'FAQ', href: '/admin/faq' },
   { label: 'Halaman', href: '/admin/pages' },
-  { label: 'Banner', href: '/admin/banners' },
+  { label: 'Appearance', href: '/admin/appearance' },
   { label: 'Pengaturan', href: '/admin/settings' },
 ];
 
