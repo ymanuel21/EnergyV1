@@ -2,7 +2,8 @@
 
 import { getAdminPrisma, requireAuth } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
-import { saveRevision, logActivity } from '@/lib/admin-core';
+import { safeWrite } from '@/lib/transaction';
+import { homepageSectionSchema } from '@/lib/validations';
 
 export async function getHomepageSections() {
   await requireAuth();
@@ -15,31 +16,24 @@ export async function upsertSection(data: {
   sortOrder?: number; title?: string; subtitle?: string; settings?: any;
 }) {
   await requireAuth();
-  const prisma = await getAdminPrisma();
-  const payload = {
-    type: data.type,
-    enabled: data.enabled ?? true,
-    status: data.status ?? 'published',
-    sortOrder: data.sortOrder ?? 0,
-    title: data.title ?? '',
-    subtitle: data.subtitle ?? '',
-    settings: data.settings ?? {},
-  };
-  if (data.id && data.id !== 'undefined') {
-    // Save revision before update
-    const existing = await prisma.homepageSection.findUnique({ where: { id: data.id } });
-    if (existing) {
-      await saveRevision('homepage_section', existing.id, {
-        title: existing.title, subtitle: existing.subtitle, settings: existing.settings,
-        enabled: existing.enabled, type: existing.type, sortOrder: existing.sortOrder, status: existing.status,
-      });
-    }
-    await prisma.homepageSection.update({ where: { id: data.id }, data: payload as any });
-    await logActivity('update', 'homepage_section', data.title || data.type);
-  } else {
-    await prisma.homepageSection.create({ data: payload as any });
-    await logActivity('create', 'homepage_section', data.title || data.type);
-  }
+  const isUpdate = !!(data.id && data.id !== 'undefined');
+  await safeWrite({
+    entityType: 'homepageSection',
+    entityId: isUpdate ? data.id : undefined,
+    entityName: data.title || data.type,
+    action: isUpdate ? 'update' : 'create',
+    data: { ...data, settings: data.settings ?? {} },
+    schema: homepageSectionSchema,
+    execute: async (tx: any) => {
+      const payload = {
+        type: data.type, enabled: data.enabled ?? true,
+        status: data.status ?? 'published', sortOrder: data.sortOrder ?? 0,
+        title: data.title ?? '', subtitle: data.subtitle ?? '', settings: data.settings ?? {},
+      };
+      if (isUpdate) return tx.homepageSection.update({ where: { id: data.id }, data: payload });
+      return tx.homepageSection.create({ data: payload });
+    },
+  });
   revalidatePath('/admin/homepage');
   revalidatePath('/');
 }
@@ -60,13 +54,12 @@ export async function moveSection(id: string, direction: 'up' | 'down') {
   if (idx < 0) return;
   const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
   if (targetIdx < 0 || targetIdx >= sections.length) return;
-
-  // Swap sort orders
   const current = sections[idx];
   const target = sections[targetIdx];
-  await prisma.homepageSection.update({ where: { id: current.id }, data: { sortOrder: target.sortOrder } });
-  await prisma.homepageSection.update({ where: { id: target.id }, data: { sortOrder: current.sortOrder } });
-
+  await prisma.$transaction([
+    prisma.homepageSection.update({ where: { id: current.id }, data: { sortOrder: target.sortOrder } }),
+    prisma.homepageSection.update({ where: { id: target.id }, data: { sortOrder: current.sortOrder } }),
+  ]);
   revalidatePath('/admin/homepage');
   revalidatePath('/');
 }
