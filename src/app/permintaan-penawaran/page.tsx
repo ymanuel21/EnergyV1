@@ -5,6 +5,7 @@ import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { Button } from '@ui/Button';
 import { RequiredLabel } from '@ui/RequiredLabel';
+import { FormLabel } from '@ui/FormLabel';
 import { ProductAutocomplete } from '@components/forms/ProductAutocomplete';
 import { useCart } from '@providers/CartProvider';
 import { SITE } from '@lib/constants';
@@ -37,7 +38,13 @@ export default function RfqPage() {
   });
   const [items, setItems] = useState<RfqItem[]>(() => []);
   const [newItem, setNewItem] = useState({ name: '', quantity: 1, notes: '' });
+  const [itemError, setItemError] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
 
+  function showToast(msg: string) {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2500);
+  }
   // ── Cart import ──
   const importFromCart = useCallback(() => {
     const cartItems: RfqItem[] = cart.items.map((i) => ({
@@ -50,9 +57,13 @@ export default function RfqPage() {
 
   // ── Add item ──
   function addItem() {
+    setItemError(null);
     const name = newItem.name.trim();
-    if (!name) return;
+    if (!name)  { setItemError('Nama barang wajib diisi.'); return; }
+    if (newItem.quantity < 1) { setItemError('Jumlah minimal 1.'); return; }
+
     setItems((prev) => [...prev, { name, quantity: newItem.quantity, notes: newItem.notes || undefined }]);
+    showToast(`✅ ${name} berhasil ditambahkan.`);
     setNewItem({ name: '', quantity: 1, notes: '' });
   }
 
@@ -175,6 +186,13 @@ export default function RfqPage() {
         </p>
       </div>
 
+      {/* Toast notification */}
+      {toast && (
+        <div className="mt-3 rounded-lg bg-green-50 px-4 py-3 text-sm font-medium text-green-700 animate-scale-in" role="status" aria-live="polite">
+          {toast}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-8" data-track="rfq-form">
         {/* ── Contact ── */}
         <section className="rounded-lg border border-gray-200 p-6 space-y-4">
@@ -209,7 +227,7 @@ export default function RfqPage() {
               {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Telepon / WhatsApp</label>
+              <FormLabel>Telepon / WhatsApp</FormLabel>
               <input
                 type="tel"
                 value={form.phone}
@@ -218,7 +236,7 @@ export default function RfqPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan</label>
+              <FormLabel>Nama Perusahaan</FormLabel>
               <input
                 type="text"
                 value={form.company}
@@ -227,7 +245,7 @@ export default function RfqPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">NPWP</label>
+              <FormLabel>NPWP</FormLabel>
               <input
                 type="text"
                 value={form.npwp}
@@ -243,7 +261,7 @@ export default function RfqPage() {
           <h2 className="text-lg font-semibold text-gray-900">Detail Proyek</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nama Proyek</label>
+              <FormLabel>Nama Proyek</FormLabel>
               <input
                 type="text"
                 value={form.projectName}
@@ -252,7 +270,7 @@ export default function RfqPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Lokasi Proyek</label>
+              <FormLabel>Lokasi Proyek</FormLabel>
               <input
                 type="text"
                 value={form.location}
@@ -261,7 +279,7 @@ export default function RfqPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Target Pengadaan</label>
+              <FormLabel>Target Pengadaan</FormLabel>
               <input
                 type="date"
                 value={form.targetDate}
@@ -278,11 +296,11 @@ export default function RfqPage() {
                   className="rounded border-gray-300 text-gray-800 focus:ring-gray-700"
                 />
                 <span className="text-sm text-gray-700">Membutuhkan jasa instalasi</span>
-              </label>
+              </FormLabel>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Catatan Teknis</label>
+            <FormLabel>Catatan Teknis</FormLabel>
             <textarea
               rows={3}
               value={form.notes}
@@ -294,9 +312,9 @@ export default function RfqPage() {
         </section>
 
         {/* ── Items ── */}
-        <section className="rounded-lg border border-gray-200 p-6 space-y-4">
+        <section className="rounded-lg border border-border bg-card p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">Daftar Kebutuhan *</h2>
+            <RequiredLabel>Daftar Kebutuhan</RequiredLabel>
             {cart.items.length > 0 && (
               <Button type="button" variant="outline" size="sm" onClick={importFromCart} data-track="rfq-import-cart">
                 📋 Import dari keranjang ({cart.itemCount})
@@ -347,6 +365,9 @@ export default function RfqPage() {
               + Tambah
             </Button>
           </div>
+          {itemError && (
+            <p className="text-xs text-red-500 animate-scale-in" role="alert">{itemError}</p>
+          )}
           <input
             type="text"
             placeholder="Catatan item (opsional)"
