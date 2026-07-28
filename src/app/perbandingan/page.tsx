@@ -20,12 +20,21 @@ export default function ComparePage() {
   const [hydrated, setHydrated] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [productsLoaded, setProductsLoaded] = useState(false);
 
   useEffect(() => { setHydrated(true); }, []);
 
   useEffect(() => {
-    fetch('/api/products').then(r => r.json()).then(setAllProducts).catch(() => {});
-    fetch('/api/brands').then(r => r.json()).then(setBrands).catch(() => {});
+    Promise.all([
+      fetch('/api/products').then(r => r.json()),
+      fetch('/api/brands').then(r => r.json()),
+    ]).then(([products, brandsData]) => {
+      setAllProducts(products);
+      setBrands(brandsData);
+      setProductsLoaded(true);
+    }).catch(() => {
+      setProductsLoaded(true); // still show UI even on error
+    });
   }, []);
 
   const compareProducts = allProducts.filter((p) => items.includes(p.id));
@@ -48,7 +57,7 @@ export default function ComparePage() {
   }
 
   // ── Loading ──
-  if (!hydrated) {
+  if (!productsLoaded) {
     return (
       <Container className="py-6">
         <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Perbandingan' }]} />
