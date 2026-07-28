@@ -1,6 +1,3 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = { title: "[slug] — EBTPlaza" };
 import type { Metadata } from 'next';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';

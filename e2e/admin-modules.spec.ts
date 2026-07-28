@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-async function adminLogin(page) {
+async function adminLogin(page: import('@playwright/test').Page) {
   await page.goto('/admin/login');
   await page.fill('input[name="email"]', process.env.ADMIN_EMAIL || 'admin@ebtplaza.com');
   await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD || '');
