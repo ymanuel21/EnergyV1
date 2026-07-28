@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import { SITE_CONFIG } from '@/lib/site';
 import { getPublicNavigationLinks } from '@/lib/api/navigation';
+import { cache } from '@/lib/platform';
 
 export async function Footer() {
   const { name, email, phone } = SITE_CONFIG;
-  const nav = await getPublicNavigationLinks().catch(() => ({} as Record<string, { label: string; href: string }[]>));
+  const nav = await cache.getOrSet('nav:footer', 300, () =>
+    getPublicNavigationLinks().catch(() => ({} as Record<string, { label: string; href: string }[]>))
+  );
   const belanja = nav.footer_belanja || [];
   const layanan = nav.footer_layanan || [];
   const legal = nav.footer_legal || [];

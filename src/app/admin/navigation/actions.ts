@@ -4,6 +4,7 @@ import { getAdminPrisma, requireAuth } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
 import { safeWrite } from '@/lib/transaction';
 import { navigationLinkSchema } from '@/lib/validations';
+import { cache } from '@/lib/platform';
 
 export async function getNavigationLinks() {
   await requireAuth();
@@ -31,6 +32,7 @@ export async function upsertNavLink(data: { id?: string; group: string; label: s
   });
   revalidatePath('/admin/navigation');
   revalidatePath('/');
+  cache.invalidate('nav:');
 }
 
 export async function deleteNavLink(id: string) {
@@ -39,4 +41,5 @@ export async function deleteNavLink(id: string) {
   await prisma.navigationLink.delete({ where: { id } });
   revalidatePath('/admin/navigation');
   revalidatePath('/');
+  cache.invalidate('nav:');
 }

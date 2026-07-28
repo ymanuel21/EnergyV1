@@ -1,27 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
-import { Container } from '@ui/Container';
-import { Button } from '@ui/Button';
-
-export default function ProductError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  useEffect(() => {
-    console.error('Product page error:', error);
-  }, [error]);
-
+export default function ErrorBoundary({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    <Container className="py-20 text-center">
-      <h2 className="text-lg font-semibold text-gray-900">Terjadi kesalahan</h2>
-      <p className="mt-2 text-sm text-gray-500">Gagal memuat halaman produk. Silakan coba lagi.</p>
-      <Button variant="outline" className="mt-6" onClick={reset}>
-        Coba lagi
-      </Button>
-    </Container>
+    <div className="flex min-h-[50vh] flex-col items-center justify-center px-4 text-center">
+      <h2 className="text-xl font-semibold text-primary">Something went wrong</h2>
+      <p className="mt-2 text-sm text-muted max-w-md">{error.message || 'An unexpected error occurred.'}</p>
+      <button onClick={reset} className="mt-4 rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition">
+        Try again
+      </button>
+    </div>
   );
 }
