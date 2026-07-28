@@ -24,7 +24,7 @@ export function DeleteButton({ label = 'Hapus', confirmText, itemName, onDelete 
   if (showConfirm) {
     return (
       <span className="inline-flex items-center gap-2">
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-muted">
           {confirmText ?? (itemName ? `Hapus "${itemName}"?` : 'Yakin hapus?')}
         </span>
         <button
@@ -37,7 +37,7 @@ export function DeleteButton({ label = 'Hapus', confirmText, itemName, onDelete 
         <button
           onClick={() => setShowConfirm(false)}
           disabled={isPending}
-          className="rounded bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-700 hover:bg-gray-300"
+          className="rounded bg-gray-200 px-2 py-0.5 text-xs font-medium text-primary hover:bg-gray-300"
         >
           Batal
         </button>

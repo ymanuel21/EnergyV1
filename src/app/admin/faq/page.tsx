@@ -28,15 +28,15 @@ export default async function FaqPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">FAQ</h1>
-      <form action={handleCreate} className="mt-4 space-y-3 rounded-xl border bg-white p-4">
+      <h1 className="text-2xl font-bold text-primary">FAQ</h1>
+      <form action={handleCreate} className="mt-4 space-y-3 rounded-xl border bg-card p-4">
         <input name="question" placeholder="Pertanyaan" required className="w-full rounded-lg border px-3 py-2 text-sm" />
         <textarea name="answer" placeholder="Jawaban" required rows={3} className="w-full rounded-lg border px-3 py-2 text-sm" />
         <SubmitButton label="Tambah FAQ" />
       </form>
       <div className="mt-4 space-y-3">
         {faqs.map((f: any) => (
-          <div key={f.id} className="rounded-xl border bg-white p-4">
+          <div key={f.id} className="rounded-xl border bg-card p-4">
             <form action={handleUpdate.bind(null, f.id)} className="space-y-3">
               <input name="question" defaultValue={f.question} className="w-full rounded-lg border px-3 py-2 text-sm font-medium" />
               <textarea name="answer" defaultValue={f.answer} rows={2} className="w-full rounded-lg border px-3 py-2 text-sm" />

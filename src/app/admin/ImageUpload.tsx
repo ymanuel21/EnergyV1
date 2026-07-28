@@ -69,7 +69,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
 
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-sm font-medium text-primary mb-1">{label}</label>
 
       {preview ? (
         <div className="relative mb-2 inline-block">
@@ -90,7 +90,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
       ) : (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="mb-2 flex h-32 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-gray-700 hover:text-gray-700"
+          className="mb-2 flex h-32 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-border text-muted hover:border-gray-700 hover:text-primary"
         >
           <span className="text-center text-xs">Klik untuk{'\n'}upload</span>
         </div>
@@ -108,14 +108,14 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+          className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted hover:bg-surface disabled:opacity-50"
         >
           {uploading ? 'Mengupload...' : 'Pilih File'}
         </button>
         <button
           type="button"
           onClick={() => setUrlMode(!urlMode)}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+          className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted hover:bg-surface"
         >
           {urlMode ? 'Sembunyikan URL' : 'Atau Masukkan URL'}
         </button>
@@ -128,7 +128,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
             placeholder="https://... atau /images/..."
             value={urlValue}
             onChange={(e) => setUrlValue(e.target.value)}
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-1.5 text-xs"
+            className="flex-1 rounded-lg border border-border px-3 py-1.5 text-xs"
           />
           <button
             type="button"
@@ -144,7 +144,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
       <input type="hidden" name={name} value={storedUrl} />
 
       {fileName && (
-        <p className="mt-1 text-xs text-gray-500">{fileName}</p>
+        <p className="mt-1 text-xs text-muted">{fileName}</p>
       )}
     </div>
   );

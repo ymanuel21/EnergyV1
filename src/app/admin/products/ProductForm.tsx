@@ -78,12 +78,12 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nama Produk <ReqStar /></label>
-          <input name="name" defaultValue={defaultValues?.name} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+          <label className="block text-sm font-medium text-primary mb-1">Nama Produk <ReqStar /></label>
+          <input name="name" defaultValue={defaultValues?.name} required className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Slug <ReqStar /></label>
-          <SlugInput name="slug" defaultValue={defaultValues?.slug} sourceName="name" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+          <label className="block text-sm font-medium text-primary mb-1">Slug <ReqStar /></label>
+          <SlugInput name="slug" defaultValue={defaultValues?.slug} sourceName="name" className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
         </div>
         <div>
         <CurrencyInput name="price" label="Harga" required defaultValue={defaultValues?.price} />
@@ -92,24 +92,24 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
         <CurrencyInput name="originalPrice" label="Harga Asli" defaultValue={defaultValues?.originalPrice ?? undefined} />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Stok <ReqStar /></label>
-          <input name="stock" type="number" defaultValue={defaultValues?.stock ?? 0} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+          <label className="block text-sm font-medium text-primary mb-1">Stok <ReqStar /></label>
+          <input name="stock" type="number" defaultValue={defaultValues?.stock ?? 0} required className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
-          <input name="sku" defaultValue={defaultValues?.sku} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+          <label className="block text-sm font-medium text-primary mb-1">SKU</label>
+          <input name="sku" defaultValue={defaultValues?.sku} className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Brand <ReqStar /></label>
-          <select name="brandId" defaultValue={defaultValues?.brandId} required className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+          <label className="block text-sm font-medium text-primary mb-1">Brand <ReqStar /></label>
+          <select name="brandId" defaultValue={defaultValues?.brandId} required className="w-full rounded-lg border border-border px-3 py-2 text-sm">
             <option value="">Pilih Brand</option>
             {brands.map((b: any) => <option key={b.id} value={b.id}>{b.name}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Kategori <ReqStar /></label>
-          <div className="space-y-1 max-h-48 overflow-y-auto rounded-lg border border-gray-300 p-3 bg-white">
-            {topCategories.length === 0 && <p className="text-xs text-gray-400">Tidak ada kategori</p>}
+          <label className="block text-sm font-medium text-primary mb-1">Kategori <ReqStar /></label>
+          <div className="space-y-1 max-h-48 overflow-y-auto rounded-lg border border-border p-3 bg-card">
+            {topCategories.length === 0 && <p className="text-xs text-muted">Tidak ada kategori</p>}
             {topCategories.map((cat: any) => (
               <div key={cat.id}>
                 <label className="flex items-center gap-2 py-0.5 cursor-pointer">
@@ -117,9 +117,9 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
                     type="checkbox"
                     name={`cat-${cat.id}`}
                     defaultChecked={defaultCatIds.includes(cat.id)}
-                    className="rounded border-gray-300 text-gray-800 focus:ring-gray-700"
+                    className="rounded border-border text-gray-800 focus:ring-gray-700"
                   />
-                  <span className="text-sm font-medium text-gray-700">{cat.name}</span>
+                  <span className="text-sm font-medium text-primary">{cat.name}</span>
                 </label>
                 {/* Children */}
                 {cat.children?.map((child: any) => (
@@ -128,9 +128,9 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
                       type="checkbox"
                       name={`cat-${child.id}`}
                       defaultChecked={defaultCatIds.includes(child.id)}
-                      className="rounded border-gray-300 text-gray-800 focus:ring-gray-700"
+                      className="rounded border-border text-gray-800 focus:ring-gray-700"
                     />
-                    <span className="text-sm text-gray-600">{child.name}</span>
+                    <span className="text-sm text-muted">{child.name}</span>
                   </label>
                 ))}
               </div>
@@ -139,12 +139,12 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
         </div>
         <MultiImageUpload name="images" label="Gambar Produk" defaultValue={defaultValues?.images || []} />
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Badges</label>
+          <label className="block text-sm font-medium text-primary mb-1">Badges</label>
           <BadgeSelector defaultBadgeIds={defaultValues?.badges || []} />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Kondisi</label>
-          <select name="condition" defaultValue={defaultValues?.condition ?? 'new'} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+          <label className="block text-sm font-medium text-primary mb-1">Kondisi</label>
+          <select name="condition" defaultValue={defaultValues?.condition ?? 'new'} className="w-full rounded-lg border border-border px-3 py-2 text-sm">
             <option value="new">Baru</option>
             <option value="new-minor-defect">Baru - Minor Defect</option>
             <option value="new-project-leftover">Baru - Sisa Proyek</option>
@@ -154,20 +154,20 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Garansi</label>
-          <input name="warranty" defaultValue={defaultValues?.warranty ?? '1 Tahun'} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+          <label className="block text-sm font-medium text-primary mb-1">Garansi</label>
+          <input name="warranty" defaultValue={defaultValues?.warranty ?? '1 Tahun'} className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Berat (kg)</label>
-          <input name="weight" type="number" step="0.1" defaultValue={defaultValues?.weight ?? 0} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+          <label className="block text-sm font-medium text-primary mb-1">Berat (kg)</label>
+          <input name="weight" type="number" step="0.1" defaultValue={defaultValues?.weight ?? 0} className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-        <textarea name="description" rows={4} defaultValue={defaultValues?.description} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+        <label className="block text-sm font-medium text-primary mb-1">Deskripsi</label>
+        <textarea name="description" rows={4} defaultValue={defaultValues?.description} className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
       </div>
       <div className="flex justify-end gap-3">
-        <button type="button" onClick={() => router.back()} className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">
+        <button type="button" onClick={() => router.back()} className="rounded-lg border border-border px-4 py-2 text-sm text-muted hover:bg-surface">
           Batal
         </button>
         <button type="submit" disabled={saving} className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 disabled:opacity-50">

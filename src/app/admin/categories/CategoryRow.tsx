@@ -33,7 +33,7 @@ export function CategoryRow({ category, allCategories }: { category: any; allCat
   }
 
   return (
-    <div className={`flex items-center justify-between border-b px-4 py-3 text-sm ${isChild ? 'bg-gray-50 border-gray-50' : ''}`}>
+    <div className={`flex items-center justify-between border-b px-4 py-3 text-sm ${isChild ? 'bg-surface border-gray-50' : ''}`}>
       {editing ? (
         <div className="flex flex-1 items-center gap-3">
           <input
@@ -67,19 +67,19 @@ export function CategoryRow({ category, allCategories }: { category: any; allCat
           </button>
           <button
             onClick={() => setEditing(false)}
-            className="rounded border px-3 py-1 text-xs text-gray-600 hover:bg-gray-50"
+            className="rounded border px-3 py-1 text-xs text-muted hover:bg-surface"
           >
             Batal
           </button>
         </div>
       ) : (
         <>
-          <span className={isChild ? 'pl-6 text-gray-700' : 'font-semibold text-gray-900'}>
+          <span className={isChild ? 'pl-6 text-primary' : 'font-semibold text-primary'}>
             {isChild ? `└ ${category.name}` : category.name}
           </span>
-          <span className="text-gray-400 text-xs">{category.slug}</span>
+          <span className="text-muted text-xs">{category.slug}</span>
           {!isChild && (
-            <span className="text-gray-400 text-xs">{category.children?.length || 0} sub</span>
+            <span className="text-muted text-xs">{category.children?.length || 0} sub</span>
           )}
         </>
       )}
@@ -88,7 +88,7 @@ export function CategoryRow({ category, allCategories }: { category: any; allCat
         <div className="flex items-center gap-2">
           <button
             onClick={() => setEditing(true)}
-            className="rounded border px-2 py-1 text-xs text-gray-600 hover:bg-gray-100"
+            className="rounded border px-2 py-1 text-xs text-muted hover:bg-surface"
           >
             Edit
           </button>

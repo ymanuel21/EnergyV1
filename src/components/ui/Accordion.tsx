@@ -22,12 +22,12 @@ export function Accordion({
     <div className={cn('border-b border-gray-200', className)}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between py-4 text-left text-sm font-medium text-gray-900 hover:text-gray-900 transition-colors"
+        className="flex w-full items-center justify-between py-4 text-left text-sm font-medium text-primary hover:text-primary transition-colors"
       >
         {title}
         <svg
           className={cn(
-            'h-5 w-5 shrink-0 text-gray-400 transition-transform',
+            'h-5 w-5 shrink-0 text-muted transition-transform',
             isOpen && 'rotate-180'
           )}
           fill="none"
@@ -39,7 +39,7 @@ export function Accordion({
         </svg>
       </button>
       {isOpen && (
-        <div className="pb-4 text-sm text-gray-500 animate-slide-down">
+        <div className="pb-4 text-sm text-muted animate-slide-down">
           {children}
         </div>
       )}

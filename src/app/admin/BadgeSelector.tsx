@@ -17,11 +17,11 @@ export function BadgeSelector({ defaultBadgeIds = [] }: BadgeSelectorProps) {
   }, []);
 
   if (badges.length === 0) {
-    return <p className="text-sm text-gray-400">Tidak ada badge tersedia</p>;
+    return <p className="text-sm text-muted">Tidak ada badge tersedia</p>;
   }
 
   return (
-    <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto rounded-lg border border-gray-300 p-3 bg-white">
+    <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto rounded-lg border border-border p-3 bg-card">
       {badges.map((b: any) => (
         <label
           key={b.id}

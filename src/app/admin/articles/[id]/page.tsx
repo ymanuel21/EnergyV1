@@ -30,12 +30,12 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Edit Artikel</h1>
+        <h1 className="text-2xl font-bold text-primary">Edit Artikel</h1>
         <form action={handleDelete}>
           <button className="rounded-lg border border-red-300 px-4 py-2 text-sm text-red-600 hover:bg-red-50">Hapus</button>
         </form>
       </div>
-      <form action={handleUpdate} className="mt-6 space-y-4 rounded-xl border bg-white p-6">
+      <form action={handleUpdate} className="mt-6 space-y-4 rounded-xl border bg-card p-6">
         <input name="title" defaultValue={article.title} required className="w-full rounded-lg border px-3 py-2 text-sm" />
         <textarea name="excerpt" defaultValue={article.excerpt ?? ''} rows={2} className="w-full rounded-lg border px-3 py-2 text-sm" />
         <textarea name="content" defaultValue={article.content} rows={15} required className="w-full rounded-lg border px-3 py-2 text-sm font-mono" />

@@ -13,8 +13,8 @@ export default async function NewProductPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Tambah Produk</h1>
-      <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
+      <h1 className="text-2xl font-bold text-primary">Tambah Produk</h1>
+      <div className="mt-6 rounded-xl border border-border bg-card p-6">
         <ProductForm brands={brands} categories={categories} onSubmit={handleCreate} />
       </div>
     </div>

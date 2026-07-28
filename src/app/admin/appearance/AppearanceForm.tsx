@@ -78,11 +78,11 @@ export function AppearanceForm({ settings, onSave }: Props) {
       {/* Editor */}
       <div className="lg:col-span-2 space-y-6">
         {/* Tabs */}
-        <div className="flex gap-1 rounded-xl bg-gray-100 p-1">
+        <div className="flex gap-1 rounded-xl bg-surface p-1">
           {tabs.map(t => (
             <button key={t} onClick={() => setTab(t)}
               className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium capitalize transition ${
-                tab === t ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                tab === t ? 'bg-card text-primary shadow-sm' : 'text-muted hover:text-primary'
               }`}>
               {t}
             </button>
@@ -102,17 +102,17 @@ export function AppearanceForm({ settings, onSave }: Props) {
               { k: 'muted', l: 'Muted Text', d: 'Secondary text, labels' },
               { k: 'dark_bg', l: 'Dark BG', d: 'CTA sections, footer' },
             ].map(({ k, l, d }) => (
-              <div key={k} className="rounded-xl border border-gray-200 bg-white p-4">
+              <div key={k} className="rounded-xl border border-border bg-card p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-700">{l}</label>
+                  <label className="text-sm font-medium text-primary">{l}</label>
                   <div className="flex items-center gap-2">
                     <input type="color" value={values[k]} onChange={e => setVal(k, e.target.value)}
                       className="h-8 w-8 cursor-pointer rounded border-0 p-0" />
                     <input type="text" value={values[k]} onChange={e => setVal(k, e.target.value)}
-                      className="w-24 rounded border border-gray-200 px-2 py-1 text-xs font-mono" />
+                      className="w-24 rounded border border-border px-2 py-1 text-xs font-mono" />
                   </div>
                 </div>
-                <p className="text-xs text-gray-400">{d}</p>
+                <p className="text-xs text-muted">{d}</p>
               </div>
             ))}
           </div>
@@ -121,15 +121,15 @@ export function AppearanceForm({ settings, onSave }: Props) {
         {/* Typography Tab */}
         {tab === 'typography' && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Heading Weight</label>
+            <div className="rounded-xl border border-border bg-card p-4">
+              <label className="block text-sm font-medium text-primary mb-2">Heading Weight</label>
               <div className="flex items-center gap-3">
                 <input type="range" min="100" max="900" step="100" value={values.heading_weight}
                   onChange={e => setVal('heading_weight', e.target.value)} className="flex-1" />
                 <span className="w-12 text-right text-sm font-mono">{values.heading_weight}</span>
               </div>
-              <p className="mt-3 text-xs text-gray-400">Preview:</p>
-              <h2 style={{ fontWeight: Number(values.heading_weight) }} className="text-2xl text-gray-900">
+              <p className="mt-3 text-xs text-muted">Preview:</p>
+              <h2 style={{ fontWeight: Number(values.heading_weight) }} className="text-2xl text-primary">
                 Heading Preview
               </h2>
             </div>
@@ -144,8 +144,8 @@ export function AppearanceForm({ settings, onSave }: Props) {
               { k: 'radius_lg', l: 'Large Border Radius', min: 0, max: 60, unit: 'px' },
               { k: 'container', l: 'Container Width', min: 640, max: 1440, unit: 'px' },
             ].map(({ k, l, min, max, unit }) => (
-              <div key={k} className="rounded-xl border border-gray-200 bg-white p-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">{l}</label>
+              <div key={k} className="rounded-xl border border-border bg-card p-4">
+                <label className="block text-sm font-medium text-primary mb-2">{l}</label>
                 <div className="flex items-center gap-3">
                   <input type="range" min={min} max={max} value={values[k]}
                     onChange={e => setVal(k, e.target.value)} className="flex-1" />
@@ -158,8 +158,8 @@ export function AppearanceForm({ settings, onSave }: Props) {
 
         {/* Buttons Tab */}
         {tab === 'buttons' && (
-          <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-            <p className="text-xs text-gray-400 mb-4">Button previews using current theme</p>
+          <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+            <p className="text-xs text-muted mb-4">Button previews using current theme</p>
             <div className="flex flex-wrap gap-4">
               <button className="rounded-lg px-6 py-2.5 text-sm font-medium text-white shadow-sm transition" style={{ background: values.primary }}>
                 Primary Button
@@ -176,10 +176,10 @@ export function AppearanceForm({ settings, onSave }: Props) {
 
         {/* Cards Tab */}
         {tab === 'cards' && (
-          <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
-            <p className="text-xs text-gray-400 mb-4">Card preview using current theme</p>
+          <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+            <p className="text-xs text-muted mb-4">Card preview using current theme</p>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="overflow-hidden rounded-xl border bg-white shadow-sm" style={{ borderColor: values.border, borderRadius: values.radius_md + 'px' }}>
+              <div className="overflow-hidden rounded-xl border bg-card shadow-sm" style={{ borderColor: values.border, borderRadius: values.radius_md + 'px' }}>
                 <div className="h-32 flex items-center justify-center" style={{ background: values.surface }}>
                   <span className="text-3xl">📦</span>
                 </div>
@@ -197,9 +197,9 @@ export function AppearanceForm({ settings, onSave }: Props) {
         )}
 
         {/* Save buttons */}
-        <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
+        <div className="flex items-center gap-3 pt-4 border-t border-border">
           <button onClick={() => handleSave(false)} disabled={saving}
-            className="rounded-lg border border-gray-300 px-6 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 transition disabled:opacity-50">
+            className="rounded-lg border border-border px-6 py-2.5 text-sm font-medium text-muted hover:bg-surface transition disabled:opacity-50">
             {saving ? 'Saving...' : 'Save Draft'}
           </button>
           <button onClick={() => handleSave(true)} disabled={saving}
@@ -210,8 +210,8 @@ export function AppearanceForm({ settings, onSave }: Props) {
       </div>
 
       {/* Live Preview */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 lg:sticky lg:top-20" style={cssVars}>
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">Live Preview</p>
+      <div className="rounded-xl border border-border bg-surface p-4 lg:sticky lg:top-20" style={cssVars}>
+        <p className="text-xs font-medium text-muted uppercase tracking-wider mb-3">Live Preview</p>
         <div className="space-y-3 scale-[0.85] origin-top-left" style={{ width: '118%' }}>
 
           {/* Mini Header */}

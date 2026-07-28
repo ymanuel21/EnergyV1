@@ -59,12 +59,12 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
 
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-sm font-medium text-primary mb-1">{label}</label>
 
       {/* Gallery */}
       <div className="grid grid-cols-4 gap-3 mb-3">
         {images.map((url, i) => (
-          <div key={i} className="relative group rounded-lg border border-gray-200 overflow-hidden">
+          <div key={i} className="relative group rounded-lg border border-border overflow-hidden">
             <img
               src={url}
               alt={`Product image ${i + 1}`}
@@ -84,7 +84,7 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
                 <button
                   type="button"
                   onClick={() => moveImage(i, -1)}
-                  className="rounded bg-white/90 p-1 text-xs hover:bg-white"
+                  className="rounded bg-card/90 p-1 text-xs hover:bg-card"
                   title="Pindah ke kiri"
                 >
                   ←
@@ -94,7 +94,7 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
                 <button
                   type="button"
                   onClick={() => moveImage(i, 1)}
-                  className="rounded bg-white/90 p-1 text-xs hover:bg-white"
+                  className="rounded bg-card/90 p-1 text-xs hover:bg-card"
                   title="Pindah ke kanan"
                 >
                   →
@@ -117,7 +117,7 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 hover:border-gray-700 hover:text-gray-700 disabled:opacity-50"
+          className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-border text-muted hover:border-gray-700 hover:text-primary disabled:opacity-50"
         >
           <span className="text-center text-xs">
             {uploading ? 'Mengupload...' : '+ Tambah\nGambar'}

@@ -18,10 +18,10 @@ export default async function PagesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Halaman Statis</h1>
+      <h1 className="text-2xl font-bold text-primary">Halaman Statis</h1>
       <div className="mt-4 space-y-4">
         {pages.map((p: any) => (
-          <div key={p.slug} className="rounded-xl border bg-white p-4">
+          <div key={p.slug} className="rounded-xl border bg-card p-4">
             <form action={update.bind(null, p.slug)} className="space-y-3">
               <input name="title" defaultValue={p.title} className="w-full rounded-lg border px-3 py-2 text-sm font-medium" />
               <textarea name="content" defaultValue={p.content} rows={10} className="w-full rounded-lg border px-3 py-2 text-sm font-mono" />

@@ -31,12 +31,12 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Pengaturan</h1>
-      <form action={handleSave} className="mt-6 space-y-4 rounded-xl border bg-white p-6">
+      <h1 className="text-2xl font-bold text-primary">Pengaturan</h1>
+      <form action={handleSave} className="mt-6 space-y-4 rounded-xl border bg-card p-6">
         {settings.map((s) => (
           <div key={s.key}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{s.label}</label>
-            <input name={s.key} defaultValue={s.defaultValue} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+            <label className="block text-sm font-medium text-primary mb-1">{s.label}</label>
+            <input name={s.key} defaultValue={s.defaultValue} className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
           </div>
         ))}
         <div className="flex justify-end">

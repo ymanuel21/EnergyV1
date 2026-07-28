@@ -63,14 +63,14 @@ export function Modal({
         {showCloseButton && (
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 rounded-full p-1 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute right-4 top-4 rounded-full p-1 text-muted hover:text-muted transition-colors"
             aria-label="Tutup"
           >
             <CloseIcon />
           </button>
         )}
         {title && (
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">{title}</h2>
+          <h2 className="mb-4 text-lg font-semibold text-primary">{title}</h2>
         )}
         {children}
       </div>

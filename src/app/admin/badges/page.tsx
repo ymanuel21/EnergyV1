@@ -41,21 +41,21 @@ export default async function BadgesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Badge</h1>
+      <h1 className="text-2xl font-bold text-primary">Badge</h1>
 
       {/* Create */}
-      <form action={handleCreate} className="mt-4 space-y-3 rounded-xl border bg-white p-4">
+      <form action={handleCreate} className="mt-4 space-y-3 rounded-xl border bg-card p-4">
         <div className="grid gap-3 sm:grid-cols-3">
           <input name="name" placeholder="Nama" required className="rounded-lg border px-3 py-2 text-sm" />
           <input name="slug" placeholder="Slug (auto)" className="rounded-lg border px-3 py-2 text-sm" />
           <input name="icon" placeholder="Icon (emoji)" className="rounded-lg border px-3 py-2 text-sm" />
           <div className="flex gap-2">
             <div>
-              <label className="text-xs text-gray-500">Text</label>
+              <label className="text-xs text-muted">Text</label>
               <input name="color" type="color" defaultValue="#3B82F6" className="h-9 w-16 rounded border" />
             </div>
             <div>
-              <label className="text-xs text-gray-500">BG</label>
+              <label className="text-xs text-muted">BG</label>
               <input name="bgColor" type="color" defaultValue="#EFF6FF" className="h-9 w-16 rounded border" />
             </div>
             <input name="sortOrder" type="number" placeholder="Urutan" className="rounded-lg border px-3 py-2 text-sm" />
@@ -67,7 +67,7 @@ export default async function BadgesPage() {
       {/* List */}
       <div className="mt-4 space-y-2">
         {badges.map((b: any) => (
-          <div key={b.id} className="rounded-xl border bg-white p-4">
+          <div key={b.id} className="rounded-xl border bg-card p-4">
             <form action={handleUpdate.bind(null, b.id)} className="flex items-center gap-3 flex-wrap">
               <span className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold" style={{ color: b.color, backgroundColor: b.bgColor }}>
                 {b.icon && <span>{b.icon}</span>}

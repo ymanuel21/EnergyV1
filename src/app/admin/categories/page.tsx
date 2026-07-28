@@ -22,7 +22,7 @@ export default async function CategoriesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Kategori</h1>
+      <h1 className="text-2xl font-bold text-primary">Kategori</h1>
 
       {/* Create form */}
       <form action={handleCreate} className="mt-4 flex gap-3 items-end">
@@ -38,7 +38,7 @@ export default async function CategoriesPage() {
       </form>
 
       {/* Category list */}
-      <div className="mt-4 rounded-xl border bg-white">
+      <div className="mt-4 rounded-xl border bg-card">
         {topLevel.map((cat: any) => (
           <div key={cat.id}>
             <CategoryRow category={cat} allCategories={allCategories} />

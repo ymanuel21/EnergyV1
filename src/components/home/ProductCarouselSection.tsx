@@ -26,12 +26,12 @@ export function ProductCarouselSection({
           <div>
             <div className="flex items-center gap-2">
               {titleIcon}
-              <h2 className="text-2xl font-light tracking-tight text-gray-900">{title}</h2>
+              <h2 className="text-2xl font-light tracking-tight text-primary">{title}</h2>
             </div>
-            {description && <p className="mt-1 text-sm text-gray-400">{description}</p>}
+            {description && <p className="mt-1 text-sm text-muted">{description}</p>}
           </div>
           {linkTo && (
-            <Link href={linkTo} className="hidden text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors sm:inline-flex items-center gap-1 shrink-0">
+            <Link href={linkTo} className="hidden text-sm font-medium text-muted hover:text-primary transition-colors sm:inline-flex items-center gap-1 shrink-0">
               Lihat semua <span className="text-lg">→</span>
             </Link>
           )}
@@ -45,7 +45,7 @@ export function ProductCarouselSection({
 
         {linkTo && (
           <div className="mt-6 sm:hidden">
-            <Link href={linkTo} className="inline-flex items-center gap-1 text-sm font-medium text-gray-500">
+            <Link href={linkTo} className="inline-flex items-center gap-1 text-sm font-medium text-muted">
               Lihat semua <span>→</span>
             </Link>
           </div>

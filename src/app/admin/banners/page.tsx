@@ -32,8 +32,8 @@ export default async function BannersPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900">Banner</h1>
-      <form action={handleCreate} className="mt-4 space-y-3 rounded-xl border bg-white p-4">
+      <h1 className="text-2xl font-bold text-primary">Banner</h1>
+      <form action={handleCreate} className="mt-4 space-y-3 rounded-xl border bg-card p-4">
         <div className="grid gap-3 sm:grid-cols-2">
           <input name="title" placeholder="Judul" required className="rounded-lg border px-3 py-2 text-sm" />
           <select name="type" className="rounded-lg border px-3 py-2 text-sm" defaultValue="hero">
@@ -49,10 +49,10 @@ export default async function BannersPage() {
       </form>
       <div className="mt-4 space-y-3">
         {banners.map((b: any) => (
-          <div key={b.id} className="rounded-xl border bg-white p-4">
+          <div key={b.id} className="rounded-xl border bg-card p-4">
             <form action={handleUpdate.bind(null, b.id)} className="grid gap-3 sm:grid-cols-2">
               <input name="title" defaultValue={b.title} className="rounded-lg border px-3 py-2 text-sm" />
-              <span className="text-sm text-gray-400">{b.type}</span>
+              <span className="text-sm text-muted">{b.type}</span>
               <ImageUpload name="image" label="Gambar Banner" defaultValue={b.image || ''} />
               <input name="link" defaultValue={b.link} className="rounded-lg border px-3 py-2 text-sm" />
               <input name="alt" defaultValue={b.alt} className="rounded-lg border px-3 py-2 text-sm" />

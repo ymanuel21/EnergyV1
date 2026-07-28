@@ -73,7 +73,7 @@ export function CurrencyInput({
   return (
     <div className={className}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-primary mb-1">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
@@ -86,7 +86,7 @@ export function CurrencyInput({
         onChange={handleChange}
         placeholder={placeholder}
         required={required}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm tabular-nums"
+        className="w-full rounded-lg border border-border px-3 py-2 text-sm tabular-nums"
       />
       {/* Hidden input submits raw numeric value to server */}
       <input type="hidden" name={name} value={parseRupiah(formatted)} />

@@ -18,13 +18,13 @@ export function SectionHeading({
   return (
     <div className={cn(align === 'center' && 'text-center', className)}>
       {overline && (
-        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">
           {overline}
         </p>
       )}
-      <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">{title}</h2>
+      <h2 className="text-2xl font-bold text-primary sm:text-3xl">{title}</h2>
       {description && (
-        <p className="mt-2 text-sm text-gray-500">{description}</p>
+        <p className="mt-2 text-sm text-muted">{description}</p>
       )}
     </div>
   );

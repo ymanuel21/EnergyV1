@@ -26,9 +26,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <AdminToastProvider>
-      <div className="flex min-h-screen bg-gray-50">
-        <aside className="w-56 shrink-0 border-r border-gray-200 bg-white p-4 flex flex-col">
-          <Link href="/admin" className="mb-6 block text-lg font-bold text-gray-900">
+      <div className="flex min-h-screen bg-surface">
+        <aside className="w-56 shrink-0 border-r border-border bg-card p-4 flex flex-col">
+          <Link href="/admin" className="mb-6 block text-lg font-bold text-primary">
             EBTPlaza Admin
           </Link>
           <nav className="flex-1 space-y-1">
@@ -38,17 +38,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 href={item.href}
                 className={`block rounded-lg px-3 py-2 text-sm transition-colors ${
                   pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))
-                    ? 'bg-gray-50 text-gray-900 font-medium'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-surface text-primary font-medium'
+                    : 'text-muted hover:bg-surface hover:text-primary'
                 }`}
               >
                 {item.label}
               </Link>
             ))}
           </nav>
-          <div className="pt-6 border-t border-gray-100">
+          <div className="pt-6 border-t border-border">
             <form action="/api/auth/signout" method="POST">
-              <button className="w-full rounded-lg px-3 py-2 text-left text-sm text-gray-500 hover:bg-gray-100">
+              <button className="w-full rounded-lg px-3 py-2 text-left text-sm text-muted hover:bg-surface">
                 Logout
               </button>
             </form>
