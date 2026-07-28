@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 interface Suggestion {
   id: string;
@@ -13,7 +12,13 @@ interface Suggestion {
   brand: { name: string; slug: string } | null;
 }
 
-export function SearchBar() {
+interface SearchBarProps {
+  onFocusMobile?: () => void;
+  onCloseMobile?: () => void;
+  expanded?: boolean;
+}
+
+export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
@@ -22,6 +27,13 @@ export function SearchBar() {
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Auto-focus when expanded
+  useEffect(() => {
+    if (expanded && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [expanded]);
 
   const fetchSuggestions = useCallback(async (q: string) => {
     if (q.length < 1) { setSuggestions([]); setOpen(false); return; }
@@ -42,15 +54,24 @@ export function SearchBar() {
 
   const handleSelect = (slug: string) => {
     setOpen(false);
+    onCloseMobile?.();
     router.push(`/produk/${slug}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setOpen(false);
+    onCloseMobile?.();
     const q = query.trim();
     if (q.length < 2) return;
     router.push(`/cari?q=${encodeURIComponent(q)}`);
+  };
+
+  const handleClear = () => {
+    setQuery('');
+    setSuggestions([]);
+    setOpen(false);
+    inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -58,19 +79,21 @@ export function SearchBar() {
     if (e.key === 'ArrowDown') { e.preventDefault(); setSelected(s => Math.min(s + 1, suggestions.length - 1)); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setSelected(s => Math.max(s - 1, -1)); }
     else if (e.key === 'Enter' && selected >= 0) { e.preventDefault(); handleSelect(suggestions[selected].slug); }
-    else if (e.key === 'Escape') setOpen(false);
+    else if (e.key === 'Escape') { setOpen(false); onCloseMobile?.(); }
   };
 
-  // Close on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false);
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        if (!expanded) return;
+        // Don't close expanded search on outside click — only Back button closes it
+      }
     }
     if (open) document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
-  }, [open]);
+  }, [open, expanded]);
 
-  // Highlight matching text
   const highlight = (text: string) => {
     if (!query) return text;
     const idx = text.toLowerCase().indexOf(query.toLowerCase());
@@ -87,32 +110,50 @@ export function SearchBar() {
   const formatPrice = (price: number) => 'Rp ' + price.toLocaleString('id-ID');
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-lg">
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="header-search" className="sr-only">Cari produk</label>
+    <div ref={containerRef} className={`relative w-full ${expanded ? '' : 'max-w-lg'}`}>
+      <form onSubmit={handleSubmit} className="relative">
+        <label htmlFor={expanded ? 'header-search-mobile' : 'header-search'} className="sr-only">Cari produk</label>
         <input
-          id="header-search"
+          id={expanded ? 'header-search-mobile' : 'header-search'}
           ref={inputRef}
           type="search"
           value={query}
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          onFocus={() => { if (suggestions.length > 0) setOpen(true); }}
+          onFocus={() => {
+            onFocusMobile?.();
+            if (suggestions.length > 0) setOpen(true);
+          }}
           placeholder="Cari produk..."
-          className="w-full rounded-lg border border-border py-2 pl-4 pr-12 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+          className="w-full rounded-lg border border-border py-2 pl-4 pr-12 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300"
         />
-        <button type="submit"
-          className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md bg-primary p-1.5 text-white hover:bg-primary-hover transition-colors"
-          aria-label="Cari">
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
+
+        {/* Clear button (expanded mode only) */}
+        {expanded && query && (
+          <button type="button" onClick={handleClear}
+            className="absolute right-10 top-1/2 -translate-y-1/2 rounded p-1 text-muted hover:text-primary transition"
+            aria-label="Hapus">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+
+        {/* Search button (non-expanded mode only) */}
+        {!expanded && (
+          <button type="submit"
+            className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md bg-primary p-1.5 text-white hover:bg-primary-hover transition-colors"
+            aria-label="Cari">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        )}
       </form>
 
       {/* Autocomplete dropdown */}
       {open && suggestions.length > 0 && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-1 rounded-lg border border-border bg-card shadow-xl max-h-96 overflow-y-auto">
+        <div className={`absolute left-0 right-0 top-full z-50 mt-1 rounded-lg border border-border bg-card shadow-xl max-h-96 overflow-y-auto ${expanded ? 'rounded-t-none' : ''}`}>
           {suggestions.map((s, i) => (
             <button
               key={s.id}
