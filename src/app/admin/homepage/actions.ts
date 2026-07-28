@@ -2,6 +2,7 @@
 
 import { getAdminPrisma, requireAuth } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
+import { saveRevision, logActivity } from '@/lib/admin-core';
 
 export async function getHomepageSections() {
   await requireAuth();
@@ -25,9 +26,19 @@ export async function upsertSection(data: {
     settings: data.settings ?? {},
   };
   if (data.id && data.id !== 'undefined') {
+    // Save revision before update
+    const existing = await prisma.homepageSection.findUnique({ where: { id: data.id } });
+    if (existing) {
+      await saveRevision('homepage_section', existing.id, {
+        title: existing.title, subtitle: existing.subtitle, settings: existing.settings,
+        enabled: existing.enabled, type: existing.type, sortOrder: existing.sortOrder, status: existing.status,
+      });
+    }
     await prisma.homepageSection.update({ where: { id: data.id }, data: payload as any });
+    await logActivity('update', 'homepage_section', data.title || data.type);
   } else {
     await prisma.homepageSection.create({ data: payload as any });
+    await logActivity('create', 'homepage_section', data.title || data.type);
   }
   revalidatePath('/admin/homepage');
   revalidatePath('/');

@@ -275,3 +275,41 @@ model QuoteRequest {
 
   @@map("quote_requests")
 }
+
+model AdminUser {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  role        String   @default("editor") // owner, admin, editor, viewer
+  permissions Json     @default("[]")     // explicit overrides: ["manage_products", "publish_content"]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+model Revision {
+  id         String   @id @default(cuid())
+  entityType String   // "product", "homepage_section", "navigation_link", "banner", etc.
+  entityId   String
+  data       Json     // full snapshot of entity at this point
+  userId     String   @default("")
+  userName   String   @default("")
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@map("revisions")
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String   @default("")
+  userName  String   @default("")
+  action    String   // "create", "update", "delete", "publish", "restore"
+  entity    String   // "product", "homepage_section", "navigation_link"
+  entityName String  @default("")
+  details   String   @default("")
+  createdAt DateTime @default(now())
+
+  @@map("activity_logs")
+}

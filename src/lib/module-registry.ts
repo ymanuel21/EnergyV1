@@ -166,6 +166,16 @@ export const moduleRegistry: Record<string, ModuleDefinition> = {
     permission: 'manage_quotes',
     searchFields: ['name', 'email', 'company', 'message'],
   },
+  activity: {
+    id: 'activity',
+    label: 'Activity',
+    icon: '📜',
+    group: 'settings',
+    route: '/admin/activity',
+    description: 'View admin activity log',
+    permission: 'view_activity',
+    searchFields: ['action', 'entity'],
+  },
   media: {
     id: 'media',
     label: 'Media',
