@@ -44,6 +44,7 @@ const defaultFlags: FeatureFlag[] = [
   { key: 'enable_quotes', enabled: true, description: 'Quote request system' },
   { key: 'enable_landing_pages', enabled: true, description: 'Landing page builder' },
   { key: 'enable_plugins', enabled: false, description: 'Plugin system (beta)' },
+  { key: 'showBrandCategoryInMegaMenu', enabled: false, description: 'Brand as category link in mega menu' },
 ];
 
 let flags: FeatureFlag[] = [...defaultFlags];

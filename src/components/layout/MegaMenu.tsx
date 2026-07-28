@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { HamburgerIcon } from '@ui/Icons';
 import { categories as defaultCategories } from '@/lib/data/categories';
 import { brandRepo } from '@/lib/repositories/brand';
+import { featureFlags } from '@/lib/platform';
 import type { Category } from '@/types/product';
 
 export function MegaMenu() {
@@ -114,7 +115,9 @@ export function MegaMenu() {
                 scrollbarGutter: 'stable',
               }}
             >
-              {categories.map((cat) => (
+              {categories
+                .filter((cat) => featureFlags.isEnabled('showBrandCategoryInMegaMenu') || cat.slug !== 'brand')
+                .map((cat) => (
                 <CategoryColumn key={cat.id} category={cat} onClick={close} />
               ))}
             </div>
