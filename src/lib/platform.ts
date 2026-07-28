@@ -45,6 +45,8 @@ const defaultFlags: FeatureFlag[] = [
   { key: 'enable_landing_pages', enabled: true, description: 'Landing page builder' },
   { key: 'enable_plugins', enabled: false, description: 'Plugin system (beta)' },
   { key: 'showBrandCategoryInMegaMenu', enabled: false, description: 'Brand as category link in mega menu' },
+  { key: 'enable_wishlist_ui', enabled: false, description: 'Show Wishlist button in header' },
+  { key: 'enable_account_ui', enabled: false, description: 'Show Account button in header' },
 ];
 
 let flags: FeatureFlag[] = [...defaultFlags];

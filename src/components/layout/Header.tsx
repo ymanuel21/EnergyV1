@@ -10,7 +10,7 @@ import { MegaMenu } from './MegaMenu';
 import { MobileMenu } from './MobileMenu';
 import { CompareHeaderButton } from './CompareHeaderButton';
 import { SITE_CONFIG } from '@/lib/site';
-
+import { featureFlags } from '@/lib/platform';
 export function Header() {
   const { logo } = SITE_CONFIG;
   const [searchExpanded, setSearchExpanded] = useState(false);
@@ -68,11 +68,15 @@ export function Header() {
 
           <div className="flex items-center gap-1">
             <CompareHeaderButton />
-            <Link href="/wishlist">
-              <IconButton label="Wishlist"><HeartIcon /></IconButton>
-            </Link>
+            {featureFlags.isEnabled('enable_wishlist_ui') && (
+              <Link href="/wishlist">
+                <IconButton label="Wishlist"><HeartIcon /></IconButton>
+              </Link>
+            )}
             <CartHeaderButton />
-            <IconButton label="Akun"><UserIcon /></IconButton>
+            {featureFlags.isEnabled('enable_account_ui') && (
+              <IconButton label="Akun"><UserIcon /></IconButton>
+            )}
             <MobileMenu />
           </div>
         </div>
