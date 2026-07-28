@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 const GROUPS = [
   { key: 'footer_belanja', label: 'Footer — Belanja' },
   { key: 'footer_layanan', label: 'Footer — Layanan' },
-  { key: 'utility', label: 'Utility Menu' },
+  { key: 'footer_legal', label: 'Footer — Legal' },
   { key: 'mobile', label: 'Mobile Menu' },
 ];
 

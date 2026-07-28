@@ -1,25 +1,25 @@
 export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
+import { getAdminPrisma } from './lib/admin-prisma';
 
 async function getStats() {
   try {
-    const { PrismaClient } = await import('@prisma/client');
-    const { PrismaPg } = await import('@prisma/adapter-pg');
-    const { Pool } = await import('pg');
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
-    const [products, categories, brands, articles, faqs, banners] = await Promise.all([
+    const prisma = await getAdminPrisma();
+    const [products, categories, brands, articles, faqs, banners, sections, navLinks, assets] = await Promise.all([
       prisma.product.count(),
       prisma.category.count(),
       prisma.brand.count(),
       prisma.article.count(),
       prisma.faq.count(),
       prisma.banner.count(),
+      prisma.homepageSection.count({ where: { status: 'published' } }),
+      prisma.navigationLink.count({ where: { enabled: true } }),
+      prisma.asset.count(),
     ]);
-    return { products, categories, brands, articles, faqs, banners };
+    return { products, categories, brands, articles, faqs, banners, sections, navLinks, assets };
   } catch {
-    return { products: 8, categories: 9, brands: 10, articles: 4, faqs: 8, banners: 5 };
+    return null;
   }
 }
 
@@ -29,21 +29,44 @@ export default async function DashboardPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-primary">Dashboard</h1>
-      <p className="mt-1 text-sm text-muted">Admin panel EBTPlaza</p>
-      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <Card label="Produk" value={stats.products} href="/admin/products" />
-        <Card label="Kategori" value={stats.categories} href="/admin/categories" />
-        <Card label="Brand" value={stats.brands} href="/admin/brands" />
-        <Card label="Artikel" value={stats.articles} href="/admin/articles" />
-        <Card label="FAQ" value={stats.faqs} href="/admin/faq" />
-        <Card label="Banner" value={stats.banners} href="/admin/banners" />
-      </div>
-      <div className="mt-6 rounded-xl border border-border bg-card p-6">
-        <h2 className="text-sm font-semibold text-primary">Quick Actions</h2>
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/admin/products/new" className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white">+ Tambah Produk</Link>
-          <Link href="/admin/articles/new" className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white">+ Tulis Artikel</Link>
-          <Link href="/admin/settings" className="rounded-lg border border-border px-4 py-2 text-sm text-muted">Pengaturan</Link>
+      <p className="mt-1 text-sm text-muted">Selamat datang di EBTPlaza Admin</p>
+
+      {stats && (
+        <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4">
+          <Card label="Produk" value={stats.products} href="/admin/products" />
+          <Card label="Kategori" value={stats.categories} href="/admin/categories" />
+          <Card label="Brand" value={stats.brands} href="/admin/brands" />
+          <Card label="Artikel" value={stats.articles} href="/admin/articles" />
+          <Card label="FAQ" value={stats.faqs} href="/admin/faq" />
+          <Card label="Banner" value={stats.banners} href="/admin/banners" />
+          <Card label="Homepage Sections" value={stats.sections} href="/admin/homepage" />
+          <Card label="Nav Links" value={stats.navLinks} href="/admin/navigation" />
+          <Card label="Media Assets" value={stats.assets} href="/admin/media" />
+        </div>
+      )}
+
+      {!stats && (
+        <div className="mt-6 rounded-xl border border-border bg-card p-8 text-center">
+          <p className="text-muted">Database connection unavailable. Stats will appear when connected.</p>
+        </div>
+      )}
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="rounded-xl border border-border bg-card p-6">
+          <h2 className="text-sm font-semibold text-primary">Quick Actions</h2>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <Link href="/admin/products/new" className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover transition">+ Tambah Produk</Link>
+            <Link href="/admin/articles/new" className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover transition">+ Tulis Artikel</Link>
+            <Link href="/admin/homepage" className="rounded-lg border border-border px-4 py-2 text-sm text-muted hover:bg-surface transition">Homepage Builder</Link>
+          </div>
+        </div>
+        <div className="rounded-xl border border-border bg-card p-6">
+          <h2 className="text-sm font-semibold text-primary">Site Management</h2>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <Link href="/admin/appearance" className="rounded-lg border border-border px-4 py-2 text-sm text-muted hover:bg-surface transition">Appearance</Link>
+            <Link href="/admin/navigation" className="rounded-lg border border-border px-4 py-2 text-sm text-muted hover:bg-surface transition">Navigation</Link>
+            <Link href="/admin/settings" className="rounded-lg border border-border px-4 py-2 text-sm text-muted hover:bg-surface transition">Settings</Link>
+          </div>
         </div>
       </div>
     </div>

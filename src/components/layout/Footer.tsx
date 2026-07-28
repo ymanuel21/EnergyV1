@@ -7,6 +7,7 @@ export async function Footer() {
   const nav = await getPublicNavigationLinks().catch(() => ({} as Record<string, { label: string; href: string }[]>));
   const belanja = nav.footer_belanja || [];
   const layanan = nav.footer_layanan || [];
+  const legal = nav.footer_legal || [];
 
   return (
     <footer className="bg-dark-bg border-t border-gray-800">
@@ -45,8 +46,9 @@ export async function Footer() {
         <div className="mt-12 flex flex-col gap-4 border-t border-gray-800 pt-8 sm:flex-row sm:justify-between">
           <span className="text-sm text-muted">© 2026 {name}. Seluruh hak cipta dilindungi.</span>
           <div className="flex gap-6 text-sm text-muted">
-            <Link href="/halaman/syarat-ketentuan" className="hover:text-gray-400 transition">Syarat &amp; Ketentuan</Link>
-            <Link href="/halaman/kebijakan-privasi" className="hover:text-gray-400 transition">Privasi</Link>
+            {legal.map((link: any) => (
+              <Link key={link.href} href={link.href} className="hover:text-gray-400 transition">{link.label}</Link>
+            ))}
           </div>
         </div>
       </div>
