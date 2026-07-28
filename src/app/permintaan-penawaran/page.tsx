@@ -296,7 +296,7 @@ export default function RfqPage() {
                   className="rounded border-gray-300 text-gray-800 focus:ring-gray-700"
                 />
                 <span className="text-sm text-gray-700">Membutuhkan jasa instalasi</span>
-              </FormLabel>
+              </label>
             </div>
           </div>
           <div>
