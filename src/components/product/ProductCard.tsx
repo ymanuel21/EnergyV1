@@ -36,7 +36,7 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
   return (
     <article className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white transition hover:shadow-lg ${className}`}>
       {/* Image */}
-      <Link href={`/produk/${product.slug}`} className="relative aspect-square overflow-hidden bg-gray-50">
+      <Link href={`/produk/${product.slug}`} className="relative aspect-square overflow-hidden bg-surface">
         <SafeImage
           src={product.images[0]}
           alt={product.name}
@@ -66,7 +66,7 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
 
         {/* Wishlist button */}
         <button
-          className="absolute right-2 bottom-2 rounded-full bg-white/90 p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+          className="absolute right-2 bottom-2 rounded-full bg-white/90 p-1.5 text-muted hover:text-red-500 transition-colors"
           aria-label={`Simpan ${product.name} ke wishlist`}
         >
           <HeartIcon className="h-4 w-4" />
@@ -78,14 +78,14 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
         {brand && (
           <Link
             href={`/brand/${brand.slug}`}
-            className="text-xs text-gray-400 hover:text-gray-900 transition-colors"
+            className="text-xs text-muted hover:text-primary transition-colors"
           >
             {brand.name}
           </Link>
         )}
         <Link
           href={`/produk/${product.slug}`}
-          className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-gray-700 transition-colors"
+          className="text-sm font-medium text-primary line-clamp-2 hover:text-primary transition-colors"
         >
           {product.name}
         </Link>

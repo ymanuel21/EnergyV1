@@ -10,7 +10,7 @@ const BADGE_LABELS: Record<ProductBadgeVariant, string> = {
 const BADGE_COLORS: Record<ProductBadgeVariant, string> = {
   clearance: 'bg-red-100 text-red-700',
   promo: 'bg-accent-100 text-accent-700',
-  new: 'bg-gray-100 text-gray-900',
+  new: 'bg-surface text-primary',
   cheapest: 'bg-yellow-100 text-yellow-800',
 };
 

@@ -16,8 +16,8 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
 
   if (!images.length) {
     return (
-      <div className="aspect-square rounded-lg bg-gray-100 flex items-center justify-center">
-        <span className="text-gray-400">Tidak ada gambar</span>
+      <div className="aspect-square rounded-lg bg-surface flex items-center justify-center">
+        <span className="text-muted">Tidak ada gambar</span>
       </div>
     );
   }
@@ -27,7 +27,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
       {/* Main image */}
       <button
         onClick={() => setZoomOpen(true)}
-        className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100"
+        className="relative aspect-square w-full overflow-hidden rounded-lg bg-surface"
         aria-label={`${productName} — Klik untuk zoom`}
       >
         <SafeImage
@@ -53,7 +53,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
               onClick={() => setSelected(i)}
               className={cn(
                 'relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition-colors',
-                i === selected ? 'border-gray-800' : 'border-gray-200 hover:border-gray-400'
+                i === selected ? 'border-gray-800' : 'border-border hover:border-gray-400'
               )}
             >
               <SafeImage

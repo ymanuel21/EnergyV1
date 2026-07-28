@@ -41,7 +41,7 @@ export function AddToCartButton({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-4">
-        <label className="text-sm text-gray-600">Jumlah</label>
+        <label className="text-sm text-muted">Jumlah</label>
         <QuantitySelector value={quantity} max={999} onChange={setQuantity} />
       </div>
       <Button

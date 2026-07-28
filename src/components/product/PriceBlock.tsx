@@ -15,10 +15,10 @@ export function PriceBlock({ price, originalPrice, stock, className }: PriceBloc
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-baseline gap-3">
-        <span className="text-2xl font-bold text-gray-900">{formatCurrency(price)}</span>
+        <span className="text-2xl font-bold text-primary">{formatCurrency(price)}</span>
         {hasDiscount && (
           <>
-            <span className="text-lg text-gray-400 line-through">
+            <span className="text-lg text-muted line-through">
               {formatCurrency(originalPrice!)}
             </span>
             <span className="rounded bg-red-100 px-2 py-0.5 text-sm font-semibold text-red-700">
@@ -29,7 +29,7 @@ export function PriceBlock({ price, originalPrice, stock, className }: PriceBloc
       </div>
       <p className="text-sm">
         <span className="text-green-600 font-medium">Stok tersedia</span>
-        <span className="text-gray-400"> ({stock} pcs)</span>
+        <span className="text-muted"> ({stock} pcs)</span>
       </p>
     </div>
   );
