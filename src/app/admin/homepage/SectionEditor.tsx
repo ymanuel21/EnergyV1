@@ -1,14 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-
-const SECTION_TYPES: Record<string, { label: string; icon: string }> = {
-  hero: { label: 'Hero', icon: '🏠' },
-  'category-grid': { label: 'Category Grid', icon: '📂' },
-  'featured-products': { label: 'Featured Products', icon: '⭐' },
-  brands: { label: 'Brands', icon: '🏢' },
-  cta: { label: 'CTA', icon: '📣' },
-};
+import { sectionRegistry } from '@/lib/section-registry';
 
 export function SectionEditor({ section, index, total, onSave, onDelete, onMoveUp, onMoveDown }: {
   section: any; index: number; total: number;
@@ -30,27 +23,9 @@ export function SectionEditor({ section, index, total, onSave, onDelete, onMoveU
 
   const setS = (k: string, v: string) => setSettings(p => ({ ...p, [k]: v }));
 
-  const typeFields: Record<string, { key: string; label: string }[]> = {
-    hero: [
-      { key: 'tagline', label: 'Tagline' },
-      { key: 'description', label: 'Description' },
-      { key: 'cta', label: 'CTA Button' },
-      { key: 'ctaLink', label: 'CTA Link' },
-    ],
-    'category-grid': [
-      { key: 'heading', label: 'Heading' },
-    ],
-    'featured-products': [
-      { key: 'heading', label: 'Section heading' },
-    ],
-    brands: [
-      { key: 'heading', label: 'Section heading' },
-    ],
-    cta: [
-      { key: 'buttonLabel', label: 'Button Label' },
-      { key: 'buttonLink', label: 'Button Link' },
-    ],
-  };
+  const def = sectionRegistry[section.type];
+  const typeInfo = def || { label: section.type, icon: '📄', type: section.type };
+  const fields = def ? def.fields : [];
 
   const handleAction = async (action: 'save' | 'publish' | 'unpublish' | 'toggle') => {
     const fd = new FormData();
@@ -68,13 +43,10 @@ export function SectionEditor({ section, index, total, onSave, onDelete, onMoveU
     if (action !== 'toggle') setExpanded(false);
   };
 
-  const typeInfo = SECTION_TYPES[section.type] || { label: section.type, icon: '📄' };
   const isDraft = section.status === 'draft';
-  const fields = typeFields[section.type] || [];
 
   return (
     <div ref={dragRef} className={`rounded-lg border bg-card transition ${section.enabled ? 'border-border' : 'border-red-200 opacity-60'} ${isDraft ? 'border-dashed border-amber-300' : ''}`}>
-      {/* Header — click to expand */}
       <div className="flex items-center gap-3 px-4 py-3">
         <div className="flex items-center gap-1">
           <button onClick={() => onMoveUp(section.id)} disabled={index === 0}
@@ -96,16 +68,13 @@ export function SectionEditor({ section, index, total, onSave, onDelete, onMoveU
         </button>
       </div>
 
-      {/* Expanded editor */}
       {expanded && (
         <div className="border-t border-border p-4 space-y-4 bg-surface">
-          {/* Section type badge */}
           <div className="flex items-center gap-2">
             <span className="rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary capitalize">{typeInfo.label}</span>
             {isDraft && <span className="text-xs text-amber-600">Not published</span>}
           </div>
 
-          {/* Title + Subtitle */}
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
               <label className="block text-xs font-medium text-muted mb-1">Section Title</label>
@@ -119,7 +88,6 @@ export function SectionEditor({ section, index, total, onSave, onDelete, onMoveU
             </div>
           </div>
 
-          {/* Type-specific fields */}
           {fields.length > 0 && (
             <div className="space-y-3 pt-2 border-t border-border">
               <p className="text-xs font-semibold text-muted uppercase tracking-wide">Settings</p>
@@ -135,11 +103,9 @@ export function SectionEditor({ section, index, total, onSave, onDelete, onMoveU
             </div>
           )}
 
-          {/* Actions */}
           <div className="flex items-center justify-between gap-2 pt-3 border-t border-border">
             <button onClick={() => handleAction('unpublish')}
               className="rounded border border-border px-3 py-1.5 text-xs text-muted hover:bg-surface transition">Unpublish</button>
-
             <div className="flex items-center gap-2">
               <button onClick={() => setExpanded(false)}
                 className="rounded border border-border px-3 py-1.5 text-xs text-muted hover:bg-surface transition">Cancel</button>
@@ -148,7 +114,6 @@ export function SectionEditor({ section, index, total, onSave, onDelete, onMoveU
               <button onClick={() => handleAction('publish')}
                 className="rounded bg-primary px-4 py-1.5 text-xs font-medium text-white hover:bg-primary-hover transition">Publish</button>
             </div>
-
             <button onClick={() => onDelete(section.id)}
               className="rounded px-2 py-1 text-xs text-red-500 hover:bg-red-50 transition">Delete</button>
           </div>

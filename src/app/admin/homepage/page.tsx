@@ -3,14 +3,7 @@ export const dynamic = 'force-dynamic';
 import { getHomepageSections, upsertSection, deleteSection, moveSection } from './actions';
 import { revalidatePath } from 'next/cache';
 import { SectionEditor } from './SectionEditor';
-
-const SECTION_TYPES = [
-  { type: 'hero', label: 'Hero', icon: '🏠' },
-  { type: 'category-grid', label: 'Category Grid', icon: '📂' },
-  { type: 'featured-products', label: 'Featured Products', icon: '⭐' },
-  { type: 'brands', label: 'Brands', icon: '🏢' },
-  { type: 'cta', label: 'CTA', icon: '📣' },
-];
+import { sectionRegistry, sectionTypes } from '@/lib/section-registry';
 
 export default async function HomepageBuilderPage() {
   const sections = await getHomepageSections();
@@ -92,12 +85,12 @@ export default async function HomepageBuilderPage() {
       <div className="mt-8 border-t border-border pt-6">
         <h2 className="text-sm font-semibold text-primary mb-3">Add Section</h2>
         <div className="grid gap-2 sm:grid-cols-5">
-          {SECTION_TYPES.map(({ type, label, icon }) => (
+          {sectionTypes.map(({ type, label, icon, defaultSettings }) => (
             <form key={type} action={handleUpsert}>
               <input type="hidden" name="type" value={type} />
               <input type="hidden" name="title" value={label} />
               <input type="hidden" name="sortOrder" value={sections.length} />
-              <input type="hidden" name="settings" value="{}" />
+              <input type="hidden" name="settings" value={JSON.stringify(defaultSettings)} />
               <input type="hidden" name="status" value="draft" />
               <input type="hidden" name="enabled" value="false" />
               <button type="submit" className="w-full rounded-lg border border-border bg-card p-4 text-center hover:border-primary hover:shadow-sm transition">
