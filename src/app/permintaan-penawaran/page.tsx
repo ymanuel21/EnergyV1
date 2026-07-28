@@ -17,6 +17,7 @@ type Step = 'form' | 'confirm';
 interface FormErrors {
   name?: string;
   email?: string;
+  company?: string;
   items?: string;
 }
 
@@ -25,10 +26,12 @@ export default function RfqPage() {
   const [step, setStep] = useState<Step>('form');
   const [errors, setErrors] = useState<FormErrors>({});
   const [form, setForm] = useState({
+    customerType: 'RESIDENTIAL' as 'RESIDENTIAL' | 'BUSINESS',
     name: '',
     email: '',
     phone: '',
     company: '',
+    position: '',
     npwp: '',
     projectName: '',
     location: '',
@@ -82,7 +85,8 @@ export default function RfqPage() {
   function validate(): boolean {
     const e: FormErrors = {};
     if (!form.name.trim()) e.name = 'Nama wajib diisi';
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Email tidak valid';
+    if (!form.email.trim() || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(form.email)) e.email = 'Email tidak valid';
+    if (form.customerType === 'BUSINESS' && !form.company.trim()) e.company = 'Nama perusahaan wajib diisi';
     if (items.length === 0) e.items = 'Minimal 1 item';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -100,10 +104,12 @@ export default function RfqPage() {
       `*Permintaan Penawaran — ${SITE.name}*`,
       '',
       `*Kontak:*`,
-      `Nama: ${form.name}`,
-      `Email: ${form.email}`,
-      form.phone ? `Telepon: ${form.phone}` : '',
-      form.company ? `Perusahaan: ${form.company}` : '',
+      `*Customer:* ${form.customerType === 'BUSINESS' ? 'Business / Corporate' : 'Residential'}`,
+      `*Nama:* ${form.name}`,
+      `*Email:* ${form.email}`,
+      form.phone ? `*Telp:* ${form.phone}` : '',
+      form.company ? `*Perusahaan:* ${form.company}` : '',
+      form.position ? `*Jabatan:* ${form.position}` : '',
       form.npwp ? `NPWP: ${form.npwp}` : '',
       '',
       `*Proyek:*`,
@@ -194,6 +200,35 @@ export default function RfqPage() {
       )}
 
       <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-8" data-track="rfq-form">
+        {/* ── Customer Type ── */}
+        <section className="rounded-lg border border-border bg-card p-6 space-y-3">
+          <RequiredLabel>Customer Type</RequiredLabel>
+          <div className="flex gap-6">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="customerType"
+                value="RESIDENTIAL"
+                checked={form.customerType === 'RESIDENTIAL'}
+                onChange={() => setForm((prev) => ({ ...prev, customerType: 'RESIDENTIAL' }))}
+                className="accent-primary"
+              />
+              <span className={`text-sm font-medium ${form.customerType === 'RESIDENTIAL' ? 'text-primary' : 'text-muted'}`}>Residential</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="customerType"
+                value="BUSINESS"
+                checked={form.customerType === 'BUSINESS'}
+                onChange={() => setForm((prev) => ({ ...prev, customerType: 'BUSINESS' }))}
+                className="accent-primary"
+              />
+              <span className={`text-sm font-medium ${form.customerType === 'BUSINESS' ? 'text-primary' : 'text-muted'}`}>Business / Corporate</span>
+            </label>
+          </div>
+        </section>
+
         {/* ── Contact ── */}
         <section className="rounded-lg border border-gray-200 p-6 space-y-4">
           <h2 className="text-lg font-semibold text-gray-900">Informasi Kontak</h2>
@@ -236,14 +271,42 @@ export default function RfqPage() {
               />
             </div>
             <div>
-              <FormLabel>Nama Perusahaan</FormLabel>
-              <input
-                type="text"
-                value={form.company}
-                onChange={(e) => updateField('company', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
-              />
+              {form.customerType === 'BUSINESS' ? (
+                <>
+                  <RequiredLabel>Nama Perusahaan</RequiredLabel>
+                  <input
+                    type="text"
+                    value={form.company}
+                    onChange={(e) => updateField('company', e.target.value)}
+                    className={`w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-1 ${errors.company ? 'border-red-400 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-700 focus:ring-gray-700'}`}
+                  />
+                  {errors.company && <p className="mt-1 text-xs text-red-600">{errors.company}</p>}
+                </>
+              ) : (
+                <>
+                  <FormLabel>Nama Perusahaan</FormLabel>
+                  <input
+                    type="text"
+                    value={form.company}
+                    onChange={(e) => updateField('company', e.target.value)}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700 opacity-50"
+                    placeholder="Opsional"
+                  />
+                </>
+              )}
             </div>
+            {form.customerType === 'BUSINESS' && (
+              <div>
+                <FormLabel>Jabatan</FormLabel>
+                <input
+                  type="text"
+                  value={form.position}
+                  onChange={(e) => updateField('position', e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
+                  placeholder="Opsional"
+                />
+              </div>
+            )}
             <div>
               <FormLabel>NPWP</FormLabel>
               <input
