@@ -1,7 +1,25 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ── Brand (teal) ── */
+  /* ── Semantic Design Tokens (admin-editable via /admin/appearance) ── */
+  --color-primary: var(--ebt-primary, #111827);
+  --color-primary-hover: var(--ebt-primary-hover, #1F2937);
+  --color-surface: var(--ebt-surface, #F8FAFC);
+  --color-card: var(--ebt-card, #FFFFFF);
+  --color-muted: var(--ebt-muted, #6B7280);
+  --color-border: var(--ebt-border, #E5E7EB);
+  --color-accent: var(--ebt-accent, #10B981);
+  --color-dark-bg: var(--ebt-dark-bg, #111827);
+  --radius-sm: var(--ebt-radius-sm, 0.5rem);
+  --radius-md: var(--ebt-radius-md, 0.75rem);
+  --radius-lg: var(--ebt-radius-lg, 1.5rem);
+  --radius-full: var(--ebt-radius-full, 9999px);
+  --container-width: var(--ebt-container, 64rem);
+  --heading-weight: var(--ebt-heading-weight, 300);
+  --shadow-card: var(--ebt-shadow-card, 0 1px 3px rgba(0,0,0,0.08));
+  --shadow-lg: var(--ebt-shadow-lg, 0 10px 25px rgba(0,0,0,0.08));
+
+  /* ── Legacy brand tokens (still available for admin) ── */
   --color-brand-50: #f0fdfa;
   --color-brand-100: #ccfbf1;
   --color-brand-200: #99f6e4;
@@ -28,48 +46,14 @@
 }
 
 /* ── Animations ── */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes pulseSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes pulseSoft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-/* ── Utility classes ── */
-@utility animate-fade-in {
-  animation: fadeIn 0.2s ease-out;
-}
-
-@utility animate-slide-up {
-  animation: slideUp 0.3s ease-out;
-}
-
-@utility animate-slide-down {
-  animation: slideDown 0.2s ease-out;
-}
-
-@utility animate-scale-in {
-  animation: scaleIn 0.15s ease-out;
-}
-
-@utility animate-pulse-soft {
-  animation: pulseSoft 2s ease-in-out infinite;
-}
+@utility animate-fade-in { animation: fadeIn 0.2s ease-out; }
+@utility animate-slide-up { animation: slideUp 0.3s ease-out; }
+@utility animate-slide-down { animation: slideDown 0.2s ease-out; }
+@utility animate-scale-in { animation: scaleIn 0.15s ease-out; }
+@utility animate-pulse-soft { animation: pulseSoft 2s ease-in-out infinite; }

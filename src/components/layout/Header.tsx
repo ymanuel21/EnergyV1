@@ -12,24 +12,20 @@ export function Header() {
   const { logo } = SITE_CONFIG;
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/70 backdrop-blur-2xl border-b border-gray-100/50">
-      <div className="mx-auto flex h-14 max-w-5xl items-center gap-4 px-8">
-        {/* Logo */}
+    <header className="sticky top-0 z-40 w-full bg-card/70 backdrop-blur-2xl border-b border-border/50">
+      <div className="mx-auto flex h-14 max-w-[var(--ebt-container,64rem)] items-center gap-4 px-8">
         <Link href="/" className="flex shrink-0 items-center gap-2" aria-label={`Beranda ${SITE_CONFIG.name}`}>
-          <span className="text-lg font-semibold tracking-tight text-gray-900">
+          <span className="text-lg font-semibold tracking-tight text-primary">
             {logo.text}
           </span>
         </Link>
 
-        {/* Mega menu */}
         <MegaMenu />
 
-        {/* Search */}
         <div className="hidden flex-1 sm:block">
           <SearchBar />
         </div>
 
-        {/* Icons */}
         <div className="flex items-center gap-1">
           <CompareHeaderButton />
           <Link href="/wishlist">
@@ -41,8 +37,6 @@ export function Header() {
           <IconButton label="Akun">
             <UserIcon />
           </IconButton>
-
-          {/* Mobile hamburger */}
           <MobileMenu />
         </div>
       </div>

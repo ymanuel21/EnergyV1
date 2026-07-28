@@ -9,6 +9,8 @@ import { CartProvider } from '@providers/CartProvider';
 import { WishlistProvider } from '@providers/WishlistProvider';
 import { CompareProvider } from '@providers/CompareProvider';
 import { ToastProvider } from '@providers/ToastProvider';
+import { ThemeProvider } from '@components/providers/ThemeProvider';
+import { getThemeSettings } from '@/lib/api/theme';
 import { SITE_CONFIG } from '@/lib/site';
 
 const inter = Inter({
@@ -41,10 +43,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const themeSettings = await getThemeSettings();
+
   return (
     <html lang="id" className={inter.variable}>
       <body className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased">
+        <ThemeProvider settings={themeSettings} />
         <SkipToContent />
         <ToastProvider>
         <CartProvider>
