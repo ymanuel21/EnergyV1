@@ -1,41 +1,107 @@
-import 'server-only';
-import type { Product } from '@/types/product';
 import { getPrisma } from '@/lib/db';
+import type { Product } from '@/types/product';
 
-export async function getAllProducts(): Promise<Product[]> {
+interface ListParams {
+  limit?: number;
+  offset?: number;
+  sort?: 'newest' | 'price_asc' | 'price_desc' | 'name';
+  brandId?: string;
+  categoryId?: string;
+  search?: string;
+  badges?: string[];
+  isActive?: boolean;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  limit: number;
+  offset: number;
+  hasMore: boolean;
+}
+
+const PAGE_DEFAULTS = { limit: 24, offset: 0 };
+
+export async function getAllProducts(params?: ListParams): Promise<Product[]> {
   try {
-    if (process.env.DATABASE_URL) {
-      const prisma = await getPrisma();
-      const rows = await prisma.product.findMany({ where: { isActive: true }, include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } } } });
-      if (rows.length > 0) return rows as any as Product[];
+    const prisma = await getPrisma();
+    const where: any = { isActive: params?.isActive ?? true };
+    if (params?.brandId) where.brandId = params.brandId;
+    if (params?.categoryId) {
+      where.categories = { some: { categoryId: params.categoryId } };
     }
-  } catch (e) { console.error('Prisma getAllProducts failed:', (e as Error).message); }
-  return (await import('@/lib/data/products')).products;
+    if (params?.search) {
+      where.name = { contains: params.search };
+    }
+    const orderBy: any = { createdAt: 'desc' };
+    if (params?.sort === 'price_asc') Object.assign(orderBy, { price: 'asc' });
+    else if (params?.sort === 'price_desc') Object.assign(orderBy, { price: 'desc' });
+    else if (params?.sort === 'name') Object.assign(orderBy, { name: 'asc' });
+
+    return prisma.product.findMany({
+      where,
+      orderBy,
+      take: params?.limit || undefined,
+      skip: params?.offset || undefined,
+      include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } } },
+    });
+  } catch {
+    // Fallback to static data only if DB unavailable
+    try {
+      const { products } = await import('@/lib/data/products');
+      return products as Product[];
+    } catch { return []; }
+  }
+}
+
+export async function getProductsPaginated(params?: ListParams): Promise<PaginatedResponse<Product>> {
+  const limit = params?.limit || PAGE_DEFAULTS.limit;
+  const offset = params?.offset || PAGE_DEFAULTS.offset;
+  const prisma = await getPrisma();
+  const where: any = { isActive: params?.isActive ?? true };
+  if (params?.brandId) where.brandId = params.brandId;
+  if (params?.categoryId) where.categories = { some: { categoryId: params.categoryId } };
+  if (params?.search) where.name = { contains: params.search };
+
+  const [items, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      skip: offset,
+      include: { brand: true, badgeRelations: { include: { badge: true } } },
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  return {
+    items: items as unknown as Product[],
+    total,
+    limit,
+    offset,
+    hasMore: offset + limit < total,
+  };
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   try {
-    if (process.env.DATABASE_URL) {
-      const prisma = await getPrisma();
-      const row = await prisma.product.findUnique({ where: { slug }, include: { brand: true } });
-      if (row) return row as any as Product;
-    }
-  } catch (e) { console.error('Prisma getProductBySlug failed:', (e as Error).message); }
-  return (await import('@/lib/data/products')).products.find((p: any) => p.slug === slug);
+    const prisma = await getPrisma();
+    const row = await prisma.product.findUnique({
+      where: { slug },
+      include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } } },
+    });
+    return row as unknown as Product | undefined;
+  } catch {
+    const { products } = await import('@/lib/data/products');
+    return (products as Product[]).find((p) => p.slug === slug);
+  }
 }
 
 export async function getProductsByCategory(categoryId: string): Promise<Product[]> {
-  try {
-    if (process.env.DATABASE_URL) {
-      const prisma = await getPrisma();
-      const rows = await prisma.product.findMany({
-        where: { isActive: true, categories: { some: { categoryId } } },
-        include: { brand: true },
-      });
-      if (rows.length > 0) return rows as any as Product[];
-    }
-  } catch (e) { console.error('Prisma getProductsByCategory failed:', (e as Error).message); }
-  return (await import('@/lib/data/products')).products.filter(
-    (p: any) => p.categoryId === categoryId,
-  );
+  const prisma = await getPrisma();
+  const rows = await prisma.productCategory.findMany({
+    where: { categoryId },
+    include: { product: { include: { brand: true, badgeRelations: { include: { badge: true } } } } },
+  });
+  return rows.map(r => r.product) as unknown as Product[];
 }

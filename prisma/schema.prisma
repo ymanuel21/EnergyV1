@@ -39,6 +39,8 @@ model Product {
   // Many-to-many with badges
   badgeRelations ProductBadge[]
 
+  @@index([brandId])
+  @@index([isActive])
   @@map("products")
 }
 
@@ -67,6 +69,8 @@ model Category {
   // Many-to-many with products
   products   ProductCategory[]
 
+  @@index([isActive])
+  @@index([parentId])
   @@map("categories")
 }
 
@@ -80,6 +84,7 @@ model Brand {
 
   products  Product[]
 
+  @@index([isActive])
   @@map("brands")
 }
 
