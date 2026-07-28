@@ -64,4 +64,31 @@ export class ProductRepository {
   }
 }
 
+  async searchSuggestions(query: string, limit = 8) {
+    const prisma = await getPrisma();
+    if (!query || query.length < 1) return [];
+
+    // Priority: starts-with first, then contains
+    const startsWith = await prisma.product.findMany({
+      where: { name: { startsWith: query }, isActive: true },
+      select: { id: true, name: true, slug: true, price: true, images: true, brand: { select: { name: true, slug: true } } },
+      take: limit,
+      orderBy: { name: 'asc' },
+    });
+
+    const remaining = limit - startsWith.length;
+    let contains: any[] = [];
+    if (remaining > 0) {
+      const excludeIds = startsWith.map(p => p.id);
+      contains = await prisma.product.findMany({
+        where: { name: { contains: query }, isActive: true, id: { notIn: excludeIds } },
+        select: { id: true, name: true, slug: true, price: true, images: true, brand: { select: { name: true, slug: true } } },
+        take: remaining,
+        orderBy: { name: 'asc' },
+      });
+    }
+
+    return [...startsWith, ...contains];
+  }
+
 export const productRepo = new ProductRepository();
