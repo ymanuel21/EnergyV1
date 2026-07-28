@@ -17,6 +17,7 @@ type Step = 'form' | 'confirm';
 interface FormErrors {
   name?: string;
   email?: string;
+  phone?: string;
   company?: string;
   items?: string;
 }
@@ -86,6 +87,7 @@ export default function RfqPage() {
     const e: FormErrors = {};
     if (!form.name.trim()) e.name = 'Nama wajib diisi';
     if (!form.email.trim() || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(form.email)) e.email = 'Email tidak valid';
+    if (!form.phone.trim()) e.phone = 'Telepon wajib diisi';
     if (form.customerType === 'BUSINESS' && !form.company.trim()) e.company = 'Nama perusahaan wajib diisi';
     if (items.length === 0) e.items = 'Minimal 1 item';
     setErrors(e);
@@ -262,13 +264,14 @@ export default function RfqPage() {
               {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
             </div>
             <div>
-              <FormLabel>Telepon / WhatsApp</FormLabel>
+              <RequiredLabel>Telepon / WhatsApp</RequiredLabel>
               <input
                 type="tel"
                 value={form.phone}
                 onChange={(e) => updateField('phone', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
+                className={`w-full rounded-lg border px-3 py-2 text-sm outline-none focus:ring-1 ${errors.phone ? 'border-red-400 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-gray-700 focus:ring-gray-700'}`}
               />
+              {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
             </div>
             <div>
               {form.customerType === 'BUSINESS' ? (
