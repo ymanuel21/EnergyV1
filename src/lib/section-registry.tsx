@@ -16,6 +16,7 @@ export interface SectionRendererProps {
     products?: any[];
     brands?: any[];
     banners?: any[];
+    projects?: any[];
     productsById?: Record<string, any>;
   };
 }
