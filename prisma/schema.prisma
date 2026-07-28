@@ -184,8 +184,9 @@ model ProductBadge {
 
 model HomepageSection {
   id        String   @id @default(cuid())
-  type      String   // hero, category-grid, featured-products, brands, testimonials, projects, cta
+  type      String   // hero, category-grid, featured-products, brands, cta
   enabled   Boolean  @default(true)
+  status    String   @default("published") // draft | published
   sortOrder Int      @default(0)
   title     String?
   subtitle  String?

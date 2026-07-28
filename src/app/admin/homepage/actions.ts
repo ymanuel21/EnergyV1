@@ -9,14 +9,25 @@ export async function getHomepageSections() {
   return prisma.homepageSection.findMany({ orderBy: { sortOrder: 'asc' } });
 }
 
-export async function upsertSection(data: { id?: string; type: string; enabled?: boolean; sortOrder?: number; title?: string; subtitle?: string; settings?: any }) {
+export async function upsertSection(data: {
+  id?: string; type: string; enabled?: boolean; status?: string;
+  sortOrder?: number; title?: string; subtitle?: string; settings?: any;
+}) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  if (data.id) {
-    const { id, ...rest } = data;
-    await prisma.homepageSection.update({ where: { id }, data: rest });
+  const payload = {
+    type: data.type,
+    enabled: data.enabled ?? true,
+    status: data.status ?? 'published',
+    sortOrder: data.sortOrder ?? 0,
+    title: data.title ?? '',
+    subtitle: data.subtitle ?? '',
+    settings: data.settings ?? {},
+  };
+  if (data.id && data.id !== 'undefined') {
+    await prisma.homepageSection.update({ where: { id: data.id }, data: payload as any });
   } else {
-    await prisma.homepageSection.create({ data: { type: data.type, sortOrder: data.sortOrder ?? 0, title: data.title ?? '', subtitle: data.subtitle ?? '', settings: data.settings ?? {} } });
+    await prisma.homepageSection.create({ data: payload as any });
   }
   revalidatePath('/admin/homepage');
   revalidatePath('/');
@@ -30,12 +41,21 @@ export async function deleteSection(id: string) {
   revalidatePath('/');
 }
 
-export async function reorderSections(ids: string[]) {
+export async function moveSection(id: string, direction: 'up' | 'down') {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  for (let i = 0; i < ids.length; i++) {
-    await prisma.homepageSection.update({ where: { id: ids[i] }, data: { sortOrder: i } });
-  }
+  const sections = await prisma.homepageSection.findMany({ orderBy: { sortOrder: 'asc' } });
+  const idx = sections.findIndex(s => s.id === id);
+  if (idx < 0) return;
+  const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
+  if (targetIdx < 0 || targetIdx >= sections.length) return;
+
+  // Swap sort orders
+  const current = sections[idx];
+  const target = sections[targetIdx];
+  await prisma.homepageSection.update({ where: { id: current.id }, data: { sortOrder: target.sortOrder } });
+  await prisma.homepageSection.update({ where: { id: target.id }, data: { sortOrder: current.sortOrder } });
+
   revalidatePath('/admin/homepage');
   revalidatePath('/');
 }
