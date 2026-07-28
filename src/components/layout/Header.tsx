@@ -22,7 +22,7 @@ export function Header() {
 
         <MegaMenu />
 
-        <div className="hidden flex-1 sm:block">
+        <div className="flex-1 sm:block">
           <SearchBar />
         </div>
 

@@ -110,19 +110,19 @@ function HeroRenderer({ section, data }: SectionRendererProps) {
     <section className="relative flex min-h-[calc(100vh-4rem)] flex-col justify-center overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FAFAF5 40%, #F5F5F0 100%)' }}>
       <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-emerald-100/40 blur-3xl" />
       <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-amber-50/50 blur-3xl" />
-      <div className="relative mx-auto grid max-w-5xl items-center gap-16 px-8 py-16 lg:grid-cols-2">
+      <div className="relative mx-auto grid max-w-5xl items-center gap-8 px-4 py-12 sm:px-8 sm:py-16 lg:grid-cols-2 lg:gap-16">
         <div>
           <p className="text-xs font-medium uppercase tracking-[.25em] text-muted">{String(section.settings.tagline || 'Energi Terbarukan')}</p>
-          <h1 className="mt-6 text-4xl font-light leading-tight tracking-tight text-primary lg:text-6xl">
+          <h1 className="mt-4 text-3xl font-light leading-tight tracking-tight text-primary sm:mt-6 sm:text-4xl lg:text-6xl">
             {section.title || 'Tenaga surya'}<br />
             <span className="font-semibold">{section.subtitle || 'untuk semua.'}</span>
           </h1>
-          <p className="mt-8 text-lg leading-relaxed text-muted max-w-md">{String(section.settings.description || 'Produk berkualitas premium.')}</p>
-          <div className="mt-10 flex gap-3">
-            <Link href={String(section.settings.ctaLink || '/produk')} className="rounded-full bg-dark-bg px-8 py-3.5 text-sm font-medium text-white hover:bg-gray-800 shadow-lg transition">
+          <p className="mt-4 text-base leading-relaxed text-muted max-w-md sm:mt-8 sm:text-lg">{String(section.settings.description || 'Produk berkualitas premium.')}</p>
+          <div className="mt-6 flex flex-col gap-2 sm:mt-10 sm:flex-row sm:gap-3">
+            <Link href={String(section.settings.ctaLink || '/produk')} className="rounded-full bg-dark-bg px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 shadow-lg text-center transition sm:px-8 sm:py-3.5">
               {String(section.settings.cta || 'Jelajahi Katalog')}
             </Link>
-            <Link href="/permintaan-penawaran" className="rounded-full px-8 py-3.5 text-sm font-medium text-muted hover:text-primary transition">Minta Penawaran →</Link>
+            <Link href="/permintaan-penawaran" className="rounded-full px-6 py-3 text-sm font-medium text-muted hover:text-primary text-center transition sm:px-8 sm:py-3.5">Minta Penawaran →</Link>
           </div>
         </div>
         <div className="relative">
@@ -143,8 +143,8 @@ function CategoryGridRenderer({ section }: SectionRendererProps) {
     { n:'Paket PLTS', d:'Solusi lengkap untuk rumah, kantor, dan industri', s:'paket-plts' },
   ];
   return (
-    <section className="relative bg-card py-32">
-      <div className="mx-auto max-w-5xl px-8">
+    <section className="relative bg-card py-16 sm:py-32">
+      <div className="mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-4">{section.title}</p>}
         {section.subtitle && <h2 className="text-3xl font-light tracking-tight lg:text-4xl">{section.subtitle}</h2>}
         <div className="mt-16 grid gap-0 divide-y divide-gray-100">
@@ -174,11 +174,11 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
   const p = featured[0];
 
   return (
-    <section className="relative py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
+    <section className="relative py-16 sm:py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
       <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-emerald-50/60 blur-3xl" />
-      <div className="relative mx-auto max-w-5xl px-8">
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted">{section.title}</p>}
-        <div className="grid items-center gap-16 lg:grid-cols-2 mt-6">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16 mt-6">
           <div className="overflow-hidden rounded-3xl bg-card h-96 shadow-xl shadow-gray-900/5 ring-1 ring-gray-900/5">
             <SafeImage src={p.images?.[0]} alt={p.name} width={600} height={600} className="h-full w-full object-contain p-8" />
           </div>
@@ -189,9 +189,9 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
               <span className="text-3xl font-light">Rp {p.price?.toLocaleString('id-ID')}</span>
               {p.originalPrice > p.price && <span className="text-sm text-muted line-through">Rp {p.originalPrice?.toLocaleString('id-ID')}</span>}
             </div>
-            <div className="mt-8 flex gap-3">
-              <Link href={`/produk/${p.slug}`} className="rounded-full bg-dark-bg px-8 py-3 text-sm font-medium text-white hover:bg-gray-800 shadow-lg transition">Beli Sekarang</Link>
-              <Link href={`/produk/${p.slug}`} className="rounded-full px-8 py-3 text-sm font-medium text-muted hover:text-primary transition">Detail →</Link>
+            <div className="mt-6 flex flex-col gap-2 sm:mt-8 sm:flex-row sm:gap-3">
+              <Link href={`/produk/${p.slug}`} className="rounded-full bg-dark-bg px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 shadow-lg text-center transition sm:px-8">Beli Sekarang</Link>
+              <Link href={`/produk/${p.slug}`} className="rounded-full px-6 py-3 text-sm font-medium text-muted hover:text-primary text-center transition sm:px-8">Detail →</Link>
             </div>
           </div>
         </div>
@@ -203,10 +203,10 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
 function BrandsRenderer({ section, data }: SectionRendererProps) {
   const brands = data?.brands || [];
   return (
-    <section className="bg-card py-24">
-      <div className="mx-auto max-w-5xl px-8">
+    <section className="bg-card py-16 sm:py-24">
+      <div className="mx-auto max-w-5xl px-4 sm:px-8">
         <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title || 'Brand Resmi'}</p>
-        <div className="flex flex-wrap items-center justify-center gap-10 opacity-30">
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 opacity-30">
           {brands.slice(0, 8).map((b: any) => (
             <Link key={b.id} href={`/brand/${b.slug}`} className="text-sm font-bold tracking-wider text-muted hover:opacity-70 transition">{b.name}</Link>
           ))}
@@ -223,10 +223,10 @@ function CtaRenderer({ section }: SectionRendererProps) {
         <div className="absolute -top-20 -right-20 h-80 w-80 rounded-full bg-emerald-500/20 blur-3xl" />
         <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-teal-500/10 blur-3xl" />
       </div>
-      <div className="relative mx-auto max-w-2xl px-8 py-32 text-center">
-        <h2 className="text-3xl font-light tracking-tight text-white lg:text-4xl">{section.title || 'Butuh bantuan?'}</h2>
-        {section.subtitle && <p className="mt-6 text-lg text-muted">{section.subtitle}</p>}
-        <Link href={String(section.settings.buttonLink || '/permintaan-penawaran')} className="mt-8 inline-block rounded-full bg-card px-10 py-4 text-sm font-medium text-primary hover:bg-gray-100 shadow-lg transition">
+      <div className="relative mx-auto max-w-2xl px-4 sm:px-8 py-16 sm:py-32 text-center">
+        <h2 className="text-2xl font-light tracking-tight text-white sm:text-3xl lg:text-4xl">{section.title || 'Butuh bantuan?'}</h2>
+        {section.subtitle && <p className="mt-4 text-base text-muted sm:mt-6 sm:text-lg">{section.subtitle}</p>}
+        <Link href={String(section.settings.buttonLink || '/permintaan-penawaran')} className="mt-6 inline-block rounded-full bg-card px-6 py-3 text-sm font-medium text-primary hover:bg-gray-100 shadow-lg transition sm:mt-8 sm:px-10 sm:py-4">
           {String(section.settings.buttonLabel || 'Konsultasi Gratis')}
         </Link>
       </div>
@@ -238,10 +238,10 @@ function CtaRenderer({ section }: SectionRendererProps) {
 
 function ProjectsRenderer({ section, data }: SectionRendererProps) {
   return (
-    <section className="bg-card py-24">
-      <div className="mx-auto max-w-5xl px-8">
+    <section className="bg-card py-16 sm:py-24">
+      <div className="mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
           {[1,2,3].map(i => (
             <div key={i} className="rounded-xl border border-border bg-card p-6 hover:shadow-md transition">
               <div className="h-40 rounded-lg bg-surface mb-4 flex items-center justify-center text-3xl">☀️</div>
@@ -258,10 +258,10 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
 
 function TestimonialsRenderer({ section, data }: SectionRendererProps) {
   return (
-    <section className="bg-surface py-24">
-      <div className="mx-auto max-w-5xl px-8">
+    <section className="bg-surface py-16 sm:py-24">
+      <div className="mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 sm:gap-6">
           {[1,2,3].map(i => (
             <div key={i} className="rounded-xl border border-border bg-card p-6">
               <div className="flex mb-3">{'⭐'.repeat(5)}</div>
