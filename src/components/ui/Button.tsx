@@ -7,11 +7,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-gray-800 text-white hover:bg-gray-900 shadow-sm',
-        outline: 'border border-gray-800 text-gray-900 hover:bg-gray-50',
-        ghost: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
+        primary: 'bg-primary text-white hover:bg-primary-hover shadow-sm',
+        outline: 'border border-primary text-primary hover:bg-surface',
+        ghost: 'text-muted hover:text-primary hover:bg-surface',
         whatsapp: 'bg-green-500 text-white hover:bg-green-600 shadow-sm',
-        link: 'text-gray-900 underline-offset-4 hover:underline',
+        link: 'text-primary underline-offset-4 hover:underline',
         danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
       },
       size: {

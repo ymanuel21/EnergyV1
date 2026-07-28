@@ -27,10 +27,10 @@ export function Price({
 
   return (
     <div className={cn('flex items-baseline gap-2', sizeClasses[size], className)}>
-      <span className="font-bold text-gray-900">{formatCurrency(amount)}</span>
+      <span className="font-bold text-primary">{formatCurrency(amount)}</span>
       {hasDiscount && (
         <>
-          <span className="text-sm text-gray-400 line-through">
+          <span className="text-sm text-muted line-through">
             {formatCurrency(originalAmount!)}
           </span>
           {showDiscountBadge && discount > 0 && (
