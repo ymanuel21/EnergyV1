@@ -4,6 +4,8 @@ import { useState, type FormEvent, useCallback } from 'react';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { Button } from '@ui/Button';
+import { RequiredLabel } from '@ui/RequiredLabel';
+import { ProductAutocomplete } from '@components/forms/ProductAutocomplete';
 import { useCart } from '@providers/CartProvider';
 import { SITE } from '@lib/constants';
 import { formatCurrency } from '@lib/utils/format';
@@ -179,9 +181,9 @@ export default function RfqPage() {
           <h2 className="text-lg font-semibold text-gray-900">Informasi Kontak</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="rfq-name" className="block text-sm font-medium text-gray-700 mb-1">Nama *</label>
+              <RequiredLabel htmlFor="rfq-name">Nama</RequiredLabel>
               <input
-                id="rfq-name"
+                id="rfq-name" required aria-required="true"
                 type="text"
                 value={form.name}
                 onChange={(e) => updateField('name', e.target.value)}
@@ -193,9 +195,9 @@ export default function RfqPage() {
               {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
             </div>
             <div>
-              <label htmlFor="rfq-email" className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+              <RequiredLabel htmlFor="rfq-email">Email</RequiredLabel>
               <input
-                id="rfq-email"
+                id="rfq-email" required aria-required="true"
                 type="email"
                 value={form.email}
                 onChange={(e) => updateField('email', e.target.value)}
@@ -328,13 +330,11 @@ export default function RfqPage() {
 
           {/* Add item */}
           <div className="grid gap-2 sm:grid-cols-[1fr_100px_auto]">
-            <input
-              type="text"
+            <ProductAutocomplete
+              id="rfq-product"
+              name="rfq-product"
               placeholder="Nama Barang"
-              value={newItem.name}
-              onChange={(e) => setNewItem((prev) => ({ ...prev, name: e.target.value }))}
-              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addItem(); } }}
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
+              onSelect={(product) => setNewItem((prev) => ({ ...prev, name: product.name }))}
             />
             <input
               type="number"
