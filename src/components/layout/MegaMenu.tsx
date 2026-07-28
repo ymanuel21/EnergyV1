@@ -77,7 +77,7 @@ export function MegaMenu() {
       <button
         ref={buttonRef}
         onClick={() => setOpen((v) => !v)}
-        className="hidden shrink-0 items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors lg:inline-flex"
+        className="hidden shrink-0 items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-primary hover:bg-surface transition-colors lg:inline-flex"
         aria-expanded={open}
         aria-controls="mega-menu"
         aria-haspopup="menu"
@@ -90,7 +90,7 @@ export function MegaMenu() {
         id="mega-menu"
         ref={menuRef}
         role="menu"
-        className={`absolute left-0 right-0 top-full z-[9997] bg-white border-b border-gray-200 shadow-xl transition-all duration-200 ${
+        className={`absolute left-0 right-0 top-full z-[9997] bg-card border-b border-border shadow-xl transition-all duration-200 ${
           open
             ? 'opacity-100 translate-y-0 visible pointer-events-auto'
             : 'opacity-0 -translate-y-2 invisible pointer-events-none'
@@ -154,7 +154,7 @@ function CategoryColumn({ category, onClick }: { category: Category; onClick: ()
       <Link
         href={`/kategori/${category.slug}`}
         onClick={onClick}
-        className="mb-2 block text-sm font-semibold text-gray-900 hover:text-gray-800 transition-colors"
+        className="mb-2 block text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
         role="menuitem"
       >
         {category.name}
@@ -167,7 +167,7 @@ function CategoryColumn({ category, onClick }: { category: Category; onClick: ()
               <Link
                 href={`/kategori/${child.slug}`}
                 onClick={onClick}
-                className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-0.5"
+                className="block text-sm text-muted hover:text-primary transition-colors py-0.5"
                 role="menuitem"
               >
                 {child.name}
