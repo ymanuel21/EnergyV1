@@ -233,13 +233,22 @@ model Project {
   id          String   @id @default(cuid())
   title       String
   slug        String   @unique
-  description String   @default("")
-  category    String   @default("residential") // residential, commercial, industrial, government, school
-  capacity    String   @default("")  // e.g. "5 kWp"
+  shortDescription String @default("")
+  richDescription  String @default("")
+  description String   @default("")   // kept for backward compat
+  category    String   @default("residential")
+  industry    String   @default("")
+  systemType  String   @default("")   // On-Grid, Off-Grid, Hybrid
+  capacity    String   @default("")
+  pvModule    String   @default("")
+  inverter    String   @default("")
+  battery     String   @default("")
   location    String   @default("")
   customer    String   @default("")
   year        Int      @default(2025)
+  coverImage  String   @default("")
   images      Json     @default("[]")
+  highlights  Json     @default("[]") // array of highlight strings
   productIds  Json     @default("[]")
   featured    Boolean  @default(false)
   published   Boolean  @default(false)

@@ -237,18 +237,28 @@ function CtaRenderer({ section }: SectionRendererProps) {
 /* ===== NEW SECTION TYPES ===== */
 
 function ProjectsRenderer({ section, data }: SectionRendererProps) {
+  const projects = data?.projects || [];
+  if (!projects.length) return null;
   return (
     <section className="bg-card py-16 sm:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
-          {[1,2,3].map(i => (
-            <div key={i} className="rounded-xl border border-border bg-card p-6 hover:shadow-md transition">
-              <div className="h-40 rounded-lg bg-surface mb-4 flex items-center justify-center text-3xl">☀️</div>
-              <p className="text-xs text-muted capitalize">Residential · 5 kWp</p>
-              <h3 className="mt-1 text-sm font-medium text-primary">Project {i}</h3>
-              <p className="text-xs text-muted mt-1">Jakarta · 2025</p>
-            </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.slice(0, 6).map((p: any) => (
+            <Link key={p.id} href={`/proyek/${p.slug}`}
+              className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition">
+              {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
+                <div className="aspect-[4/3] overflow-hidden bg-surface">
+                  <img src={p.coverImage || p.images[0]} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
+                </div>
+              ) : (
+                <div className="aspect-[4/3] flex items-center justify-center bg-surface text-3xl text-muted">☀️</div>
+              )}
+              <div className="p-4">
+                <h4 className="font-semibold text-primary text-sm line-clamp-2">{p.title}</h4>
+                <p className="text-xs text-muted mt-1">{p.location}{p.capacity ? ' · ' + p.capacity : ''}</p>
+              </div>
+            </Link>
           ))}
         </div>
       </div>
