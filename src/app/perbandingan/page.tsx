@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
 import { Container } from '@ui/Container';
@@ -15,6 +16,7 @@ import type { Product, Brand } from '@/types/product';
 export default function ComparePage() {
   const { items, removeItem, clearAll } = useCompare();
   const { addItem } = useCart();
+  const router = useRouter();
   const [hydrated, setHydrated] = useState(false);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -29,39 +31,54 @@ export default function ComparePage() {
   const compareProducts = allProducts.filter((p) => items.includes(p.id));
   const getBrand = (brandId: string) => brands.find(b => b.id === brandId);
 
-  if (!hydrated) {
-    return (
-      <Container className="py-6">
-        <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Perbandingan' }]} />
-        <div className="mt-4"><h1 className="text-2xl font-bold text-gray-900">Perbandingan Produk</h1></div>
-      </Container>
-    );
-  }
-
   function addToCart(productId: string) {
     const product = allProducts.find((p) => p.id === productId);
     if (!product) return;
     const brand = getBrand(product.brandId);
     addItem({
-      productId: product.id,
-      slug: product.slug,
-      name: product.name,
-      brandName: brand?.name ?? '',
-      image: product.images[0],
-      price: product.price,
-      maxQuantity: product.stock,
-      weight: product.weight,
+      productId: product.id, slug: product.slug, name: product.name,
+      brandName: brand?.name ?? '', image: product.images[0],
+      price: product.price, maxQuantity: product.stock, weight: product.weight,
     }, 1);
   }
 
+  function handleBack() {
+    if (window.history.length > 1) { router.back(); }
+    else { router.push('/produk'); }
+  }
+
+  // ── Loading ──
+  if (!hydrated) {
+    return (
+      <Container className="py-6">
+        <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Perbandingan' }]} />
+        <button onClick={handleBack} className="mt-4 flex items-center gap-1.5 text-sm text-muted hover:text-primary transition">
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+          Back
+        </button>
+        <div className="mt-8 space-y-4 animate-pulse">
+          <div className="h-6 w-48 rounded bg-surface" />
+          <div className="h-4 w-32 rounded bg-surface" />
+          <div className="h-64 rounded-lg bg-surface" />
+          <p className="text-sm text-muted">Loading comparison...</p>
+        </div>
+      </Container>
+    );
+  }
+
+  // ── Empty ──
   if (compareProducts.length === 0) {
     return (
       <Container className="py-6">
         <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Perbandingan' }]} />
+        <button onClick={handleBack} className="mt-4 flex items-center gap-1.5 text-sm text-muted hover:text-primary transition">
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+          Back
+        </button>
         <EmptyState
           icon={<CompareIcon className="h-12 w-12" />}
           title="Belum ada produk yang dibandingkan"
-          description="Maksimal 4 produk. Klik 'Bandingkan' di halaman produk untuk memulai."
+          description="Klik 'Bandingkan' di halaman produk untuk menambahkan ke sini. Maksimal 4 produk."
           action={{ label: 'Lihat Produk', href: '/produk' }}
           className="mt-12"
         />
@@ -69,27 +86,32 @@ export default function ComparePage() {
     );
   }
 
+  // ── Loaded ──
   return (
     <Container className="py-6">
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Perbandingan' }]} />
+      <button onClick={handleBack} className="mt-4 flex items-center gap-1.5 text-sm text-muted hover:text-primary transition">
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+        Back
+      </button>
       <div className="mt-4 flex items-center justify-between">
-        <div><h1 className="text-2xl font-bold text-gray-900">Perbandingan Produk</h1><p className="mt-1 text-sm text-gray-500">{compareProducts.length}/4 produk dibandingkan</p></div>
+        <div><h1 className="text-2xl font-bold text-primary">Perbandingan Produk</h1><p className="mt-1 text-sm text-muted">{compareProducts.length}/4 produk dibandingkan</p></div>
         <Button variant="ghost" size="sm" onClick={clearAll}>Hapus semua</Button>
       </div>
       <div className="mt-6 overflow-x-auto">
         <table className="w-full table-fixed text-sm">
           <thead>
             <tr>
-              <th className="w-40 p-3 text-left font-medium text-gray-700">Spesifikasi</th>
+              <th className="w-40 p-3 text-left font-medium text-primary">Spesifikasi</th>
               {compareProducts.map((p) => (
                 <th key={p.id} className="p-3 text-left align-top">
                   <div className="space-y-2">
-                    <div className="relative h-48 w-full overflow-hidden rounded-lg bg-gray-100">
+                    <div className="relative h-48 w-full overflow-hidden rounded-lg bg-surface">
                       <SafeImage src={p.images[0]} alt={p.name} fill className="object-contain p-2" sizes="200px" />
-                      <button onClick={() => removeItem(p.id)} className="absolute right-1 top-1 rounded-full bg-white/90 p-1 text-gray-400 hover:text-red-500 transition-colors shadow-sm" aria-label={`Hapus ${p.name}`}>✕</button>
+                      <button onClick={() => removeItem(p.id)} className="absolute right-1 top-1 rounded-full bg-white/90 p-1 text-muted hover:text-red-500 transition-colors shadow-sm" aria-label={`Hapus ${p.name}`}>✕</button>
                     </div>
-                    <Link href={`/produk/${p.slug}`} className="block text-sm font-medium text-gray-900 line-clamp-2">{p.name}</Link>
-                    <p className="text-lg font-bold text-gray-900">Rp {p.price.toLocaleString('id-ID')}</p>
+                    <Link href={`/produk/${p.slug}`} className="block text-sm font-medium text-primary line-clamp-2">{p.name}</Link>
+                    <p className="text-lg font-bold text-primary">Rp {p.price.toLocaleString('id-ID')}</p>
                     <Button variant="primary" size="sm" className="w-full" onClick={() => addToCart(p.id)}>+ Keranjang</Button>
                   </div>
                 </th>
@@ -98,9 +120,9 @@ export default function ComparePage() {
           </thead>
           <tbody>
             {([['Brand', (p: Product) => getBrand(p.brandId)?.name ?? '-'],['Kondisi', (p: Product) => p.condition === 'new' ? 'Baru' : 'Bekas'],['Garansi', (p: Product) => p.warranty],['Stok', (p: Product) => `${p.stock} pcs`],['Berat', (p: Product) => `${p.weight} kg`],] as [string, (p: Product) => string][]).map(([label, getValue]) => (
-              <tr key={label} className="border-t border-gray-100">
-                <td className="p-3 font-medium text-gray-700">{label}</td>
-                {compareProducts.map((p) => (<td key={p.id} className="p-3 text-gray-600">{getValue(p)}</td>))}
+              <tr key={label} className="border-t border-border">
+                <td className="p-3 font-medium text-primary">{label}</td>
+                {compareProducts.map((p) => (<td key={p.id} className="p-3 text-muted">{getValue(p)}</td>))}
               </tr>
             ))}
           </tbody>
