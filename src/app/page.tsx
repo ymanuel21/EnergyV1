@@ -29,23 +29,6 @@ export default async function HomePage() {
     getPublicHomepageSections(),
   ]);
 
-  // If no sections configured, render the static default layout
-  if (!sections.length) {
-    const heroBanner = Array.isArray(banners) ? banners.find((b: any) => b.image && !b.image.includes('placeholder')) : null;
-    const featuredProduct = products.find((p: any) => p.badges?.includes('promo') || p.badges?.includes('new')) || products[0];
-
-    return (
-      <>
-        <OrganizationSchema />
-        <HeroSection section={{ title: 'Tenaga surya', subtitle: 'untuk semua.', settings: {} }} banner={heroBanner} />
-        <CategoryGridSection section={{ title: 'Kategori', subtitle: 'Temukan yang Anda butuhkan', settings: {} }} />
-        {featuredProduct && <FeaturedProductsSection section={{ title: 'Produk Unggulan', subtitle: '', settings: { productIds: [featuredProduct.id] } }} products={products} />}
-        <BrandsSection section={{ title: 'Brand Resmi', subtitle: '', settings: {} }} brands={brands} />
-        <CtaSection section={{ title: 'Butuh bantuan memilih?', subtitle: 'Tim kami siap membantu Anda.', settings: { buttonLabel: 'Konsultasi Gratis', buttonLink: '/permintaan-penawaran' } }} />
-      </>
-    );
-  }
-
   // Dynamic renderer — loop sections, render matching component
   return (
     <>
