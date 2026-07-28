@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "wishlist — EBTPlaza" };
 'use client';
 
 import { useState, useEffect } from 'react';

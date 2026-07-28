@@ -1,48 +1,45 @@
-/**
- * Simple in-memory rate limiter.
- * Limits requests per IP within a time window.
- * Resets on server restart (acceptable for single-instance deployment).
- */
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-interface RateLimitEntry {
-  count: number;
-  resetAt: number;
-}
+// Simple in-memory rate limiter for public API routes
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
-const store = new Map<string, RateLimitEntry>();
+const RATE_LIMITS: Record<string, { max: number; windowMs: number }> = {
+  '/api/quotes':  { max: 10,  windowMs: 60_000 },      // 10/min
+  '/api/asset':   { max: 100, windowMs: 60_000 },       // 100/min
+  '/api/upload':  { max: 30,  windowMs: 60_000 },       // 30/min
+  default:        { max: 200, windowMs: 60_000 },       // 200/min
+};
 
-// Clean up expired entries periodically
-setInterval(() => {
+export function rateLimit(request: NextRequest, next: () => Promise<NextResponse>): Promise<NextResponse> {
+  const path = request.nextUrl.pathname;
+  const limit = Object.entries(RATE_LIMITS).find(([k]) => path.startsWith(k))?.[1]
+    || Object.entries(RATE_LIMITS).find(([k]) => k === 'default')?.[1]
+    || { max: 100, windowMs: 60_000 };
+
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const key = `${ip}:${path}`;
+
   const now = Date.now();
-  for (const [key, entry] of store) {
-    if (now > entry.resetAt) store.delete(key);
-  }
-}, 60_000);
+  const entry = rateLimitMap.get(key);
 
-export function isRateLimited(
-  key: string,
-  maxRequests: number = 5,
-  windowMs: number = 60_000
-): boolean {
-  const now = Date.now();
-  const entry = store.get(key);
-
-  if (!entry || now > entry.resetAt) {
-    store.set(key, { count: 1, resetAt: now + windowMs });
-    return false;
+  if (entry && now < entry.resetAt) {
+    if (entry.count >= limit.max) {
+      return Promise.resolve(
+        NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((entry.resetAt - now) / 1000)) } })
+      );
+    }
+    entry.count++;
+  } else {
+    rateLimitMap.set(key, { count: 1, resetAt: now + limit.windowMs });
   }
 
-  entry.count++;
-  return entry.count > maxRequests;
-}
+  // Cleanup old entries periodically
+  if (rateLimitMap.size > 10000) {
+    for (const [k, v] of rateLimitMap) {
+      if (now > v.resetAt) rateLimitMap.delete(k);
+    }
+  }
 
-/**
- * Get client IP from request headers.
- */
-export function getClientIp(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0].trim();
-  const realIp = request.headers.get('x-real-ip');
-  if (realIp) return realIp;
-  return 'unknown';
+  return next();
 }

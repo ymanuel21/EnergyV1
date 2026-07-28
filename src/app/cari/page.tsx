@@ -9,6 +9,8 @@ import { getAllProducts } from '@/lib/api/products';
 import { validateSort, validatePage } from '@/lib/utils/validation';
 import { SITE } from '@lib/constants';
 
+export const metadata: Metadata = { title: 'Cari — EBTPlaza', description: 'Cari produk energi terbarukan.' };
+
 interface Props {
   searchParams: Promise<{ q?: string; sort?: string; page?: string }>;
 }

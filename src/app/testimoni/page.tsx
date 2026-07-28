@@ -1,13 +1,12 @@
-import { getPrisma } from '@/lib/db';
+import type { Metadata } from 'next';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
-import type { Metadata } from 'next';
+import { testimonialRepo } from '@/lib/repositories/index';
 
 export const metadata: Metadata = { title: 'Testimonials — EBTPlaza', description: 'Apa kata pelanggan kami.' };
 
 export default async function TestimonialsPage() {
-  const prisma = await getPrisma();
-  const testimonials = await prisma.testimonial.findMany({ where: { published: true }, orderBy: { createdAt: 'desc' } });
+  const testimonials = await testimonialRepo.findPublic();
 
   return (
     <Container className="py-6">
