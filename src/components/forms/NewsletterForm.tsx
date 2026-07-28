@@ -11,10 +11,10 @@ export function NewsletterForm() {
 
   return (
     <div>
-      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-700">
+      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">
         Newsletter
       </h3>
-      <p className="mb-3 text-sm text-gray-500">
+      <p className="mb-3 text-sm text-muted">
         Info produk &amp; promo energi terbarukan.
       </p>
       <form className="flex gap-2" onSubmit={handleSubmit}>

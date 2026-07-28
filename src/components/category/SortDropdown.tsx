@@ -32,7 +32,7 @@ export function SortDropdown({ className }: SortDropdownProps) {
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <label className="text-sm text-gray-600">Urutkan</label>
+      <label className="text-sm text-muted">Urutkan</label>
       <select
         value={currentSort}
         onChange={(e) => handleChange(e.target.value)}

@@ -53,7 +53,7 @@ export function MobileMenu() {
         {/* Drawer header */}
         <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
           <Link href="/" onClick={handleClose} className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-900">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
               <span className="text-xs font-extrabold text-white">E</span>
             </div>
             <span className="text-base font-extrabold text-primary">
@@ -84,7 +84,7 @@ export function MobileMenu() {
                   <Link
                     href={link.href}
                     onClick={handleClose}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-surface hover:text-primary"
+                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-primary hover:bg-surface hover:text-primary"
                   >
                     {link.label}
                   </Link>
@@ -104,7 +104,7 @@ export function MobileMenu() {
                   <Link
                     href={cat.href}
                     onClick={handleClose}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-surface hover:text-primary"
+                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-primary hover:bg-surface hover:text-primary"
                   >
                     {cat.label}
                   </Link>
@@ -124,7 +124,7 @@ export function MobileMenu() {
                   <Link
                     href={link.href}
                     onClick={handleClose}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-surface hover:text-primary"
+                    className="block rounded-lg px-3 py-2.5 text-sm font-medium text-primary hover:bg-surface hover:text-primary"
                   >
                     {link.label}
                   </Link>
