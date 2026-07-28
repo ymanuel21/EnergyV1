@@ -86,7 +86,7 @@ export default function RfqPage() {
   function validate(): boolean {
     const e: FormErrors = {};
     if (!form.name.trim()) e.name = 'Nama wajib diisi';
-    if (!form.email.trim() || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(form.email)) e.email = 'Email tidak valid';
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Email tidak valid';
     if (!form.phone.trim()) e.phone = 'Telepon wajib diisi';
     if (form.customerType === 'BUSINESS' && !form.company.trim()) e.company = 'Nama perusahaan wajib diisi';
     if (items.length === 0) e.items = 'Minimal 1 item';
