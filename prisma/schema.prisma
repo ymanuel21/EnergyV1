@@ -185,6 +185,7 @@ model ProductBadge {
 
 model HomepageSection {
   id        String   @id @default(cuid())
+  pageId    String?  // null = homepage, set = landing page
   type      String   // hero, category-grid, featured-products, brands, cta
   enabled   Boolean  @default(true)
   status    String   @default("published") // draft | published
@@ -196,6 +197,18 @@ model HomepageSection {
   updatedAt DateTime @updatedAt
 
   @@map("homepage_sections")
+}
+
+model LandingPage {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String   @default("")
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("landing_pages")
 }
 
 model NavigationLink {

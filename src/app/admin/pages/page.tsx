@@ -1,36 +1,63 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
-import { getPages, getPageBySlug, updatePage } from './actions';
+import Link from 'next/link';
+import { getAdminPrisma } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
-import { SubmitButton } from '../SubmitButton';
 
-export default async function PagesPage() {
+async function getPages() {
+  const prisma = await getAdminPrisma();
+  return prisma.landingPage.findMany({ orderBy: { updatedAt: 'desc' } });
+}
+
+export default async function LandingPagesPage() {
   const pages = await getPages();
 
-  async function update(slug: string, data: FormData) {
+  async function handleCreate(formData: FormData) {
     'use server';
-    const existing = await getPageBySlug(slug);
-    if (existing) {
-      await updatePage(slug, { title: data.get('title'), content: data.get('content') });
-    }
+    const prisma = await getAdminPrisma();
+    await prisma.landingPage.create({
+      data: {
+        slug: (formData.get('slug') as string).toLowerCase().replace(/\s+/g, '-'),
+        title: formData.get('title') as string,
+      },
+    });
+    revalidatePath('/admin/pages');
+  }
+
+  async function handleDelete(id: string) {
+    'use server';
+    const prisma = await getAdminPrisma();
+    await prisma.landingPage.delete({ where: { id } });
     revalidatePath('/admin/pages');
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-primary">Halaman Statis</h1>
-      <div className="mt-4 space-y-4">
+      <h1 className="text-2xl font-bold text-primary mb-2">Landing Pages</h1>
+      <p className="text-sm text-muted mb-6">{pages.length} pages</p>
+
+      <div className="grid gap-2">
         {pages.map((p: any) => (
-          <div key={p.slug} className="rounded-xl border bg-card p-4">
-            <form action={update.bind(null, p.slug)} className="space-y-3">
-              <input name="title" defaultValue={p.title} className="w-full rounded-lg border px-3 py-2 text-sm font-medium" />
-              <textarea name="content" defaultValue={p.content} rows={10} className="w-full rounded-lg border px-3 py-2 text-sm font-mono" />
-              <div className="flex justify-end">
-                <SubmitButton label="Simpan" loadingLabel="Menyimpan..." className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 disabled:opacity-50" />
-              </div>
+          <div key={p.id} className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3">
+            <span className="text-sm font-medium text-primary flex-1">{p.title}</span>
+            <span className="text-xs text-muted">/{p.slug}</span>
+            {p.published ? <span className="text-[10px] text-green-600">Published</span> : <span className="text-[10px] text-amber-600">Draft</span>}
+            <Link href={`/admin/pages/${p.id}`} className="rounded border border-border px-3 py-1 text-xs text-muted hover:bg-surface">Sections</Link>
+            <Link href={`/${p.slug}`} target="_blank" className="rounded border border-border px-3 py-1 text-xs text-muted hover:bg-surface">View</Link>
+            <form action={handleDelete.bind(null, p.id)} className="inline">
+              <button type="submit" className="text-xs text-red-500 hover:underline">✕</button>
             </form>
           </div>
         ))}
+      </div>
+
+      <div className="mt-6 border-t border-border pt-6">
+        <h2 className="text-sm font-semibold text-primary mb-3">Create Landing Page</h2>
+        <form action={handleCreate} className="flex gap-2">
+          <input name="title" placeholder="Page Title" required className="flex-1 rounded border border-border px-3 py-2 text-sm" />
+          <input name="slug" placeholder="page-slug" required className="flex-1 rounded border border-border px-3 py-2 text-sm" />
+          <button type="submit" className="rounded bg-primary px-4 py-2 text-sm text-white hover:bg-primary-hover">Create</button>
+        </form>
       </div>
     </div>
   );
