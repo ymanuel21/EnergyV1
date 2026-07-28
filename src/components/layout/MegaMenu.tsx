@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { HamburgerIcon } from '@ui/Icons';
 import { categories as defaultCategories } from '@/lib/data/categories';
+import { brandRepo } from '@/lib/repositories/brand';
 import type { Category } from '@/types/product';
 
 export function MegaMenu() {
@@ -14,7 +15,7 @@ export function MegaMenu() {
   const [categories, setCategories] = useState<Category[]>(defaultCategories);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [scrolledToBottom, setScrolledToBottom] = useState(false);
-
+  const [popularBrands, setPopularBrands] = useState<{ id: string; name: string; slug: string; productCount: number }[]>([]);
   useEffect(() => {
     fetch('/api/categories')
       .then(r => r.json())
@@ -23,6 +24,11 @@ export function MegaMenu() {
           setCategories(data.filter((c: any) => !c.parentId));
         }
       })
+      .catch(() => {});
+
+    fetch('/api/brands?popular=6')
+      .then(r => r.json())
+      .then(data => setPopularBrands(data))
       .catch(() => {});
   }, []);
 
@@ -124,7 +130,31 @@ export function MegaMenu() {
               />
             )}
           </div>
-        </div>
+
+          {/* Popular Brands */}
+          {popularBrands.length > 0 && (
+            <div className="border-t border-border px-4 sm:px-6 py-4">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Brand</p>
+                <Link href="/brand" onClick={close} className="text-xs font-medium text-primary hover:text-primary-hover transition">
+                  View All Brands →
+                </Link>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {popularBrands.map((b) => (
+                  <Link
+                    key={b.id}
+                    href={`/brand/${b.slug}`}
+                    onClick={close}
+                    className="rounded-full border border-border px-4 py-1.5 text-sm font-medium text-primary hover:bg-surface hover:border-primary/30 transition"
+                  >
+                    {b.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+          </div>
 
         {/* Cross-browser scrollbar styling */}
         <style>{`

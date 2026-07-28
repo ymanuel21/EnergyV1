@@ -39,6 +39,18 @@ export class BrandRepository {
     const prisma = await getPrisma();
     return prisma.brand.count();
   }
+
+  /** Brands with the most active products first. Auto-synced with CRUD. */
+  async findPopular(limit = 6) {
+    const prisma = await getPrisma();
+    const brands = await prisma.brand.findMany({
+      where: { isActive: true },
+      include: { _count: { select: { products: { where: { isActive: true } } } } },
+      orderBy: { products: { _count: 'desc' } },
+      take: limit,
+    });
+    return brands.map(b => ({ id: b.id, name: b.name, slug: b.slug, productCount: b._count.products }));
+  }
 }
 
 export const brandRepo = new BrandRepository();
