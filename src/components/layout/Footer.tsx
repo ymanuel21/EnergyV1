@@ -4,7 +4,7 @@ import { getPublicNavigationLinks } from '@/lib/api/navigation';
 
 export async function Footer() {
   const { name, email, phone } = SITE_CONFIG;
-  const nav = await getPublicNavigationLinks().catch(() => ({}));
+  const nav = await getPublicNavigationLinks().catch(() => ({} as Record<string, { label: string; href: string }[]>));
   const belanja = nav.footer_belanja || [];
   const layanan = nav.footer_layanan || [];
 
