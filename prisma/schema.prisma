@@ -197,3 +197,16 @@ model HomepageSection {
 
   @@map("homepage_sections")
 }
+
+model NavigationLink {
+  id        String   @id @default(cuid())
+  group     String   // header, footer_belanja, footer_layanan, utility, mobile
+  label     String
+  href      String
+  sortOrder Int      @default(0)
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("navigation_links")
+}

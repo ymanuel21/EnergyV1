@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import { SITE_CONFIG } from '@/lib/site';
-import { NAV_LINKS } from '@lib/constants';
+import { getPublicNavigationLinks } from '@/lib/api/navigation';
 
-export function Footer() {
+export async function Footer() {
   const { name, email, phone } = SITE_CONFIG;
+  const nav = await getPublicNavigationLinks().catch(() => ({}));
+  const belanja = nav.footer_belanja || [];
+  const layanan = nav.footer_layanan || [];
 
   return (
     <footer className="bg-dark-bg border-t border-gray-800">
@@ -14,30 +17,30 @@ export function Footer() {
             <p className="mt-2 text-sm text-muted">Energi terbarukan untuk semua.</p>
             <p className="mt-3 text-sm text-muted">{email} • {phone}</p>
           </div>
-          <div>
-            <h3 className="text-sm font-semibold text-gray-400 mb-3">Belanja</h3>
-            <ul className="space-y-2 text-sm text-muted">
-              {NAV_LINKS.footer.belanja.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="hover:text-gray-300 transition">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-gray-400 mb-3">Layanan</h3>
-            <ul className="space-y-2 text-sm text-muted">
-              {NAV_LINKS.footer.layanan.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="hover:text-gray-300 transition">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {belanja.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-400 mb-3">Belanja</h3>
+              <ul className="space-y-2 text-sm text-muted">
+                {belanja.map((link: any) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="hover:text-gray-300 transition">{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {layanan.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-400 mb-3">Layanan</h3>
+              <ul className="space-y-2 text-sm text-muted">
+                {layanan.map((link: any) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="hover:text-gray-300 transition">{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <div className="mt-12 flex flex-col gap-4 border-t border-gray-800 pt-8 sm:flex-row sm:justify-between">
           <span className="text-sm text-muted">© 2026 {name}. Seluruh hak cipta dilindungi.</span>

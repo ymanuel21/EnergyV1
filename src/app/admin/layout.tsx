@@ -7,6 +7,7 @@ import { AdminToastProvider } from './AdminToastProvider';
 const NAV = [
   { label: 'Dashboard', href: '/admin' },
   { label: 'Homepage', href: '/admin/homepage' },
+  { label: 'Navigation', href: '/admin/navigation' },
   { label: 'Produk', href: '/admin/products' },
   { label: 'Kategori', href: '/admin/categories' },
   { label: 'Brand', href: '/admin/brands' },
