@@ -69,7 +69,7 @@ export class ProductRepository {
 
     // Priority: starts-with first, then contains
     const startsWith = await prisma.product.findMany({
-      where: { name: { startsWith: query }, isActive: true },
+      where: { name: { startsWith: query, mode: 'insensitive' }, isActive: true },
       select: { id: true, name: true, slug: true, price: true, images: true, brand: { select: { name: true, slug: true } } },
       take: limit,
       orderBy: { name: 'asc' },
@@ -80,7 +80,7 @@ export class ProductRepository {
     if (remaining > 0) {
       const excludeIds = startsWith.map(p => p.id);
       contains = await prisma.product.findMany({
-        where: { name: { contains: query }, isActive: true, id: { notIn: excludeIds } },
+        where: { name: { contains: query, mode: 'insensitive' }, isActive: true, id: { notIn: excludeIds } },
         select: { id: true, name: true, slug: true, price: true, images: true, brand: { select: { name: true, slug: true } } },
         take: remaining,
         orderBy: { name: 'asc' },
