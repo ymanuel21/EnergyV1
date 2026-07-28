@@ -233,3 +233,59 @@ function CtaRenderer({ section }: SectionRendererProps) {
     </section>
   );
 }
+
+/* ===== NEW SECTION TYPES ===== */
+
+function ProjectsRenderer({ section, data }: SectionRendererProps) {
+  return (
+    <section className="bg-card py-24">
+      <div className="mx-auto max-w-5xl px-8">
+        {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[1,2,3].map(i => (
+            <div key={i} className="rounded-xl border border-border bg-card p-6 hover:shadow-md transition">
+              <div className="h-40 rounded-lg bg-surface mb-4 flex items-center justify-center text-3xl">☀️</div>
+              <p className="text-xs text-muted capitalize">Residential · 5 kWp</p>
+              <h3 className="mt-1 text-sm font-medium text-primary">Project {i}</h3>
+              <p className="text-xs text-muted mt-1">Jakarta · 2025</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TestimonialsRenderer({ section, data }: SectionRendererProps) {
+  return (
+    <section className="bg-surface py-24">
+      <div className="mx-auto max-w-5xl px-8">
+        {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
+        <div className="grid gap-6 md:grid-cols-3">
+          {[1,2,3].map(i => (
+            <div key={i} className="rounded-xl border border-border bg-card p-6">
+              <div className="flex mb-3">{'⭐'.repeat(5)}</div>
+              <p className="text-sm text-muted italic">&ldquo;Produk berkualitas, pemasangan profesional.&rdquo;</p>
+              <p className="text-xs text-primary mt-3 font-medium">Customer {i}</p>
+              <p className="text-xs text-muted">Company · Role</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+sectionRegistry['projects'] = {
+  type: 'projects', label: 'Projects', icon: '☀️',
+  defaultSettings: {},
+  fields: [{ key: 'heading', label: 'Section heading' }],
+  Renderer: ProjectsRenderer,
+};
+
+sectionRegistry['testimonials'] = {
+  type: 'testimonials', label: 'Testimonials', icon: '💬',
+  defaultSettings: {},
+  fields: [{ key: 'heading', label: 'Section heading' }],
+  Renderer: TestimonialsRenderer,
+};

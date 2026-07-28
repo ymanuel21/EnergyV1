@@ -223,3 +223,55 @@ model NavigationLink {
 
   @@map("navigation_links")
 }
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String   @default("")
+  category    String   @default("residential") // residential, commercial, industrial, government, school
+  capacity    String   @default("")  // e.g. "5 kWp"
+  location    String   @default("")
+  customer    String   @default("")
+  year        Int      @default(2025)
+  images      Json     @default("[]")
+  productIds  Json     @default("[]")
+  featured    Boolean  @default(false)
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  company   String   @default("")
+  role      String   @default("")
+  quote     String
+  rating    Int      @default(5)
+  photo     String   @default("")
+  productIds Json    @default("[]")
+  featured  Boolean  @default(false)
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+model QuoteRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @default("")
+  phone     String   @default("")
+  company   String   @default("")
+  message   String   @default("")
+  status    String   @default("pending") // pending, contacted, survey_scheduled, proposal_sent, won, lost
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("quote_requests")
+}
