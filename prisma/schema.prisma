@@ -181,3 +181,17 @@ model ProductBadge {
   @@id([productId, badgeId])
   @@map("product_badges")
 }
+
+model HomepageSection {
+  id        String   @id @default(cuid())
+  type      String   // hero, category-grid, featured-products, brands, testimonials, projects, cta
+  enabled   Boolean  @default(true)
+  sortOrder Int      @default(0)
+  title     String?
+  subtitle  String?
+  settings  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("homepage_sections")
+}
