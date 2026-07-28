@@ -62,7 +62,6 @@ export class ProductRepository {
       include: { brand: true, categories: { include: { category: true } }, badgeRelations: { include: { badge: true } } },
     }) as unknown as Product | undefined;
   }
-}
 
   async searchSuggestions(query: string, limit = 8) {
     const prisma = await getPrisma();
@@ -90,5 +89,6 @@ export class ProductRepository {
 
     return [...startsWith, ...contains];
   }
+}
 
 export const productRepo = new ProductRepository();

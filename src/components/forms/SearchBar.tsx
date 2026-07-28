@@ -21,7 +21,7 @@ export function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchSuggestions = useCallback(async (q: string) => {
     if (q.length < 1) { setSuggestions([]); setOpen(false); return; }
@@ -36,7 +36,7 @@ export function SearchBar() {
 
   const handleChange = (value: string) => {
     setQuery(value);
-    clearTimeout(debounceRef.current);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => fetchSuggestions(value), 200);
   };
 
