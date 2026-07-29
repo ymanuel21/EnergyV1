@@ -2,29 +2,30 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from 'next/navigation';
 import { getProduct, getBrandsForSelect, getCategoriesForSelect } from '../actions';
+import { getLatestReview } from '@/lib/services/review';
+
+// Minimal ProductForm inline
+function TestForm({ product }: { product: any }) {
+  return <div>TEST FORM: {product.name}</div>;
+}
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const product = await getProduct(id);
+  const [product, brands, categories, review] = await Promise.all([
+    getProduct(id),
+    getBrandsForSelect(),
+    getCategoriesForSelect(),
+    getLatestReview('product', id),
+  ]);
   if (!product) notFound();
 
-  try {
-    const brands = await getBrandsForSelect();
-    return (
-      <div>
-        <h1>Edit Produk: {product.name}</h1>
-        <p>Brand: {product.brand?.name} | Status: {product.status}</p>
-        <p>Brands loaded: {brands.length}</p>
-        <p>Categories: {product.categories?.length}</p>
-        <p>Specs count: {(product.specifications as any[])?.length}</p>
-        <p>Images count: {(product.images as any[])?.length}</p>
-        <p>BadgeRelations: {product.badgeRelations?.length}</p>
-        <p>Relations: {product.relations?.length}</p>
-        <hr />
-        <p>✅ ALL DATA LOADED — crash is in ProductForm or child component</p>
-      </div>
-    );
-  } catch (e: any) {
-    return <div><h1>CRASH IN: getBrandsForSelect or render</h1><pre>{e.message}</pre></div>;
-  }
+  return (
+    <div>
+      <h1>Edit Produk: {product.name}</h1>
+      <p>Brands: {brands.length} | Categories: {categories.length}</p>
+      <TestForm product={product} />
+      <hr />
+      <p>✅ Minimal ProductForm OK — crash is in real ProductForm or sub-component</p>
+    </div>
+  );
 }
