@@ -9,6 +9,9 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
       <h1>Edit Produk</h1>
       <p>✅ Page loads — ProductForm imported but not rendered</p>
       <p>Type: {typeof ProductForm}</p>
+      <hr />
+      <ProductForm />
+      <p>✅ ProductForm rendered with no props</p>
     </div>
   );
 }
