@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from 'next/navigation';
 import { getProduct } from '../actions';
-import { DeleteButton } from '../DeleteButton';
+import { DeleteButton } from '../../DeleteButton';
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
