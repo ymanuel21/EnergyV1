@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { getAdminPrisma } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
 import { projectRepo } from '@/lib/repositories/project';
+import { archiveEntity, publishEntity } from '@/lib/services/content-versioning';
+import { StatusBadge } from '@/components/admin/StatusBadge';
 
 const CATEGORIES = ['residential', 'commercial', 'industrial', 'government', 'school'];
 const SYSTEM_TYPES = ['', 'On-Grid', 'Off-Grid', 'Hybrid'];
@@ -43,9 +45,7 @@ export default async function ProjectsAdminPage() {
                 <td className="p-4 hidden md:table-cell text-muted">{p.location || '-'}</td>
                 <td className="p-4 hidden md:table-cell text-muted">{p.year}</td>
                 <td className="p-4">
-                  <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${p.published ? 'bg-green-50 text-green-700' : 'bg-surface text-muted'}`}>
-                    {p.published ? 'Published' : 'Draft'}
-                  </span>
+                  <StatusBadge status={p.status || (p.published ? 'published' : 'draft')} />
                 </td>
                 <td className="p-4 text-right">
                   <Link href={`/admin/projects/${p.id}`} className="text-sm text-primary hover:underline mr-3">Edit</Link>
@@ -62,7 +62,7 @@ export default async function ProjectsAdminPage() {
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
-        {projects.filter((p: any) => p.published).slice(0, 6).map((p: any) => (
+        {projects.filter((p: any) => p.status === 'published' || p.published).slice(0, 6).map((p: any) => (
           <div key={p.id} className="rounded-xl border border-border bg-card p-6">
             <div className="flex items-start justify-between">
               <div>
@@ -75,7 +75,7 @@ export default async function ProjectsAdminPage() {
             </div>
             <div className="mt-3 flex gap-2">
               <form action={toggleFeatured} className="inline"><input type="hidden" name="id" value={p.id} /><button className="text-xs text-primary hover:underline">{p.featured ? 'Unfeature' : 'Feature'}</button></form>
-              <form action={togglePublished} className="inline"><input type="hidden" name="id" value={p.id} /><button className="text-xs text-primary hover:underline">{p.published ? 'Unpublish' : 'Publish'}</button></form>
+              <form action={toggleStatus} className="inline"><input type="hidden" name="id" value={p.id} /><button className="text-xs text-primary hover:underline">{p.status === 'published' ? 'Archive' : 'Publish'}</button></form>
             </div>
           </div>
         ))}
@@ -111,12 +111,16 @@ async function toggleFeatured(formData: FormData) {
   revalidatePath('/admin/projects');
 }
 
-async function togglePublished(formData: FormData) {
+async function toggleStatus(formData: FormData) {
   'use server';
   const id = formData.get('id') as string;
   const prisma = await getAdminPrisma();
   const p = await prisma.project.findUnique({ where: { id } });
   if (!p) return;
-  await prisma.project.update({ where: { id }, data: { published: !p.published } });
+  if (p.status === 'published') {
+    await archiveEntity({ entity: 'project', id });
+  } else {
+    await publishEntity({ entity: 'project', id });
+  }
   revalidatePath('/admin/projects');
 }

@@ -22,8 +22,11 @@ model Product {
   images             Json     @default("[]")
   badges             Json     @default("[]")
   specifications     Json     @default("[]")
+  downloads          Json     @default("[]")
   affiliateCommission Json?
   isActive           Boolean  @default(true) @map("is_active")
+  status             String   @default("published") // draft | published | archived
+  draftData          Json     @default("{}")        // unpublished changes stored here
   createdAt          DateTime @default(now()) @map("created_at")
   updatedAt          DateTime @updatedAt @map("updated_at")
 
@@ -38,6 +41,13 @@ model Product {
 
   // Many-to-many with badges
   badgeRelations ProductBadge[]
+
+  // Related products
+  relations    ProductRelation[]  @relation("ProductRelations")
+  referencedBy ProductRelation[]  @relation("RelatedProductRef")
+
+  // Analytics events
+  events       ProductEvent[]
 
   @@index([brandId])
   @@index([isActive])
@@ -188,20 +198,67 @@ model ProductBadge {
   @@map("product_badges")
 }
 
+model ProductRelation {
+  id               String   @id @default(cuid())
+  productId        String
+  product          Product  @relation("ProductRelations", fields: [productId], references: [id], onDelete: Cascade)
+  relatedProductId String
+  relatedProduct   Product  @relation("RelatedProductRef", fields: [relatedProductId], references: [id], onDelete: Cascade)
+  type             String   @default("recommended") // recommended | alternative | accessory
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+
+  @@unique([productId, relatedProductId])
+  @@index([productId])
+  @@index([relatedProductId])
+  @@map("product_relations")
+}
+
+model ProductEvent {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  eventType String   // VIEW | RFQ_START | RFQ_SUBMIT | COMPARE_ADD | DOWNLOAD
+  sessionId String   @default("")
+  metadata  Json     @default("{}") // { documentType, compareGroup, rfqItems, etc }
+  createdAt DateTime @default(now())
+
+  @@index([productId, eventType])
+  @@index([productId, createdAt])
+  @@index([eventType])
+  @@index([createdAt])
+  @@map("product_events")
+}
+
 model HomepageSection {
   id        String   @id @default(cuid())
   pageId    String?  // null = homepage, set = landing page
   type      String   // hero, category-grid, featured-products, brands, cta
   enabled   Boolean  @default(true)
-  status    String   @default("published") // draft | published
   sortOrder Int      @default(0)
-  title     String?
-  subtitle  String?
-  settings  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  versions  HomepageSectionVersion[]
+
   @@map("homepage_sections")
+}
+
+model HomepageSectionVersion {
+  id          String   @id @default(cuid())
+  sectionId   String
+  section     HomepageSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  status      String   @default("draft") // draft | published | archived
+  title       String?
+  subtitle    String?
+  settings    Json     @default("{}")
+  publishedAt DateTime?
+  createdBy   String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([sectionId, status])  // 1 draft + 1 published per section, ∞ archived
+  @@map("homepage_section_versions")
 }
 
 model LandingPage {
@@ -250,8 +307,13 @@ model Project {
   images      Json     @default("[]")
   highlights  Json     @default("[]") // array of highlight strings
   productIds  Json     @default("[]")
+  storyData   Json     @default("{}")    // { challenge, solution, result }
+  impactData  Json     @default("{}")    // { co2Reduction, annualSavings, energyGenerated }
+  seoData     Json     @default("{}")    // { title, description, keywords, ogImage }
   featured    Boolean  @default(false)
   published   Boolean  @default(false)
+  status      String   @default("published") // draft | published | archived
+  draftData   Json     @default("{}")        // unpublished changes
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -266,9 +328,12 @@ model Testimonial {
   quote     String
   rating    Int      @default(5)
   photo     String   @default("")
-  productIds Json    @default("[]")
+  productIds Json    @default("[]")       // linked project IDs (backward compat name kept)
   featured  Boolean  @default(false)
-  published Boolean  @default(false)
+  sortOrder Int      @default(0)          // display priority
+  status    String   @default("draft")    // draft | review | published | archived
+  draftData Json     @default("{}")       // unpublished changes
+  published Boolean  @default(false)      // kept for backward compat
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -284,6 +349,8 @@ model QuoteRequest {
   message   String   @default("")
   status    String   @default("pending") // pending, contacted, survey_scheduled, proposal_sent, won, lost
   notes     String   @default("")
+  followUps Json     @default("[]")       // [{ note, author, createdAt }]
+  assignedTo String?                      // admin user ID
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -326,4 +393,21 @@ model ActivityLog {
   createdAt DateTime @default(now())
 
   @@map("activity_logs")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  entityType  String   // "product" | "project"
+  entityId    String
+  status      String   @default("pending") // pending | approved | rejected
+  requestedBy String   @default("")
+  reviewedBy  String?
+  notes       String?
+  requestedAt DateTime @default(now())
+  reviewedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([status])
+  @@map("reviews")
 }

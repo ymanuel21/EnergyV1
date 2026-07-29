@@ -8,7 +8,7 @@ interface ListParams {
   brandId?: string;
   categoryId?: string;
   search?: string;
-  badges?: string[];
+  preview?: boolean;
   isActive?: boolean;
 }
 
@@ -25,7 +25,7 @@ const PAGE_DEFAULTS = { limit: 24, offset: 0 };
 export async function getAllProducts(params?: ListParams): Promise<Product[]> {
   try {
     const prisma = await getPrisma();
-    const where: any = { isActive: params?.isActive ?? true };
+    const where: any = { isActive: true, status: params?.preview ? undefined : 'published' };
     if (params?.brandId) where.brandId = params.brandId;
     if (params?.categoryId) {
       where.categories = { some: { categoryId: params.categoryId } };
@@ -43,7 +43,7 @@ export async function getAllProducts(params?: ListParams): Promise<Product[]> {
       orderBy,
       take: params?.limit || undefined,
       skip: params?.offset || undefined,
-      include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } } },
+      include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } }, relations: { include: { relatedProduct: { include: { brand: true } } }, orderBy: { type: 'asc' } } },
     }) as unknown as Product[];
   } catch {
     // Fallback to static data only if DB unavailable
@@ -58,15 +58,20 @@ export async function getProductsPaginated(params?: ListParams): Promise<Paginat
   const limit = params?.limit || PAGE_DEFAULTS.limit;
   const offset = params?.offset || PAGE_DEFAULTS.offset;
   const prisma = await getPrisma();
-  const where: any = { isActive: params?.isActive ?? true };
+  const where: any = { isActive: params?.isActive ?? true, status: params?.preview ? undefined : 'published' };
   if (params?.brandId) where.brandId = params.brandId;
   if (params?.categoryId) where.categories = { some: { categoryId: params.categoryId } };
   if (params?.search) where.name = { contains: params.search };
 
+  const orderBy = params?.sort === 'price_asc' ? { price: 'asc' as const } :
+                   params?.sort === 'price_desc' ? { price: 'desc' as const } :
+                   params?.sort === 'name' ? { name: 'asc' as const } :
+                   { createdAt: 'desc' as const };
+
   const [items, total] = await Promise.all([
     prisma.product.findMany({
       where,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
       take: limit,
       skip: offset,
       include: { brand: true, badgeRelations: { include: { badge: true } } },
@@ -88,8 +93,9 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
     const prisma = await getPrisma();
     const row = await prisma.product.findUnique({
       where: { slug },
-      include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } } },
+      include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } }, relations: { include: { relatedProduct: { include: { brand: true } } }, orderBy: { type: 'asc' } } },
     });
+    if (row && row.status !== 'published') return undefined; // Hide drafts/archived from public
     return row as unknown as Product | undefined;
   } catch {
     const { products } = await import('@/lib/data/products');

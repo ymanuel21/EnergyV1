@@ -17,10 +17,11 @@ export async function getEntityRelations(entityType: string, entityId: string): 
 
   if (entityType === 'products') {
     // Check homepage featured sections
-    const sections = await prisma.homepageSection.findMany({ where: { type: 'featured-products' } });
+    const sections = await prisma.homepageSection.findMany({ where: { type: 'featured-products' }, include: { versions: { where: { status: 'published' }, take: 1 } } });
     let count = 0;
     for (const s of sections) {
-      const st = s.settings as any;
+      const v = s.versions[0];
+      const st = (v?.settings || {}) as any;
       if (Array.isArray(st?.productIds) && st.productIds.includes(entityId)) count++;
     }
     if (count > 0) results.push({ module: 'homepage', icon: '🏠', label: 'Homepage — Featured Products', route: '/admin/homepage', count });
@@ -34,10 +35,11 @@ export async function getEntityRelations(entityType: string, entityId: string): 
     const productCount = await prisma.product.count({ where: { brandId: entityId } });
     if (productCount > 0) results.push({ module: 'products', icon: '📦', label: 'Products', route: '/admin/products', count: productCount });
 
-    const sections = await prisma.homepageSection.findMany({ where: { type: 'brands' } });
+    const sections = await prisma.homepageSection.findMany({ where: { type: 'brands' }, include: { versions: { where: { status: 'published' }, take: 1 } } });
     let bc = 0;
     for (const s of sections) {
-      const st = s.settings as any;
+      const v = s.versions[0];
+      const st = (v?.settings || {}) as any;
       if (Array.isArray(st?.brandIds) && st.brandIds.includes(entityId)) bc++;
     }
     if (bc > 0) results.push({ module: 'homepage', icon: '🏠', label: 'Homepage — Brands Section', route: '/admin/homepage', count: bc });
@@ -72,8 +74,17 @@ export async function globalSearch(query: string) {
   for (const c of cats) results.push({ module: 'categories', icon: '📂', label: c.name, route: `/admin/categories`, match: c.name });
 
   // Homepage sections
-  const sections = await prisma.homepageSection.findMany({ where: { title: { contains: query } }, take: 3, select: { title: true, id: true } });
-  for (const s of sections) results.push({ module: 'homepage', icon: '🏠', label: s.title || 'Untitled', route: `/admin/homepage`, match: s.title || '' });
+  const sections = await prisma.homepageSection.findMany({
+    include: { versions: { where: { status: 'published' }, take: 1 } },
+    take: 3,
+  });
+  for (const s of sections) {
+    const v = s.versions[0];
+    const title = v?.title || '';
+    if (title.toLowerCase().includes(query.toLowerCase())) {
+      results.push({ module: 'homepage', icon: '🏠', label: title || 'Untitled', route: '/admin/homepage', match: title });
+    }
+  }
 
   // Navigation links
   const nav = await prisma.navigationLink.findMany({ where: { label: { contains: query } }, take: 3, select: { label: true, id: true } });

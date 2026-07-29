@@ -5,8 +5,7 @@ import { Breadcrumb } from '@ui/Breadcrumb';
 import { ProductCard } from '@components/product/ProductCard';
 import { SortDropdown } from '@components/category/SortDropdown';
 import { Pagination } from '@ui/Pagination';
-import { getAllProducts } from '@/lib/api/products';
-import { sortProducts, paginate } from '@/lib/api/filters';
+import { getProductsPaginated } from '@/lib/api/products';
 import { validateSort, validatePage } from '@/lib/utils/validation';
 
 export const metadata: Metadata = {
@@ -25,10 +24,22 @@ export default async function AllProductsPage({ searchParams }: Props) {
   const sp = await searchParams;
   const sort = validateSort(sp.sort as string | undefined);
   const page = validatePage(sp.page as string | undefined);
+  const offset = (page - 1) * PAGE_SIZE;
 
-  const products = await getAllProducts();
-  const sorted = sortProducts(products, sort);
-  const { items, totalPages } = paginate(sorted, page, PAGE_SIZE);
+  // Map UI sort values to API sort format
+  const sortMap: Record<string, string> = {
+    'price-asc': 'price_asc',
+    'price-desc': 'price_desc',
+  };
+  const apiSort = (sortMap[sort] || sort) as any as 'newest' | 'price_asc' | 'price_desc' | 'name';
+
+  const { items: products, total } = await getProductsPaginated({
+    limit: PAGE_SIZE,
+    offset,
+    sort: apiSort,
+  });
+
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
     <Container className="py-6">
@@ -38,14 +49,14 @@ export default async function AllProductsPage({ searchParams }: Props) {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Semua Produk</h1>
           <p className="mt-1 text-sm text-gray-500">
-            {products.length} produk tersedia
+            {total} produk tersedia
           </p>
         </div>
         <SortDropdown />
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {items.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
@@ -60,7 +71,7 @@ export default async function AllProductsPage({ searchParams }: Props) {
         />
       )}
 
-      {items.length === 0 && (
+      {products.length === 0 && (
         <p className="py-12 text-center text-sm text-gray-500">
           Tidak ada produk tersedia saat ini.
         </p>

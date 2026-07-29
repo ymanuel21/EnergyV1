@@ -38,20 +38,21 @@ async function main() {
   if (!existingSection) {
     const maxSort = await prisma.homepageSection.aggregate({ _max: { sortOrder:true } });
     const sortOrder = (maxSort._max.sortOrder || 0) + 1;
-    await prisma.homepageSection.create({
-      data: {
-        type:'projects', title:'Proyek Referensi', subtitle:'Sudah dipercaya puluhan pelanggan di seluruh Indonesia',
-        enabled:true, status:'published', sortOrder, settings:{},
-      }
+    const sec = await prisma.homepageSection.create({
+      data: { type:'projects', enabled:true, sortOrder },
+    });
+    await prisma.homepageSectionVersion.create({
+      data: { sectionId: sec.id, status:'published', title:'Proyek Referensi', subtitle:'Sudah dipercaya puluhan pelanggan di seluruh Indonesia', settings:{}, publishedAt: new Date() },
     });
     console.log('Created projects homepage section.');
   } else {
-    console.log(`Projects section already exists (status: ${existingSection.status}).`);
+    const pub = await prisma.homepageSectionVersion.findFirst({ where: { sectionId: existingSection.id, status: 'published' } });
+    console.log(`Projects section already exists (${pub ? 'published' : 'draft'}).`);
   }
 
   // ── Verify ──
   const projCount = await prisma.project.count({ where: { published:true } });
-  const secCount = await prisma.homepageSection.count({ where: { type:'projects', status:'published', enabled:true } });
+  const secCount = await prisma.homepageSectionVersion.count({ where: { section: { type: 'projects', enabled: true }, status: 'published' } });
   console.log(`\nDone. Published projects: ${projCount}. Projects section: ${secCount}.`);
 
   await pool.end();

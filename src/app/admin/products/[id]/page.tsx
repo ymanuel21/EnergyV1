@@ -1,22 +1,19 @@
 export const dynamic = "force-dynamic";
 
 import { notFound, redirect } from 'next/navigation';
-import { getProduct, updateProduct, deleteProduct, getBrandsForSelect, getCategoriesForSelect } from '../actions';
+import { getProduct, deleteProduct, getBrandsForSelect, getCategoriesForSelect } from '../actions';
 import { ProductForm } from '../ProductForm';
+import { getLatestReview } from '@/lib/services/review';
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [product, brands, categories] = await Promise.all([
+  const [product, brands, categories, review] = await Promise.all([
     getProduct(id),
     getBrandsForSelect(),
     getCategoriesForSelect(),
+    getLatestReview('product', id),
   ]);
   if (!product) notFound();
-
-  async function handleUpdate(data: any) {
-    'use server';
-    await updateProduct(id, data);
-  }
 
   async function handleDelete() {
     'use server';
@@ -35,7 +32,14 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
         </form>
       </div>
       <div className="mt-6 rounded-xl border border-border bg-card p-6">
-        <ProductForm defaultValues={product} brands={brands} categories={categories} onSubmit={handleUpdate} />
+        <ProductForm
+          defaultValues={product}
+          brands={brands}
+          categories={categories}
+          onSubmit={async () => {}}
+          reviewStatus={review?.status || null}
+          reviewNotes={review?.notes || null}
+        />
       </div>
     </div>
   );

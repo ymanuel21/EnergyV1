@@ -31,11 +31,13 @@ export async function getAssetUsage(assetId: string): Promise<string[]> {
   }
 
   // Check homepage sections (settings may contain imageId)
-  const sections = await prisma.homepageSection.findMany();
+  const sections = await prisma.homepageSection.findMany({ include: { versions: { where: { status: 'published' }, take: 1 } } });
   for (const s of sections) {
-    const settings = s.settings as any;
-    if (settings?.imageId === assetId) usages.push(`Homepage Section: ${s.title || s.type}`);
-    if (settings?.bannerId === assetId) usages.push(`Homepage Banner: ${s.title || s.type}`);
+    const v = s.versions[0];
+    const settings = (v?.settings || {}) as any;
+    const name = v?.title || s.type || 'section';
+    if (settings?.imageId === assetId) usages.push(`Homepage Section: ${name}`);
+    if (settings?.bannerId === assetId) usages.push(`Homepage Banner: ${name}`);
   }
 
   return usages;

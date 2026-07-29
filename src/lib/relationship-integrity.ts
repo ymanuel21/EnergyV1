@@ -16,11 +16,12 @@ export async function checkProductReferences(productId: string): Promise<Referen
   const refs: Reference[] = [];
 
   // Homepage sections
-  const sections = await prisma.homepageSection.findMany();
+  const sections = await prisma.homepageSection.findMany({ include: { versions: { where: { status: 'published' }, take: 1 } } });
   for (const s of sections) {
-    const st = s.settings as any;
+    const v = s.versions[0];
+    const st = (v?.settings || {}) as any;
     if (Array.isArray(st?.productIds) && st.productIds.includes(productId)) {
-      refs.push({ entity: 'Homepage', name: s.title || s.type, context: 'Featured Products Section', url: '/admin/homepage' });
+      refs.push({ entity: 'Homepage', name: v?.title || s.type, context: 'Featured Products Section', url: '/admin/homepage' });
     }
   }
 
@@ -42,11 +43,12 @@ export async function checkBrandReferences(brandId: string): Promise<Reference[]
   }
 
   // Homepage sections
-  const sections = await prisma.homepageSection.findMany();
+  const sections = await prisma.homepageSection.findMany({ include: { versions: { where: { status: 'published' }, take: 1 } } });
   for (const s of sections) {
-    const st = s.settings as any;
+    const v = s.versions[0];
+    const st = (v?.settings || {}) as any;
     if (Array.isArray(st?.brandIds) && st.brandIds.includes(brandId)) {
-      refs.push({ entity: 'Homepage', name: s.title || s.type, context: 'Brands Section', url: '/admin/homepage' });
+      refs.push({ entity: 'Homepage', name: v?.title || s.type, context: 'Brands Section', url: '/admin/homepage' });
     }
   }
 

@@ -13,7 +13,7 @@ async function getStats() {
       prisma.article.count(),
       prisma.faq.count(),
       prisma.banner.count(),
-      prisma.homepageSection.count({ where: { status: 'published' } }),
+      prisma.homepageSectionVersion.count({ where: { status: 'published' } }),
       prisma.navigationLink.count({ where: { enabled: true } }),
       prisma.asset.count(),
     ]);

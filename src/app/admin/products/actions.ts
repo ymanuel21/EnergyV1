@@ -14,18 +14,38 @@ export async function getProducts() {
 export async function getProduct(id: string) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  return prisma.product.findUnique({
+  const product = await prisma.product.findUnique({
     where: { id },
-    include: { brand: true, categories: { include: { category: true } }, badgeRelations: { include: { badge: true } } },
+    include: {
+      brand: true,
+      categories: { include: { category: true } },
+      badgeRelations: { include: { badge: true } },
+      relations: { include: { relatedProduct: { select: { id: true, name: true, price: true, brand: { select: { name: true } } } } } },
+    },
   });
+  if (!product) return null;
+  // Flatten relations for the editor
+  return {
+    ...product,
+    relations: product.relations.map((r: any) => ({
+      id: r.id,
+      productId: r.productId,
+      relatedProductId: r.relatedProductId,
+      type: r.type,
+      relatedProduct: r.relatedProduct,
+    })),
+  };
 }
 
 export async function createProduct(data: any) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  const { categoryIds, categoryId, badgeIds, ...productData } = data;
+  const { categoryIds, categoryId, badgeIds, relations, ...productData } = data;
 
   productData.categoryId = categoryId || (categoryIds?.[0] || null);
+  productData.status = 'draft';         // new products start as draft
+  productData.draftData = {};           // empty draftData
+  productData.isActive = false;         // hidden until published
 
   const product = await prisma.product.create({ data: productData });
 
@@ -34,10 +54,14 @@ export async function createProduct(data: any) {
       data: categoryIds.map((catId: string) => ({ productId: product.id, categoryId: catId })),
     });
   }
-
   if (badgeIds?.length) {
     await prisma.productBadge.createMany({
       data: badgeIds.map((badgeId: string) => ({ productId: product.id, badgeId })),
+    });
+  }
+  if (relations?.length) {
+    await prisma.productRelation.createMany({
+      data: relations.map((r: any) => ({ productId: product.id, relatedProductId: r.relatedProductId, type: r.type })),
     });
   }
 
@@ -47,12 +71,13 @@ export async function createProduct(data: any) {
 export async function updateProduct(id: string, data: any) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  const { categoryIds, categoryId, badgeIds, ...productData } = data;
+  const { categoryIds, categoryId, badgeIds, relations, ...productData } = data;
 
   if (categoryId !== undefined) productData.categoryId = categoryId;
 
   const product = await prisma.product.update({ where: { id }, data: productData });
 
+  // Categories
   await prisma.productCategory.deleteMany({ where: { productId: id } });
   if (categoryIds?.length) {
     await prisma.productCategory.createMany({
@@ -60,10 +85,19 @@ export async function updateProduct(id: string, data: any) {
     });
   }
 
+  // Badges
   await prisma.productBadge.deleteMany({ where: { productId: id } });
   if (badgeIds?.length) {
     await prisma.productBadge.createMany({
       data: badgeIds.map((badgeId: string) => ({ productId: id, badgeId })),
+    });
+  }
+
+  // Relations — delete all and recreate
+  await prisma.productRelation.deleteMany({ where: { productId: id } });
+  if (relations?.length) {
+    await prisma.productRelation.createMany({
+      data: relations.map((r: any) => ({ productId: id, relatedProductId: r.relatedProductId, type: r.type })),
     });
   }
 
@@ -73,6 +107,8 @@ export async function updateProduct(id: string, data: any) {
 export async function deleteProduct(id: string) {
   await requireAuth();
   const prisma = await getAdminPrisma();
+  // Clean up orphaned reviews before cascade deletes
+  await prisma.review.deleteMany({ where: { entityType: 'product', entityId: id } });
   return prisma.product.delete({ where: { id } });
 }
 

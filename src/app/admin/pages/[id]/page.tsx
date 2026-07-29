@@ -13,22 +13,34 @@ export default async function LandingPageEditor({ params }: Props) {
   const page = await prisma.landingPage.findUnique({ where: { id } });
   if (!page) notFound();
 
-  const sections = await prisma.homepageSection.findMany({
+  const rawSections = await prisma.homepageSection.findMany({
     where: { pageId: id },
     orderBy: { sortOrder: 'asc' },
+    include: { versions: { orderBy: { createdAt: 'desc' }, take: 2 } },
+  });
+  const sections = rawSections.map((s: any) => {
+    const draft = s.versions.find((v: any) => v.status === 'draft');
+    const pub = s.versions.find((v: any) => v.status === 'published');
+    const active = draft || pub;
+    return { ...s, title: active?.title, subtitle: active?.subtitle, settings: active?.settings || {}, status: draft ? 'draft' : 'published', versions: undefined };
   });
 
   async function handleAdd(data: FormData) {
     'use server';
     const prisma = await getAdminPrisma();
-    await prisma.homepageSection.create({
+    const section = await prisma.homepageSection.create({
       data: {
         pageId: id,
         type: data.get('type') as string,
-        title: data.get('title') as string,
         sortOrder: sections.length,
-        status: 'draft',
         enabled: false,
+      },
+    });
+    await prisma.homepageSectionVersion.create({
+      data: {
+        sectionId: section.id,
+        status: 'draft',
+        title: data.get('title') as string,
         settings: JSON.parse((data.get('settings') as string) || '{}'),
       },
     });
@@ -38,7 +50,7 @@ export default async function LandingPageEditor({ params }: Props) {
   async function handleToggle(sectionId: string, enabled: boolean) {
     'use server';
     const prisma = await getAdminPrisma();
-    await prisma.homepageSection.update({ where: { id: sectionId }, data: { enabled, status: enabled ? 'published' : 'draft' } });
+    await prisma.homepageSection.update({ where: { id: sectionId }, data: { enabled } });
     revalidatePath(`/admin/pages/${id}`);
   }
 

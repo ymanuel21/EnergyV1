@@ -18,6 +18,7 @@ import { getAllCategories } from '@/lib/api/categories';
 import { getBrandById } from '@/lib/api/brands';
 import { SITE } from '@lib/constants';
 import { notFound } from 'next/navigation';
+import { ProductViewTracker } from '@components/product/ProductTracker';
 
 export const revalidate = 3600; // ISR: revalidate every hour
 
@@ -66,12 +67,15 @@ export default async function ProductDetail({ params }: Props) {
     ? allCategories.flatMap((c: any) => c.children ?? []).find((c: any) => c.id === product.subcategoryId)
     : undefined;
 
-  const relatedProducts = allProducts
-    .filter((p: any) => p.id !== product.id && p.categoryId === product.categoryId)
-    .slice(0, 5);
+  // Related products from the new ProductRelation system
+  const relationIds = (product as any).relations?.map((r: any) => r.relatedProductId) || [];
+  const relatedProducts = relationIds.length > 0
+    ? allProducts.filter((p: any) => relationIds.includes(p.id)).slice(0, 10)
+    : allProducts.filter((p: any) => p.id !== product.id && p.categoryId === product.categoryId).slice(0, 5);
 
   return (
     <>
+      <ProductViewTracker productId={product.id} />
       {/* Structured data */}
       <script
         type="application/ld+json"

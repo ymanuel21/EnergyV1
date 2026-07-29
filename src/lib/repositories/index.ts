@@ -43,21 +43,43 @@ export const bannerRepo = new BannerRepository();
 export class HomepageRepository {
   async findPublic(pageId?: string) {
     const prisma = await getPrisma();
-    const where: any = { enabled: true, status: 'published' };
+    const where: any = { enabled: true };
     if (pageId) where.pageId = pageId; else where.pageId = null;
-    return prisma.homepageSection.findMany({ where, orderBy: { sortOrder: 'asc' } });
+    const sections = await prisma.homepageSection.findMany({
+      where, orderBy: { sortOrder: 'asc' },
+      include: { versions: { where: { status: 'published' }, take: 1 } },
+    });
+    return sections.map((s: any) => { const v = s.versions?.[0]; return { ...s, title: v?.title, subtitle: v?.subtitle, settings: v?.settings || {} }; });
   }
   async findAll() {
     const prisma = await getPrisma();
-    return prisma.homepageSection.findMany({ orderBy: { sortOrder: 'asc' } });
+    const sections = await prisma.homepageSection.findMany({
+      orderBy: { sortOrder: 'asc' },
+      include: { versions: { orderBy: { createdAt: 'desc' }, take: 2 } },
+    });
+    return sections.map((s: any) => {
+      const draft = s.versions?.find((v: any) => v.status === 'draft');
+      const pub = s.versions?.find((v: any) => v.status === 'published');
+      const active = draft || pub;
+      return { ...s, title: active?.title, subtitle: active?.subtitle, settings: active?.settings || {}, status: draft ? 'draft' : 'published' };
+    });
   }
   async findByPage(pageId: string) {
     const prisma = await getPrisma();
-    return prisma.homepageSection.findMany({ where: { pageId }, orderBy: { sortOrder: 'asc' } });
+    const sections = await prisma.homepageSection.findMany({
+      where: { pageId }, orderBy: { sortOrder: 'asc' },
+      include: { versions: { orderBy: { createdAt: 'desc' }, take: 2 } },
+    });
+    return sections.map((s: any) => {
+      const draft = s.versions?.find((v: any) => v.status === 'draft');
+      const pub = s.versions?.find((v: any) => v.status === 'published');
+      const active = draft || pub;
+      return { ...s, title: active?.title, subtitle: active?.subtitle, settings: active?.settings || {}, status: draft ? 'draft' : 'published' };
+    });
   }
   async create(data: any) { const prisma = await getPrisma(); return prisma.homepageSection.create({ data }); }
   async update(id: string, data: any) { const prisma = await getPrisma(); return prisma.homepageSection.update({ where: { id }, data }); }
-  async delete(id: string) { const prisma = await getPrisma(); return prisma.homepageSection.delete({ where: { id } }); }
+  async delete(id: string) { const prisma = await getPrisma(); return prisma.homepageSectionVersion.deleteMany({ where: { sectionId: id } }).then(() => prisma.homepageSection.delete({ where: { id } })); }
 }
 export const homepageRepo = new HomepageRepository();
 
@@ -88,7 +110,7 @@ export const projectRepo = new ProjectRepository();
 
 // Testimonials
 export class TestimonialRepository {
-  async findPublic() { const prisma = await getPrisma(); return prisma.testimonial.findMany({ where: { published: true }, orderBy: { createdAt: 'desc' } }); }
+  async findPublic() { const prisma = await getPrisma(); return prisma.testimonial.findMany({ where: { status: 'published' }, orderBy: { sortOrder: 'asc' } }); }
   async findAll() { const prisma = await getPrisma(); return prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } }); }
   async create(data: any) { const prisma = await getPrisma(); return prisma.testimonial.create({ data }); }
 }

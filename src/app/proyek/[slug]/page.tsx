@@ -46,6 +46,30 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <p className="mt-6 text-sm leading-relaxed text-muted">{project.description}</p>
           )}
 
+          {/* Story */}
+          {(project.storyData as any)?.challenge || (project.storyData as any)?.solution || (project.storyData as any)?.result ? (
+            <div className="mt-8 space-y-6">
+              {(project.storyData as any)?.challenge && (
+                <div className="rounded-xl border border-border bg-card p-5">
+                  <h3 className="text-sm font-semibold text-amber-600 mb-2">Tantangan</h3>
+                  <p className="text-sm text-muted leading-relaxed">{(project.storyData as any).challenge}</p>
+                </div>
+              )}
+              {(project.storyData as any)?.solution && (
+                <div className="rounded-xl border border-border bg-card p-5">
+                  <h3 className="text-sm font-semibold text-blue-600 mb-2">Solusi</h3>
+                  <p className="text-sm text-muted leading-relaxed">{(project.storyData as any).solution}</p>
+                </div>
+              )}
+              {(project.storyData as any)?.result && (
+                <div className="rounded-xl border border-border bg-card p-5">
+                  <h3 className="text-sm font-semibold text-green-600 mb-2">Hasil</h3>
+                  <p className="text-sm text-muted leading-relaxed">{(project.storyData as any).result}</p>
+                </div>
+              )}
+            </div>
+          ) : null}
+
           {/* Gallery */}
           {images.length > 0 && (
             <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -87,6 +111,30 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* Impact Metrics */}
+          {(project.impactData as any)?.co2Reduction || (project.impactData as any)?.annualSavings || (project.impactData as any)?.energyGenerated ? (
+            <div className="rounded-xl border border-border bg-card p-6 space-y-3">
+              <h3 className="text-sm font-semibold text-primary">Dampak</h3>
+              {(project.impactData as any)?.co2Reduction && (
+                <div className="flex items-center gap-2"><span className="text-lg">🌱</span><div><p className="text-xs text-muted">CO₂ Reduction</p><p className="text-sm font-medium text-primary">{(project.impactData as any).co2Reduction}</p></div></div>
+              )}
+              {(project.impactData as any)?.annualSavings && (
+                <div className="flex items-center gap-2"><span className="text-lg">💰</span><div><p className="text-xs text-muted">Annual Savings</p><p className="text-sm font-medium text-primary">{(project.impactData as any).annualSavings}</p></div></div>
+              )}
+              {(project.impactData as any)?.energyGenerated && (
+                <div className="flex items-center gap-2"><span className="text-lg">⚡</span><div><p className="text-xs text-muted">Energy Generated</p><p className="text-sm font-medium text-primary">{(project.impactData as any).energyGenerated}</p></div></div>
+              )}
+            </div>
+          ) : null}
+
+          {/* Linked Products */}
+          {Array.isArray(project.productIds) && (project.productIds as string[]).length > 0 && (
+            <div className="rounded-xl border border-border bg-card p-6 space-y-2">
+              <h3 className="text-sm font-semibold text-primary">Produk Digunakan</h3>
+              <p className="text-xs text-muted">{(project.productIds as string[]).length} produk terkait</p>
             </div>
           )}
 
