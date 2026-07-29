@@ -13,7 +13,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
     <div>
       <h1>Edit Produk: {product.name}</h1>
       <p>Server render OK</p>
-      <DeleteButton />
+      <DeleteButton onDelete={async () => { 'use server'; }} />
       <p>✅ Client component (DeleteButton) works</p>
     </div>
   );
