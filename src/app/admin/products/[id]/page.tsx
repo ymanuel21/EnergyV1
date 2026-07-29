@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { notFound } from 'next/navigation';
 import { getProduct, getBrandsForSelect, getCategoriesForSelect } from '../actions';
 import { getLatestReview } from '@/lib/services/review';
-import { ProductForm } from '../ProductForm';
+import { TinyClient } from './TinyClient';
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -17,15 +17,14 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
   return (
     <div>
-      <h1>Edit Produk</h1>
-      <ProductForm
-        defaultValues={product}
-        brands={brands}
-        categories={categories}
-        onSubmit={async () => {}}
-        reviewStatus={review?.status || null}
-        reviewNotes={review?.notes || null}
-      />
+      <h1>Edit Produk: {product.name}</h1>
+      <p>Brand: {product.brand?.name} ({brands.length} brands loaded)</p>
+      <p>Categories: {categories.length}</p>
+      <p>Specs: {(product.specifications as any[])?.length}</p>
+      <p>BadgeRels: {product.badgeRelations?.length}</p>
+      <hr />
+      <TinyClient name={product.name} />
+      <p>✅ TinyClient with use client — testing ProductForm next</p>
     </div>
   );
 }
