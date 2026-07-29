@@ -10,7 +10,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
       <p>✅ Page loads — ProductForm imported but not rendered</p>
       <p>Type: {typeof ProductForm}</p>
       <hr />
-      <ProductForm />
+      <ProductForm brands={[]} categories={[]} onSubmit={async () => {}} />
       <p>✅ ProductForm rendered with no props</p>
     </div>
   );
