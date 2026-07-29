@@ -205,8 +205,8 @@ export default async function ProductDetail({ params }: Props) {
                     <h3>Keunggulan</h3>
                     <ul>
                       {(product.specifications || []).map((spec: any) => (
-                        <li key={spec.label}>
-                          <strong>{spec.label}:</strong> {spec.value}
+                        <li key={spec.key || spec.label}>
+                          <strong>{spec.key || spec.label}:</strong> {spec.value}
                         </li>
                       ))}
                     </ul>
@@ -221,8 +221,8 @@ export default async function ProductDetail({ params }: Props) {
                     <table className="w-full text-sm">
                       <tbody>
                         {(product.specifications || []).map((spec: any) => (
-                          <tr key={spec.label} className="border-b border-gray-100">
-                            <td className="py-2 pr-4 font-medium text-gray-700">{spec.label}</td>
+                          <tr key={spec.key || spec.label} className="border-b border-gray-100">
+                            <td className="py-2 pr-4 font-medium text-gray-700">{spec.key || spec.label}</td>
                             <td className="py-2 text-gray-600">{spec.value}</td>
                           </tr>
                         ))}

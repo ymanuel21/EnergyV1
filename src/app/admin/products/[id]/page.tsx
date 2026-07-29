@@ -6,53 +6,14 @@ import { ProductForm } from '../ProductForm';
 import { getLatestReview } from '@/lib/services/review';
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
-  let id = '';
-  try {
-    const p = await params;
-    id = p.id;
-    console.log('[PAGE] A — id:', id);
-  } catch (e: any) {
-    console.error('[PAGE] A — params.resolve FAILED', e.message, e.stack?.split('\n')[1]?.trim());
-    throw e;
-  }
-
-  let product: any, brands: any[], categories: any[], review: any;
-
-  try {
-    product = await getProduct(id);
-    console.log('[PAGE] B — getProduct OK');
-  } catch (e: any) {
-    console.error('[PAGE] B — getProduct FAILED for', id, e.message, e.stack?.split('\n')[1]?.trim());
-    throw e;
-  }
-
-  try {
-    brands = await getBrandsForSelect();
-    console.log('[PAGE] C — getBrands OK, count:', brands.length);
-  } catch (e: any) {
-    console.error('[PAGE] C — getBrands FAILED', e.message, e.stack?.split('\n')[1]?.trim());
-    throw e;
-  }
-
-  try {
-    categories = await getCategoriesForSelect();
-    console.log('[PAGE] D — getCategories OK, count:', categories.length);
-  } catch (e: any) {
-    console.error('[PAGE] D — getCategories FAILED', e.message, e.stack?.split('\n')[1]?.trim());
-    throw e;
-  }
-
-  try {
-    review = await getLatestReview('product', id);
-    console.log('[PAGE] E — getLatestReview OK:', review?.status || 'null');
-  } catch (e: any) {
-    console.error('[PAGE] E — getLatestReview FAILED', e.message, e.stack?.split('\n')[1]?.trim());
-    throw e;
-  }
-
-  console.log('[PAGE] F — all awaits done');
+  const { id } = await params;
+  const [product, brands, categories, review] = await Promise.all([
+    getProduct(id),
+    getBrandsForSelect(),
+    getCategoriesForSelect(),
+    getLatestReview('product', id),
+  ]);
   if (!product) notFound();
-  console.log('[PAGE] G — product found, rendering ProductForm');
 
   return (
     <div>
