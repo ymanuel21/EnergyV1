@@ -10,6 +10,7 @@ export type SafeImageProps = Omit<ImageProps, 'src' | 'onError'> & {
 };
 
 function isDataUrl(src: string): boolean {
+  if (!src) return false;
   return src.startsWith('data:') || src.startsWith('blob:');
 }
 
