@@ -30,7 +30,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           defaultValues={product}
           brands={brands}
           categories={categories}
-          onSubmit={async () => {}}
+          onSubmit={async (data: any) => { 'use server'; }}
           reviewStatus={review?.status || null}
           reviewNotes={review?.notes || null}
         />
