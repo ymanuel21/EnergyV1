@@ -30,6 +30,8 @@ interface ProductFormProps {
 }
 
 export function ProductForm({ defaultValues, brands, categories, onSubmit, reviewStatus, reviewNotes }: ProductFormProps) {
+  console.log('[FORM] rendering, productId:', defaultValues?.id, 'status:', defaultValues?.status);
+
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>('Overview');
   const [saving, setSaving] = useState(false);

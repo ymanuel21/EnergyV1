@@ -7,6 +7,21 @@ import {
   navigateTo,
 } from './helpers';
 
+test.describe('Catalog Data Integrity', () => {
+  test('restored product opens edit page with specs rendering correctly', async ({ page }) => {
+    await loginAsAdmin(page);
+    // Navigate to a restored product that had {label,value} specs
+    await page.goto('/admin/products/p-restore-ms5tqngz-8');
+    // Should load the edit page successfully (not 500)
+    await expect(page.locator('text=Edit Produk')).toBeVisible({ timeout: 10000 });
+    // Click Specifications tab
+    await page.click('text=Specifications');
+    // Verify spec rows render with key/value inputs visible
+    await expect(page.locator('input[placeholder="e.g. Power"]').first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('input[placeholder="e.g. 550Wp"]').first()).toBeVisible({ timeout: 5000 });
+  });
+});
+
 test.describe('Product Workflow: Draft → Review → Approve → Publish', () => {
   let productSlug: string;
 

@@ -102,7 +102,8 @@ export function SectionEditor({ section, index, total, editingId, onSave, onDele
   const typeInfo = def || { label: section.type, icon: '📄', type: section.type };
   const fields: SectionField[] = def?.fields || [];
 
-  const contentFields = fields.filter(f => f.group === 'content' || !f.group);
+  const contentFields = fields.filter(f => (f.group === 'content' || !f.group)
+    && (f.type !== 'product-picker' || settings.source === 'manual'));
   const stylingFields = fields.filter(f => f.group === 'styling');
   const advancedFields = fields.filter(f => f.group === 'advanced');
 
