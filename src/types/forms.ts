@@ -2,9 +2,8 @@ export interface RfqContact {
   name: string;
   email: string;
   phone?: string;
-  company?: string;
-  npwp?: string;
-}
+  notes?: string;
+  }
 
 export interface RfqProject {
   name?: string;

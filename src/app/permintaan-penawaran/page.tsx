@@ -33,7 +33,6 @@ export default function RfqPage() {
     phone: '',
     company: '',
     position: '',
-    npwp: '',
     projectName: '',
     location: '',
     targetDate: '',
@@ -112,7 +111,6 @@ export default function RfqPage() {
       form.phone ? `*Telp:* ${form.phone}` : '',
       form.company ? `*Perusahaan:* ${form.company}` : '',
       form.position ? `*Jabatan:* ${form.position}` : '',
-      form.npwp ? `NPWP: ${form.npwp}` : '',
       '',
       `*Proyek:*`,
       form.projectName ? `Nama Proyek: ${form.projectName}` : '',
@@ -310,15 +308,6 @@ export default function RfqPage() {
                 />
               </div>
             )}
-            <div>
-              <FormLabel>NPWP</FormLabel>
-              <input
-                type="text"
-                value={form.npwp}
-                onChange={(e) => updateField('npwp', e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
-              />
-            </div>
           </div>
         </section>
 

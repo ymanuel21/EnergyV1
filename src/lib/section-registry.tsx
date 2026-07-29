@@ -11,7 +11,6 @@ export interface SectionRendererProps {
     subtitle?: string | null;
     settings: Record<string, unknown>;
   };
-  // Context data passed to renderers
   data?: {
     products?: any[];
     brands?: any[];
@@ -21,20 +20,45 @@ export interface SectionRendererProps {
   };
 }
 
+export interface SectionField {
+  key: string;
+  label: string;
+  type?: 'text' | 'textarea' | 'select' | 'toggle' | 'image' | 'number' | 'alignment' | 'color';
+  options?: { value: string; label: string }[];
+  group?: 'content' | 'styling' | 'advanced';
+  defaultValue?: any;
+  placeholder?: string;
+}
+
 export interface SectionDefinition {
   type: string;
   label: string;
   icon: string;
   defaultSettings: Record<string, unknown>;
-  fields: { key: string; label: string }[];
+  fields: SectionField[];
   Renderer: FC<SectionRendererProps>;
 }
 
-// Registry — single source of truth for all section types.
+// ══════════════════════════════════════════════
+// Section Registry — single source of truth.
 // Both Admin Builder and Frontend renderer consume this.
-// Adding a new section type = one entry here + one Renderer component.
+// ══════════════════════════════════════════════
+
+const COMMON_ADVANCED: SectionField[] = [
+  { key: '_visibility', label: 'Visibility', type: 'select', options: [{ value: 'all', label: 'All Devices' }, { value: 'desktop', label: 'Desktop Only' }, { value: 'mobile', label: 'Mobile Only' }], group: 'advanced', defaultValue: 'all' },
+  { key: '_padding', label: 'Padding', type: 'select', options: [{ value: 'default', label: 'Default' }, { value: 'compact', label: 'Compact' }, { value: 'spacious', label: 'Spacious' }], group: 'advanced', defaultValue: 'default' },
+  { key: '_container', label: 'Container Width', type: 'select', options: [{ value: 'boxed', label: 'Boxed' }, { value: 'wide', label: 'Wide' }, { value: 'full', label: 'Full Width' }], group: 'advanced', defaultValue: 'boxed' },
+  { key: '_background', label: 'Background', type: 'select', options: [{ value: 'default', label: 'Default' }, { value: 'white', label: 'White' }, { value: 'gray', label: 'Gray' }, { value: 'none', label: 'Transparent' }], group: 'advanced', defaultValue: 'default' },
+  { key: '_textColor', label: 'Text Color', type: 'select', options: [{ value: 'auto', label: 'Auto' }], group: 'advanced', defaultValue: '' },
+  { key: '_borderRadius', label: 'Border Radius', type: 'select', options: [{ value: 'square', label: 'Square' }], group: 'advanced', defaultValue: 'medium' },
+  { key: '_shadow', label: 'Shadow', type: 'select', options: [{ value: 'none', label: 'None' }], group: 'advanced', defaultValue: 'none' },
+  { key: '_animation', label: 'Animation', type: 'select', options: [{ value: 'none', label: 'None' }, { value: 'fade', label: 'Fade In' }, { value: 'slide', label: 'Slide Up' }], group: 'advanced', defaultValue: 'none' },
+  { key: '_cssClass', label: 'CSS Class', type: 'text', group: 'advanced', defaultValue: '', placeholder: 'custom-class' },
+  { key: '_anchorId', label: 'Anchor ID', type: 'text', group: 'advanced', defaultValue: '', placeholder: 'section-id' },
+];
 
 export const sectionRegistry: Record<string, SectionDefinition> = {
+  // ── Hero ──
   hero: {
     type: 'hero',
     label: 'Hero',
@@ -44,56 +68,156 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       description: 'Produk berkualitas premium.',
       cta: 'Jelajahi Katalog',
       ctaLink: '/produk',
+      secondaryCta: 'Minta Penawaran',
+      secondaryCtaLink: '/permintaan-penawaran',
+      bgImage: '',
+      overlayColor: '#000000',
+      overlayOpacity: 0,
+      alignment: 'left',
+      height: 'medium',
+      showSearch: false,
+      showCategories: false,
+      showStats: false,
     },
     fields: [
-      { key: 'tagline', label: 'Tagline' },
-      { key: 'description', label: 'Description' },
-      { key: 'cta', label: 'CTA Button' },
-      { key: 'ctaLink', label: 'CTA Link' },
+      { key: 'tagline', label: 'Tagline', type: 'text', group: 'content' },
+      { key: 'description', label: 'Description', type: 'textarea', group: 'content' },
+      { key: 'cta', label: 'Primary Button', type: 'text', group: 'content' },
+      { key: 'ctaLink', label: 'Primary Link', type: 'text', group: 'content' },
+      { key: 'secondaryCta', label: 'Secondary Button', type: 'text', group: 'content' },
+      { key: 'secondaryCtaLink', label: 'Secondary Link', type: 'text', group: 'content' },
+      { key: 'bgImage', label: 'Background Image', type: 'image', group: 'styling' },
+      { key: 'overlayColor', label: 'Overlay Color', type: 'color', group: 'styling' },
+      { key: 'overlayOpacity', label: 'Overlay Opacity', type: 'number', group: 'styling' },
+      { key: 'alignment', label: 'Alignment', type: 'alignment', group: 'styling' },
+      { key: 'height', label: 'Height', type: 'select', options: [{ value: 'small', label: 'Small' }, { value: 'medium', label: 'Medium' }, { value: 'large', label: 'Large' }], group: 'styling' },
+      { key: 'showSearch', label: 'Show Search Bar', type: 'toggle', group: 'styling' },
+      { key: 'showCategories', label: 'Show Categories', type: 'toggle', group: 'styling' },
+      { key: 'showStats', label: 'Show Statistics', type: 'toggle', group: 'styling' },
+      ...COMMON_ADVANCED,
     ],
     Renderer: HeroRenderer,
   },
+
+  // ── Category Grid ──
   'category-grid': {
     type: 'category-grid',
     label: 'Category Grid',
     icon: '📂',
-    defaultSettings: {},
+    defaultSettings: { source: 'auto', columns: 4, cardStyle: 'image', maxCategories: 8, showViewAll: true, viewAllLabel: 'Lihat Semua Kategori', viewAllLink: '/kategori' },
     fields: [
-      { key: 'heading', label: 'Heading' },
+      { key: 'source', label: 'Content Source', type: 'select', options: [{ value: 'auto', label: 'Automatic' }, { value: 'manual', label: 'Manual' }], group: 'content' },
+      { key: 'columns', label: 'Columns', type: 'select', options: ['2', '3', '4', '5'].map(v => ({ value: v, label: v })), group: 'styling' },
+      { key: 'cardStyle', label: 'Card Style', type: 'select', options: [{ value: 'image', label: 'Image' }, { value: 'icon', label: 'Icon' }, { value: 'minimal', label: 'Minimal' }], group: 'styling' },
+      { key: 'maxCategories', label: 'Max Categories', type: 'number', group: 'content' },
+      { key: 'showViewAll', label: 'Show View All', type: 'toggle', group: 'content' },
+      { key: 'viewAllLabel', label: 'View All Label', type: 'text', group: 'content' },
+      { key: 'viewAllLink', label: 'View All Link', type: 'text', group: 'content' },
+      ...COMMON_ADVANCED,
     ],
     Renderer: CategoryGridRenderer,
   },
+
+  // ── Featured Products ──
   'featured-products': {
     type: 'featured-products',
     label: 'Featured Products',
     icon: '⭐',
-    defaultSettings: {},
+    defaultSettings: {
+      source: 'featured', maxProducts: 4, layout: 'grid',
+      showPrice: true, showBadge: true, showCompare: true, showWishlist: true,
+      buttonLabel: 'Lihat Semua', buttonLink: '/produk',
+    },
     fields: [
-      { key: 'heading', label: 'Section heading' },
+      { key: 'source', label: 'Content Source', type: 'select', options: [
+        { value: 'latest', label: 'Latest Products' }, { value: 'featured', label: 'Featured' },
+        { value: 'bestseller', label: 'Best Sellers' }, { value: 'highest_rated', label: 'Highest Rated' },
+        { value: 'new_arrival', label: 'New Arrivals' }, { value: 'manual', label: 'Manual Selection' },
+      ], group: 'content' },
+      { key: 'maxProducts', label: 'Max Products', type: 'number', group: 'content' },
+      { key: 'layout', label: 'Layout', type: 'select', options: [{ value: 'grid', label: 'Grid' }, { value: 'carousel', label: 'Carousel' }], group: 'styling' },
+      { key: 'showPrice', label: 'Show Price', type: 'toggle', group: 'styling' },
+      { key: 'showBadge', label: 'Show Badge', type: 'toggle', group: 'styling' },
+      { key: 'showCompare', label: 'Show Compare', type: 'toggle', group: 'styling' },
+      { key: 'showWishlist', label: 'Show Wishlist', type: 'toggle', group: 'styling' },
+      { key: 'buttonLabel', label: 'Button Label', type: 'text', group: 'content' },
+      { key: 'buttonLink', label: 'Button Link', type: 'text', group: 'content' },
+      ...COMMON_ADVANCED,
     ],
     Renderer: FeaturedProductsRenderer,
   },
+
+  // ── Brands ──
   brands: {
     type: 'brands',
     label: 'Brands',
     icon: '🏢',
-    defaultSettings: {},
+    defaultSettings: { source: 'auto', display: 'grid', columns: 4, rows: 2, showViewAll: true },
     fields: [
-      { key: 'heading', label: 'Section heading' },
+      { key: 'source', label: 'Source', type: 'select', options: [{ value: 'auto', label: 'Automatic (All)' }, { value: 'manual', label: 'Manual Selection' }], group: 'content' },
+      { key: 'display', label: 'Display Style', type: 'select', options: [{ value: 'grid', label: 'Grid' }, { value: 'marquee', label: 'Marquee' }], group: 'styling' },
+      { key: 'columns', label: 'Columns', type: 'number', group: 'styling' },
+      { key: 'rows', label: 'Rows', type: 'number', group: 'styling' },
+      { key: 'showViewAll', label: 'Show View All', type: 'toggle', group: 'content' },
+      ...COMMON_ADVANCED,
     ],
     Renderer: BrandsRenderer,
   },
+
+  // ── Projects ──
+  projects: {
+    type: 'projects',
+    label: 'Projects',
+    icon: '☀️',
+    defaultSettings: { source: 'latest', maxProjects: 6, showCustomer: true, showCapacity: true, showYear: true, showLocation: true, buttonLabel: 'Lihat Proyek', buttonLink: '/proyek' },
+    fields: [
+      { key: 'source', label: 'Source', type: 'select', options: [{ value: 'latest', label: 'Latest' }, { value: 'featured', label: 'Featured' }, { value: 'manual', label: 'Manual' }], group: 'content' },
+      { key: 'maxProjects', label: 'Max Projects', type: 'number', group: 'content' },
+      { key: 'showCustomer', label: 'Show Customer', type: 'toggle', group: 'styling' },
+      { key: 'showCapacity', label: 'Show Capacity', type: 'toggle', group: 'styling' },
+      { key: 'showYear', label: 'Show Year', type: 'toggle', group: 'styling' },
+      { key: 'showLocation', label: 'Show Location', type: 'toggle', group: 'styling' },
+      { key: 'buttonLabel', label: 'Button Label', type: 'text', group: 'content' },
+      { key: 'buttonLink', label: 'Button Link', type: 'text', group: 'content' },
+      ...COMMON_ADVANCED,
+    ],
+    Renderer: ProjectsRenderer,
+  },
+
+  // ── Testimonials ──
+  testimonials: {
+    type: 'testimonials',
+    label: 'Testimonials',
+    icon: '💬',
+    defaultSettings: { source: 'latest', maxTestimonials: 6, cardLayout: 'card', showRating: true, showCompany: true, autoRotate: false },
+    fields: [
+      { key: 'source', label: 'Source', type: 'select', options: [{ value: 'latest', label: 'Latest' }, { value: 'featured', label: 'Featured' }, { value: 'manual', label: 'Manual' }], group: 'content' },
+      { key: 'maxTestimonials', label: 'Max Testimonials', type: 'number', group: 'content' },
+      { key: 'cardLayout', label: 'Card Layout', type: 'select', options: [{ value: 'compact', label: 'Compact' }, { value: 'card', label: 'Card' }, { value: 'large', label: 'Large' }], group: 'styling' },
+      { key: 'showRating', label: 'Show Rating', type: 'toggle', group: 'styling' },
+      { key: 'showCompany', label: 'Show Company', type: 'toggle', group: 'styling' },
+      { key: 'autoRotate', label: 'Auto Rotate', type: 'toggle', group: 'styling' },
+      ...COMMON_ADVANCED,
+    ],
+    Renderer: TestimonialsRenderer,
+  },
+
+  // ── CTA ──
   cta: {
     type: 'cta',
     label: 'CTA',
     icon: '📣',
-    defaultSettings: {
-      buttonLabel: 'Konsultasi Gratis',
-      buttonLink: '/permintaan-penawaran',
-    },
+    defaultSettings: { buttonLabel: 'Konsultasi Gratis', buttonLink: '/permintaan-penawaran', secondaryButtonLabel: '', secondaryButtonLink: '', bgImage: '', bgColor: '#111827', alignment: 'center', padding: 'medium' },
     fields: [
-      { key: 'buttonLabel', label: 'Button Label' },
-      { key: 'buttonLink', label: 'Button Link' },
+      { key: 'buttonLabel', label: 'Primary Button', type: 'text', group: 'content' },
+      { key: 'buttonLink', label: 'Primary Link', type: 'text', group: 'content' },
+      { key: 'secondaryButtonLabel', label: 'Secondary Button', type: 'text', group: 'content' },
+      { key: 'secondaryButtonLink', label: 'Secondary Link', type: 'text', group: 'content' },
+      { key: 'bgImage', label: 'Background Image', type: 'image', group: 'styling' },
+      { key: 'bgColor', label: 'Background Color', type: 'color', group: 'styling' },
+      { key: 'alignment', label: 'Alignment', type: 'alignment', group: 'styling' },
+      { key: 'padding', label: 'Padding', type: 'select', options: [{ value: 'small', label: 'Small' }, { value: 'medium', label: 'Medium' }, { value: 'large', label: 'Large' }], group: 'styling' },
+      ...COMMON_ADVANCED,
     ],
     Renderer: CtaRenderer,
   },
@@ -101,10 +225,50 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
 
 export const sectionTypes = Object.values(sectionRegistry);
 
+/* ===== HELPERS ===== */
+
+const PADDING_MAP: Record<string, string> = { compact: 'py-8', default: 'py-16 sm:py-24', spacious: 'py-24 sm:py-40' };
+const CONTAINER_MAP: Record<string, string> = { boxed: 'max-w-5xl px-4 sm:px-8', wide: 'max-w-[90rem] px-4 sm:px-8', full: 'px-0' };
+const ANIMATION_MAP: Record<string, string> = { fade: 'animate-fadeIn', slide: 'animate-slideUp', none: '' };
+
+/** Single source of truth for all color values — used by both editor and frontend */
+export const COLOR_MAP: Record<string, { bg: string; text: string; border: string; label: string }> = {
+  default:    { bg: 'bg-card',          text: 'text-primary',   border: 'border-border',       label: 'Default' },
+  white:      { bg: 'bg-white',         text: 'text-gray-900',  border: 'border-border',       label: 'White' },
+  gray:       { bg: 'bg-surface',       text: 'text-gray-700',  border: 'border-border',       label: 'Gray' },
+  dark:       { bg: 'bg-gray-900',      text: 'text-white',     border: 'border-gray-700',     label: 'Dark' },
+  primary:    { bg: 'bg-primary',       text: 'text-white',     border: 'border-primary',      label: 'Primary' },
+  secondary:  { bg: 'bg-amber-500',     text: 'text-white',     border: 'border-amber-500',    label: 'Secondary' },
+  accent:     { bg: 'bg-emerald-500',   text: 'text-white',     border: 'border-emerald-500',  label: 'Accent' },
+  none:       { bg: 'bg-transparent',   text: 'text-primary',   border: 'border-border',       label: 'Transparent' },
+};
+const BG_MAP: Record<string, string> = Object.fromEntries(Object.entries(COLOR_MAP).map(([k, v]) => [k, v.bg]));
+const TEXT_COLOR_MAP: Record<string, string> = Object.fromEntries(Object.entries(COLOR_MAP).map(([k, v]) => [k, v.text]));
+
+function SectionWrapper({ section, children }: { section: any; children: React.ReactNode }) {
+  const s = section.settings || {};
+  const visibility = s._visibility || 'all';
+  const padding = PADDING_MAP[s._padding || 'default'] || PADDING_MAP.default;
+  const container = CONTAINER_MAP[s._container || 'boxed'] || CONTAINER_MAP.boxed;
+  const bgValue = s._background || 'default';
+  const isHex = /^#[0-9a-fA-F]{3,8}$/.test(bgValue);
+  const bg = isHex ? '' : (BG_MAP[bgValue] || BG_MAP.default);
+  const bgStyle = isHex ? { backgroundColor: bgValue } : undefined;
+  const textColor = s._textColor ? TEXT_COLOR_MAP[s._textColor] || '' : '';
+  const anim = ANIMATION_MAP[s._animation || 'none'] || '';
+  const cssClass = s._cssClass || '';
+  const anchorId = s._anchorId || '';
+
+  const wrapperClasses = `${bg} ${padding} ${anim} ${cssClass} ${textColor}`.trim();
+
+  if (visibility === 'desktop') return <section className={`hidden sm:block ${wrapperClasses}`} id={anchorId || undefined} style={bgStyle}><div className={`mx-auto ${container}`}>{children}</div></section>;
+  if (visibility === 'mobile')  return <section className={`block sm:hidden ${wrapperClasses}`} id={anchorId || undefined} style={bgStyle}><div className={`mx-auto ${container}`}>{children}</div></section>;
+  return <section className={wrapperClasses} id={anchorId || undefined} style={bgStyle}><div className={`mx-auto ${container}`}>{children}</div></section>;
+}
+
 /* ===== RENDERERS ===== */
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
-
 function HeroRenderer({ section, data }: SectionRendererProps) {
   const banner = data?.banners?.[0];
   return (
@@ -240,30 +404,37 @@ function CtaRenderer({ section }: SectionRendererProps) {
 function ProjectsRenderer({ section, data }: SectionRendererProps) {
   const projects = data?.projects || [];
   if (!projects.length) return null;
+  const s = section.settings || {};
+  const max = Number(s.maxProjects) || 6;
   return (
-    <section className="bg-card py-16 sm:py-24">
-      <div className="mx-auto max-w-5xl px-4 sm:px-8">
-        {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.slice(0, 6).map((p: any) => (
-            <Link key={p.id} href={`/proyek/${p.slug}`}
-              className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition">
-              {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
-                <div className="aspect-[4/3] overflow-hidden bg-surface">
-                  <img src={p.coverImage || p.images[0]} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
-                </div>
-              ) : (
-                <div className="aspect-[4/3] flex items-center justify-center bg-surface text-3xl text-muted">☀️</div>
-              )}
-              <div className="p-4">
-                <h4 className="font-semibold text-primary text-sm line-clamp-2">{p.title}</h4>
-                <p className="text-xs text-muted mt-1">{p.location}{p.capacity ? ' · ' + p.capacity : ''}</p>
+    <SectionWrapper section={section}>
+      {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {projects.slice(0, max).map((p: any) => (
+          <Link key={p.id} href={`/proyek/${p.slug}`}
+            className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition">
+            {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
+              <div className="aspect-[4/3] overflow-hidden bg-surface">
+                <img src={p.coverImage || p.images[0]} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
               </div>
-            </Link>
-          ))}
-        </div>
+            ) : (
+              <div className="aspect-[4/3] flex items-center justify-center bg-surface text-3xl text-muted">☀️</div>
+            )}
+            <div className="p-4">
+              <h4 className="font-semibold text-primary text-sm line-clamp-2">{p.title}</h4>
+              <p className="text-xs text-muted mt-1">
+                {s.showLocation !== false && p.location}{s.showLocation !== false && s.showCapacity !== false && p.location && p.capacity ? ' · ' : ''}
+                {s.showCapacity !== false && p.capacity}
+              </p>
+              <p className="text-xs text-muted">
+                {s.showCustomer !== false && p.customer}{s.showCustomer !== false && s.showYear !== false && p.customer && p.year ? ' · ' : ''}
+                {s.showYear !== false && p.year}
+              </p>
+            </div>
+          </Link>
+        ))}
       </div>
-    </section>
+    </SectionWrapper>
   );
 }
 
@@ -287,16 +458,3 @@ function TestimonialsRenderer({ section, data }: SectionRendererProps) {
   );
 }
 
-sectionRegistry['projects'] = {
-  type: 'projects', label: 'Projects', icon: '☀️',
-  defaultSettings: {},
-  fields: [{ key: 'heading', label: 'Section heading' }],
-  Renderer: ProjectsRenderer,
-};
-
-sectionRegistry['testimonials'] = {
-  type: 'testimonials', label: 'Testimonials', icon: '💬',
-  defaultSettings: {},
-  fields: [{ key: 'heading', label: 'Section heading' }],
-  Renderer: TestimonialsRenderer,
-};
