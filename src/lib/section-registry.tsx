@@ -20,10 +20,10 @@ export interface SectionRendererProps {
   };
 }
 
-export interface SectionField {
+export type SectionField = {
   key: string;
   label: string;
-  type?: 'text' | 'textarea' | 'select' | 'toggle' | 'image' | 'number' | 'alignment' | 'color';
+  type: 'text' | 'textarea' | 'number' | 'toggle' | 'select' | 'image' | 'alignment' | 'color' | 'product-picker';
   options?: { value: string; label: string }[];
   group?: 'content' | 'styling' | 'advanced';
   defaultValue?: any;
@@ -134,6 +134,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
         { value: 'bestseller', label: 'Best Sellers' }, { value: 'highest_rated', label: 'Highest Rated' },
         { value: 'new_arrival', label: 'New Arrivals' }, { value: 'manual', label: 'Manual Selection' },
       ], group: 'content' },
+      { key: 'productIds', label: 'Featured Products', type: 'product-picker', group: 'content' },
       { key: 'maxProducts', label: 'Max Products', type: 'number', group: 'content' },
       { key: 'layout', label: 'Layout', type: 'select', options: [{ value: 'grid', label: 'Grid' }, { value: 'carousel', label: 'Carousel' }], group: 'styling' },
       { key: 'showPrice', label: 'Show Price', type: 'toggle', group: 'styling' },
@@ -334,32 +335,68 @@ function CategoryGridRenderer({ section }: SectionRendererProps) {
 function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
   const products = data?.products || [];
   const productIds: string[] = Array.isArray(section.settings.productIds) ? section.settings.productIds as string[] : [];
-  const featured = productIds.length ? products.filter((p: any) => productIds.includes(p.id)) : [products[0]].filter(Boolean);
+  const max = Number(section.settings.maxProducts) || 4;
+
+  // Manual selection: filter by productIds, preserve order
+  const featured = productIds.length
+    ? productIds.map(id => products.find((p: any) => p.slug === id || p.id === id)).filter(Boolean).slice(0, max)
+    : products.slice(0, max);
+
   if (!featured.length) return null;
-  const p = featured[0];
+
+  const layout = section.settings.layout || 'grid';
+  const showPrice = section.settings.showPrice !== false;
+  const showBadge = section.settings.showBadge !== false;
 
   return (
     <section className="relative py-16 sm:py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
       <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-emerald-50/60 blur-3xl" />
       <div className="relative mx-auto max-w-5xl px-4 sm:px-8">
-        {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted">{section.title}</p>}
-        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16 mt-6">
-          <div className="overflow-hidden rounded-3xl bg-card h-96 shadow-xl shadow-gray-900/5 ring-1 ring-gray-900/5">
-            <SafeImage src={p.images?.[0]} alt={p.name} width={600} height={600} className="h-full w-full object-contain p-8" />
-          </div>
-          <div>
-            <h2 className="mt-4 text-3xl font-light tracking-tight">{p.name}</h2>
-            <p className="mt-6 text-muted leading-relaxed">{p.description?.substring(0, 180) || 'Produk berkualitas tinggi.'}</p>
-            <div className="mt-8 flex items-baseline gap-4">
-              <span className="text-3xl font-light">Rp {p.price?.toLocaleString('id-ID')}</span>
-              {p.originalPrice > p.price && <span className="text-sm text-muted line-through">Rp {p.originalPrice?.toLocaleString('id-ID')}</span>}
-            </div>
-            <div className="mt-6 flex flex-col gap-2 sm:mt-8 sm:flex-row sm:gap-3">
-              <Link href={`/produk/${p.slug}`} className="rounded-full bg-dark-bg px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 shadow-lg text-center transition sm:px-8">Beli Sekarang</Link>
-              <Link href={`/produk/${p.slug}`} className="rounded-full px-6 py-3 text-sm font-medium text-muted hover:text-primary text-center transition sm:px-8">Detail →</Link>
-            </div>
-          </div>
+        {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-2">{section.title}</p>}
+        {section.subtitle && <h2 className="text-2xl font-light tracking-tight mb-8">{section.subtitle}</h2>}
+        <div className={layout === 'carousel'
+          ? 'flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory'
+          : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'}>
+          {featured.map((p: any) => (
+            <Link key={p.id || p.slug} href={`/produk/${p.slug}`}
+              className={`group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition ${layout === 'carousel' ? 'shrink-0 w-[280px] snap-start' : ''}`}>
+              <div className="aspect-square overflow-hidden bg-surface">
+                <SafeImage src={p.images?.[0] || ''} alt={p.name} width={400} height={400}
+                  className="h-full w-full object-contain p-4 group-hover:scale-105 transition duration-500" />
+              </div>
+              <div className="p-4">
+                <h3 className="text-sm font-medium text-primary line-clamp-2">{p.name}</h3>
+                {showPrice && (
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-base font-semibold">Rp {p.price?.toLocaleString('id-ID')}</span>
+                    {p.originalPrice > p.price && (
+                      <span className="text-xs text-muted line-through">Rp {p.originalPrice?.toLocaleString('id-ID')}</span>
+                    )}
+                  </div>
+                )}
+                {showBadge && p.badgeRelations?.length > 0 && (
+                  <div className="mt-2 flex gap-1 flex-wrap">
+                    {p.badgeRelations.slice(0, 2).map((br: any) => (
+                      <span key={br.badge?.slug || br.badge?.name}
+                        className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+                        style={{ backgroundColor: (br.badge as any)?.bgColor || '#f0f0f0', color: (br.badge as any)?.color || '#333' }}>
+                        {(br.badge as any)?.name as string}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
         </div>
+        {!!section.settings.buttonLabel && (
+          <div className="mt-8 text-center">
+            <Link href={String(section.settings.buttonLink || '/produk')}
+              className="inline-block rounded-full border border-border px-6 py-2.5 text-sm text-muted hover:text-primary hover:border-primary transition">
+              {String(section.settings.buttonLabel)}
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -4,6 +4,84 @@ import { useState, useRef } from 'react';
 import { sectionRegistry } from '@/lib/section-registry';
 import type { SectionField } from '@/lib/section-registry';
 
+function ProductPicker({ value, onChange }: { value: string[]; onChange: (ids: string[]) => void }) {
+  const [search, setSearch] = useState('');
+  const [results, setResults] = useState<any[]>([]);
+  const [selectedNames, setSelectedNames] = useState<Record<string, string>>({});
+
+  const handleSearch = async (q: string) => {
+    setSearch(q);
+    if (q.length < 2) { setResults([]); return; }
+    const res = await fetch(`/api/admin/search-products?q=${encodeURIComponent(q)}`);
+    if (res.ok) {
+      const data = await res.json();
+      setResults((data.products || data || []).filter((p: any) => p.slug && !value.includes(p.slug)));
+    }
+  };
+
+  const addProduct = (slug: string, name: string) => {
+    onChange([...value, slug]);
+    setSelectedNames(prev => ({ ...prev, [slug]: name }));
+    setSearch('');
+    setResults([]);
+  };
+
+  const removeProduct = (slug: string) => {
+    onChange(value.filter(id => id !== slug));
+  };
+
+  const moveUp = (slug: string) => {
+    const idx = value.indexOf(slug);
+    if (idx <= 0) return;
+    const next = [...value];
+    [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+    onChange(next);
+  };
+
+  const moveDown = (slug: string) => {
+    const idx = value.indexOf(slug);
+    if (idx < 0 || idx >= value.length - 1) return;
+    const next = [...value];
+    [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
+    onChange(next);
+  };
+
+  return (
+    <div className="space-y-2">
+      <input type="text" value={search} onChange={e => handleSearch(e.target.value)}
+        placeholder="Search products by name or SKU..."
+        className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary outline-none bg-card" />
+      {results.length > 0 && (
+        <ul className="max-h-40 overflow-y-auto rounded-lg border border-border bg-card divide-y divide-border">
+          {results.slice(0, 8).map((p: any) => (
+            <li key={p.slug || p.id} className="px-3 py-2 text-sm hover:bg-surface cursor-pointer flex justify-between"
+              onClick={() => addProduct(p.slug || p.id, p.name)}>
+              <span>{p.name}</span>
+              <span className="text-xs text-muted">+ Add</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {value.length > 0 && (
+        <ul className="rounded-lg border border-border bg-surface divide-y divide-border">
+          {value.map((slug, i) => (
+            <li key={slug} className="flex items-center gap-2 px-3 py-2 text-sm">
+              <span className="text-xs text-muted w-5">{i + 1}.</span>
+              <span className="flex-1 text-primary">{selectedNames[slug] || slug}</span>
+              <button onClick={() => moveUp(slug)} disabled={i === 0}
+                className="text-xs text-muted hover:text-primary disabled:opacity-20">▲</button>
+              <button onClick={() => moveDown(slug)} disabled={i === value.length - 1}
+                className="text-xs text-muted hover:text-primary disabled:opacity-20">▼</button>
+              <button onClick={() => removeProduct(slug)}
+                className="text-xs text-red-500 hover:text-red-700 ml-1">✕</button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function SectionEditor({ section, index, total, editingId, onSave, onDelete, onMoveUp, onMoveDown }: {
   section: any; index: number; total: number; editingId?: string; onSave: (data: FormData) => Promise<void>; onDelete: (id: string) => Promise<void>; onMoveUp: (id: string) => Promise<void>; onMoveDown: (id: string) => Promise<void>;
 }) {
@@ -76,6 +154,8 @@ export function SectionEditor({ section, index, total, editingId, onSave, onDele
             ))}
           </div>
         );
+      case 'product-picker':
+        return <ProductPicker value={Array.isArray(value) ? value : []} onChange={(ids) => setS(field.key, ids)} />;
       case 'image':
         return (
           <div className="flex items-center gap-2">

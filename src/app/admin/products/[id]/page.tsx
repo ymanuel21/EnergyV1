@@ -7,13 +7,16 @@ import { getLatestReview } from '@/lib/services/review';
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  console.log('[PAGE] A — id:', id);
   const [product, brands, categories, review] = await Promise.all([
-    getProduct(id),
-    getBrandsForSelect(),
-    getCategoriesForSelect(),
-    getLatestReview('product', id),
+    getProduct(id).then(p => { console.log('[PAGE] B — getProduct done'); return p; }),
+    getBrandsForSelect().then(b => { console.log('[PAGE] C — getBrands done, count:', b.length); return b; }),
+    getCategoriesForSelect().then(c => { console.log('[PAGE] D — getCategories done, count:', c.length); return c; }),
+    getLatestReview('product', id).then(r => { console.log('[PAGE] E — getLatestReview done:', r?.status); return r; }),
   ]);
+  console.log('[PAGE] F — all awaits done');
   if (!product) notFound();
+  console.log('[PAGE] G — product found, rendering ProductForm');
 
   async function handleDelete() {
     'use server';

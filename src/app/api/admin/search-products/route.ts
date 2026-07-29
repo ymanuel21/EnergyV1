@@ -14,9 +14,10 @@ export async function GET(req: NextRequest) {
       where: {
         name: { contains: q, mode: 'insensitive' },
         isActive: true,
+        status: 'published',
         ...(exclude ? { id: { not: exclude } } : {}),
       },
-      select: { id: true, name: true, price: true, brand: { select: { name: true } } },
+      select: { id: true, slug: true, name: true, price: true, brand: { select: { name: true } } },
       take: 10,
     });
     return NextResponse.json(products);
