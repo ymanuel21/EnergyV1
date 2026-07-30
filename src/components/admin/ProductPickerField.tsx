@@ -84,7 +84,7 @@ export function ProductPickerField({ value, onChange, single = false }: ProductP
                     )}
                     <div className="min-w-0">
                       <div className="font-medium text-primary truncate">{p.name}</div>
-                      {p.brand && <div className="text-[10px] text-muted/60">{p.brand}</div>}
+                      {p.brand && <div className="text-[10px] text-muted/60">{typeof p.brand === 'string' ? p.brand : p.brand?.name || ''}</div>}
                     </div>
                     {selected && <span className="shrink-0 text-green-600 text-xs ml-auto">✓</span>}
                   </button>
