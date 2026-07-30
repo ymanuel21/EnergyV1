@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '../AdminToastProvider';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
 import { submitForReview } from '@/lib/services/review';
 import { StatusBadge } from '@/components/admin/StatusBadge';
@@ -48,6 +49,7 @@ interface ProjectEditFormProps {
 
 export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectEditFormProps) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('Overview');
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -118,40 +120,58 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
   const handleSaveDraft = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const data = buildFormData(e.currentTarget as HTMLFormElement);
-    await saveDraft({ entity: 'project', id: project.id, data });
-    setSaving(false);
-    setDirty(false);
-    setSaveState('saved');
-    router.refresh();
-  }, [project.id, buildFormData, router]);
+    try {
+      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      await saveDraft({ entity: 'project', id: project.id, data });
+      setDirty(false);
+      setSaveState('saved');
+      showToast('✓ Draft berhasil disimpan', 'success');
+      router.refresh();
+    } catch {
+      showToast('✕ Gagal menyimpan', 'error');
+    } finally {
+      setSaving(false);
+    }
+  }, [project.id, buildFormData, router, showToast]);
 
   const handlePublish = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (saving) return;
     setSaving(true);
-    const data = buildFormData(e.currentTarget as HTMLFormElement);
-    await saveDraft({ entity: 'project', id: project.id, data });
-    await publishEntity({ entity: 'project', id: project.id });
-    setSaving(false);
-    setDirty(false);
-    setSaveState('saved');
-    router.refresh();
-    router.push('/admin/projects');
-  }, [project.id, buildFormData, saving, router]);
+    try {
+      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      await saveDraft({ entity: 'project', id: project.id, data });
+      await publishEntity({ entity: 'project', id: project.id });
+      setDirty(false);
+      setSaveState('saved');
+      showToast('✓ Proyek berhasil dipublikasikan', 'success');
+      router.refresh();
+      router.push('/admin/projects');
+    } catch {
+      showToast('✕ Gagal mempublikasikan', 'error');
+    } finally {
+      setSaving(false);
+    }
+  }, [project.id, buildFormData, saving, router, showToast]);
 
   const handleSubmitForReview = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (saving) return;
     setSaving(true);
-    const data = buildFormData(e.currentTarget as HTMLFormElement);
-    await saveDraft({ entity: 'project', id: project.id, data });
-    await submitForReview('project', project.id);
-    setSaving(false);
-    setDirty(false);
-    setSaveState('saved');
-    router.refresh();
-  }, [project.id, buildFormData, saving, router]);
+    try {
+      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      await saveDraft({ entity: 'project', id: project.id, data });
+      await submitForReview('project', project.id);
+      setDirty(false);
+      setSaveState('saved');
+      showToast('✓ Proyek berhasil dikirim untuk review', 'success');
+      router.refresh();
+    } catch {
+      showToast('✕ Gagal mengirim review', 'error');
+    } finally {
+      setSaving(false);
+    }
+  }, [project.id, buildFormData, saving, router, showToast]);
 
   const handleSearchProducts = useCallback(async () => {
     if (!productSearch.trim()) return;

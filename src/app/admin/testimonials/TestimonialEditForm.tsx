@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '../AdminToastProvider';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
 import { submitForReview } from '@/lib/services/review';
 import { StatusBadge } from '@/components/admin/StatusBadge';
@@ -28,6 +29,7 @@ interface TestimonialEditFormProps {
 
 export function TestimonialEditForm({ testimonial, reviewStatus, reviewNotes }: TestimonialEditFormProps) {
   const router = useRouter();
+  const { showToast } = useToast();
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [rating, setRating] = useState(testimonial.rating);
@@ -52,30 +54,48 @@ export function TestimonialEditForm({ testimonial, reviewStatus, reviewNotes }: 
   const handleSaveDraft = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const data = buildFormData(e.currentTarget as HTMLFormElement);
-    await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
-    setSaving(false); setDirty(false);
-    router.refresh();
+    try {
+      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
+      setDirty(false);
+      showToast('✓ Draft berhasil disimpan', 'success');
+      router.refresh();
+    } catch {
+      showToast('✕ Gagal menyimpan', 'error');
+      setSaving(false);
+    }
   }, [testimonial.id, buildFormData, router]);
 
   const handlePublish = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const data = buildFormData(e.currentTarget as HTMLFormElement);
-    await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
-    await publishEntity({ entity: 'testimonial', id: testimonial.id });
-    setSaving(false); setDirty(false);
-    router.push('/admin/testimonials');
+    try {
+      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
+      await publishEntity({ entity: 'testimonial', id: testimonial.id });
+      setDirty(false);
+      showToast('✓ Testimoni berhasil dipublikasikan', 'success');
+      router.push('/admin/testimonials');
+    } catch {
+      showToast('✕ Gagal mempublikasikan', 'error');
+      setSaving(false);
+    }
   }, [testimonial.id, buildFormData, router]);
 
   const handleSubmitForReview = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const data = buildFormData(e.currentTarget as HTMLFormElement);
-    await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
-    await submitForReview('testimonial', testimonial.id);
-    setSaving(false); setDirty(false);
-    router.refresh();
+    try {
+      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
+      await submitForReview('testimonial', testimonial.id);
+      setDirty(false);
+      showToast('✓ Testimoni berhasil dikirim untuk review', 'success');
+      router.refresh();
+    } catch {
+      showToast('✕ Gagal mengirim review', 'error');
+      setSaving(false);
+    }
   }, [testimonial.id, buildFormData, router]);
 
   const handleSearchProjects = useCallback(async () => {

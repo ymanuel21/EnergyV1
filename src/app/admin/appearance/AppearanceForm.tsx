@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useToast } from '../AdminToastProvider';
 
 const DEFAULT_VALUES: Record<string, string> = {
   primary: '#111827',
@@ -38,6 +39,7 @@ export function AppearanceForm({ settings, onSave }: Props) {
     return v;
   });
   const [saving, setSaving] = useState(false);
+  const { showToast } = useToast();
 
   const setVal = useCallback((key: string, value: string) => {
     setValues(prev => ({ ...prev, [key]: value }));
@@ -45,11 +47,17 @@ export function AppearanceForm({ settings, onSave }: Props) {
 
   const handleSave = async (publish: boolean) => {
     setSaving(true);
-    const fd = new FormData();
-    if (publish) fd.set('_publish', 'true');
-    for (const [k, v] of Object.entries(values)) fd.set(k, v);
-    await onSave(fd);
-    setSaving(false);
+    try {
+      const fd = new FormData();
+      if (publish) fd.set('_publish', 'true');
+      for (const [k, v] of Object.entries(values)) fd.set(k, v);
+      await onSave(fd);
+      showToast('✓ Tampilan berhasil disimpan', 'success');
+    } catch {
+      showToast('✕ Gagal menyimpan tampilan', 'error');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const cssVars = {

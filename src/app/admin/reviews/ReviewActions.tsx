@@ -15,19 +15,28 @@ export function ReviewActions({ reviewId, entityType, entityName }: {
 
   const handleApprove = useCallback(async () => {
     setLoading(true);
-    await approveReview(reviewId);
-    router.refresh();
+    try {
+      await approveReview(reviewId);
+      setLoading(false);
+      router.refresh();
+    } catch {
+      setLoading(false);
+    }
   }, [reviewId, router]);
 
   const handleReject = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const form = e.currentTarget as HTMLFormElement;
-    const reason = (form.elements.namedItem('reason') as HTMLTextAreaElement)?.value || '';
-    await rejectReview(reviewId, reason || 'No reason provided');
-    setShowReject(false);
-    setLoading(false);
-    router.refresh();
+    try {
+      const form = e.currentTarget as HTMLFormElement;
+      const reason = (form.elements.namedItem('reason') as HTMLTextAreaElement)?.value || '';
+      await rejectReview(reviewId, reason || 'No reason provided');
+      setShowReject(false);
+      setLoading(false);
+      router.refresh();
+    } catch {
+      setLoading(false);
+    }
   }, [reviewId, router]);
 
   return (
