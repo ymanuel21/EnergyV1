@@ -357,7 +357,7 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
   const showBadge = section.settings.showBadge !== false;
 
   const isManualSelection = productIds.length > 0;
-  const adaptiveLayout = isManualSelection && featured.length < 4;
+  const useShowcase = isManualSelection && featured.length > 0;
 
   return (
     <section className="relative py-16 sm:py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
@@ -366,8 +366,7 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-2">{section.title}</p>}
         {section.subtitle && <h2 className="text-2xl font-light tracking-tight mb-8">{section.subtitle}</h2>}
 
-        {adaptiveLayout ? (
-          /* Product Showcase: 1p large card + panel, 2-3p rotate + panel */
+        {useShowcase ? (
           <ProductShowcase
             products={featured}
             featuredCount={featured.length}
@@ -376,16 +375,13 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
             priceLabels={priceLabels}
           />
         ) : (
-          /* Standard grid layout (4+ products or auto-source) */
-          <>
-            <div className={layout === 'carousel'
-              ? 'flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory'
-              : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'}>
-              {featured.map((p: any) => (
-                <ProductCardItem key={p.id || p.slug} product={p} showPrice={showPrice} showBadge={showBadge} priceLabels={priceLabels} featuredCount={4} />
-              ))}
-            </div>
-          </>
+          <div className={layout === 'carousel'
+            ? 'flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory'
+            : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'}>
+            {featured.map((p: any) => (
+              <ProductCardItem key={p.id || p.slug} product={p} showPrice={showPrice} showBadge={showBadge} priceLabels={priceLabels} featuredCount={4} />
+            ))}
+          </div>
         )}
 
         {!!section.settings.buttonLabel && (
