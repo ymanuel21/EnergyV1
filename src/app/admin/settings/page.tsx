@@ -1,11 +1,21 @@
 export const dynamic = "force-dynamic";
 
 import { revalidatePath } from 'next/cache';
+import { getPrisma } from '@/lib/db';
 
-export default function SettingsPage() {
+async function getSettings() {
+  const prisma = await getPrisma();
+  const rows = await prisma.siteSetting.findMany();
+  const map: Record<string, string> = {};
+  for (const r of rows) map[r.key] = r.value;
+  return map;
+}
+
+export default async function SettingsPage() {
+  const saved = await getSettings();
+
   async function handleSave(data: FormData) {
     'use server';
-    // Settings update stub — writes to DB via prisma.siteSetting.upsert
     const { PrismaClient } = await import('@prisma/client');
     const { PrismaPg } = await import('@prisma/adapter-pg');
     const { Pool } = await import('pg');
@@ -19,7 +29,7 @@ export default function SettingsPage() {
     revalidatePath('/admin/settings');
   }
 
-  const settings = [
+  const siteFields = [
     { key: 'name', label: 'Nama Situs', defaultValue: 'EBTPlaza' },
     { key: 'tagline', label: 'Tagline', defaultValue: 'Energi Terbarukan, Harga Terjangkau!' },
     { key: 'email', label: 'Email', defaultValue: 'info@ebtplaza.com' },
@@ -29,17 +39,51 @@ export default function SettingsPage() {
     { key: 'description', label: 'SEO Description', defaultValue: 'Pusat produk energi terbarukan...' },
   ];
 
+  const PRICE_MODES = [
+    { value: 'SHOW_PRICE', label: 'Show Price (Tampilkan Harga)' },
+    { value: 'STARTING_FROM', label: 'Starting From (Mulai Dari)' },
+    { value: 'CONTACT_FOR_PRICE', label: 'Contact for Price (Hubungi Kami)' },
+    { value: 'REQUEST_QUOTE', label: 'Request Quote (Minta Penawaran)' },
+    { value: 'CUSTOM_TEXT', label: 'Custom Message (Teks Kustom)' },
+  ];
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-primary">Pengaturan</h1>
-      <form action={handleSave} className="mt-6 space-y-4 rounded-xl border bg-card p-6">
-        {settings.map((s) => (
-          <div key={s.key}>
-            <label className="block text-sm font-medium text-primary mb-1">{s.label}</label>
-            <input name={s.key} defaultValue={s.defaultValue} className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
+
+      <form action={handleSave}>
+        {/* Site Info */}
+        <div className="mt-6 space-y-4 rounded-xl border bg-card p-6">
+          <h2 className="text-lg font-semibold text-primary">Informasi Situs</h2>
+          {siteFields.map((s) => (
+            <div key={s.key}>
+              <label className="block text-sm font-medium text-primary mb-1">{s.label}</label>
+              <input name={s.key} defaultValue={saved[s.key] || s.defaultValue} className="w-full rounded-lg border border-border px-3 py-2 text-sm" />
+            </div>
+          ))}
+        </div>
+
+        {/* Product Display */}
+        <div className="mt-6 space-y-4 rounded-xl border bg-card p-6">
+          <h2 className="text-lg font-semibold text-primary">Product Pricing Display</h2>
+          <p className="text-sm text-muted">Kontrol bagaimana harga ditampilkan di seluruh situs. Produk individual dapat override pengaturan ini.</p>
+
+          <div>
+            <label className="block text-sm font-medium text-primary mb-2">Default Price Display Mode</label>
+            <select name="product_price_display_mode" defaultValue={saved['product_price_display_mode'] || 'SHOW_PRICE'} className="w-full rounded-lg border border-border px-3 py-2 text-sm">
+              {PRICE_MODES.map(m => (
+                <option key={m.value} value={m.value}>{m.label}</option>
+              ))}
+            </select>
           </div>
-        ))}
-        <div className="flex justify-end">
+
+          <div>
+            <label className="block text-sm font-medium text-primary mb-1">Custom Price Label</label>
+            <input name="product_custom_price_label" defaultValue={saved['product_custom_price_label'] || ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm" placeholder="Digunakan saat mode CUSTOM_TEXT dipilih" />
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-end">
           <button type="submit" className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white">Simpan Pengaturan</button>
         </div>
       </form>

@@ -18,16 +18,17 @@ interface ProductCardProps {
   className?: string;
   brandName?: string;
   brandSlug?: string;
+  priceLabel?: string;  // pre-resolved pricing label from server
 }
 
-export function ProductCard({ product, variant = 'grid', className = '', brandName, brandSlug }: ProductCardProps) {
+export function ProductCard({ product, variant = 'grid', className = '', brandName, brandSlug, priceLabel }: ProductCardProps) {
+  // Use DB-provided brand data when available; fall back to flattened fields
   const brand = (brandName && brandSlug)
     ? { name: brandName, slug: brandSlug, logo: '' }
     : (product as any).brand
     ? { name: (product as any).brand.name, slug: (product as any).brand.slug, logo: (product as any).brand.logo }
     : null;
 
-  // Use ProductBadge relations from DB if available, fall back to legacy badges JSON array
   const productBadges: string[] = (product as any).badgeRelations?.map((r: any) => r.badge?.variant || r.badge?.name) || (product.badges as string[]) || [];
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
   const discountPercent = hasDiscount
@@ -93,6 +94,7 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
         <Price
           amount={product.price}
           originalAmount={product.originalPrice}
+          overrideLabel={priceLabel}
           size="sm"
           showDiscountBadge={false}
         />

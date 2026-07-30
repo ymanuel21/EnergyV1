@@ -13,6 +13,8 @@ model Product {
   description        String
   price              Int
   originalPrice      Int?
+  priceDisplayMode   String?  // null=use global | SHOW_PRICE|CONTACT_FOR_PRICE|REQUEST_QUOTE|STARTING_FROM|CUSTOM_TEXT
+  customPriceLabel   String?  // label when mode=CUSTOM_TEXT
   stock              Int      @default(0)
   sku                String?
   model              String?

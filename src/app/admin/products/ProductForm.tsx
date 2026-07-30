@@ -210,9 +210,27 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
         <div className="grid gap-4 sm:grid-cols-2">
           <CurrencyInput name="price" label="Harga" required defaultValue={defaultValues?.price} />
           <CurrencyInput name="originalPrice" label="Harga Asli (coret)" defaultValue={defaultValues?.originalPrice ?? undefined} />
+          
+          <div className="sm:col-span-2 border-t border-border pt-4">
+            <label className="block text-sm font-medium text-primary mb-2">Price Display Mode</label>
+            <select name="priceDisplayMode" defaultValue={defaultValues?.priceDisplayMode || ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm">
+              <option value="">Use Global Setting</option>
+              <option value="SHOW_PRICE">Show Price</option>
+              <option value="STARTING_FROM">Starting From</option>
+              <option value="CONTACT_FOR_PRICE">Contact for Price</option>
+              <option value="REQUEST_QUOTE">Request Quote</option>
+              <option value="CUSTOM_TEXT">Custom Text</option>
+            </select>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-primary mb-1">Custom Price Label</label>
+            <input name="customPriceLabel" defaultValue={defaultValues?.customPriceLabel || ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm" placeholder="Digunakan saat mode Custom Text dipilih" />
+          </div>
+
           <div className="sm:col-span-2 p-4 rounded-lg bg-surface text-xs text-muted">
             <p className="font-medium text-primary mb-1">💡 Tip</p>
-            <p>Biarkan Harga Asli kosong jika tidak ada diskon. Isi untuk menampilkan harga coret di halaman produk.</p>
+            <p>Biarkan Harga Asli kosong jika tidak ada diskon. Isi untuk menampilkan harga coret di halaman produk. Price Display Mode mengontrol bagaimana harga ditampilkan ke publik — pilih "Use Global Setting" untuk mengikuti pengaturan default.</p>
           </div>
         </div>
       )}
