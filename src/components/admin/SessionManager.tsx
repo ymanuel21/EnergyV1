@@ -46,12 +46,26 @@ export function SessionManager() {
   }, [pathname, router]);
 
   const handleStayLoggedIn = useCallback(async () => {
+    // Reset client-side idle timer immediately (responsive UX)
     resetIdleTimer();
-    // Also refresh the server-side JWT
+
+    // Refresh server-side JWT
     try {
-      await fetch('/api/admin/session/refresh', { method: 'POST' });
-    } catch { /* silent failure — idle timer already reset */ }
-  }, [resetIdleTimer]);
+      const res = await fetch('/api/admin/session/refresh', { method: 'POST' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 401) {
+          // Session expired on server — redirect to login
+          const callbackUrl = encodeURIComponent(pathname);
+          router.push(`/admin/login?callbackUrl=${callbackUrl}&reason=expired`);
+        }
+        // Non-401: server error, continue with idle timer already reset
+      }
+    } catch {
+      // Network failure — idle timer already reset, JWT may still be valid
+      // No redirect: don't log out user due to transient network issue
+    }
+  }, [resetIdleTimer, pathname, router]);
 
   const handleLogout = useCallback(async () => {
     await signOut({ redirect: true, callbackUrl: '/admin/login' });
