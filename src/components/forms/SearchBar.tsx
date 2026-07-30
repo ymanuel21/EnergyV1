@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useProductAutocomplete } from '@/lib/hooks/useProductAutocomplete';
+import type { ProductSuggestion } from '@/lib/hooks/useProductAutocomplete';
 
 interface SearchBarProps {
   onFocusMobile?: () => void;
@@ -26,10 +27,10 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
     if (expanded && inputRef.current) inputRef.current.focus();
   }, [expanded, inputRef]);
 
-  const onSelect = (slug: string) => {
+  const onSelect = (suggestion: ProductSuggestion) => {
     setLocalOpen(false);
     onCloseMobile?.();
-    router.push(`/produk/${slug}`);
+    router.push(`/produk/${suggestion.slug}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -82,7 +83,7 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
           {suggestions.map((s, i) => (
             <button
               key={s.id}
-              onClick={() => onSelect(s.slug)}
+              onClick={() => handleSelect(s)}
               onMouseEnter={() => { /* handled by hook */ }}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-surface ${i === selected ? 'bg-surface' : ''}`}
             >
