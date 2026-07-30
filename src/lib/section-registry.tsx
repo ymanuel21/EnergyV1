@@ -1,5 +1,6 @@
 import type { FC } from 'react';
-import { TrustPanel } from '@components/home/TrustPanel';
+import { ProductShowcase } from '@components/home/ProductShowcase';
+import { ProductCardItem } from '@components/home/ProductCardItem';
 
 export interface SectionRendererProps {
   section: {
@@ -366,23 +367,14 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
         {section.subtitle && <h2 className="text-2xl font-light tracking-tight mb-8">{section.subtitle}</h2>}
 
         {adaptiveLayout ? (
-          /* Adaptive: products left, Trust Panel right */
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className={`grid gap-6 ${featured.length === 1 ? 'lg:w-[65%]' : 'lg:w-[60%]'} ${featured.length === 1 ? 'grid-cols-1' : 'grid-cols-1'}`}>
-              {featured.map((p: any) => (
-                <ProductCardItem key={p.id || p.slug} product={p} showPrice={showPrice} showBadge={showBadge} priceLabels={priceLabels} featuredCount={featured.length} />
-              ))}
-            </div>
-            <div className="lg:w-[35%] lg:min-w-[320px]">
-              <TrustPanel
-                title={String(section.settings.trustTitle || '') || undefined}
-                description={String(section.settings.trustDescription || '') || undefined}
-                benefits={(section.settings.trustBenefits as string[]) || undefined}
-                buttonLabel={String(section.settings.trustButtonLabel || '') || undefined}
-                buttonLink={String(section.settings.trustButtonLink || '') || undefined}
-              />
-            </div>
-          </div>
+          /* Product Showcase: 1p large card + panel, 2-3p rotate + panel */
+          <ProductShowcase
+            products={featured}
+            featuredCount={featured.length}
+            showPrice={showPrice}
+            showBadge={showBadge}
+            priceLabels={priceLabels}
+          />
         ) : (
           /* Standard grid layout (4+ products or auto-source) */
           <>
@@ -406,48 +398,6 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
         )}
       </div>
     </section>
-  );
-}
-
-/* Product card item — shared between adaptive and grid layouts */
-function ProductCardItem({ product: p, showPrice, showBadge, priceLabels, featuredCount }: any) {
-  const isSingle = featuredCount === 1;
-  return (
-    <Link href={`/produk/${p.slug}`}
-      className={`group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition ${isSingle ? 'flex flex-col sm:flex-row' : ''}`}>
-      <div className={`overflow-hidden bg-surface ${isSingle ? 'sm:w-[55%] aspect-square sm:aspect-auto sm:h-full' : 'aspect-square'}`}>
-        <SafeImage src={p.images?.[0] || ''} alt={p.name} width={400} height={400}
-          className="h-full w-full object-contain p-4 group-hover:scale-105 transition duration-500" />
-      </div>
-      <div className={`p-4 ${isSingle ? 'sm:w-[45%] flex flex-col justify-center' : ''}`}>
-        <h3 className={`font-medium text-primary line-clamp-2 ${isSingle ? 'text-lg' : 'text-sm'}`}>{p.name}</h3>
-        {showPrice && (
-          <div className="mt-2 flex items-baseline gap-2">
-            {priceLabels.get(p.id) ? (
-              <span className="text-sm text-muted">{priceLabels.get(p.id)}</span>
-            ) : (
-              <>
-                <span className={`font-semibold ${isSingle ? 'text-xl' : 'text-base'}`}>Rp {p.price?.toLocaleString('id-ID')}</span>
-                {p.originalPrice > p.price && (
-                  <span className="text-xs text-muted line-through">Rp {p.originalPrice?.toLocaleString('id-ID')}</span>
-                )}
-              </>
-            )}
-          </div>
-        )}
-        {showBadge && p.badgeRelations?.length > 0 && (
-          <div className="mt-2 flex gap-1 flex-wrap">
-            {p.badgeRelations.slice(0, 2).map((br: any) => (
-              <span key={br.badge?.slug || br.badge?.name}
-                className="rounded px-1.5 py-0.5 text-[10px] font-medium"
-                style={{ backgroundColor: (br.badge as any)?.bgColor || '#f0f0f0', color: (br.badge as any)?.color || '#333' }}>
-                {(br.badge as any)?.name as string}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-    </Link>
   );
 }
 
