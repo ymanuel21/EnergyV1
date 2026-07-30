@@ -75,7 +75,7 @@ export function ProductPickerField({ value, onChange, single = false }: ProductP
                   <button
                     key={slug}
                     type="button"
-                    onClick={() => add(slug)}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); add(slug); }}
                     disabled={selected}
                     className={`w-full px-3 py-2 text-left text-xs hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2.5 ${selected ? 'bg-surface/50' : ''}`}
                   >
