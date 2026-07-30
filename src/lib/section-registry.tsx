@@ -28,6 +28,8 @@ export type SectionField = {
   group?: 'content' | 'styling' | 'advanced';
   defaultValue?: any;
   placeholder?: string;
+  showWhen?: Record<string, string>;  // conditional visibility: { source: 'manual' }
+  min?: number;                         // min value for number fields
 }
 
 export interface SectionDefinition {
@@ -134,7 +136,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
         { value: 'bestseller', label: 'Best Sellers' }, { value: 'highest_rated', label: 'Highest Rated' },
         { value: 'new_arrival', label: 'New Arrivals' }, { value: 'manual', label: 'Manual Selection' },
       ], group: 'content' },
-      { key: 'productIds', label: 'Featured Products', type: 'product-picker', group: 'content' },
+      { key: 'productIds', label: 'Featured Products', type: 'product-picker', group: 'content', showWhen: { source: 'manual' } },
       { key: 'maxProducts', label: 'Max Products', type: 'number', group: 'content' },
       { key: 'layout', label: 'Layout', type: 'select', options: [{ value: 'grid', label: 'Grid' }, { value: 'carousel', label: 'Carousel' }], group: 'styling' },
       { key: 'showPrice', label: 'Show Price', type: 'toggle', group: 'styling' },

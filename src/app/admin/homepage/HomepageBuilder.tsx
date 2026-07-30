@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { ProductPickerField } from '@/components/admin/ProductPickerField';
 import { sectionRegistry } from '@/lib/section-registry';
 import { COLOR_MAP } from '@/lib/section-registry';
 import type { SectionField } from '@/lib/section-registry';
@@ -249,7 +250,13 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
 
             {/* Fields */}
             <div className="space-y-3">
-              {(fieldGroups[activeTab] || []).map(field => (
+              {(fieldGroups[activeTab] || []).filter(field => {
+                if (field.showWhen) {
+                  const [key, expected] = Object.entries(field.showWhen)[0];
+                  return String(settings[key]) === String(expected);
+                }
+                return true;
+              }).map(field => (
                 <div key={field.key}>
                   <label className="mb-1 block text-xs font-medium text-muted">{field.label}</label>
                   <EditorField
@@ -350,7 +357,9 @@ function EditorField({ field, value, onChange }: { field: SectionField; value: a
     case 'textarea':
       return <textarea value={String(value)} onChange={e => onChange(e.target.value)} rows={3} className={`${inputClass} resize-none`} placeholder={field.placeholder} />;
     case 'number':
-      return <input type="number" value={Number(value) || 0} onChange={e => onChange(parseInt(e.target.value) || 0)} className={`${inputClass} w-20`} />;
+      return <input type="number" value={Number(value) || 0} onChange={e => onChange(parseInt(e.target.value) || 0)} className={`${inputClass} w-20`} min={field.min ?? 0} />;
+    case 'product-picker':
+      return <ProductPickerField value={Array.isArray(value) ? value : []} onChange={onChange} />;
     case 'toggle':
       return (
         <button type="button" onClick={() => onChange(!value)}
