@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { getAdminPrisma } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
+import { StatusBadge } from '@/components/admin/StatusBadge';
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
@@ -34,7 +35,7 @@ export default async function ProjectsAdminPage() {
                 <td className="p-4"><Link href={`/admin/projects/${p.id}`} className="font-medium text-primary hover:text-primary-hover">{p.title || 'Untitled'}</Link></td>
                 <td className="p-4 text-muted capitalize">{p.category}</td>
                 <td className="p-4 text-muted">{p.year}</td>
-                <td className="p-4 text-muted">{p.status || 'draft'}</td>
+                <td className="p-4"><StatusBadge status={p.status || 'draft'} /></td>
                 <td className="p-4 text-right">
                   <Link href={`/admin/projects/${p.id}`} className="text-sm text-primary hover:underline mr-3">Edit</Link>
                 </td>
