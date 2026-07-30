@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
+import { getPrisma } from '@/lib/db';
 
 export async function GET(
   _request: Request,
@@ -10,12 +8,9 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
-    const prisma = new PrismaClient({ adapter });
+    const prisma = await getPrisma();
 
     const asset = await prisma.asset.findUnique({ where: { id } });
-    await prisma.$disconnect();
 
     if (!asset) {
       return new NextResponse('Not found', { status: 404 });

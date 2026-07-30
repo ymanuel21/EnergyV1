@@ -13,62 +13,55 @@ const { chromium } = require('playwright');
   await page.goto('https://energyv1.vercel.app/admin/homepage', { waitUntil: 'networkidle' });
   await page.waitForTimeout(5000);
 
-  // Open section
   await page.locator('text=Produk Unggulan').first().click();
   await page.waitForTimeout(2000);
 
-  // NOW use the unique placeholder
+  // UNIQUE placeholder + UNIQUE remove button
   var picker = page.locator('input[placeholder="Pilih produk unggulan..."]');
-  if (await picker.isVisible({ timeout: 3000 }).catch(function() { return false; })) {
-    console.log('1. ✅ Picker found');
+  if (await picker.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
+    console.log('1. ✅ Picker visible');
 
-    // Clear current if any (the chip has × button)
-    var xBtn = picker.locator('..').locator('..').locator('..').locator('button:has-text("×")');
-    // Simpler: find × in the parent chain
-    var allX = page.locator('button:has-text("×")');
-    if (await allX.first().isVisible({ timeout: 1000 }).catch(function() { return false; })) {
-      await allX.first().click();
+    // Clear with UNIQUE button
+    var hapus = page.locator('button:has-text("Hapus")');
+    var hapCount = await hapus.count().catch(function() { return 0; });
+    console.log('2. Hapus buttons:', hapCount);
+    
+    if (hapCount > 0) {
+      await hapus.first().click();
       await page.waitForTimeout(1000);
-      console.log('2. Cleared');
+      console.log('3. Cleared');
     }
 
-    // Re-get picker after clear
+    // Re-get picker
     picker = page.locator('input[placeholder="Pilih produk unggulan..."]');
-    await picker.click();
-    await picker.fill('river');
-    await page.waitForTimeout(2500);
+    if (await picker.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
+      await picker.click();
+      await picker.fill('river');
+      await page.waitForTimeout(2500);
 
-    // Select first result
-    var items = await page.evaluate(function() {
-      var btns = document.querySelectorAll('.absolute button.w-full');
-      return btns.length;
-    });
-    console.log('3. Dropdown:', items);
+      var count = await page.evaluate(function() {
+        return document.querySelectorAll('.absolute button.w-full').length;
+      });
+      console.log('4. Dropdown:', count);
 
-    if (items > 0) {
-      var preUrl = page.url();
-      await page.evaluate(function() { document.querySelectorAll('.absolute button.w-full')[0].click(); });
-      await page.waitForTimeout(2000);
-      console.log('4. Navigation:', page.url() === preUrl ? '✅ STAYED' : '❌ NAVIGATED');
+      if (count > 0) {
+        var preUrl = page.url();
+        await page.evaluate(function() { 
+          document.querySelectorAll('.absolute button.w-full')[0].click(); 
+        });
+        await page.waitForTimeout(2000);
+        console.log('5. Navigation:', page.url() === preUrl ? '✅ NO NAVIGATION' : '❌ NAVIGATED');
 
-      if (page.url() === preUrl) {
-        // Save Draft
-        var save = page.locator('button:has-text("Save Draft")').first();
-        if (await save.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
-          await save.click();
-          await page.waitForTimeout(3000);
-          console.log('5. Save Draft:', page.url().indexOf('/homepage') > 0 ? '✅' : '❌');
-        }
-
-        // Publish
-        var pub = page.locator('button:has-text("Publish")').first();
-        if (await pub.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
-          await pub.click();
-          await page.waitForTimeout(4000);
-          var still = page.url().indexOf('/homepage') > 0;
-          var pubStill = await page.locator('button:has-text("Publish")').count().catch(function() { return 0; });
-          console.log('6. Publish:', still ? '✅ NO CRASH' : '❌');
-          console.log('7. Btn reenabled:', pubStill > 0 ? '✅' : '⚠️');
+        if (page.url() === preUrl) {
+          var pub = page.locator('button:has-text("Publish")').first();
+          if (await pub.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
+            await pub.click();
+            await page.waitForTimeout(4000);
+            var still = page.url().indexOf('/homepage') > 0;
+            console.log('6. Publish:', still ? '✅' : '❌');
+            var btnCount = await page.locator('button:has-text("Publish")').count().catch(function() { return 0; });
+            console.log('7. Btn reenabled:', btnCount > 0 ? '✅' : '⚠️');
+          }
         }
       }
     }
@@ -77,5 +70,4 @@ const { chromium } = require('playwright');
   }
 
   await browser.close();
-  console.log('DONE');
 })();

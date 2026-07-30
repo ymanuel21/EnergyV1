@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
+import { getPrisma } from '@/lib/db';
 
 export async function POST(request: Request) {
   try {
@@ -19,9 +17,7 @@ export async function POST(request: Request) {
     const dataUrl = `data:${mimeType};base64,${base64}`;
 
     // Store in database
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
-    const prisma = new PrismaClient({ adapter });
+    const prisma = await getPrisma();
 
     const asset = await prisma.asset.create({
       data: {
@@ -30,8 +26,6 @@ export async function POST(request: Request) {
         size: file.size,
       },
     });
-
-    await prisma.$disconnect();
 
     // Return permanent URL
     const url = `/api/asset/${asset.id}`;

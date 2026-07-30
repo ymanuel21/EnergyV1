@@ -18,11 +18,8 @@ export default async function SettingsPage() {
 
   async function handleSave(data: FormData) {
     'use server';
-    const { PrismaClient } = await import('@prisma/client');
-    const { PrismaPg } = await import('@prisma/adapter-pg');
-    const { Pool } = await import('pg');
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
+    const { getAdminPrisma } = await import('../lib/admin-prisma');
+    const prisma = await getAdminPrisma();
     for (const [key, value] of data.entries()) {
       if (typeof value === 'string' && key !== '_action') {
         await prisma.siteSetting.upsert({ where: { key }, update: { value }, create: { key, value } });
