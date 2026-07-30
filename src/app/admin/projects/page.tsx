@@ -24,6 +24,7 @@ export default async function ProjectsAdminPage() {
             <tr className="border-b border-border">
               <th className="p-4 text-left font-medium text-primary">Title</th>
               <th className="p-4 text-left font-medium text-primary">Category</th>
+              <th className="p-4 text-left font-medium text-primary">Location</th>
               <th className="p-4 text-left font-medium text-primary">Year</th>
               <th className="p-4 text-left font-medium text-primary">Status</th>
               <th className="p-4 text-right font-medium text-primary">Actions</th>
@@ -34,6 +35,7 @@ export default async function ProjectsAdminPage() {
               <tr key={p.id} className="border-b border-border/50">
                 <td className="p-4"><Link href={`/admin/projects/${p.id}`} className="font-medium text-primary hover:text-primary-hover">{p.title || 'Untitled'}</Link></td>
                 <td className="p-4 text-muted capitalize">{p.category}</td>
+                <td className="p-4 text-muted">{p.location || '-'}</td>
                 <td className="p-4 text-muted">{p.year}</td>
                 <td className="p-4"><StatusBadge status={p.status || 'draft'} /></td>
                 <td className="p-4 text-right">
@@ -45,6 +47,22 @@ export default async function ProjectsAdminPage() {
         </table>
       </div>
       <p className="text-xs text-muted mt-2">{projects.length} projects</p>
+
+      <div className="mt-8 grid gap-8 lg:grid-cols-2">
+        {projects.filter((p: any) => p.status === 'published').slice(0, 6).map((p: any) => (
+          <div key={p.id} className="rounded-xl border border-border bg-card p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="font-semibold text-primary">{p.title}</h3>
+                <p className="text-xs text-muted mt-1">{p.category} · {p.location} · {p.year}</p>
+              </div>
+              <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${p.featured ? 'bg-amber-50 text-amber-700' : 'bg-surface text-muted'}`}>
+                {p.featured ? '⭐ Featured' : 'Standard'}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
