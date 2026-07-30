@@ -45,8 +45,12 @@ export function SessionManager() {
     }, IDLE_TIMEOUT);
   }, [pathname, router]);
 
-  const handleStayLoggedIn = useCallback(() => {
+  const handleStayLoggedIn = useCallback(async () => {
     resetIdleTimer();
+    // Also refresh the server-side JWT
+    try {
+      await fetch('/api/admin/session/refresh', { method: 'POST' });
+    } catch { /* silent failure — idle timer already reset */ }
   }, [resetIdleTimer]);
 
   const handleLogout = useCallback(async () => {
