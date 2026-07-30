@@ -13,9 +13,11 @@ const SYSTEM_TYPES = ['', 'On-Grid', 'Off-Grid', 'Hybrid'];
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
   const projects = await prisma.project.findMany({ orderBy: { createdAt: 'desc' } });
+  const debug = `[projects:${projects.length}]`;
 
   return (
     <div className="p-6">
+      <p className="text-xs text-muted mb-4">{debug}</p>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-primary">Projects</h1>
         <form action={createProject} className="inline">
