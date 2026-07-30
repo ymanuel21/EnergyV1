@@ -74,18 +74,7 @@ export async function publishSection(id: string) {
     data: { sectionId: id },
     schema: homepageSectionSchema,
     execute: async (tx: any) => {
-      // Clean up old archived versions — only keep one archived at a time
-      const existingArchived = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'archived' } });
-      if (existingArchived) {
-        await tx.revision.create({
-          data: { entityType: 'homepage_section', entityId: id,
-            data: { title: existingArchived.title, subtitle: existingArchived.subtitle, settings: existingArchived.settings, publishedAt: existingArchived.publishedAt },
-          },
-        });
-        await tx.homepageSectionVersion.delete({ where: { id: existingArchived.id } });
-      }
-
-      // Archive old published version
+      // Archive old published version — unlimited history now supported
       const oldPublished = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'published' } });
       if (oldPublished) {
         await tx.revision.create({

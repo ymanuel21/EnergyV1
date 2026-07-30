@@ -258,9 +258,16 @@ model HomepageSectionVersion {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([sectionId, status])  // 1 draft + 1 published per section, ∞ archived
+  @@index([sectionId])
   @@map("homepage_section_versions")
 }
+
+// Note: uniqueness for draft and published is enforced via PostgreSQL
+// partial unique indexes (see prisma/migrations/partial-unique-homepage-sections.sql):
+//   CREATE UNIQUE INDEX ... WHERE status = 'draft';
+//   CREATE UNIQUE INDEX ... WHERE status = 'published';
+// Archived versions have no constraint — unlimited history.
+
 
 model LandingPage {
   id          String   @id @default(cuid())
