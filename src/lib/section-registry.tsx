@@ -32,6 +32,7 @@ export type SectionField = {
   placeholder?: string;
   showWhen?: Record<string, string>;  // conditional visibility: { source: 'manual' }
   min?: number;                         // min value for number fields
+  single?: boolean;                     // single-select mode for product-picker
 }
 
 export interface SectionDefinition {
@@ -128,7 +129,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     label: 'Featured Products',
     icon: '⭐',
     defaultSettings: {
-      source: 'manual', maxProducts: 4, layout: 'showcase',
+      source: 'manual', maxProducts: 1, layout: 'showcase',
       showPrice: true, showBadge: true,
       showDescription: true, showSpecifications: true, showShipping: true,
       buttonLabel: 'Lihat Semua', buttonLink: '/produk',
@@ -140,8 +141,8 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
         { value: 'bestseller', label: 'Best Sellers' }, { value: 'highest_rated', label: 'Highest Rated' },
         { value: 'new_arrival', label: 'New Arrivals' },
       ], group: 'content' },
-      { key: 'productIds', label: 'Featured Products', type: 'product-picker', group: 'content', showWhen: { source: 'manual' } },
-      { key: 'maxProducts', label: 'Max Products', type: 'number', group: 'content', min: 1, defaultValue: 4 },
+      { key: 'productIds', label: 'Featured Product', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, single: true },
+      { key: 'maxProducts', label: 'Max Products to Show', type: 'number', group: 'content', min: 1, defaultValue: 1 },
       { key: 'showPrice', label: 'Show Price', type: 'toggle', group: 'styling' },
       { key: 'showBadge', label: 'Show Badge', type: 'toggle', group: 'styling' },
       { key: 'showDescription', label: 'Description Tab', type: 'toggle', group: 'styling' },
