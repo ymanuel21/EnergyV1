@@ -369,7 +369,6 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
         {useShowcase ? (
           <ProductShowcase
             products={featured}
-            featuredCount={featured.length}
             showPrice={showPrice}
             showBadge={showBadge}
             priceLabels={priceLabels}
