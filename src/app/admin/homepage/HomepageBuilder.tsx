@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { sectionRegistry } from '@/lib/section-registry';
 import { COLOR_MAP } from '@/lib/section-registry';
+import { ProductPickerField } from '@/components/admin/ProductPickerField';
 import type { SectionField } from '@/lib/section-registry';
 import { Button } from '@ui/Button';
 
@@ -411,6 +412,12 @@ function EditorField({ field, value, onChange }: { field: SectionField; value: a
           <input type="text" value={String(value)} onChange={e => onChange(e.target.value)} className={`${inputClass} w-24 font-mono`} />
         </div>
       );
+    case 'product-picker':
+      return <ProductPickerField
+        value={Array.isArray(value) ? value : []}
+        onChange={(ids) => onChange(ids)}
+        single={(field as any).single}
+      />;
     default:
       return <input type="text" value={String(value)} onChange={e => onChange(e.target.value)} className={inputClass} placeholder={field.placeholder} />;
   }
