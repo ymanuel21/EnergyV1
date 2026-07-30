@@ -147,17 +147,6 @@ export default async function ProductDetail({ params }: Props) {
               <ClipboardCopyButton />
             </div>
 
-            {/* Affiliate */}
-            {product.affiliateCommission && (
-              <div className="rounded-lg bg-gray-50 p-3 text-sm">
-                Komisi Afiliator {product.affiliateCommission.percent}% (Rp{' '}
-                {product.affiliateCommission.amount?.toLocaleString('id-ID') || '0'}) —{' '}
-                <Link href="/afiliasi" className="font-medium text-gray-900 hover:underline">
-                  Gabung gratis
-                </Link>
-              </div>
-            )}
-
             <PriceBlock
               price={product.price}
               originalPrice={product.originalPrice}

@@ -67,10 +67,6 @@ export interface Product {
   specifications: Specification[];
   documents?: ProductDocument[];
   badges: ProductBadgeVariant[];
-  affiliateCommission: {
-    percent: number;
-    amount: number;
-  };
   rating: number;
   reviewCount: number;
   questions: ProductQuestion[];

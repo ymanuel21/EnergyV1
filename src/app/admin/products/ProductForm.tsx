@@ -73,7 +73,6 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
       condition: fd.get('condition') || 'new',
       warranty: fd.get('warranty') || '1 Tahun',
       weight: parseFloat(fd.get('weight') as string) || 0,
-      affiliateCommission: { percent: 2.5, amount: Math.round((parseInt(fd.get('price') as string) || 0) * 0.025) },
       isActive: true,
     };
   }, [categories, gallery, specs, downloads, relations]);

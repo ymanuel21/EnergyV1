@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 // Reserved slugs that are actual app routes
 const RESERVED = ['produk', 'kategori', 'brand', 'perbandingan', 'wishlist', 'keranjang',
-  'checkout', 'cari', 'artikel', 'faq', 'promo', 'afiliasi', 'permintaan-penawaran',
+  'checkout', 'cari', 'artikel', 'faq', 'promo', 'permintaan-penawaran',
   'barang-clearance', 'produk-baru', 'halaman', 'admin', 'api', '_next'];
 
 type Props = { params: Promise<{ slug: string }> };

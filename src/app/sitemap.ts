@@ -18,7 +18,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/barang-clearance`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/artikel`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${baseUrl}/faq`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${baseUrl}/afiliasi`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/permintaan-penawaran`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
   ];
 

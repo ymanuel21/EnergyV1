@@ -8,7 +8,6 @@ export const NAV_LINKS = {
     { label: 'Semua Produk', href: '/produk' },
     { label: 'Promo', href: '/promo' },
     { label: 'Clearance', href: '/barang-clearance' },
-    { label: 'Afiliator', href: '/afiliasi' },
     { label: 'Permintaan Penawaran', href: '/permintaan-penawaran' },
     { label: 'Bantuan', href: '/faq' },
   ],
@@ -33,7 +32,6 @@ export const NAV_LINKS = {
     ],
     layanan: [
       { label: 'Permintaan Penawaran', href: '/permintaan-penawaran' },
-      { label: 'Program Afiliasi', href: '/afiliasi' },
       { label: 'Panduan Energi Surya', href: '/artikel' },
       { label: 'FAQ', href: '/faq' },
       { label: 'Tentang Kami', href: '/halaman/tentang-kami' },

@@ -8,13 +8,6 @@ export const banners: Banner[] = [
     width: 1280,
     height: 427,
   },
-  {
-    src: '/images/banners/hero-afiliasi.svg',
-    alt: 'Dapatkan Komisi — Program Afiliasi EBTPlaza',
-    href: '/afiliasi',
-    width: 1280,
-    height: 427,
-  },
 ];
 
 export const needCards: NeedCard[] = [

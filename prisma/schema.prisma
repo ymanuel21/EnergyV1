@@ -25,7 +25,6 @@ model Product {
   badges             Json     @default("[]")
   specifications     Json     @default("[]")
   downloads          Json     @default("[]")
-  affiliateCommission Json?
   isActive           Boolean  @default(true) @map("is_active")
   status             String   @default("published") // draft | published | archived
   draftData          Json     @default("{}")        // unpublished changes stored here
