@@ -63,27 +63,26 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
           </>
         )}
 
-        {/* Product card: image left, info right */}
-        <div className="rounded-2xl border border-border bg-card overflow-hidden hover:shadow-md transition">
-          <div className="flex flex-col sm:flex-row">
-            {/* Image */}
-            <div className="sm:w-[45%] aspect-square sm:aspect-auto sm:min-h-[400px] bg-surface flex items-center justify-center p-6">
-              <SafeImage src={active?.images?.[0] || ''} alt={active?.name || ''} width={400} height={400}
-                className="max-h-full max-w-full object-contain" />
+        {/* Shared spotlight card — image left, info right, equal height */}
+        <div className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow">
+          <div className="flex flex-col sm:flex-row sm:items-stretch">
+            {/* Image — 48%, auto-stretches to match info height */}
+            <div className="sm:w-[48%] aspect-square sm:aspect-auto bg-surface flex items-center justify-center p-6 sm:p-8">
+              <SafeImage src={active?.images?.[0] || ''} alt={active?.name || ''} width={500} height={500}
+                className="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-500" />
             </div>
 
-            {/* Info — ProductInfoPanel (tabbed) */}
-            <div className="sm:w-[55%] p-4 sm:p-6 flex flex-col">
-              <h3 className="text-xl font-semibold text-primary mb-1">{active?.name}</h3>
+            {/* Info — 52%, flex column, CTA at bottom */}
+            <div className="sm:w-[52%] p-5 sm:p-6 flex flex-col min-h-0">
+              <h3 className="text-lg sm:text-xl font-semibold text-primary mb-1">{active?.name}</h3>
 
-              {/* Price */}
               {showPrice && (
-                <div className="flex items-baseline gap-2 mb-3">
+                <div className="flex items-baseline gap-2 mb-2">
                   {label ? (
                     <span className="text-base text-muted font-medium">{label}</span>
                   ) : (
                     <>
-                      <span className="text-2xl font-bold text-primary">Rp {active?.price?.toLocaleString('id-ID')}</span>
+                      <span className="text-xl sm:text-2xl font-bold text-primary">Rp {active?.price?.toLocaleString('id-ID')}</span>
                       {active?.originalPrice > active?.price && (
                         <span className="text-sm text-muted line-through">Rp {active?.originalPrice?.toLocaleString('id-ID')}</span>
                       )}
@@ -92,17 +91,17 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
                 </div>
               )}
 
-              {/* Short description */}
               {(active?.shortDescription || active?.description) && (
-                <p className="text-sm text-muted line-clamp-2 leading-relaxed mb-4">
+                <p className="text-sm text-muted line-clamp-2 leading-relaxed mb-3">
                   {active.shortDescription || active.description}
                 </p>
               )}
 
-              {/* Tabs: Description | Spesifikasi | Pengiriman & Garansi */}
-              <ProductInfoPanel product={active} />
+              {/* Tabbed info — flex-grow pushes CTA to bottom */}
+              <div className="flex-1 min-h-0">
+                <ProductInfoPanel product={active} />
+              </div>
 
-              {/* CTA */}
               <Link
                 href={`/produk/${active?.slug || ''}`}
                 className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors w-fit"
