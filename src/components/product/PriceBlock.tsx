@@ -5,10 +5,18 @@ interface PriceBlockProps {
   price: number;
   originalPrice?: number;
   stock: number;
+  overrideLabel?: string;
   className?: string;
 }
 
-export function PriceBlock({ price, originalPrice, stock, className }: PriceBlockProps) {
+export function PriceBlock({ price, originalPrice, stock, overrideLabel, className }: PriceBlockProps) {
+  if (overrideLabel) {
+    return (
+      <div className={cn('flex items-baseline gap-2', className)}>
+        <span className="text-lg text-muted">{overrideLabel}</span>
+      </div>
+    );
+  }
   const hasDiscount = originalPrice && originalPrice > price;
   const discount = hasDiscount ? discountPercent(originalPrice!, price) : 0;
 

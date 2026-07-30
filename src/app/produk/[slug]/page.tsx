@@ -14,6 +14,7 @@ import { CompareToggleButton } from '@components/product/CompareToggleButton';
 import { ProductCarouselSection } from '@components/home/ProductCarouselSection';
 import { BrandLogo } from '@ui/BrandLogo';
 import { getProductBySlug, getAllProducts } from '@/lib/api/products';
+import { resolvePriceDisplay } from '@/lib/services/product-pricing';
 import { getAllCategories } from '@/lib/api/categories';
 import { getBrandById } from '@/lib/api/brands';
 import { SITE } from '@lib/constants';
@@ -37,10 +38,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return { title: 'Produk Tidak Ditemukan' };
 
   const brand = await getBrandById(product.brandId);
+  const priceDisplay = await resolvePriceDisplay(product as any);
 
   return {
     title: product.name,
-    description: `${brand?.name ?? ''} ${product.name} — Rp ${product.price.toLocaleString('id-ID')}. Beli sekarang di ${SITE.name}.`,
+    description: priceDisplay.mode === 'SHOW_PRICE'
+      ? `${brand?.name ?? ''} ${product.name} — Rp ${product.price.toLocaleString('id-ID')}. Beli sekarang di ${SITE.name}.`
+      : `${brand?.name ?? ''} ${product.name} — ${priceDisplay.label}. ${SITE.name}.`,
     alternates: { canonical: `/produk/${slug}` },
     openGraph: {
       title: product.name,
@@ -66,6 +70,7 @@ export default async function ProductDetail({ params }: Props) {
   const subcategory = product.subcategoryId
     ? allCategories.flatMap((c: any) => c.children ?? []).find((c: any) => c.id === product.subcategoryId)
     : undefined;
+  const priceDisplay = await resolvePriceDisplay(product as any);
 
   // Related products from the new ProductRelation system
   const relationIds = (product as any).relations?.map((r: any) => r.relatedProductId) || [];
@@ -157,8 +162,16 @@ export default async function ProductDetail({ params }: Props) {
               price={product.price}
               originalPrice={product.originalPrice}
               stock={product.stock}
+              overrideLabel={priceDisplay.mode !== 'SHOW_PRICE' ? priceDisplay.label : undefined}
             />
 
+            {priceDisplay.cta && (
+              <a href={priceDisplay.ctaHref || '/permintaan-penawaran'} className="inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover transition">
+                {priceDisplay.cta}
+              </a>
+            )}
+
+            {priceDisplay.showPrice && (
             <AddToCartButton
               productId={product.id}
               slug={product.slug}
@@ -169,6 +182,7 @@ export default async function ProductDetail({ params }: Props) {
               maxQuantity={product.stock}
               weight={product.weight}
             />
+            )}
 
             <Link
               href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(
