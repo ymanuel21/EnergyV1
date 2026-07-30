@@ -12,26 +12,26 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarProps) {
+  const router = useRouter();
+
+  const onSelect = (suggestion: ProductSuggestion) => {
+    onCloseMobile?.();
+    router.push(`/produk/${suggestion.slug}`);
+  };
+
   const {
     query, suggestions, open, selected,
     inputRef, listRef,
     handleChange, handleSelect, handleKeyDown, highlight, formatPrice, clear,
-  } = useProductAutocomplete();
+  } = useProductAutocomplete({ onSelect });
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const [localOpen, setLocalOpen] = useState(false);
   const displayOpen = expanded ? open : (localOpen || open);
 
   useEffect(() => {
     if (expanded && inputRef.current) inputRef.current.focus();
   }, [expanded, inputRef]);
-
-  const onSelect = (suggestion: ProductSuggestion) => {
-    setLocalOpen(false);
-    onCloseMobile?.();
-    router.push(`/produk/${suggestion.slug}`);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
