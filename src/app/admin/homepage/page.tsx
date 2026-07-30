@@ -8,16 +8,6 @@ import { sectionRegistry } from '@/lib/section-registry';
 export default async function HomepageBuilderPage() {
   const sections = await getHomepageSections();
 
-  // Build draft-vs-published diff for each section
-  const sectionDiff = new Map<string, { draft?: any; published?: any }>();
-  for (const s of sections) {
-    const versions = [...(s.versions || [])];
-    sectionDiff.set(s.id, {
-      draft: versions.find((v: any) => v.status === 'draft'),
-      published: versions.find((v: any) => v.status === 'published'),
-    });
-  }
-
   async function handleUpsert(data: FormData) {
     'use server';
     const id = data.get('id') as string;
@@ -42,26 +32,42 @@ export default async function HomepageBuilderPage() {
     revalidatePath('/');
   }
 
-  async function handleMove(id: string, direction: 'up' | 'down') {
+  async function handleMoveUp(id: string) {
     'use server';
-    await moveSection(id, direction);
+    await moveSection(id, 'up');
     revalidatePath('/admin/homepage');
-    revalidatePath('/');
+  }
+
+  async function handleMoveDown(id: string) {
+    'use server';
+    await moveSection(id, 'down');
+    revalidatePath('/admin/homepage');
+  }
+
+  async function handleAdd(type: string) {
+    'use server';
+    const def = sectionRegistry[type];
+    const defaultSettings = def?.defaultSettings || {};
+    await upsertSection({
+      type,
+      enabled: false,
+      status: 'draft',
+      sortOrder: sections.length,
+      title: def?.label || type,
+      subtitle: '',
+      settings: defaultSettings as Record<string, unknown>,
+    });
+    revalidatePath('/admin/homepage');
   }
 
   return (
     <HomepageBuilder
       initialSections={sections}
-      sectionDiff={sectionDiff}
       onSave={handleUpsert}
       onDelete={handleDelete}
-      onMoveUp={(id: string) => handleMove(id, 'up')}
-      onMoveDown={(id: string) => handleMove(id, 'down')}
-      onAdd={async (type: string) => {
-        'use server';
-        await upsertSection({ type, enabled: true, status: 'draft', sortOrder: sections.length, title: sectionRegistry[type]?.label || '', subtitle: '', settings: sectionRegistry[type]?.defaultSettings || {} });
-        revalidatePath('/admin/homepage');
-      }}
+      onMoveUp={handleMoveUp}
+      onMoveDown={handleMoveDown}
+      onAdd={handleAdd}
     />
   );
 }

@@ -1,23 +1,23 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useToast } from '../AdminToastProvider';
-import { ProductPickerField } from '@/components/admin/ProductPickerField';
 import { sectionRegistry } from '@/lib/section-registry';
 import { COLOR_MAP } from '@/lib/section-registry';
 import type { SectionField } from '@/lib/section-registry';
 import { Button } from '@ui/Button';
 
-export function HomepageBuilder({ initialSections, sectionDiff, onSave, onDelete, onMoveUp, onMoveDown, onAdd }: {
+/* ══════════════════════════════════════════════════════════════
+   HomepageBuilder — Visual CMS with live preview
+   ══════════════════════════════════════════════════════════════ */
+
+export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, onMoveDown, onAdd }: {
   initialSections: any[];
-  sectionDiff: Map<string, { draft?: any; published?: any }>;
   onSave: (data: FormData) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
   onMoveUp: (id: string) => Promise<void>;
   onMoveDown: (id: string) => Promise<void>;
   onAdd: (type: string) => Promise<void>;
 }) {
-  const { showToast } = useToast();
   const [sections, setSections] = useState(initialSections);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
@@ -91,34 +91,20 @@ export function HomepageBuilder({ initialSections, sectionDiff, onSave, onDelete
     else if (action === 'draft') { fd.set('status', 'draft'); fd.set('enabled', String(editing.enabled)); }
     else { fd.set('status', 'draft'); fd.set('enabled', 'false'); }
 
-    try {
-      // Show loading overlay on preview
-      setPreviewLoading(true);
-      await onSave(fd);
-      setDirty(false);
-      setSaved(true);
+    // Show loading overlay on preview
+    setPreviewLoading(true);
+    await onSave(fd);
+    setDirty(false);
+    setSaving(false);
+    setSaved(true);
 
-      // Toast feedback
-      if (action === 'publish') {
-        showToast('Homepage published successfully', 'success');
-      } else {
-        showToast('Draft saved — changes are NOT live on the public homepage', 'success');
-      }
+    // Clear saved badge after 2s
+    if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+    savedTimerRef.current = setTimeout(() => setSaved(false), 2000);
 
-      // Clear saved badge after 2s
-      if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
-      savedTimerRef.current = setTimeout(() => setSaved(false), 2000);
-
-      // Force iframe to reload — hide loading when iframe fires onLoad
-      setPreviewKey(k => k + 1);
-      // Fallback: clear loading after 5s if onLoad doesn't fire
-      setTimeout(() => setPreviewLoading(false), 5000);
-    } catch {
-      setSaved(false);
-      setPreviewLoading(false);
-    } finally {
-      setSaving(false);
-    }
+    // Force iframe to reload, hide loading when done
+    setPreviewKey(k => k + 1);
+    setTimeout(() => setPreviewLoading(false), 800);
   }, [editing, title, subtitle, settings, sections, onSave]);
 
   // Toggle enabled
@@ -219,7 +205,7 @@ export function HomepageBuilder({ initialSections, sectionDiff, onSave, onDelete
               </div>
             </div>
           )}
-          <iframe key={previewKey} src="/?preview=true" className="w-full h-full border-0" title="Preview" onLoad={() => setPreviewLoading(false)} />
+          <iframe key={previewKey} src="/?preview=true" className="w-full h-full border-0" title="Preview" />
         </div>
       </main>
 
@@ -244,33 +230,6 @@ export function HomepageBuilder({ initialSections, sectionDiff, onSave, onDelete
                 placeholder="Subtitle" className="w-full rounded border border-border px-3 py-1.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
             </div>
 
-            {/* Draft vs Published warning */}
-            {editingId && (() => {
-              const diff = sectionDiff.get(editingId);
-              const hasDraft = diff?.draft && diff.draft.settings && Object.keys(diff.draft.settings).length > 0;
-              const hasPublished = diff?.published && diff.published.settings && Object.keys(diff.published.settings).length > 0;
-              const draftEmpty = !hasDraft || Object.keys(diff!.draft.settings).length === 0;
-              const pubEmpty = !hasPublished || Object.keys(diff!.published.settings).length === 0;
-              const settingsDiffer = hasDraft && hasPublished && JSON.stringify(diff!.draft.settings) !== JSON.stringify(diff!.published.settings);
-              if (hasDraft && (pubEmpty || settingsDiffer)) {
-                return (
-                  <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
-                    <p className="text-xs font-medium text-amber-800">⚠ Unpublished changes</p>
-                    <p className="text-[10px] text-amber-600 mt-0.5">The public homepage shows the last published version. Click Publish to apply these changes.</p>
-                  </div>
-                );
-              }
-              if (hasPublished && !settingsDiffer) {
-                return (
-                  <div className="mb-3 rounded-lg border border-green-200 bg-green-50 p-3">
-                    <p className="text-xs font-medium text-green-700">✓ Published</p>
-                    <p className="text-[10px] text-green-600 mt-0.5">This section is live on the public homepage.</p>
-                  </div>
-                );
-              }
-              return null;
-            })()}
-
             {/* Tabs */}
             <div className="flex gap-0 border-b border-border mb-3">
               {Object.keys(fieldGroups).filter(k => fieldGroups[k].length > 0).map(tab => (
@@ -283,13 +242,7 @@ export function HomepageBuilder({ initialSections, sectionDiff, onSave, onDelete
 
             {/* Fields */}
             <div className="space-y-3">
-              {(fieldGroups[activeTab] || []).filter(field => {
-                if (field.showWhen) {
-                  const [key, expected] = Object.entries(field.showWhen)[0];
-                  return String(settings[key]) === String(expected);
-                }
-                return true;
-              }).map(field => (
+              {(fieldGroups[activeTab] || []).map(field => (
                 <div key={field.key}>
                   <label className="mb-1 block text-xs font-medium text-muted">{field.label}</label>
                   <EditorField
@@ -390,9 +343,7 @@ function EditorField({ field, value, onChange }: { field: SectionField; value: a
     case 'textarea':
       return <textarea value={String(value)} onChange={e => onChange(e.target.value)} rows={3} className={`${inputClass} resize-none`} placeholder={field.placeholder} />;
     case 'number':
-      return <input type="number" value={Number(value) || 0} onChange={e => onChange(parseInt(e.target.value) || 0)} className={`${inputClass} w-20`} min={field.min ?? 0} />;
-    case 'product-picker':
-      return <ProductPickerField value={Array.isArray(value) ? value : []} onChange={onChange} />;
+      return <input type="number" value={Number(value) || 0} onChange={e => onChange(parseInt(e.target.value) || 0)} className={`${inputClass} w-20`} />;
     case 'toggle':
       return (
         <button type="button" onClick={() => onChange(!value)}
