@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { SafeImage } from '@ui/SafeImage';
-import { TrustPanel } from './TrustPanel';
-import { ProductInfoPanel } from './ProductInfoPanel';
 import Link from 'next/link';
 
 interface ProductShowcaseProps {
@@ -23,7 +21,6 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
   const active = products[activeIndex] || products[0];
   const isSingle = count === 1;
   const label = priceLabels.get(active?.id);
-  const showRealPrice = !label;
 
   const next = useCallback(() => setActiveIndex(prev => (prev + 1) % count), [count]);
   const prev = useCallback(() => setActiveIndex(prev => (prev - 1 + count) % count), [count]);
@@ -44,91 +41,78 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
 
   return (
     <div
-      className="flex flex-col lg:flex-row gap-8"
+      className="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* LEFT — Product Showcase (≈70%) */}
-      <div className="flex-1 lg:w-[70%] relative">
-        {!isSingle && (
-          <>
-            <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -ml-4 h-10 w-10 rounded-full bg-white shadow-lg border border-border flex items-center justify-center hover:bg-surface transition">
-              <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
-            </button>
-            <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 -mr-4 h-10 w-10 rounded-full bg-white shadow-lg border border-border flex items-center justify-center hover:bg-surface transition">
-              <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-            </button>
-          </>
-        )}
+      {!isSingle && (
+        <>
+          <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -ml-4 h-10 w-10 rounded-full bg-white shadow-lg border border-border flex items-center justify-center hover:bg-surface transition">
+            <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+          </button>
+          <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 -mr-4 h-10 w-10 rounded-full bg-white shadow-lg border border-border flex items-center justify-center hover:bg-surface transition">
+            <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+          </button>
+        </>
+      )}
 
-        {/* Shared spotlight card — image left, info right, equal height */}
-        <div className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow">
-          <div className="flex flex-col sm:flex-row sm:items-stretch">
-            {/* Image — stretches to match right panel via items-stretch */}
-            <div className="sm:w-[48%] bg-surface flex items-center justify-center p-6 sm:p-8 aspect-square sm:aspect-auto sm:h-auto">
-              <SafeImage src={active?.images?.[0] || ''} alt={active?.name || ''} width={500} height={500}
-                className="h-full w-full object-contain group-hover:scale-105 transition duration-500 sm:max-h-full" />
-            </div>
+      {/* Full-width product card */}
+      <Link href={`/produk/${active?.slug || ''}`}
+        className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow block">
+        <div className="flex flex-col sm:flex-row sm:items-stretch">
+          {/* Image */}
+          <div className={`bg-surface flex items-center justify-center p-6 sm:p-8 ${isSingle ? 'sm:w-[48%]' : 'sm:w-[42%]'} aspect-square sm:aspect-auto sm:h-auto`}>
+            <SafeImage src={active?.images?.[0] || ''} alt={active?.name || ''} width={500} height={500}
+              className="h-full w-full object-contain group-hover:scale-105 transition duration-500 sm:max-h-full" />
+          </div>
 
-            {/* Info — 52%, flex column, CTA at bottom */}
-            <div className="sm:w-[52%] p-5 sm:p-6 flex flex-col min-h-0">
-              <h3 className="text-lg sm:text-xl font-semibold text-primary mb-1">{active?.name}</h3>
+          {/* Info */}
+          <div className={`${isSingle ? 'sm:w-[52%]' : 'sm:w-[58%]'} p-5 sm:p-6 flex flex-col justify-center`}>
+            <h3 className={`font-semibold text-primary ${isSingle ? 'text-lg sm:text-xl' : 'text-base sm:text-lg'}`}>{active?.name}</h3>
 
-              {showPrice && (
-                <div className="flex items-baseline gap-2 mb-2">
-                  {label ? (
-                    <span className="text-base text-muted font-medium">{label}</span>
-                  ) : (
-                    <>
-                      <span className="text-xl sm:text-2xl font-bold text-primary">Rp {active?.price?.toLocaleString('id-ID')}</span>
-                      {active?.originalPrice > active?.price && (
-                        <span className="text-sm text-muted line-through">Rp {active?.originalPrice?.toLocaleString('id-ID')}</span>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-
-              {(active?.shortDescription || active?.description) && (
-                <p className="text-sm text-muted line-clamp-2 leading-relaxed mb-3">
-                  {active.shortDescription || active.description}
-                </p>
-              )}
-
-              {/* Tabbed info — flex-grow pushes CTA to bottom */}
-              <div className="flex-1 min-h-0">
-                <ProductInfoPanel product={active} />
+            {showPrice && (
+              <div className="flex items-baseline gap-2 mt-2">
+                {label ? (
+                  <span className="text-base text-muted font-medium">{label}</span>
+                ) : (
+                  <>
+                    <span className={`font-bold text-primary ${isSingle ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl'}`}>
+                      Rp {active?.price?.toLocaleString('id-ID')}
+                    </span>
+                    {active?.originalPrice > active?.price && (
+                      <span className="text-sm text-muted line-through">Rp {active?.originalPrice?.toLocaleString('id-ID')}</span>
+                    )}
+                  </>
+                )}
               </div>
+            )}
 
-              <Link
-                href={`/produk/${active?.slug || ''}`}
-                className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors w-fit"
-              >
-                Lihat Detail Produk
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </Link>
-            </div>
+            {(active?.shortDescription || active?.description) && (
+              <p className="text-sm text-muted line-clamp-3 leading-relaxed mt-2">
+                {active.shortDescription || active.description}
+              </p>
+            )}
+
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline w-fit">
+              Lihat Detail
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </span>
           </div>
         </div>
+      </Link>
 
-        {!isSingle && (
-          <div className="flex justify-center gap-1.5 mt-4">
-            {products.map((_, i) => (
-              <button key={i} onClick={() => setActiveIndex(i)}
-                className={`h-2 rounded-full transition-all ${i === activeIndex ? 'w-6 bg-primary' : 'w-2 bg-border hover:bg-muted'}`} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* RIGHT — Trust Panel LOCKED (≈30%) */}
-      <div className="lg:w-[30%] lg:min-w-[300px]">
-        <TrustPanel />
-      </div>
+      {!isSingle && (
+        <div className="flex justify-center gap-1.5 mt-4">
+          {products.map((_, i) => (
+            <button key={i} onClick={() => setActiveIndex(i)}
+              className={`h-2 rounded-full transition-all ${i === activeIndex ? 'w-6 bg-primary' : 'w-2 bg-border hover:bg-muted'}`} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
