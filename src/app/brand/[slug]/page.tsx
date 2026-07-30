@@ -3,6 +3,7 @@ import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { ProductCard } from '@components/product/ProductCard';
 import { getAllProducts } from '@/lib/api/products';
+import { resolvePriceLabels } from '@/lib/services/resolve-price-labels';
 import { getBrandBySlug, getAllBrands } from '@lib/api/brands';
 import { filterByBrand } from '@/lib/api/filters';
 import { notFound } from 'next/navigation';
@@ -35,6 +36,7 @@ export default async function BrandProductPage({ params }: Props) {
   if (!brand) notFound();
 
   const brandProducts = filterByBrand(await getAllProducts(), brand.id);
+  const priceLabels = await resolvePriceLabels(brandProducts);
 
   return (
     <Container className="py-6">
@@ -56,7 +58,7 @@ export default async function BrandProductPage({ params }: Props) {
       {brandProducts.length > 0 ? (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {brandProducts.map((product) => (
-            <ProductCard key={product.id} product={product} variant="grid" />
+            <ProductCard key={product.id} product={product} variant="grid" priceLabel={priceLabels.get(product.id)} />
           ))}
         </div>
       ) : (

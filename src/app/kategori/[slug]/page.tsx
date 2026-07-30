@@ -6,6 +6,7 @@ import { SortDropdown } from '@components/category/SortDropdown';
 import { Pagination } from '@ui/Pagination';
 import { filterByCategory, sortProducts, paginate } from '@/lib/api/filters';
 import { getAllProducts } from '@/lib/api/products';
+import { resolvePriceLabels } from '@/lib/services/resolve-price-labels';
 import { getCategoryBySlug } from '@/lib/api/categories';
 import { validateSort, validatePage } from '@/lib/utils/validation';
 import { notFound } from 'next/navigation';
@@ -51,6 +52,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const filtered = filterByCategory(await getAllProducts(), category.id, category);
   const sorted = sortProducts(filtered, sort);
   const { items: paginated, totalPages } = paginate(sorted, page);
+  const priceLabels = await resolvePriceLabels(paginated);
 
   return (
     <Container className="py-6">
@@ -69,7 +71,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         <>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {paginated.map((product) => (
-              <ProductCard key={product.id} product={product} variant="grid" />
+              <ProductCard key={product.id} product={product} variant="grid" priceLabel={priceLabels.get(product.id)} />
             ))}
           </div>
 

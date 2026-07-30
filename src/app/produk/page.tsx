@@ -6,6 +6,7 @@ import { ProductCard } from '@components/product/ProductCard';
 import { SortDropdown } from '@components/category/SortDropdown';
 import { Pagination } from '@ui/Pagination';
 import { getProductsPaginated } from '@/lib/api/products';
+import { resolvePriceDisplay } from '@/lib/services/product-pricing';
 import { validateSort, validatePage } from '@/lib/utils/validation';
 
 export const metadata: Metadata = {
@@ -41,6 +42,13 @@ export default async function AllProductsPage({ searchParams }: Props) {
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
+  // Resolve price display for all products
+  const priceLabels = new Map<string, string | undefined>();
+  await Promise.all(products.map(async (p) => {
+    const pd = await resolvePriceDisplay(p as any);
+    if (pd.mode !== 'SHOW_PRICE') priceLabels.set(p.id, pd.label);
+  }));
+
   return (
     <Container className="py-6">
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Semua Produk' }]} />
@@ -57,7 +65,7 @@ export default async function AllProductsPage({ searchParams }: Props) {
 
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} priceLabel={priceLabels.get(product.id)} />
         ))}
       </div>
 

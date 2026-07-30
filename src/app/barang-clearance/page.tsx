@@ -6,6 +6,7 @@ import { SortDropdown } from '@components/category/SortDropdown';
 import { Pagination } from '@ui/Pagination';
 import { filterByBadge, sortProducts, paginate } from '@/lib/api/filters';
 import { getAllProducts } from '@/lib/api/products';
+import { resolvePriceLabels } from '@/lib/services/resolve-price-labels';
 import { validateSort, validatePage } from '@/lib/utils/validation';
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default async function ClearancePage({ searchParams }: Props) {
   const filtered = filterByBadge(await getAllProducts(), 'clearance');
   const sorted = sortProducts(filtered, sort);
   const { items: paginated, totalPages } = paginate(sorted, page);
+  const priceLabels = await resolvePriceLabels(paginated);
 
   return (
     <Container className="py-6">
@@ -43,7 +45,7 @@ export default async function ClearancePage({ searchParams }: Props) {
           </div>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {paginated.map((product) => (
-              <ProductCard key={product.id} product={product} variant="grid" />
+              <ProductCard key={product.id} product={product} variant="grid" priceLabel={priceLabels.get(product.id)} />
             ))}
           </div>
           <Pagination

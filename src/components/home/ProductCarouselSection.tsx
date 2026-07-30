@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ProductCard } from '@components/product/ProductCard';
+import { resolvePriceLabels } from '@/lib/services/resolve-price-labels';
 import type { Product } from '@/types/product';
 
 interface ProductCarouselSectionProps {
@@ -10,7 +11,7 @@ interface ProductCarouselSectionProps {
   titleIcon?: React.ReactNode;
 }
 
-export function ProductCarouselSection({
+export async function ProductCarouselSection({
   title,
   description,
   linkTo,
@@ -18,6 +19,8 @@ export function ProductCarouselSection({
   titleIcon,
 }: ProductCarouselSectionProps) {
   if (!products.length) return null;
+  
+  const priceLabels = await resolvePriceLabels(products as any[]);
 
   return (
     <section className="py-16">
@@ -39,7 +42,7 @@ export function ProductCarouselSection({
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} variant="grid" />
+            <ProductCard key={product.id} product={product} variant="grid" priceLabel={priceLabels.get(product.id)} />
           ))}
         </div>
 

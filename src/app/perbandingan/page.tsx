@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
+import { PriceDisplay } from '@components/product/PriceDisplay';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { Button } from '@ui/Button';
@@ -118,7 +119,7 @@ export default function ComparePage() {
                       <button onClick={() => removeItem(p.id)} className="absolute right-1 top-1 rounded-full bg-white/90 p-1 text-muted hover:text-red-500 transition-colors shadow-sm" aria-label={`Hapus ${p.name}`}>✕</button>
                     </div>
                     <Link href={`/produk/${p.slug}`} className="block text-sm font-medium text-primary line-clamp-2">{p.name}</Link>
-                    <p className="text-lg font-bold text-primary">Rp {p.price.toLocaleString('id-ID')}</p>
+                    <PriceDisplay product={p} showDiscount />
                     <Button variant="primary" size="sm" className="w-full" onClick={() => addToCart(p.id)}>+ Keranjang</Button>
                   </div>
                 </th>
