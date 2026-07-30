@@ -91,20 +91,27 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
     else if (action === 'draft') { fd.set('status', 'draft'); fd.set('enabled', String(editing.enabled)); }
     else { fd.set('status', 'draft'); fd.set('enabled', 'false'); }
 
-    // Show loading overlay on preview
-    setPreviewLoading(true);
-    await onSave(fd);
-    setDirty(false);
-    setSaving(false);
-    setSaved(true);
+    try {
+      // Show loading overlay on preview
+      setPreviewLoading(true);
+      await onSave(fd);
+      setDirty(false);
+      setSaved(true);
 
-    // Clear saved badge after 2s
-    if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
-    savedTimerRef.current = setTimeout(() => setSaved(false), 2000);
+      // Clear saved badge after 2s
+      if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+      savedTimerRef.current = setTimeout(() => setSaved(false), 2000);
 
-    // Force iframe to reload, hide loading when done
-    setPreviewKey(k => k + 1);
-    setTimeout(() => setPreviewLoading(false), 800);
+      // Force iframe to reload — hide loading when iframe fires onLoad
+      setPreviewKey(k => k + 1);
+      // Fallback: clear loading after 5s if onLoad doesn't fire
+      setTimeout(() => setPreviewLoading(false), 5000);
+    } catch {
+      setSaved(false);
+      setPreviewLoading(false);
+    } finally {
+      setSaving(false);
+    }
   }, [editing, title, subtitle, settings, sections, onSave]);
 
   // Toggle enabled
@@ -205,7 +212,7 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
               </div>
             </div>
           )}
-          <iframe key={previewKey} src="/?preview=true" className="w-full h-full border-0" title="Preview" />
+          <iframe key={previewKey} src="/?preview=true" className="w-full h-full border-0" title="Preview" onLoad={() => setPreviewLoading(false)} />
         </div>
       </main>
 
