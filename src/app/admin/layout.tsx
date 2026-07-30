@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AdminToastProvider } from './AdminToastProvider';
+import { SessionManager } from '@/components/admin/SessionManager';
 import { moduleRegistry, MODULE_GROUPS } from '@/lib/module-registry';
 
 const sidebarModules = Object.values(moduleRegistry).filter(m => m.id !== 'dashboard');
@@ -21,6 +22,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <AdminToastProvider>
+      <SessionManager />
       <div className="flex min-h-screen bg-surface">
         <aside className="w-56 shrink-0 border-r border-border bg-card p-4 flex flex-col">
           <Link href="/admin" className="mb-6 block text-lg font-bold text-primary">
