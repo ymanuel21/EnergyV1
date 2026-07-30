@@ -1,17 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { TrustPanel } from './TrustPanel';
-import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
-
-// Highlight keys for key specs display
-const KEY_SPECS = ['Daya Output', 'Power Output', 'Watt Peak', 'Rating', 'Tipe', 'Type', 'Kapasitas', 'Capacity', 'Tegangan', 'Voltage'];
-
-function getHighlights(specs?: Array<{ key: string; value: string }>) {
-  if (!specs?.length) return [];
-  return specs.filter(s => KEY_SPECS.some(k => s.key.toLowerCase().includes(k.toLowerCase()))).slice(0, 3);
-}
+import { TrustPanel } from './TrustPanel';
+import { ProductInfoPanel } from './ProductInfoPanel';
+import Link from 'next/link';
 
 interface ProductShowcaseProps {
   products: any[];
@@ -27,30 +20,25 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
   const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const count = products.length;
-  const p = products[activeIndex] || products[0];
-  const highlights = getHighlights(p?.specifications);
+  const active = products[activeIndex] || products[0];
   const isSingle = count === 1;
+  const label = priceLabels.get(active?.id);
+  const showRealPrice = !label;
 
   const next = useCallback(() => setActiveIndex(prev => (prev + 1) % count), [count]);
   const prev = useCallback(() => setActiveIndex(prev => (prev - 1 + count) % count), [count]);
 
-  // Auto-rotation (2+ products, not hovered)
   useEffect(() => {
-    if (count < 2 || isHovered) {
-      if (autoTimer.current) clearInterval(autoTimer.current);
-      return;
-    }
+    if (count < 2 || isHovered) { if (autoTimer.current) clearInterval(autoTimer.current); return; }
     autoTimer.current = setInterval(next, 8000);
     return () => { if (autoTimer.current) clearInterval(autoTimer.current); };
   }, [count, isHovered, next]);
 
-  // Swipe
   const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.touches[0].clientX);
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStart === null) return;
     const diff = e.changedTouches[0].clientX - touchStart;
-    if (diff > 50) prev();
-    else if (diff < -50) next();
+    if (diff > 50) prev(); else if (diff < -50) next();
     setTouchStart(null);
   };
 
@@ -62,67 +50,71 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* LEFT — Product Card */}
-      <div className={`relative ${isSingle ? 'lg:w-[60%]' : 'lg:w-[55%]'}`}>
+      {/* LEFT — Product Showcase (≈70%) */}
+      <div className="flex-1 lg:w-[70%] relative">
         {!isSingle && (
           <>
-            <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -ml-3 h-10 w-10 rounded-full bg-white shadow-lg border border-border flex items-center justify-center hover:bg-surface transition">
-              ◀
+            <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -ml-4 h-10 w-10 rounded-full bg-white shadow-lg border border-border flex items-center justify-center hover:bg-surface transition">
+              <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
             </button>
-            <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 -mr-3 h-10 w-10 rounded-full bg-white shadow-lg border border-border flex items-center justify-center hover:bg-surface transition">
-              ▶
+            <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 -mr-4 h-10 w-10 rounded-full bg-white shadow-lg border border-border flex items-center justify-center hover:bg-surface transition">
+              <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
             </button>
           </>
         )}
 
-        <Link href={`/produk/${p?.slug || ''}`}
-          className={`group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition block ${isSingle ? 'flex flex-col sm:flex-row' : ''}`}>
-          <div className={`overflow-hidden bg-surface ${isSingle ? 'sm:w-[50%] aspect-square sm:aspect-auto sm:h-full' : 'aspect-square'}`}>
-            <SafeImage src={p?.images?.[0] || ''} alt={p?.name || ''} width={400} height={400}
-              className="h-full w-full object-contain p-4 group-hover:scale-105 transition duration-500" />
+        {/* Product card: image left, info right */}
+        <div className="rounded-2xl border border-border bg-card overflow-hidden hover:shadow-md transition">
+          <div className="flex flex-col sm:flex-row">
+            {/* Image */}
+            <div className="sm:w-[45%] aspect-square sm:aspect-auto sm:min-h-[400px] bg-surface flex items-center justify-center p-6">
+              <SafeImage src={active?.images?.[0] || ''} alt={active?.name || ''} width={400} height={400}
+                className="max-h-full max-w-full object-contain" />
+            </div>
+
+            {/* Info — ProductInfoPanel (tabbed) */}
+            <div className="sm:w-[55%] p-4 sm:p-6 flex flex-col">
+              <h3 className="text-xl font-semibold text-primary mb-1">{active?.name}</h3>
+
+              {/* Price */}
+              {showPrice && (
+                <div className="flex items-baseline gap-2 mb-3">
+                  {label ? (
+                    <span className="text-base text-muted font-medium">{label}</span>
+                  ) : (
+                    <>
+                      <span className="text-2xl font-bold text-primary">Rp {active?.price?.toLocaleString('id-ID')}</span>
+                      {active?.originalPrice > active?.price && (
+                        <span className="text-sm text-muted line-through">Rp {active?.originalPrice?.toLocaleString('id-ID')}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* Short description */}
+              {(active?.shortDescription || active?.description) && (
+                <p className="text-sm text-muted line-clamp-2 leading-relaxed mb-4">
+                  {active.shortDescription || active.description}
+                </p>
+              )}
+
+              {/* Tabs: Description | Spesifikasi | Pengiriman & Garansi */}
+              <ProductInfoPanel product={active} />
+
+              {/* CTA */}
+              <Link
+                href={`/produk/${active?.slug || ''}`}
+                className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors w-fit"
+              >
+                Lihat Detail Produk
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </Link>
+            </div>
           </div>
-
-          <div className={`p-5 ${isSingle ? 'sm:w-[50%] flex flex-col justify-center' : ''}`}>
-            <h3 className={`font-medium text-primary line-clamp-2 ${isSingle ? 'text-lg' : 'text-base'}`}>{p?.name}</h3>
-
-            {(p?.shortDescription || p?.description) && (
-              <p className="mt-2 text-xs text-muted line-clamp-3 leading-relaxed">
-                {p.shortDescription || p.description}
-              </p>
-            )}
-
-            {showPrice && (
-              <div className="mt-3 flex items-baseline gap-2">
-                {priceLabels.get(p?.id) ? (
-                  <span className="text-sm text-muted font-medium">{priceLabels.get(p.id)}</span>
-                ) : (
-                  <>
-                    <span className={`font-semibold ${isSingle ? 'text-xl' : 'text-lg'}`}>Rp {p?.price?.toLocaleString('id-ID')}</span>
-                    {p?.originalPrice > p?.price && (
-                      <span className="text-xs text-muted line-through">Rp {p.originalPrice?.toLocaleString('id-ID')}</span>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-
-            {highlights.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {highlights.map((h: any, i: number) => (
-                  <span key={i} className="inline-flex items-center gap-1 rounded-full bg-surface px-2 py-0.5 text-[10px] text-muted">
-                    <span className="font-medium text-primary">{h.value}</span>
-                    <span className="opacity-60">{h.key}</span>
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <span className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline w-fit">
-              Lihat Detail
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-            </span>
-          </div>
-        </Link>
+        </div>
 
         {!isSingle && (
           <div className="flex justify-center gap-1.5 mt-4">
@@ -134,8 +126,8 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
         )}
       </div>
 
-      {/* RIGHT — Trust Panel (LOCKED — do not change) */}
-      <div className={`${isSingle ? 'lg:w-[40%]' : 'lg:w-[45%]'} lg:min-w-[320px]`}>
+      {/* RIGHT — Trust Panel LOCKED (≈30%) */}
+      <div className="lg:w-[30%] lg:min-w-[300px]">
         <TrustPanel />
       </div>
     </div>
