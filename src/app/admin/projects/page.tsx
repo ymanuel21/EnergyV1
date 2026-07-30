@@ -3,21 +3,14 @@ export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { getAdminPrisma } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
-import { projectRepo } from '@/lib/repositories/project';
-import { archiveEntity, publishEntity } from '@/lib/services/content-versioning';
 import { StatusBadge } from '@/components/admin/StatusBadge';
-
-const CATEGORIES = ['residential', 'commercial', 'industrial', 'government', 'school'];
-const SYSTEM_TYPES = ['', 'On-Grid', 'Off-Grid', 'Hybrid'];
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
   const projects = await prisma.project.findMany({ orderBy: { createdAt: 'desc' } });
-  const debug = `[projects:${projects.length}]`;
 
   return (
     <div className="p-6">
-      <p className="text-xs text-muted mb-4">{debug}</p>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-primary">Projects</h1>
         <form action={createProject} className="inline">
@@ -47,7 +40,7 @@ export default async function ProjectsAdminPage() {
                 <td className="p-4 hidden md:table-cell text-muted">{p.location || '-'}</td>
                 <td className="p-4 hidden md:table-cell text-muted">{p.year}</td>
                 <td className="p-4">
-                  <StatusBadge status={p.status || (p.published ? 'published' : 'draft')} />
+                  <StatusBadge status={p.status || 'draft'} />
                 </td>
                 <td className="p-4 text-right">
                   <Link href={`/admin/projects/${p.id}`} className="text-sm text-primary hover:underline mr-3">Edit</Link>
@@ -64,7 +57,7 @@ export default async function ProjectsAdminPage() {
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
-        {projects.filter((p: any) => p.status === 'published' || p.published).slice(0, 6).map((p: any) => (
+        {projects.filter((p: any) => p.status === 'published').slice(0, 6).map((p: any) => (
           <div key={p.id} className="rounded-xl border border-border bg-card p-6">
             <div className="flex items-start justify-between">
               <div>
@@ -86,7 +79,7 @@ export default async function ProjectsAdminPage() {
   );
 }
 
-// Server actions
+// Server actions — module scope
 async function createProject() {
   'use server';
   const prisma = await getAdminPrisma();
@@ -97,6 +90,7 @@ async function createProject() {
 
 async function deleteProject(formData: FormData) {
   'use server';
+  const { projectRepo } = await import('@/lib/repositories/project');
   const id = formData.get('id') as string;
   if (!id) return;
   await projectRepo.delete(id);
@@ -105,8 +99,8 @@ async function deleteProject(formData: FormData) {
 
 async function toggleFeatured(formData: FormData) {
   'use server';
-  const id = formData.get('id') as string;
   const prisma = await getAdminPrisma();
+  const id = formData.get('id') as string;
   const p = await prisma.project.findUnique({ where: { id } });
   if (!p) return;
   await prisma.project.update({ where: { id }, data: { featured: !p.featured } });
@@ -115,8 +109,9 @@ async function toggleFeatured(formData: FormData) {
 
 async function toggleStatus(formData: FormData) {
   'use server';
-  const id = formData.get('id') as string;
+  const { archiveEntity, publishEntity } = await import('@/lib/services/content-versioning');
   const prisma = await getAdminPrisma();
+  const id = formData.get('id') as string;
   const p = await prisma.project.findUnique({ where: { id } });
   if (!p) return;
   if (p.status === 'published') {
