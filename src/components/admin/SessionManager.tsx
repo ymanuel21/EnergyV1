@@ -68,6 +68,8 @@ export function SessionManager() {
   }, [resetIdleTimer, pathname, router]);
 
   const handleLogout = useCallback(async () => {
+    // Broadcast to other tabs that we're logging out
+    try { new BroadcastChannel('admin-session').postMessage('logout'); } catch {}
     await signOut({ redirect: true, callbackUrl: '/admin/login' });
   }, []);
 
@@ -81,6 +83,18 @@ export function SessionManager() {
       window.addEventListener(event, onActivity, { passive: true });
     });
 
+    // Listen for cross-tab logout
+    let channel: BroadcastChannel | null = null;
+    try {
+      channel = new BroadcastChannel('admin-session');
+      channel.onmessage = (e) => {
+        if (e.data === 'logout') {
+          const callbackUrl = encodeURIComponent(pathname);
+          router.push(`/admin/login?callbackUrl=${callbackUrl}&reason=logout`);
+        }
+      };
+    } catch { /* BroadcastChannel not supported */ }
+
     return () => {
       activityEvents.forEach(event => {
         window.removeEventListener(event, onActivity);
@@ -88,8 +102,9 @@ export function SessionManager() {
       if (idleTimer.current) clearTimeout(idleTimer.current);
       if (warningTimer.current) clearTimeout(warningTimer.current);
       if (countdownTimer.current) clearInterval(countdownTimer.current);
+      if (channel) channel.close();
     };
-  }, [resetIdleTimer]);
+  }, [resetIdleTimer, pathname, router]);
 
   return (
     <>
