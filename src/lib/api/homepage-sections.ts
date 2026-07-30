@@ -13,17 +13,20 @@ export async function getPublicHomepageSections(pageId?: string, preview?: boole
       orderBy: { sortOrder: 'asc' },
       include: {
         versions: {
-          where: { status: preview ? 'draft' : 'published' },
+          where: preview
+            ? { status: { in: ['draft', 'published'] } }
+            : { status: 'published' },
           orderBy: { createdAt: 'desc' },
-          take: 1,
+          take: preview ? 2 : 1,
         },
       },
     });
 
-    // Flatten: merge version data into section. Draft first, fallback to published.
+    // Flatten: prefer draft in preview mode, else published
     return sections.map(s => {
-      const draft = s.versions.find((v: any) => v.status === 'draft') || s.versions[0];
-      const v = (preview ? draft : s.versions.find((v: any) => v.status === 'published')) || s.versions[0] || draft;
+      const draft = s.versions.find((v: any) => v.status === 'draft');
+      const pub = s.versions.find((v: any) => v.status === 'published');
+      const v = preview ? (draft || pub) : pub;
       return { ...s, title: v?.title || null, subtitle: v?.subtitle || null, settings: v?.settings || {}, status: v?.status || 'draft', versions: undefined };
     });
   } catch {}
