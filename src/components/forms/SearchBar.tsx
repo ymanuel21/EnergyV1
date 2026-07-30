@@ -83,6 +83,7 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
           {suggestions.map((s, i) => (
             <button
               key={s.id}
+              type="button"
               onClick={() => handleSelect(s)}
               onMouseEnter={() => { /* handled by hook */ }}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-surface ${i === selected ? 'bg-surface' : ''}`}
