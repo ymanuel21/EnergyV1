@@ -1,24 +1,23 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useToast } from '../AdminToastProvider';
 import { ProductPickerField } from '@/components/admin/ProductPickerField';
 import { sectionRegistry } from '@/lib/section-registry';
 import { COLOR_MAP } from '@/lib/section-registry';
 import type { SectionField } from '@/lib/section-registry';
 import { Button } from '@ui/Button';
 
-/* ══════════════════════════════════════════════════════════════
-   HomepageBuilder — Visual CMS with live preview
-   ══════════════════════════════════════════════════════════════ */
-
-export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, onMoveDown, onAdd }: {
+export function HomepageBuilder({ initialSections, sectionDiff, onSave, onDelete, onMoveUp, onMoveDown, onAdd }: {
   initialSections: any[];
+  sectionDiff: Map<string, { draft?: any; published?: any }>;
   onSave: (data: FormData) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
   onMoveUp: (id: string) => Promise<void>;
   onMoveDown: (id: string) => Promise<void>;
   onAdd: (type: string) => Promise<void>;
 }) {
+  const { showToast } = useToast();
   const [sections, setSections] = useState(initialSections);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
@@ -98,6 +97,13 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
       await onSave(fd);
       setDirty(false);
       setSaved(true);
+
+      // Toast feedback
+      if (action === 'publish') {
+        showToast('Homepage published successfully', 'success');
+      } else {
+        showToast('Draft saved — changes are NOT live on the public homepage', 'success');
+      }
 
       // Clear saved badge after 2s
       if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
@@ -237,6 +243,33 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
               <input value={subtitle} onChange={e => { setSubtitle(e.target.value); setDirty(true); }}
                 placeholder="Subtitle" className="w-full rounded border border-border px-3 py-1.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
             </div>
+
+            {/* Draft vs Published warning */}
+            {editingId && (() => {
+              const diff = sectionDiff.get(editingId);
+              const hasDraft = diff?.draft && diff.draft.settings && Object.keys(diff.draft.settings).length > 0;
+              const hasPublished = diff?.published && diff.published.settings && Object.keys(diff.published.settings).length > 0;
+              const draftEmpty = !hasDraft || Object.keys(diff!.draft.settings).length === 0;
+              const pubEmpty = !hasPublished || Object.keys(diff!.published.settings).length === 0;
+              const settingsDiffer = hasDraft && hasPublished && JSON.stringify(diff!.draft.settings) !== JSON.stringify(diff!.published.settings);
+              if (hasDraft && (pubEmpty || settingsDiffer)) {
+                return (
+                  <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                    <p className="text-xs font-medium text-amber-800">⚠ Unpublished changes</p>
+                    <p className="text-[10px] text-amber-600 mt-0.5">The public homepage shows the last published version. Click Publish to apply these changes.</p>
+                  </div>
+                );
+              }
+              if (hasPublished && !settingsDiffer) {
+                return (
+                  <div className="mb-3 rounded-lg border border-green-200 bg-green-50 p-3">
+                    <p className="text-xs font-medium text-green-700">✓ Published</p>
+                    <p className="text-[10px] text-green-600 mt-0.5">This section is live on the public homepage.</p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
 
             {/* Tabs */}
             <div className="flex gap-0 border-b border-border mb-3">
