@@ -12,6 +12,9 @@ interface ProductInfoPanelProps {
     weight?: number;
     condition?: string;
   };
+  showDescription?: boolean;
+  showSpecifications?: boolean;
+  showShipping?: boolean;
 }
 
 const KEY_SPECS = ['Daya Output', 'Power Output', 'Watt Peak', 'Rating', 'Tipe', 'Type', 'Kapasitas', 'Capacity', 'Tegangan', 'Voltage'];
@@ -21,12 +24,20 @@ function getHighlightedSpecs(specifications?: Array<{ key: string; value: string
   return specifications.filter(s => KEY_SPECS.some(k => s.key.toLowerCase().includes(k.toLowerCase())));
 }
 
-const tabs = ['Description', 'Spesifikasi', 'Pengiriman & Garansi'] as const;
-type Tab = (typeof tabs)[number];
+const allTabs = ['Description', 'Spesifikasi', 'Pengiriman & Garansi'] as const;
+type Tab = (typeof allTabs)[number];
 
-export function ProductInfoPanel({ product }: ProductInfoPanelProps) {
-  const [activeTab, setActiveTab] = useState<Tab>('Description');
+export function ProductInfoPanel({ product, showDescription = true, showSpecifications = true, showShipping = true }: ProductInfoPanelProps) {
+  const tabs = allTabs.filter(t => {
+    if (t === 'Description') return showDescription;
+    if (t === 'Spesifikasi') return showSpecifications;
+    if (t === 'Pengiriman & Garansi') return showShipping;
+    return true;
+  });
+  const [activeTab, setActiveTab] = useState<Tab>(tabs[0] || 'Description');
   const keySpecs = getHighlightedSpecs(product.specifications);
+
+  if (tabs.length === 0) return null;
 
   return (
     <div className="flex-1 flex flex-col">

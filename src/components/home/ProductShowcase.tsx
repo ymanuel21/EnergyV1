@@ -12,7 +12,15 @@ interface ProductShowcaseProps {
   priceLabels: Map<string, string | undefined>;
 }
 
-export function ProductShowcase({ products, showPrice, showBadge, priceLabels }: ProductShowcaseProps) {
+export function ProductShowcase({ products, showPrice, showBadge, showDescription, showSpecifications, showShipping, priceLabels }: {
+  products: any[];
+  showPrice: boolean;
+  showBadge: boolean;
+  showDescription?: boolean;
+  showSpecifications?: boolean;
+  showShipping?: boolean;
+  priceLabels: Map<string, string | undefined>;
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -100,7 +108,12 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
 
             {/* Tabs: Description | Spesifikasi | Pengiriman & Garansi */}
             <div className="flex-1 min-h-0 mt-3">
-              <ProductInfoPanel product={active} />
+              <ProductInfoPanel
+                product={active}
+                showDescription={showDescription}
+                showSpecifications={showSpecifications}
+                showShipping={showShipping}
+              />
             </div>
 
             <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline w-fit">

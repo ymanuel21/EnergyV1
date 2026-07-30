@@ -128,23 +128,25 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     label: 'Featured Products',
     icon: '⭐',
     defaultSettings: {
-      source: 'featured', maxProducts: 4, layout: 'grid',
-      showPrice: true, showBadge: true, showCompare: true, showWishlist: true,
+      source: 'manual', maxProducts: 4, layout: 'showcase',
+      showPrice: true, showBadge: true,
+      showDescription: true, showSpecifications: true, showShipping: true,
       buttonLabel: 'Lihat Semua', buttonLink: '/produk',
     },
     fields: [
       { key: 'source', label: 'Content Source', type: 'select', options: [
+        { value: 'manual', label: 'Manual Selection' },
         { value: 'latest', label: 'Latest Products' }, { value: 'featured', label: 'Featured' },
         { value: 'bestseller', label: 'Best Sellers' }, { value: 'highest_rated', label: 'Highest Rated' },
-        { value: 'new_arrival', label: 'New Arrivals' }, { value: 'manual', label: 'Manual Selection' },
+        { value: 'new_arrival', label: 'New Arrivals' },
       ], group: 'content' },
       { key: 'productIds', label: 'Featured Products', type: 'product-picker', group: 'content', showWhen: { source: 'manual' } },
       { key: 'maxProducts', label: 'Max Products', type: 'number', group: 'content', min: 1, defaultValue: 4 },
-      { key: 'layout', label: 'Layout', type: 'select', options: [{ value: 'grid', label: 'Grid' }, { value: 'carousel', label: 'Carousel' }], group: 'styling' },
       { key: 'showPrice', label: 'Show Price', type: 'toggle', group: 'styling' },
       { key: 'showBadge', label: 'Show Badge', type: 'toggle', group: 'styling' },
-      { key: 'showCompare', label: 'Show Compare', type: 'toggle', group: 'styling' },
-      { key: 'showWishlist', label: 'Show Wishlist', type: 'toggle', group: 'styling' },
+      { key: 'showDescription', label: 'Description Tab', type: 'toggle', group: 'styling' },
+      { key: 'showSpecifications', label: 'Specifications Tab', type: 'toggle', group: 'styling' },
+      { key: 'showShipping', label: 'Shipping & Warranty Tab', type: 'toggle', group: 'styling' },
       { key: 'buttonLabel', label: 'Button Label', type: 'text', group: 'content' },
       { key: 'buttonLink', label: 'Button Link', type: 'text', group: 'content' },
       ...COMMON_ADVANCED,
@@ -354,6 +356,9 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
   const layout = section.settings.layout || 'grid';
   const showPrice = section.settings.showPrice !== false;
   const showBadge = section.settings.showBadge !== false;
+  const showDescription = section.settings.showDescription !== false;
+  const showSpecifications = section.settings.showSpecifications !== false;
+  const showShipping = section.settings.showShipping !== false;
 
   const isManualSelection = productIds.length > 0;
   const useShowcase = isManualSelection && featured.length > 0;
@@ -370,6 +375,9 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
             products={featured}
             showPrice={showPrice}
             showBadge={showBadge}
+            showDescription={showDescription}
+            showSpecifications={showSpecifications}
+            showShipping={showShipping}
             priceLabels={priceLabels}
           />
         ) : (
