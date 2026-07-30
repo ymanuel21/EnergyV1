@@ -1,4 +1,4 @@
-// Test actual Prisma publishSection
+// Test: does revision.create work outside transaction?
 import { getAdminPrisma } from '@/app/admin/lib/admin-prisma';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -6,68 +6,46 @@ dotenv.config();
 (async () => {
   const prisma = await getAdminPrisma();
   
-  // Find section
-  const section = await prisma.homepageSection.findFirst({ where: { type: 'featured-products', enabled: true } });
-  console.log('Section:', section?.id?.slice(-6));
-  
-  // Find draft
-  const draft = await prisma.homepageSectionVersion.findFirst({ where: { sectionId: section?.id, status: 'draft' } });
-  const pub = await prisma.homepageSectionVersion.findFirst({ where: { sectionId: section?.id, status: 'published' } });
-  console.log('Draft:', draft?.id?.slice(-6), draft?.title);
-  console.log('Published:', pub?.id?.slice(-6), pub?.title);
-
-  // Test: can we create a revision via Prisma?
   try {
+    // Simple create outside transaction
     const rev = await prisma.revision.create({
       data: {
-        entityType: 'homepage_section',
-        entityId: draft!.id,
-        data: { test: true },
-        userId: '',
-        userName: '',
+        entityType: 'test',
+        entityId: 'test-123',
+        data: { foo: 'bar' },
       },
     });
-    console.log('Revision created:', rev.id.slice(-6));
+    console.log('OK: revision created id=', rev.id.slice(-6));
     
-    // Delete test revision
+    // Cleanup
     await prisma.revision.delete({ where: { id: rev.id } });
-    console.log('Revision deleted');
+    console.log('OK: deleted');
   } catch (err: any) {
-    console.log('Revision create FAILED:', err.message);
+    console.log('FAIL:', err.message);
+    console.log('Code:', err.code);
+    if (err.meta) console.log('Meta:', JSON.stringify(err.meta));
   }
 
-  // Now run the full publish in a transaction
-  if (draft && pub) {
-    try {
-      await prisma.$transaction(async (tx: any) => {
-        // Archive old published
-        const rev = await tx.revision.create({
-          data: {
-            entityType: 'homepage_section',
-            entityId: pub.id,
-            data: { title: pub.title, subtitle: pub.subtitle, settings: pub.settings, publishedAt: pub.publishedAt },
-            userId: '',
-            userName: '',
-          },
-        });
-        console.log('  [tx] revision:', rev.id.slice(-6));
-        
-        await tx.homepageSectionVersion.update({ where: { id: pub.id }, data: { status: 'archived' } });
-        console.log('  [tx] archived old published');
-        
-        await tx.homepageSectionVersion.update({ where: { id: draft.id }, data: { status: 'published', publishedAt: new Date() } });
-        console.log('  [tx] promoted draft');
+  // Now test inside transaction
+  try {
+    await prisma.$transaction(async (tx: any) => {
+      const rev = await tx.revision.create({
+        data: {
+          entityType: 'test2',
+          entityId: 'test-456',
+          data: { bar: 'baz' },
+        },
       });
-      console.log('TRANSACTION COMMITTED');
-    } catch (err: any) {
-      console.log('TRANSACTION FAILED:', err.message);
-    }
+      console.log('TX OK: revision created id=', rev.id.slice(-6));
+    });
+    console.log('TX COMMITTED');
+    // Cleanup
+    await prisma.revision.deleteMany({ where: { entityType: 'test2' } });
+  } catch (err: any) {
+    console.log('TX FAIL:', err.message);
+    console.log('TX Code:', err.code);
+    if (err.meta) console.log('TX Meta:', JSON.stringify(err.meta));
   }
-
-  // Verify
-  const after = await prisma.homepageSectionVersion.findMany({ where: { sectionId: section?.id }, orderBy: { createdAt: 'asc' } });
-  console.log('\nAFTER:');
-  after.forEach(v => console.log(`  ${v.status}: ${v.id.slice(-6)} "${v.title}"`));
 
   await prisma.$disconnect();
 })();

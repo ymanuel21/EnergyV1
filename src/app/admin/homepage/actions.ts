@@ -77,16 +77,11 @@ export async function publishSection(id: string) {
       // Archive old published version — unlimited history now supported
       const oldPublished = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'published' } });
       if (oldPublished) {
-        // Save revision — non-blocking, failure should not prevent publish
-        try {
-          await tx.revision.create({
-            data: { entityType: 'homepage_section', entityId: id,
-              data: { title: oldPublished.title, subtitle: oldPublished.subtitle, settings: oldPublished.settings, publishedAt: oldPublished.publishedAt },
-            },
-          });
-        } catch (e: any) {
-          console.error('Revision save failed (non-blocking):', e.message);
-        }
+        await tx.revision.create({
+          data: { entityType: 'homepage_section', entityId: id,
+            data: { title: oldPublished.title, subtitle: oldPublished.subtitle, settings: oldPublished.settings, publishedAt: oldPublished.publishedAt },
+          },
+        });
         await tx.homepageSectionVersion.update({ where: { id: oldPublished.id }, data: { status: 'archived' } });
       }
 

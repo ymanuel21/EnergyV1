@@ -95,19 +95,22 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
 
     // Show loading overlay on preview
     setPreviewLoading(true);
+    let failed = false;
     try {
       await onSave(fd);
+      setSaved(true);
+      setLastAction(action);
     } catch (err: any) {
       console.error('Save failed:', err.message);
+      failed = true;
     }
     setDirty(false);
     setSaving(false);
-    setSaved(true);
-    setLastAction(action);
-
-    // Clear saved badge after 2s
-    if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
-    savedTimerRef.current = setTimeout(() => setSaved(false), 2000);
+    if (!failed) {
+      // Clear saved badge after 2s
+      if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
+      savedTimerRef.current = setTimeout(() => setSaved(false), 2000);
+    }
 
     // Force iframe to reload, hide loading when done
     setPreviewKey(k => k + 1);
