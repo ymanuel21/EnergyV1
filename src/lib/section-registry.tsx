@@ -137,7 +137,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
         { value: 'new_arrival', label: 'New Arrivals' }, { value: 'manual', label: 'Manual Selection' },
       ], group: 'content' },
       { key: 'productIds', label: 'Featured Products', type: 'product-picker', group: 'content', showWhen: { source: 'manual' } },
-      { key: 'maxProducts', label: 'Max Products', type: 'number', group: 'content' },
+      { key: 'maxProducts', label: 'Max Products', type: 'number', group: 'content', min: 1, defaultValue: 4 },
       { key: 'layout', label: 'Layout', type: 'select', options: [{ value: 'grid', label: 'Grid' }, { value: 'carousel', label: 'Carousel' }], group: 'styling' },
       { key: 'showPrice', label: 'Show Price', type: 'toggle', group: 'styling' },
       { key: 'showBadge', label: 'Show Badge', type: 'toggle', group: 'styling' },
@@ -337,7 +337,7 @@ function CategoryGridRenderer({ section }: SectionRendererProps) {
 function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
   const products = data?.products || [];
   const productIds: string[] = Array.isArray(section.settings.productIds) ? section.settings.productIds as string[] : [];
-  const max = Number(section.settings.maxProducts) || 4;
+  const max = Number(section.settings.maxProducts) || 4;  // 0 or empty → default 4
 
   // Manual selection: filter by productIds, preserve order
   const featured = productIds.length
