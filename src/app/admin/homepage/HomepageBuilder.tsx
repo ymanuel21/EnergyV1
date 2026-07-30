@@ -95,7 +95,11 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
 
     // Show loading overlay on preview
     setPreviewLoading(true);
-    await onSave(fd);
+    try {
+      await onSave(fd);
+    } catch (err: any) {
+      console.error('Save failed:', err.message);
+    }
     setDirty(false);
     setSaving(false);
     setSaved(true);

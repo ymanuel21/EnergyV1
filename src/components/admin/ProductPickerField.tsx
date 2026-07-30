@@ -44,11 +44,11 @@ export function ProductPickerField({ value, onChange, single = false }: ProductP
     <div className="space-y-2">
       {/* Selected product chips */}
       {value.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5" onClick={e => e.stopPropagation()}>
           {value.map(slug => (
             <span key={slug} className="inline-flex items-center gap-1.5 rounded-full bg-surface border border-border px-2.5 py-1 text-[11px] font-medium">
               <span className="text-primary">{slug}</span>
-              <button type="button" onClick={() => remove(slug)} className="text-muted hover:text-red-500 text-xs leading-none">×</button>
+              <button type="button" onClick={(e) => { e.stopPropagation(); remove(slug); }} className="text-muted hover:text-red-500 text-xs leading-none">×</button>
             </span>
           ))}
         </div>

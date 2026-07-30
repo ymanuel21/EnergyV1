@@ -2,16 +2,16 @@ const { chromium } = require('playwright');
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage({ viewport: { width: 1440, height: 900 } });
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage({ viewport: { width: 1440, height: 900 } });
 
   await page.goto('https://energyv1.vercel.app/admin/login', { waitUntil: 'networkidle' });
   await page.fill('input[name="email"]', 'admin@ebtplaza.com');
   await page.fill('input[name="password"]', 'qwe');
   await page.locator('form[action="/api/login"] button[type="submit"]').click();
-  await page.waitForURL('**/admin', { timeout: 10000 });
+  await page.waitForTimeout(5000);
   await page.goto('https://energyv1.vercel.app/admin/homepage', { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(4000);
 
   await page.locator('text=Produk Unggulan').first().click();
   await page.waitForTimeout(2000);
@@ -21,23 +21,26 @@ const { chromium } = require('playwright');
   await picker.fill('eco');
   await page.waitForTimeout(2000);
 
-  // Use evaluate to click and capture navigation URL
-  const navResult = await page.evaluate(() => {
-    const btns = document.querySelectorAll('.absolute button.w-full');
-    if (btns.length > 0) {
-      btns[0].click();
-      // Return immediately after click
-      return 'clicked';
+  // Trace all ancestor links of the dropdown button
+  const ancestors = await page.evaluate(() => {
+    const btn = document.querySelector('.absolute button.w-full');
+    if (!btn) return 'no button';
+    const chain = [];
+    let el = btn;
+    for (let i = 0; i < 15; i++) {
+      if (!el) break;
+      chain.push({
+        tag: el.tagName,
+        id: el.id || undefined,
+        href: el.tagName === 'A' ? el.getAttribute('href') : undefined,
+        onClick: el.onclick ? 'has onclick' : undefined,
+        role: el.getAttribute('role') || undefined,
+      });
+      el = el.parentElement;
     }
-    return 'no buttons';
+    return chain;
   });
-  console.log('Click:', navResult);
-
-  // Wait and check where we are
-  await page.waitForTimeout(3000);
-  const finalUrl = page.url();
-  console.log('Final URL:', finalUrl);
-  console.log('Destination:', finalUrl.includes('/produk/') ? 'PRODUCT PAGE' : finalUrl.includes('/homepage') ? 'HOMEPAGE' : finalUrl.includes('/admin') ? 'ADMIN' : 'OTHER');
+  console.log('ANCESTORS:', JSON.stringify(ancestors, null, 1));
 
   await browser.close();
 })();
