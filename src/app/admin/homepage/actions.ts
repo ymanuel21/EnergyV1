@@ -60,21 +60,33 @@ export async function saveDraft(data: {
   });
 }
 
-export async function publishSection(id: string) {
+export async function publishSection(id: string, data?: { title?: string; subtitle?: string; settings?: Record<string, unknown> }) {
   await requireAuth();
   const prisma = await getAdminPrisma();
 
-  const draft = await prisma.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'draft' } });
-  if (!draft) throw new Error('No draft to publish');
-
   return safeWrite({
     entityType: 'homepageSection',
-    entityName: draft.title || 'section',
+    entityId: id,
+    entityName: data?.title || 'section',
     action: 'update' as const,
-    data: { sectionId: id },
+    data: data || {},
     schema: homepageSectionSchema,
     execute: async (tx: any) => {
-      // Archive old published version — unlimited history now supported
+      // Write latest settings to draft, then promote
+      if (data) {
+        const draft = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'draft' } });
+        if (draft) {
+          await tx.homepageSectionVersion.update({
+            where: { id: draft.id },
+            data: { title: data.title, subtitle: data.subtitle, settings: data.settings || {} },
+          });
+        }
+      }
+
+      const draft = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'draft' } });
+      if (!draft) throw new Error('No draft to publish');
+
+      // Archive old published
       const oldPublished = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'published' } });
       if (oldPublished) {
         await tx.revision.create({
@@ -98,11 +110,13 @@ export async function upsertSection(data: {
   const prisma = await getAdminPrisma();
 
   if (data.id) {
-    // Existing section — use saveDraft or publishSection
     if (data.status === 'published') {
-      // Save draft first, then publish
-      await saveDraft({ id: data.id, type: data.type, title: data.title || '', subtitle: data.subtitle || '', sortOrder: data.sortOrder || 0, settings: data.settings || {} });
-      await publishSection(data.id);
+      // Publish atomically — save settings + promote in one transaction
+      await publishSection(data.id, {
+        title: data.title || '',
+        subtitle: data.subtitle || '',
+        settings: data.settings || {},
+      });
       await prisma.homepageSection.update({ where: { id: data.id }, data: { enabled: data.enabled ?? true } });
     } else {
       await saveDraft({ id: data.id, type: data.type, title: data.title || '', subtitle: data.subtitle || '', sortOrder: data.sortOrder || 0, settings: data.settings || {} });

@@ -1,51 +1,24 @@
-// Test: does revision.create work outside transaction?
-import { getAdminPrisma } from '@/app/admin/lib/admin-prisma';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 1 });
 
 (async () => {
-  const prisma = await getAdminPrisma();
-  
-  try {
-    // Simple create outside transaction
-    const rev = await prisma.revision.create({
-      data: {
-        entityType: 'test',
-        entityId: 'test-123',
-        data: { foo: 'bar' },
-      },
-    });
-    console.log('OK: revision created id=', rev.id.slice(-6));
-    
-    // Cleanup
-    await prisma.revision.delete({ where: { id: rev.id } });
-    console.log('OK: deleted');
-  } catch (err: any) {
-    console.log('FAIL:', err.message);
-    console.log('Code:', err.code);
-    if (err.meta) console.log('Meta:', JSON.stringify(err.meta));
+  const sections = await pool.query(
+    `SELECT id, type, enabled, "sortOrder" FROM homepage_sections WHERE type = $1 ORDER BY "sortOrder"`,
+    ['featured-products']
+  );
+  console.log('=== featured-products ===');
+  for (const s of sections.rows) {
+    console.log(`Section ${s.id.slice(-6)} enabled=${s.enabled}`);
+    const vers = await pool.query(
+      `SELECT id, status, title, "createdAt" FROM homepage_section_versions WHERE "sectionId" = $1 ORDER BY "createdAt" DESC`,
+      [s.id]
+    );
+    for (const v of vers.rows) console.log(`  ${v.status}: ${v.id.slice(-6)} "${v.title}" (${v.createdAt})`);
+    const draft = vers.rows.find((v: any) => v.status === 'draft');
+    const pub = vers.rows.find((v: any) => v.status === 'published');
+    console.log(`  → Shows: ${(draft || pub)?.status}`);
   }
-
-  // Now test inside transaction
-  try {
-    await prisma.$transaction(async (tx: any) => {
-      const rev = await tx.revision.create({
-        data: {
-          entityType: 'test2',
-          entityId: 'test-456',
-          data: { bar: 'baz' },
-        },
-      });
-      console.log('TX OK: revision created id=', rev.id.slice(-6));
-    });
-    console.log('TX COMMITTED');
-    // Cleanup
-    await prisma.revision.deleteMany({ where: { entityType: 'test2' } });
-  } catch (err: any) {
-    console.log('TX FAIL:', err.message);
-    console.log('TX Code:', err.code);
-    if (err.meta) console.log('TX Meta:', JSON.stringify(err.meta));
-  }
-
-  await prisma.$disconnect();
+  await pool.end();
 })();
