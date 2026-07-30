@@ -66,10 +66,10 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
         {/* Shared spotlight card — image left, info right, equal height */}
         <div className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow">
           <div className="flex flex-col sm:flex-row sm:items-stretch">
-            {/* Image — 48%, auto-stretches to match info height */}
-            <div className="sm:w-[48%] aspect-square sm:aspect-auto bg-surface flex items-center justify-center p-6 sm:p-8">
+            {/* Image — stretches to match right panel via items-stretch */}
+            <div className="sm:w-[48%] bg-surface flex items-center justify-center p-6 sm:p-8 aspect-square sm:aspect-auto sm:h-auto">
               <SafeImage src={active?.images?.[0] || ''} alt={active?.name || ''} width={500} height={500}
-                className="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-500" />
+                className="h-full w-full object-contain group-hover:scale-105 transition duration-500 sm:max-h-full" />
             </div>
 
             {/* Info — 52%, flex column, CTA at bottom */}
