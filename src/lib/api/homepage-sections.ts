@@ -20,9 +20,10 @@ export async function getPublicHomepageSections(pageId?: string, preview?: boole
       },
     });
 
-    // Flatten: merge version data into section
+    // Flatten: merge version data into section. Draft first, fallback to published.
     return sections.map(s => {
-      const v = s.versions[0];
+      const draft = s.versions.find((v: any) => v.status === 'draft') || s.versions[0];
+      const v = (preview ? draft : s.versions.find((v: any) => v.status === 'published')) || s.versions[0] || draft;
       return { ...s, title: v?.title || null, subtitle: v?.subtitle || null, settings: v?.settings || {}, status: v?.status || 'draft', versions: undefined };
     });
   } catch {}
