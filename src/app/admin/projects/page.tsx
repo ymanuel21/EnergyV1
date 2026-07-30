@@ -40,6 +40,10 @@ export default async function ProjectsAdminPage() {
                 <td className="p-4"><StatusBadge status={p.status || 'draft'} /></td>
                 <td className="p-4 text-right">
                   <Link href={`/admin/projects/${p.id}`} className="text-sm text-primary hover:underline mr-3">Edit</Link>
+                  <form action={deleteProject} className="inline">
+                    <input type="hidden" name="id" value={p.id} />
+                    <button type="submit" className="text-sm text-red-500 hover:underline" onClick={(e) => { if (!confirm('Delete project?')) e.preventDefault(); }}>Delete</button>
+                  </form>
                 </td>
               </tr>
             ))}
@@ -60,6 +64,10 @@ export default async function ProjectsAdminPage() {
                 {p.featured ? '⭐ Featured' : 'Standard'}
               </span>
             </div>
+            <div className="mt-3 flex gap-2">
+              <form action={toggleFeatured} className="inline"><input type="hidden" name="id" value={p.id} /><button className="text-xs text-primary hover:underline">{p.featured ? 'Unfeature' : 'Feature'}</button></form>
+              <form action={toggleStatus} className="inline"><input type="hidden" name="id" value={p.id} /><button className="text-xs text-primary hover:underline">{p.status === 'published' ? 'Archive' : 'Publish'}</button></form>
+            </div>
           </div>
         ))}
       </div>
@@ -72,5 +80,39 @@ async function createProject() {
   const prisma = await getAdminPrisma();
   const slug = 'project-' + Date.now();
   await prisma.project.create({ data: { title: 'New Project', slug, coverImage: '', images: [], highlights: [] } });
+  revalidatePath('/admin/projects');
+}
+
+async function deleteProject(formData: FormData) {
+  'use server';
+  const { projectRepo } = await import('@/lib/repositories/project');
+  const id = formData.get('id') as string;
+  if (!id) return;
+  await projectRepo.delete(id);
+  revalidatePath('/admin/projects');
+}
+
+async function toggleFeatured(formData: FormData) {
+  'use server';
+  const prisma = await getAdminPrisma();
+  const id = formData.get('id') as string;
+  const p = await prisma.project.findUnique({ where: { id } });
+  if (!p) return;
+  await prisma.project.update({ where: { id }, data: { featured: !p.featured } });
+  revalidatePath('/admin/projects');
+}
+
+async function toggleStatus(formData: FormData) {
+  'use server';
+  const { archiveEntity, publishEntity } = await import('@/lib/services/content-versioning');
+  const prisma = await getAdminPrisma();
+  const id = formData.get('id') as string;
+  const p = await prisma.project.findUnique({ where: { id } });
+  if (!p) return;
+  if (p.status === 'published') {
+    await archiveEntity({ entity: 'project', id });
+  } else {
+    await publishEntity({ entity: 'project', id });
+  }
   revalidatePath('/admin/projects');
 }
