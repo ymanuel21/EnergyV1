@@ -23,6 +23,7 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [lastAction, setLastAction] = useState<string>('');
   const [previewLoading, setPreviewLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('Content');
   const [previewWidth, setPreviewWidth] = useState<string>('100%');
@@ -97,6 +98,7 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
     setDirty(false);
     setSaving(false);
     setSaved(true);
+    setLastAction(action);
 
     // Clear saved badge after 2s
     if (savedTimerRef.current) clearTimeout(savedTimerRef.current);
@@ -190,7 +192,7 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
           </div>
           <div className="flex items-center gap-2 text-xs">
             {saving && <span className="text-amber-600 animate-pulse">Saving...</span>}
-            {saved && <span className="text-green-600 font-medium">✓ Saved</span>}
+            {saved && <span className="text-green-600 font-medium">{lastAction === 'publish' ? '✓ Published' : '✓ Draft saved'}</span>}
             {!saving && !saved && dirty && <span className="text-amber-600">Unsaved</span>}
             {!saving && !saved && !dirty && editingId && <span className="text-green-600">● Ready</span>}
           </div>
@@ -229,6 +231,34 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
               <input value={subtitle} onChange={e => { setSubtitle(e.target.value); setDirty(true); }}
                 placeholder="Subtitle" className="w-full rounded border border-border px-3 py-1.5 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" />
             </div>
+
+            {/* Draft vs Published status */}
+            {(() => {
+              const versions = editing.versions || [];
+              const draftV = versions.find((v: any) => v.status === 'draft');
+              const pubV = versions.find((v: any) => v.status === 'published');
+              if (draftV && pubV) {
+                const draftSettings = JSON.stringify(draftV.settings || {});
+                const pubSettings = JSON.stringify(pubV.settings || {});
+                if (draftSettings !== pubSettings) {
+                  return (
+                    <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-2.5">
+                      <p className="text-[11px] font-medium text-amber-800">⚠ Unpublished changes</p>
+                      <p className="text-[10px] text-amber-600 mt-0.5">Public page shows published version. Click Publish to apply.</p>
+                    </div>
+                  );
+                }
+              }
+              if (pubV && !draftV) {
+                return (
+                  <div className="mb-3 rounded-lg border border-green-200 bg-green-50 p-2.5">
+                    <p className="text-[11px] font-medium text-green-700">✓ Published</p>
+                    <p className="text-[10px] text-green-600 mt-0.5">Live on public homepage.</p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
 
             {/* Tabs */}
             <div className="flex gap-0 border-b border-border mb-3">
