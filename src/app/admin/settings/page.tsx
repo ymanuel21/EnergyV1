@@ -2,6 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { revalidatePath } from 'next/cache';
 import { getPrisma } from '@/lib/db';
+import { clearPricingCache } from '@/lib/services/product-pricing';
+import { SettingsClientWrapper } from './SettingsClientWrapper';
 
 async function getSettings() {
   const prisma = await getPrisma();
@@ -27,6 +29,7 @@ export default async function SettingsPage() {
       }
     }
     revalidatePath('/admin/settings');
+    clearPricingCache();
   }
 
   const siteFields = [
@@ -51,9 +54,8 @@ export default async function SettingsPage() {
     <div>
       <h1 className="text-2xl font-bold text-primary">Pengaturan</h1>
 
-      <form action={handleSave}>
-        {/* Site Info */}
-        <div className="mt-6 space-y-4 rounded-xl border bg-card p-6">
+      <SettingsClientWrapper handleSave={handleSave}>
+        <div className="space-y-4 rounded-xl border bg-card p-6">
           <h2 className="text-lg font-semibold text-primary">Informasi Situs</h2>
           {siteFields.map((s) => (
             <div key={s.key}>
@@ -82,11 +84,7 @@ export default async function SettingsPage() {
             <input name="product_custom_price_label" defaultValue={saved['product_custom_price_label'] || ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm" placeholder="Digunakan saat mode CUSTOM_TEXT dipilih" />
           </div>
         </div>
-
-        <div className="mt-6 flex justify-end">
-          <button type="submit" className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white">Simpan Pengaturan</button>
-        </div>
-      </form>
+      </SettingsClientWrapper>
     </div>
   );
 }

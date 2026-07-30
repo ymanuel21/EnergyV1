@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '../AdminToastProvider';
 import { SlugInput } from '../SlugInput';
 import { CurrencyInput } from '../CurrencyInput';
 import { BadgeSelector } from '../BadgeSelector';
@@ -33,6 +34,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
   console.log('[FORM] rendering, productId:', defaultValues?.id, 'status:', defaultValues?.status);
 
   const router = useRouter();
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('Overview');
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
@@ -81,38 +83,57 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
     setSaving(true);
     const data = buildFormPayload(e.currentTarget as HTMLFormElement);
 
+    try {
     if (productId) {
       await saveDraft({ entity: 'product', id: productId, data });
       setSaving(false); setDirty(false); setSaveState('saved');
+      showToast('✓ Draft berhasil disimpan', 'success');
       router.refresh();
     } else {
       await onSubmit(data);
       setSaving(false); setDirty(false);
+      showToast('✓ Produk berhasil dibuat', 'success');
       router.push('/admin/products'); router.refresh();
     }
-  }, [productId, buildFormPayload, onSubmit, router]);
+    } catch {
+      setSaving(false);
+      showToast('✕ Gagal menyimpan', 'error');
+    }
+  }, [productId, buildFormPayload, onSubmit, router, showToast]);
 
   const handlePublish = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productId) return;
     setSaving(true);
     const data = buildFormPayload(e.currentTarget as HTMLFormElement);
+    try {
     await saveDraft({ entity: 'product', id: productId, data });
     await publishEntity({ entity: 'product', id: productId });
     setSaving(false); setDirty(false);
+    showToast('✓ Produk berhasil dipublikasikan', 'success');
     router.push('/admin/products'); router.refresh();
-  }, [productId, buildFormPayload, router]);
+    } catch {
+      setSaving(false);
+      showToast('✕ Gagal mempublikasikan', 'error');
+    }
+  }, [productId, buildFormPayload, router, showToast]);
 
   const handleSubmitForReview = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productId) return;
     setSaving(true);
     const data = buildFormPayload(e.currentTarget as HTMLFormElement);
+    try {
     await saveDraft({ entity: 'product', id: productId, data });
     await submitForReview('product', productId);
     setSaving(false); setDirty(false);
+    showToast('✓ Produk berhasil dikirim untuk review', 'success');
     router.refresh();
-  }, [productId, buildFormPayload, router]);
+    } catch {
+      setSaving(false);
+      showToast('✕ Gagal mengirim review', 'error');
+    }
+  }, [productId, buildFormPayload, router, showToast]);
 
   const inputCls = 'w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card';
 

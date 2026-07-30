@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useToast } from './AdminToastProvider';
 
 interface DeleteButtonProps {
   label?: string;
@@ -13,11 +14,17 @@ interface DeleteButtonProps {
 export function DeleteButton({ label = 'Hapus', confirmText, itemName, onDelete }: DeleteButtonProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const { showToast } = useToast();
 
   function handleConfirm() {
     startTransition(async () => {
-      await onDelete();
-      setShowConfirm(false);
+      try {
+        await onDelete();
+        showToast(`✓ Berhasil dihapus`, 'success');
+        setShowConfirm(false);
+      } catch {
+        showToast('✕ Gagal menghapus', 'error');
+      }
     });
   }
 
