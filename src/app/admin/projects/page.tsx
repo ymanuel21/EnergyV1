@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getAdminPrisma } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
 import { StatusBadge } from '@/components/admin/StatusBadge';
+import { projectRepo } from '@/lib/repositories/project';
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
