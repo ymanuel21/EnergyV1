@@ -1,6 +1,4 @@
 import type { FC } from 'react';
-import { ProductShowcase } from '@components/home/ProductShowcase';
-import { ProductCardItem } from '@components/home/ProductCardItem';
 
 export interface SectionRendererProps {
   section: {
@@ -356,33 +354,53 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
   const showPrice = section.settings.showPrice !== false;
   const showBadge = section.settings.showBadge !== false;
 
-  const isManualSelection = productIds.length > 0;
-  const useShowcase = isManualSelection && featured.length > 0;
-
   return (
     <section className="relative py-16 sm:py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
       <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-emerald-50/60 blur-3xl" />
       <div className="relative mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-2">{section.title}</p>}
         {section.subtitle && <h2 className="text-2xl font-light tracking-tight mb-8">{section.subtitle}</h2>}
-
-        {useShowcase ? (
-          <ProductShowcase
-            products={featured}
-            showPrice={showPrice}
-            showBadge={showBadge}
-            priceLabels={priceLabels}
-          />
-        ) : (
-          <div className={layout === 'carousel'
-            ? 'flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory'
-            : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'}>
-            {featured.map((p: any) => (
-              <ProductCardItem key={p.id || p.slug} product={p} showPrice={showPrice} showBadge={showBadge} priceLabels={priceLabels} featuredCount={4} />
-            ))}
-          </div>
-        )}
-
+        <div className={layout === 'carousel'
+          ? 'flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory'
+          : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'}>
+          {featured.map((p: any) => (
+            <Link key={p.id || p.slug} href={`/produk/${p.slug}`}
+              className={`group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition ${layout === 'carousel' ? 'shrink-0 w-[280px] snap-start' : ''}`}>
+              <div className="aspect-square overflow-hidden bg-surface">
+                <SafeImage src={p.images?.[0] || ''} alt={p.name} width={400} height={400}
+                  className="h-full w-full object-contain p-4 group-hover:scale-105 transition duration-500" />
+              </div>
+              <div className="p-4">
+                <h3 className="text-sm font-medium text-primary line-clamp-2">{p.name}</h3>
+                {showPrice && (
+                  <div className="mt-2 flex items-baseline gap-2">
+                    {priceLabels.get(p.id) ? (
+                      <span className="text-sm text-muted">{priceLabels.get(p.id)}</span>
+                    ) : (
+                      <>
+                        <span className="text-base font-semibold">Rp {p.price?.toLocaleString('id-ID')}</span>
+                        {p.originalPrice > p.price && (
+                          <span className="text-xs text-muted line-through">Rp {p.originalPrice?.toLocaleString('id-ID')}</span>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+                {showBadge && p.badgeRelations?.length > 0 && (
+                  <div className="mt-2 flex gap-1 flex-wrap">
+                    {p.badgeRelations.slice(0, 2).map((br: any) => (
+                      <span key={br.badge?.slug || br.badge?.name}
+                        className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+                        style={{ backgroundColor: (br.badge as any)?.bgColor || '#f0f0f0', color: (br.badge as any)?.color || '#333' }}>
+                        {(br.badge as any)?.name as string}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
         {!!section.settings.buttonLabel && (
           <div className="mt-8 text-center">
             <Link href={String(section.settings.buttonLink || '/produk')}
