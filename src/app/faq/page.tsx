@@ -5,6 +5,8 @@ import { Breadcrumb } from '@ui/Breadcrumb';
 import { Accordion } from '@ui/Accordion';
 import { getAllFaqs } from '@/lib/api/faq';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'FAQ (Bantuan)',
   description: 'Pertanyaan yang sering diajukan tentang EBTPlaza — pengiriman, pembayaran, garansi, dan lainnya.',

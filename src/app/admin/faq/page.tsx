@@ -12,18 +12,21 @@ export default async function FaqPage() {
     'use server';
     await createFaq({ question: data.get('question'), answer: data.get('answer'), sortOrder: 0 });
     revalidatePath('/admin/faq');
+    revalidatePath('/faq');
   }
 
   async function handleUpdate(id: number, data: FormData) {
     'use server';
     await updateFaq(id, { question: data.get('question'), answer: data.get('answer') });
     revalidatePath('/admin/faq');
+    revalidatePath('/faq');
   }
 
   async function handleDelete(id: number) {
     'use server';
     await deleteFaq(id);
     revalidatePath('/admin/faq');
+    revalidatePath('/faq');
   }
 
   return (
