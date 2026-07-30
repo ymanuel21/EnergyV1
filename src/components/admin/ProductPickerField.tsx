@@ -48,7 +48,7 @@ export function ProductPickerField({ value, onChange, single = false }: ProductP
           {value.map(slug => (
             <span key={slug} className="inline-flex items-center gap-1.5 rounded-full bg-surface border border-border px-2.5 py-1 text-[11px] font-medium">
               <span className="text-primary">{slug}</span>
-              <button type="button" onClick={(e) => { e.stopPropagation(); remove(slug); }} className="text-muted hover:text-red-500 text-xs leading-none">×</button>
+              <button type="button" onClick={(e) => { e.stopPropagation(); remove(slug); }} className="text-[10px] text-muted hover:text-red-500 ml-1" title="Hapus">Hapus</button>
             </span>
           ))}
         </div>
