@@ -63,7 +63,7 @@ export function ProductPickerField({ value, onChange, single = false }: ProductP
             onChange={e => handleSearch(e.target.value)}
             onFocus={() => { if (results.length > 0) setOpen(true); }}
             onBlur={() => setTimeout(() => setOpen(false), 200)}
-            placeholder={single ? 'Cari produk...' : 'Cari produk untuk ditambahkan...'}
+            placeholder={single ? 'Pilih produk unggulan...' : 'Cari produk untuk ditambahkan...'}
             className="w-full rounded border border-border px-2.5 py-1.5 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card"
           />
           {open && results.length > 0 && (
