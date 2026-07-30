@@ -17,6 +17,7 @@ export interface SectionRendererProps {
     banners?: any[];
     projects?: any[];
     productsById?: Record<string, any>;
+    priceLabels?: Map<string, string | undefined>;
   };
 }
 
@@ -337,7 +338,7 @@ function CategoryGridRenderer({ section }: SectionRendererProps) {
 function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
   const products = data?.products || [];
   const productIds: string[] = Array.isArray(section.settings.productIds) ? section.settings.productIds as string[] : [];
-  const max = Number(section.settings.maxProducts) || 4;  // 0 or empty → default 4
+  const max = Number(section.settings.maxProducts) || 4;
 
   // Manual selection: filter by productIds, preserve order
   const featured = productIds.length
@@ -345,6 +346,9 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
     : products.slice(0, max);
 
   if (!featured.length) return null;
+
+  // Use pre-resolved price labels from data (resolved by homepage server)
+  const priceLabels: Map<string, string | undefined> = data?.priceLabels || new Map();
 
   const layout = section.settings.layout || 'grid';
   const showPrice = section.settings.showPrice !== false;
@@ -370,9 +374,15 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
                 <h3 className="text-sm font-medium text-primary line-clamp-2">{p.name}</h3>
                 {showPrice && (
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-base font-semibold">Rp {p.price?.toLocaleString('id-ID')}</span>
-                    {p.originalPrice > p.price && (
-                      <span className="text-xs text-muted line-through">Rp {p.originalPrice?.toLocaleString('id-ID')}</span>
+                    {priceLabels.get(p.id) ? (
+                      <span className="text-sm text-muted">{priceLabels.get(p.id)}</span>
+                    ) : (
+                      <>
+                        <span className="text-base font-semibold">Rp {p.price?.toLocaleString('id-ID')}</span>
+                        {p.originalPrice > p.price && (
+                          <span className="text-xs text-muted line-through">Rp {p.originalPrice?.toLocaleString('id-ID')}</span>
+                        )}
+                      </>
                     )}
                   </div>
                 )}

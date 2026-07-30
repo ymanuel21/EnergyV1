@@ -4,6 +4,7 @@ import { getPublicBanners } from '@/lib/api/banners';
 import { getPublicHomepageSections } from '@/lib/api/homepage-sections';
 import { projectRepo } from '@/lib/repositories/project';
 import { testimonialRepo } from '@/lib/repositories/index';
+import { resolvePriceLabels } from '@/lib/services/resolve-price-labels';
 import { OrganizationSchema } from '@components/ui/StructuredData';
 import { sectionRegistry } from '@/lib/section-registry';
 import type { Metadata } from 'next';
@@ -27,7 +28,8 @@ export default async function HomePage(props: { searchParams?: Promise<{ preview
     testimonialRepo.findPublic(),
   ]);
 
-  const contextData = { products, brands, banners: banners.filter((b: any) => b.image && !b.image.includes('placeholder')), projects };
+  const priceLabels = await resolvePriceLabels(products as any[]);
+  const contextData = { products, priceLabels, brands, banners: banners.filter((b: any) => b.image && !b.image.includes('placeholder')), projects };
 
   return (
     <>
