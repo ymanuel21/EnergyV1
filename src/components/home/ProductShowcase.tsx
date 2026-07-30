@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { SafeImage } from '@ui/SafeImage';
+import { ProductInfoPanel } from './ProductInfoPanel';
 import Link from 'next/link';
 
 interface ProductShowcaseProps {
@@ -59,18 +60,20 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
       )}
 
       {/* Full-width product card */}
-      <Link href={`/produk/${active?.slug || ''}`}
-        className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow block">
+      <div className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow">
         <div className="flex flex-col sm:flex-row sm:items-stretch">
-          {/* Image */}
-          <div className={`bg-surface flex items-center justify-center p-6 sm:p-8 ${isSingle ? 'sm:w-[48%]' : 'sm:w-[42%]'} aspect-square sm:aspect-auto sm:h-auto`}>
+          {/* Image — clickable */}
+          <Link href={`/produk/${active?.slug || ''}`}
+            className={`bg-surface flex items-center justify-center p-6 sm:p-8 ${isSingle ? 'sm:w-[48%]' : 'sm:w-[42%]'} aspect-square sm:aspect-auto sm:h-auto`}>
             <SafeImage src={active?.images?.[0] || ''} alt={active?.name || ''} width={500} height={500}
               className="h-full w-full object-contain group-hover:scale-105 transition duration-500 sm:max-h-full" />
-          </div>
+          </Link>
 
           {/* Info */}
-          <div className={`${isSingle ? 'sm:w-[52%]' : 'sm:w-[58%]'} p-5 sm:p-6 flex flex-col justify-center`}>
-            <h3 className={`font-semibold text-primary ${isSingle ? 'text-lg sm:text-xl' : 'text-base sm:text-lg'}`}>{active?.name}</h3>
+          <div className={`${isSingle ? 'sm:w-[52%]' : 'sm:w-[58%]'} p-5 sm:p-6 flex flex-col`}>
+            <Link href={`/produk/${active?.slug || ''}`} className="hover:underline">
+              <h3 className={`font-semibold text-primary ${isSingle ? 'text-lg sm:text-xl' : 'text-base sm:text-lg'}`}>{active?.name}</h3>
+            </Link>
 
             {showPrice && (
               <div className="flex items-baseline gap-2 mt-2">
@@ -95,6 +98,11 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
               </p>
             )}
 
+            {/* Tabs: Description | Spesifikasi | Pengiriman & Garansi */}
+            <div className="flex-1 min-h-0 mt-3">
+              <ProductInfoPanel product={active} />
+            </div>
+
             <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline w-fit">
               Lihat Detail
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -103,7 +111,7 @@ export function ProductShowcase({ products, showPrice, showBadge, priceLabels }:
             </span>
           </div>
         </div>
-      </Link>
+      </div>
 
       {!isSingle && (
         <div className="flex justify-center gap-1.5 mt-4">
