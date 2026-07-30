@@ -67,7 +67,7 @@ export function ProductPickerField({ value, onChange, single = false }: ProductP
             className="w-full rounded border border-border px-2.5 py-1.5 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card"
           />
           {open && results.length > 0 && (
-            <div className="absolute z-20 mt-1 w-full rounded border border-border bg-card shadow-lg max-h-56 overflow-y-auto">
+            <div className="absolute z-20 mt-1 w-full rounded border border-border bg-card shadow-lg max-h-56 overflow-y-auto" onClick={e => e.stopPropagation()}>
               {results.map((p: any) => {
                 const slug = p.slug || p.id;
                 const selected = value.includes(slug);

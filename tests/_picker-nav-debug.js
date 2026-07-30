@@ -13,46 +13,31 @@ const { chromium } = require('playwright');
   await page.goto('https://energyv1.vercel.app/admin/homepage', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(3000);
 
-  // Open editor
   await page.locator('text=Produk Unggulan').first().click();
   await page.waitForTimeout(2000);
 
-  // Type in picker
   const picker = page.locator('input[placeholder="Cari produk..."]').first();
   await picker.click();
   await picker.fill('eco');
   await page.waitForTimeout(2000);
-  console.log('1. Typed eco');
 
-  // Click dropdown item via JS to avoid event bubbling
-  const clicked = await page.evaluate(() => {
+  // Use evaluate to click and capture navigation URL
+  const navResult = await page.evaluate(() => {
     const btns = document.querySelectorAll('.absolute button.w-full');
     if (btns.length > 0) {
-      const btn = btns[0];
-      btn.click();
-      return 'clicked ' + (btn.textContent?.trim().substring(0, 30) || '');
+      btns[0].click();
+      // Return immediately after click
+      return 'clicked';
     }
     return 'no buttons';
   });
-  console.log('2.', clicked);
-  
-  await page.waitForTimeout(2000);
-  console.log('3. URL:', page.url().includes('/homepage') ? 'STILL ON HOMEPAGE' : 'NAVIGATED AWAY');
+  console.log('Click:', navResult);
 
-  // Check buttons
-  const saveCount = await page.locator('button:has-text("Save")').count();
-  const pubCount = await page.locator('button:has-text("Publish")').count();
-  console.log('4. Save:', saveCount, 'Pub:', pubCount);
-
-  if (pubCount > 0) {
-    await page.locator('button:has-text("Publish")').first().click();
-    await page.waitForTimeout(3000);
-    console.log('5. Published');
-  } else if (saveCount > 0) {
-    await page.locator('button:has-text("Save")').first().click();
-    await page.waitForTimeout(2000);
-    console.log('5. Saved');
-  }
+  // Wait and check where we are
+  await page.waitForTimeout(3000);
+  const finalUrl = page.url();
+  console.log('Final URL:', finalUrl);
+  console.log('Destination:', finalUrl.includes('/produk/') ? 'PRODUCT PAGE' : finalUrl.includes('/homepage') ? 'HOMEPAGE' : finalUrl.includes('/admin') ? 'ADMIN' : 'OTHER');
 
   await browser.close();
 })();
