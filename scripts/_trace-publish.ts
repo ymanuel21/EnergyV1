@@ -2,23 +2,20 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 dotenv.config();
 const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 1 });
-
 (async () => {
-  const sections = await pool.query(
-    `SELECT id, type, enabled, "sortOrder" FROM homepage_sections WHERE type = $1 ORDER BY "sortOrder"`,
-    ['featured-products']
+  // Delete all drafts for featured-products — clean slate
+  const del = await pool.query(
+    `DELETE FROM homepage_section_versions WHERE "sectionId" IN 
+     (SELECT id FROM homepage_sections WHERE type = 'featured-products') AND status = 'draft'`
   );
-  console.log('=== featured-products ===');
-  for (const s of sections.rows) {
-    console.log(`Section ${s.id.slice(-6)} enabled=${s.enabled}`);
-    const vers = await pool.query(
-      `SELECT id, status, title, "createdAt" FROM homepage_section_versions WHERE "sectionId" = $1 ORDER BY "createdAt" DESC`,
-      [s.id]
-    );
-    for (const v of vers.rows) console.log(`  ${v.status}: ${v.id.slice(-6)} "${v.title}" (${v.createdAt})`);
-    const draft = vers.rows.find((v: any) => v.status === 'draft');
-    const pub = vers.rows.find((v: any) => v.status === 'published');
-    console.log(`  → Shows: ${(draft || pub)?.status}`);
-  }
+  console.log('Deleted drafts:', del.rowCount);
+  
+  // Show current state
+  const r = await pool.query(
+    `SELECT v.status, v."createdAt" FROM homepage_section_versions v
+     JOIN homepage_sections s ON s.id = v."sectionId"
+     WHERE s.type = 'featured-products' AND s.enabled = true ORDER BY v."createdAt"`
+  );
+  console.log('Versions:', r.rows.map(r => r.status + ' (' + r.createdAt + ')').join(', '));
   await pool.end();
 })();

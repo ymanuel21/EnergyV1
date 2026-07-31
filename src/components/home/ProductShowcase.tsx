@@ -73,7 +73,7 @@ export function ProductShowcase({ products, showPrice, showBadge, showDescriptio
           {/* Image — clickable */}
           <Link href={`/produk/${active?.slug || ''}`}
             className={`bg-surface flex items-center justify-center p-6 sm:p-8 ${isSingle ? 'sm:w-[48%]' : 'sm:w-[42%]'} aspect-square sm:aspect-auto sm:h-auto`}>
-            <SafeImage src={active?.images?.[0] || ''} alt={active?.name || ''} width={500} height={500}
+            <SafeImage key={active?.slug} src={active?.images?.[0] || ''} alt={active?.name || ''} width={500} height={500}
               className="h-full w-full object-contain group-hover:scale-105 transition duration-500 sm:max-h-full" />
           </Link>
 
