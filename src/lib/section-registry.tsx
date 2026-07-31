@@ -33,6 +33,8 @@ export type SectionField = {
   showWhen?: Record<string, string>;  // conditional visibility: { source: 'manual' }
   min?: number;                         // min value for number fields
   single?: boolean;                     // single-select mode for product-picker
+  searchApi?: string;                   // custom search endpoint for product-picker
+  placeholder?: string;
 }
 
 export interface SectionDefinition {
@@ -489,7 +491,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
   let projects = data?.projects || [];
 
   // Manual selection: filter to selected project slugs, preserve order
-  const projectIds: string[] = s.projectIds || [];
+  const projectIds: string[] = (s.projectIds as string[]) || [];
   if (s.source === 'manual' && projectIds.length > 0) {
     projects = projectIds
       .map((id: string) => projects.find((p: any) => p.slug === id || p.id === id))
