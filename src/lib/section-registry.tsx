@@ -34,6 +34,7 @@ export type SectionField = {
   single?: boolean;                     // single-select mode for product-picker
   searchApi?: string;                   // custom search endpoint for product-picker
   placeholder?: string;
+  displayFields?: Record<string, string>; // field mapping for product-picker (name→title, etc)
 }
 
 export interface SectionDefinition {
@@ -194,10 +195,10 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       { key: 'heading', label: 'Heading', type: 'text', group: 'content' },
       { key: 'subheading', label: 'Description', type: 'textarea', group: 'content' },
       { key: 'source', label: 'Content Source', type: 'select', options: [{ value: 'latest', label: 'Latest Projects' }, { value: 'manual', label: 'Manual Selection' }], group: 'content' },
-      { key: 'featuredProjectId', label: 'Featured Project', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, single: true, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek unggulan...' },
+      { key: 'featuredProjectId', label: 'Featured Project', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, single: true, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek unggulan...', displayFields: { name: 'title', image: 'coverImage', subtitle: 'category', category: 'location', slug: 'slug' } },
       { key: 'heroTitleOverride', label: 'Hero Title Override', type: 'text', group: 'content', showWhen: { source: 'manual' }, placeholder: 'Override title (empty = use project title)' },
       { key: 'heroDescriptionOverride', label: 'Hero Description Override', type: 'textarea', group: 'content', showWhen: { source: 'manual' }, placeholder: 'Override description (empty = use project description)' },
-      { key: 'gridProjectIds', label: 'Additional Projects', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek...' },
+      { key: 'gridProjectIds', label: 'Additional Projects', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek...', displayFields: { name: 'title', image: 'coverImage', subtitle: 'category', category: 'location', slug: 'slug' } },
       { key: 'maxGridProjects', label: 'Max Grid Projects', type: 'number', group: 'content', min: 1 },
       { key: 'showCustomer', label: 'Show Customer', type: 'toggle', group: 'styling' },
       { key: 'showCapacity', label: 'Show Capacity', type: 'toggle', group: 'styling' },

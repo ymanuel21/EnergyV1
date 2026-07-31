@@ -426,6 +426,7 @@ function EditorField({ field, value, onChange }: { field: SectionField; value: a
         single={(field as any).single}
         searchUrl={(field as any).searchApi}
         placeholder={(field as any).placeholder}
+        displayFields={(field as any).displayFields}
       />;
     default:
       return <input type="text" value={String(value)} onChange={e => onChange(e.target.value)} className={inputClass} placeholder={field.placeholder} />;

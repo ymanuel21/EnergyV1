@@ -19,12 +19,5 @@ export async function GET(request: NextRequest) {
     orderBy: { year: 'desc' },
   });
 
-  // Map to ProductPickerField-compatible format (name, images)
-  const mapped = projects.map(p => ({
-    ...p,
-    name: p.title,
-    images: p.coverImage ? [p.coverImage] : (Array.isArray(p.images) ? p.images : []),
-  }));
-
-  return NextResponse.json(mapped);
+  return NextResponse.json(projects);
 }
