@@ -29,7 +29,6 @@ export type SectionField = {
   options?: { value: string; label: string }[];
   group?: 'content' | 'styling' | 'advanced';
   defaultValue?: any;
-  placeholder?: string;
   showWhen?: Record<string, string>;  // conditional visibility: { source: 'manual' }
   min?: number;                         // min value for number fields
   single?: boolean;                     // single-select mode for product-picker
@@ -181,14 +180,25 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     type: 'projects',
     label: 'Projects',
     icon: '☀️',
-    defaultSettings: { source: 'latest', maxProjects: 4, showCustomer: true, showCapacity: true, showYear: true, showLocation: true, eyebrow: 'Project Referensi', heading: 'Energi Terbarukan untuk Semua.', subheading: 'Jelajahi proyek energi terbarukan yang telah kami selesaikan di berbagai sektor.', buttonLabel: 'Lihat Semua Proyek', buttonLink: '/proyek', projectIds: [] },
+    defaultSettings: {
+      source: 'latest', maxGridProjects: 3,
+      showCustomer: true, showCapacity: true, showYear: true, showLocation: true,
+      eyebrow: 'Project Referensi', heading: 'Energi Terbarukan untuk Semua.',
+      subheading: 'Jelajahi proyek energi terbarukan yang telah kami selesaikan di berbagai sektor.',
+      buttonLabel: 'Lihat Semua Proyek', buttonLink: '/proyek',
+      featuredProjectId: [], gridProjectIds: [],
+      heroTitleOverride: '', heroDescriptionOverride: '',
+    },
     fields: [
       { key: 'eyebrow', label: 'Eyebrow', type: 'text', group: 'content' },
       { key: 'heading', label: 'Heading', type: 'text', group: 'content' },
-      { key: 'subheading', label: 'Support Text', type: 'textarea', group: 'content' },
+      { key: 'subheading', label: 'Description', type: 'textarea', group: 'content' },
       { key: 'source', label: 'Content Source', type: 'select', options: [{ value: 'latest', label: 'Latest Projects' }, { value: 'manual', label: 'Manual Selection' }], group: 'content' },
-      { key: 'projectIds', label: 'Featured Projects', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek...' },
-      { key: 'maxProjects', label: 'Max Projects', type: 'number', group: 'content' },
+      { key: 'featuredProjectId', label: 'Featured Project', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, single: true, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek unggulan...' },
+      { key: 'heroTitleOverride', label: 'Hero Title Override', type: 'text', group: 'content', showWhen: { source: 'manual' } },
+      { key: 'heroDescriptionOverride', label: 'Hero Description Override', type: 'textarea', group: 'content', showWhen: { source: 'manual' } },
+      { key: 'gridProjectIds', label: 'Additional Projects', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek...' },
+      { key: 'maxGridProjects', label: 'Max Grid Projects', type: 'number', group: 'content', min: 1 },
       { key: 'showCustomer', label: 'Show Customer', type: 'toggle', group: 'styling' },
       { key: 'showCapacity', label: 'Show Capacity', type: 'toggle', group: 'styling' },
       { key: 'showYear', label: 'Show Year', type: 'toggle', group: 'styling' },
@@ -490,25 +500,101 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
   const s = section.settings || {};
   let projects = data?.projects || [];
 
-  // Manual selection: filter to selected project slugs, preserve order
-  const projectIds: string[] = (s.projectIds as string[]) || [];
-  if (s.source === 'manual' && projectIds.length > 0) {
-    projects = projectIds
+  // Manual selection
+  const featuredId = Array.isArray(s.featuredProjectId) ? (s.featuredProjectId as string[])[0] : (s.featuredProjectId as string);
+  const gridIds: string[] = (s.gridProjectIds as string[]) || [];
+  const maxGrid = Number(s.maxGridProjects) || 3;
+
+  if (s.source === 'manual') {
+    // Resolve featured project
+    const featured = featuredId ? projects.find((p: any) => p.slug === featuredId || p.id === featuredId) : null;
+    // Resolve grid projects in order
+    const grid = gridIds
       .map((id: string) => projects.find((p: any) => p.slug === id || p.id === id))
-      .filter(Boolean);
+      .filter(Boolean)
+      .slice(0, maxGrid);
+
+    if (!featured && grid.length === 0) return null;
+
+    const heroTitle = (s.heroTitleOverride as string) || featured?.title || '';
+    const heroDesc = (s.heroDescriptionOverride as string) || featured?.shortDescription || '';
+
+    return (
+      <SectionWrapper section={section}>
+        <div className="mb-12 text-center max-w-2xl mx-auto">
+          {s.eyebrow && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-4">{String(s.eyebrow)}</p>}
+          {s.heading && <h2 className="text-3xl font-light tracking-tight lg:text-4xl mb-4">{String(s.heading)}</h2>}
+          {s.subheading && <p className="text-base text-muted leading-relaxed">{String(s.subheading)}</p>}
+        </div>
+
+        {featured && (
+          <Link href={`/proyek/${featured.slug}`}
+            className="group block overflow-hidden rounded-2xl border border-border bg-card hover:shadow-lg transition-shadow">
+            <div className="grid md:grid-cols-2">
+              <div className="aspect-[4/3] md:aspect-auto overflow-hidden bg-surface">
+                {(featured.coverImage || (Array.isArray(featured.images) && featured.images[0])) ? (
+                  <img src={featured.coverImage || featured.images[0]} alt={featured.title} className="h-full w-full object-cover group-hover:scale-105 transition duration-700" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-6xl">☀️</div>
+                )}
+              </div>
+              <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  {featured.category && <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-emerald-700">{featured.category}</span>}
+                  {featured.year && <span className="text-xs text-muted">{featured.year}</span>}
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold text-primary group-hover:text-primary-hover transition-colors">
+                  {heroTitle}
+                </h3>
+                <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
+                  {s.showLocation !== false && featured.location && <span className="inline-flex items-center gap-1.5">📍 {featured.location}</span>}
+                  {s.showCapacity !== false && featured.capacity && <span className="inline-flex items-center gap-1.5">⚡ {featured.capacity}</span>}
+                  {s.showCustomer !== false && featured.customer && <span className="inline-flex items-center gap-1.5">🏢 {featured.customer}</span>}
+                </div>
+                {heroDesc && <p className="mt-4 text-sm text-muted leading-relaxed line-clamp-3">{heroDesc}</p>}
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all">Lihat Detail Proyek <span className="text-lg">→</span></span>
+              </div>
+            </div>
+          </Link>
+        )}
+
+        {grid.length > 0 && (
+          <div className="mt-10">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {grid.map((p: any) => (
+                <Link key={p.id} href={`/proyek/${p.slug}`} className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="aspect-[16/10] overflow-hidden bg-surface">
+                    {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
+                      <img src={p.coverImage || p.images[0]} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-4xl">☀️</div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    {p.category && <span className="mb-2 inline-block rounded-full bg-surface px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted">{p.category}</span>}
+                    <h4 className="font-semibold text-primary text-sm line-clamp-2 group-hover:text-primary-hover transition-colors">{p.title}</h4>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted">
+                      {s.showLocation !== false && p.location && <span>{p.location}</span>}
+                      {s.showYear !== false && p.year && <span>{p.year}</span>}
+                      {s.showCapacity !== false && p.capacity && <span>{p.capacity}</span>}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {s.buttonLabel && (
+          <div className="mt-10 text-center">
+            <Link href={String(s.buttonLink || '/proyek')} className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-primary hover:bg-surface transition-colors">
+              {String(s.buttonLabel)} <span className="text-lg">→</span>
+            </Link>
+          </div>
+        )}
+      </SectionWrapper>
+    );
   }
-
-  const max = Number(s.maxProjects) || 4;
-  const display = projects.slice(0, max);
-
-  // Empty state
-  if (!display.length) {
-    if (s.source === 'manual') return null; // gracefully hide
-    return null;
-  }
-
-  const featured = display[0];
-  const others = display.slice(1);
 
   return (
     <SectionWrapper section={section}>
