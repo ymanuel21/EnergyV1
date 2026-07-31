@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { getAdminPrisma } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
-import { StatusBadge } from '@/components/admin/StatusBadge';
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
@@ -33,7 +32,7 @@ export default async function ProjectsAdminPage() {
                 <td className="p-4 text-muted capitalize">{p.category}</td>
                 <td className="p-4 text-muted">{p.location || '-'}</td>
                 <td className="p-4 text-muted">{p.year}</td>
-                <td className="p-4"><StatusBadge status={p.status || 'draft'} /></td>
+                <td className="p-4"><span className="inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium bg-surface text-muted">{p.status || 'draft'}</span></td>
                 <td className="p-4 text-right">
                   <Link href={`/admin/projects/${p.id}`} className="text-sm text-primary hover:underline mr-3">Edit</Link>
                   <form action={deleteProject} className="inline"><input type="hidden" name="id" value={p.id} /><button type="submit" className="text-sm text-red-500 hover:underline" onClick={(e) => { if (!confirm('Delete project?')) e.preventDefault(); }}>Delete</button></form>
