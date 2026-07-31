@@ -40,7 +40,21 @@ export default function RfqPage() {
     needsInstallation: false,
     notes: '',
   });
-  const [items, setItems] = useState<RfqItem[]>(() => []);
+  const [items, setItems] = useState<RfqItem[]>(() => {
+    // Restore from sessionStorage if available
+    if (typeof window !== 'undefined') {
+      try { const saved = sessionStorage.getItem('rfq-items'); if (saved) return JSON.parse(saved); } catch {}
+    }
+    return [];
+  });
+
+  // Persist items to sessionStorage on change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('rfq-items', JSON.stringify(items));
+    }
+  }, [items]);
+
   const [newItem, setNewItem] = useState({ name: '', quantity: 1, notes: '' });
   const [itemError, setItemError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
