@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { getAdminPrisma } from '../lib/admin-prisma';
-import { createProject, deleteProject } from './actions';
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
@@ -16,7 +15,7 @@ export default async function ProjectsAdminPage() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-bold text-primary">Projects</h1>
-        <form action={createProject} className="inline">
+        <form method="POST" action="/api/admin/projects/create" className="inline">
           <button type="submit" className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover transition">
             + New Project
           </button>
@@ -59,7 +58,7 @@ export default async function ProjectsAdminPage() {
                   <Link href={`/admin/projects/${p.id}`} className="text-sm text-primary hover:underline mr-3">
                     Edit
                   </Link>
-                  <form action={deleteProject} className="inline">
+                  <form method="POST" action="/api/admin/projects/delete" className="inline">
                     <input type="hidden" name="id" value={p.id} />
                     <button type="submit" className="text-sm text-red-500 hover:underline"
                       onClick={(e) => { if (!confirm('Delete project?')) e.preventDefault(); }}>
