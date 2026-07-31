@@ -106,7 +106,7 @@ export default async function ProductDetail({ params }: Props) {
       />
 
       <Container className="py-6">
-        <SmartBackButton fallbackRoute="/produk" label="← Kembali ke Produk" className="mb-3" />
+        <SmartBackButton fallbackRoute="/produk" scope="products" label="← Kembali ke Produk" className="mb-3" />
         {/* Breadcrumb */}
         <Breadcrumb
           items={[

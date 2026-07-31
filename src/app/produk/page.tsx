@@ -51,7 +51,7 @@ export default async function AllProductsPage({ searchParams }: Props) {
   }));
 
   return (<>
-    <TrackPage />
+    <TrackPage scope="products" />
     <Container className="py-6">
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Semua Produk' }]} />
 

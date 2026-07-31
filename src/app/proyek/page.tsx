@@ -17,7 +17,7 @@ export default async function ProjectsPage() {
 
   return (
     <>
-      <TrackPage />
+      <TrackPage scope="projects" />
       <Container className="py-6">
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Proyek' }]} />
       <div className="mt-4">
