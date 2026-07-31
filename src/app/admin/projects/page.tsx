@@ -6,8 +6,27 @@ import { revalidatePath } from 'next/cache';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 
 export default async function ProjectsAdminPage() {
-  const prisma = await getAdminPrisma();
-  const projects = await prisma.project.findMany({ orderBy: { createdAt: 'desc' } });
+  let projects: any[] = [];
+  let error: string | null = null;
+  
+  try {
+    const prisma = await getAdminPrisma();
+    projects = await prisma.project.findMany({ orderBy: { createdAt: 'desc' } });
+  } catch (e: any) {
+    error = e.message || 'Unknown error';
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <h1 className="text-xl font-bold text-primary mb-4">Projects</h1>
+        <div className="rounded-xl border border-red-200 bg-red-50 p-6">
+          <p className="text-red-700 font-medium">Failed to load projects</p>
+          <p className="text-red-500 text-sm mt-2 font-mono">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
