@@ -6,6 +6,7 @@ import { Breadcrumb } from '@ui/Breadcrumb';
 import { projectRepo } from '@/lib/repositories/project';
 import { getPrisma } from '@/lib/db';
 import { ProductAccordion } from './ProductAccordion';
+import { SmartBackButton } from '@/components/ui/SmartBackButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +42,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <Container className="py-6">
+      <SmartBackButton fallbackRoute="/proyek" label="← Kembali ke Proyek" className="mb-3" />
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Proyek', href: '/proyek' }, { label: project.title }]} />
 
       {/* Hero */}

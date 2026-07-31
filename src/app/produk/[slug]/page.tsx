@@ -20,6 +20,7 @@ import { getBrandById } from '@/lib/api/brands';
 import { SITE } from '@lib/constants';
 import { notFound } from 'next/navigation';
 import { ProductViewTracker } from '@components/product/ProductTracker';
+import { SmartBackButton } from '@/components/ui/SmartBackButton';
 
 export const revalidate = 3600; // ISR: revalidate every hour
 
@@ -105,6 +106,7 @@ export default async function ProductDetail({ params }: Props) {
       />
 
       <Container className="py-6">
+        <SmartBackButton fallbackRoute="/produk" label="← Kembali ke Produk" className="mb-3" />
         {/* Breadcrumb */}
         <Breadcrumb
           items={[
