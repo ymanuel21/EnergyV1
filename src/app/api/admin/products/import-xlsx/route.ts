@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const file = formData.get('file') as File | null;
   const mode = (formData.get('mode') as string) || 'sync';
+  const preview = formData.get('preview') === 'true';
 
   if (!file) return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
 
@@ -19,14 +20,48 @@ export async function POST(req: NextRequest) {
   const wb = new ExcelJS.Workbook();
   await wb.xlsx.load(buf);
 
-  const result = { created: 0, updated: 0, skipped: 0, errors: [] as any[] };
-
-  const productsSheet = wb.getWorksheet('Products');
-  if (!productsSheet) {
-    result.errors.push({ sheet: 'Workbook', row: 0, column: '', message: 'Missing Products sheet' });
-    return NextResponse.json(result, { status: 400 });
+  // Validate required sheets
+  const requiredSheets = ['Products'];
+  for (const name of requiredSheets) {
+    if (!wb.getWorksheet(name)) {
+      return NextResponse.json({
+        error: `Missing required worksheet: "${name}". The workbook must contain a "${name}" sheet.`,
+      }, { status: 400 });
+    }
   }
 
+  const productsSheet = wb.getWorksheet('Products')!;
+
+  // Pre-scan: collect rows and detect duplicates
+  const rows: any[] = [];
+  const seenSlugs = new Map<string, number>();
+  const seenSkus = new Map<string, number>();
+  const errors: any[] = [];
+
+  productsSheet.eachRow((row, rowNum) => {
+    if (rowNum === 1) return;
+    const slug = cellStr(row, 3);
+    const sku = cellStr(row, 4);
+
+    if (slug) {
+      if (seenSlugs.has(slug)) {
+        errors.push({ sheet: 'Products', row: rowNum, column: 'Slug', message: `Duplicate slug "${slug}" — also found at row ${seenSlugs.get(slug)}` });
+      } else seenSlugs.set(slug, rowNum);
+    }
+    if (sku) {
+      if (seenSkus.has(sku)) {
+        errors.push({ sheet: 'Products', row: rowNum, column: 'SKU', message: `Duplicate SKU "${sku}" — also found at row ${seenSkus.get(sku)}` });
+      } else seenSkus.set(sku, rowNum);
+    }
+
+    rows.push({ rowNum, cells: rowCellStrs(row, 17) });
+  });
+
+  if (errors.length > 0) {
+    return NextResponse.json({ errors, validationFailed: true }, { status: 422 });
+  }
+
+  // Pre-fetch lookup data
   const [brands, categories, existingProducts] = await Promise.all([
     prisma.brand.findMany({ select: { id: true, name: true } }),
     prisma.category.findMany({ select: { id: true, name: true } }),
@@ -38,25 +73,15 @@ export async function POST(req: NextRequest) {
   const existingBySlug = new Map(existingProducts.map(p => [p.slug, p.id]));
   const existingBySku = new Map(existingProducts.filter(p => p.sku).map(p => [p.sku!, p.id]));
 
-  const specsByProduct = groupSheet(wb.getWorksheet('Specifications'));
-  const imagesByProduct = groupSheet(wb.getWorksheet('Images'));
-  const downloadsByProduct = groupSheet(wb.getWorksheet('Downloads'));
-  const seoByProduct = groupSheet(wb.getWorksheet('SEO'));
+  const previewData = { total: rows.length, create: 0, update: 0, skip: 0, errors: [] as any[] };
 
-  // Collect rows synchronously, then process async
-  const rows: { rowNum: number; cells: string[] }[] = [];
-  productsSheet.eachRow((row, rowNum) => {
-    if (rowNum === 1) return;
-    rows.push({ rowNum, cells: [cell(row, 1), cell(row, 2), cell(row, 3), cell(row, 4), cell(row, 5), cell(row, 6), cell(row, 7), cell(row, 8), cell(row, 9), cell(row, 10), cell(row, 11), cell(row, 12)] });
-  });
-
+  // Resolve each row
   for (const { rowNum, cells } of rows) {
     const id = cells[0], name = cells[1], slug = cells[2], sku = cells[3], brandName = cells[4],
-      catName = cells[5], status = cells[6] || 'published', price = parseFloat(cells[8]) || 0,
-      desc = cells[11] || '', featured = cells[7]?.toLowerCase() === 'yes';
+      status = cells[6] || 'published', featured = cells[7]?.toLowerCase() === 'yes';
 
     if (!name || !slug) {
-      result.errors.push({ sheet: 'Products', row: rowNum, column: !name ? 'Name' : 'Slug', message: 'Required field missing' });
+      previewData.errors.push({ sheet: 'Products', row: rowNum, column: !name ? 'Name' : 'Slug', message: 'Required field missing' });
       continue;
     }
 
@@ -64,77 +89,91 @@ export async function POST(req: NextRequest) {
     if (!existingId) existingId = existingBySlug.get(slug) || null;
     if (!existingId && sku) existingId = existingBySku.get(sku) || null;
 
-    if (mode === 'create' && existingId) {
-      result.skipped++;
-      continue;
-    }
-    if (mode === 'update' && !existingId) {
-      result.skipped++;
-      continue;
-    }
+    if (mode === 'create' && existingId) { previewData.skip++; continue; }
+    if (mode === 'update' && !existingId) { previewData.skip++; continue; }
 
-    let brandId = '';
+    // Validate brand (case-insensitive)
     if (brandName) {
-      brandId = brandByName.get(brandName.toLowerCase()) || '';
-      if (!brandId) {
-        result.errors.push({ sheet: 'Products', row: rowNum, column: 'Brand', message: `Unknown brand: ${brandName}` });
+      if (!brandByName.has(brandName.toLowerCase())) {
+        previewData.errors.push({ sheet: 'Products', row: rowNum, column: 'Brand', message: `Unknown brand: "${brandName}"` });
         continue;
       }
     }
 
-    try {
-      const data: any = {
-        name, slug, sku: sku || null, price,
-        description: desc,
-        status, isActive: featured,
-      };
-      if (brandId) data.brandId = brandId;
-
-      if (existingId) {
-        await prisma.product.update({ where: { id: existingId }, data });
-        if (catName) {
-          const catId = categoryByName.get(catName.toLowerCase());
-          if (catId) {
-            await prisma.productCategory.deleteMany({ where: { productId: existingId } });
-            await prisma.productCategory.create({ data: { productId: existingId, categoryId: catId } });
-          }
-        }
-        result.updated++;
-      } else {
-        const newId = `imp-${Date.now().toString(36)}-${rowNum}`;
-        await prisma.product.create({ data: { ...data, id: newId, stock: 0, badges: [] } });
-        if (catName) {
-          const catId = categoryByName.get(catName.toLowerCase());
-          if (catId) await prisma.productCategory.create({ data: { productId: newId, categoryId: catId } });
-        }
-        result.created++;
-      }
-    } catch (e: any) {
-      result.errors.push({ sheet: 'Products', row: rowNum, column: '', message: e.message });
-    }
+    if (existingId) previewData.update++;
+    else previewData.create++;
   }
 
-  return NextResponse.json(result);
-}
+  // Return preview if requested
+  if (preview) {
+    return NextResponse.json(previewData);
+  }
 
-function cell(row: ExcelJS.Row, col: number): string {
-  const v = row.getCell(col).value;
-  if (v === null || v === undefined) return '';
-  return String(v).trim();
-}
+  // If validation failed, stop
+  if (previewData.errors.length > 0) {
+    return NextResponse.json(previewData, { status: 422 });
+  }
 
-function groupSheet(ws: ExcelJS.Worksheet | undefined): Map<string, any[]> {
-  const map = new Map<string, any[]>();
-  if (!ws) return map;
-  const headers: string[] = [];
-  ws.eachRow((row, rowNum) => {
-    if (rowNum === 1) { row.eachCell((c, i) => { headers[i] = String(c.value || '').toLowerCase(); }); return; }
-    const id = cell(row, 1);
-    if (!id) return;
-    const obj: any = { productId: id };
-    row.eachCell((c, i) => { if (i > 1) obj[headers[i] || `col${i}`] = String(c.value || ''); });
-    if (!map.has(id)) map.set(id, []);
-    map.get(id)!.push(obj);
+  // Execute in single transaction
+  const startTime = Date.now();
+  const result = { created: 0, updated: 0, skipped: 0, errors: [] as any[] };
+
+  try {
+    await prisma.$transaction(async (tx: any) => {
+      for (const { rowNum, cells } of rows) {
+        const id = cells[0], name = cells[1], slug = cells[2], sku = cells[3], brandName = cells[4],
+          catName = cells[5], status = cells[6] || 'published', featured = cells[7]?.toLowerCase() === 'yes',
+          price = parseFloat(cells[8]) || 0, desc = cells[11] || '';
+
+        if (!name || !slug) { result.skipped++; continue; }
+
+        let existingId: string | null = id && existingProducts.some(p => p.id === id) ? id : null;
+        if (!existingId) existingId = existingBySlug.get(slug) || null;
+        if (!existingId && sku) existingId = existingBySku.get(sku) || null;
+
+        if (mode === 'create' && existingId) { result.skipped++; continue; }
+        if (mode === 'update' && !existingId) { result.skipped++; continue; }
+
+        let brandId = brandName ? brandByName.get(brandName.toLowerCase()) || '' : '';
+
+        try {
+          const data: any = { name, slug, sku: sku || null, price, description: desc, status, isActive: featured };
+          if (brandId) data.brandId = brandId;
+
+          if (existingId) {
+            await tx.product.update({ where: { id: existingId }, data });
+            result.updated++;
+          } else {
+            const newId = `imp-${Date.now().toString(36)}-${rowNum}`;
+            await tx.product.create({ data: { ...data, id: newId, stock: 0, badges: [] } });
+            result.created++;
+          }
+        } catch (e: any) {
+          throw e; // let transaction roll back
+        }
+      }
+    });
+  } catch (e: any) {
+    return NextResponse.json({ error: `Import rolled back: ${e.message}` }, { status: 500 });
+  }
+
+  const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+  return NextResponse.json({
+    ...result,
+    duration: `${duration}s`,
+    fileName: (file as any).name || 'unknown.xlsx',
+    mode,
   });
-  return map;
+}
+
+// Helpers
+function cellStr(row: ExcelJS.Row, col: number): string {
+  const v = row.getCell(col).value;
+  return v === null || v === undefined ? '' : String(v).trim();
+}
+function rowCellStrs(row: ExcelJS.Row, count: number): string[] {
+  const out: string[] = [];
+  for (let i = 1; i <= count; i++) out.push(cellStr(row, i));
+  return out;
 }
