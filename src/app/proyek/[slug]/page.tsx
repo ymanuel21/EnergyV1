@@ -64,6 +64,18 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         </div>
       )}
 
+      {/* Gallery Grid */}
+      {allImages.length > 1 && (
+        <div className="mt-3 grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+          {allImages.slice(1).map((img, i) => (
+            <a key={i} href={img} target="_blank" rel="noopener noreferrer"
+              className="aspect-[4/3] overflow-hidden rounded-lg bg-surface hover:ring-2 hover:ring-primary/30 transition">
+              <img src={img} alt={`${project.title} — ${i + 2}`} className="h-full w-full object-cover" />
+            </a>
+          ))}
+        </div>
+      )}
+
       <div className="mt-6 grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <h1 className="text-2xl font-bold text-primary">{project.title}</h1>
