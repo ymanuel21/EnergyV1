@@ -535,7 +535,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
               <p className="mt-4 text-sm text-muted leading-relaxed line-clamp-3">{featured.shortDescription}</p>
             )}
             <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all">
-              {s.buttonLabel || 'Lihat Detail Proyek'} <span className="text-lg">→</span>
+              {String(s.buttonLabel || 'Lihat Detail Proyek')} <span className="text-lg">→</span>
             </span>
           </div>
         </div>
@@ -579,7 +579,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
       <div className="mt-10 text-center">
         <Link href={s.buttonLink || '/proyek'}
           className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-primary hover:bg-surface transition-colors">
-          {s.buttonLabel || 'Lihat Semua Proyek'} <span className="text-lg">→</span>
+          {String(s.buttonLabel || 'Lihat Semua Proyek')} <span className="text-lg">→</span>
         </Link>
       </div>
     </SectionWrapper>
