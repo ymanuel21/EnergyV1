@@ -73,17 +73,21 @@ export async function publishSection(id: string, data?: { title?: string; subtit
     schema: homepageSectionSchema,
     execute: async (tx: any) => {
       // Write latest settings to draft, then promote
-      if (data) {
-        const draft = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'draft' } });
-        if (draft) {
-          await tx.homepageSectionVersion.update({
-            where: { id: draft.id },
-            data: { title: data.title, subtitle: data.subtitle, settings: data.settings || {} },
-          });
-        }
+      let draft = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'draft' } });
+      if (!draft && data) {
+        // No draft exists — create one from the publish payload
+        draft = await tx.homepageSectionVersion.create({
+          data: { sectionId: id, status: 'draft', title: data.title, subtitle: data.subtitle, settings: (data.settings || {}) as any },
+        });
+      }
+      if (draft && data) {
+        await tx.homepageSectionVersion.update({
+          where: { id: draft.id },
+          data: { title: data.title, subtitle: data.subtitle, settings: data.settings || {} },
+        });
       }
 
-      const draft = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'draft' } });
+      draft = await tx.homepageSectionVersion.findFirst({ where: { sectionId: id, status: 'draft' } });
       if (!draft) throw new Error('No draft to publish');
 
       // Archive old published
