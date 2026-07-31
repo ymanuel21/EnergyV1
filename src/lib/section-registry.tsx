@@ -522,9 +522,9 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
     return (
       <SectionWrapper section={section}>
         <div className="mb-12 text-center max-w-2xl mx-auto">
-          {s.eyebrow && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-4">{String(s.eyebrow)}</p>}
-          {s.heading && <h2 className="text-3xl font-light tracking-tight lg:text-4xl mb-4">{String(s.heading)}</h2>}
-          {s.subheading && <p className="text-base text-muted leading-relaxed">{String(s.subheading)}</p>}
+          {s.eyebrow ? <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-4">{s.eyebrow as string}</p> : null}
+          {s.heading ? <h2 className="text-3xl font-light tracking-tight lg:text-4xl mb-4">{s.heading as string}</h2> : null}
+          {s.subheading ? <p className="text-base text-muted leading-relaxed">{s.subheading as string}</p> : null}
         </div>
 
         {featured && (
@@ -596,13 +596,19 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
     );
   }
 
+  // Default: Latest Projects
+  const max = Math.max(Number(s.maxGridProjects) || 3, 1);
+  const display = projects.slice(0, max);
+  if (!display.length) return null;
+  const featured = display[0];
+  const others = display.slice(1);
+
   return (
     <SectionWrapper section={section}>
-      {/* Premium header */}
       <div className="mb-12 text-center max-w-2xl mx-auto">
-        {s.eyebrow && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-4">{String(s.eyebrow)}</p>}
-        {s.heading && <h2 className="text-3xl font-light tracking-tight lg:text-4xl mb-4">{String(s.heading)}</h2>}
-        {s.subheading && <p className="text-base text-muted leading-relaxed">{String(s.subheading)}</p>}
+        {s.eyebrow ? <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-4">{s.eyebrow as string}</p> : null}
+        {s.heading ? <h2 className="text-3xl font-light tracking-tight lg:text-4xl mb-4">{s.heading as string}</h2> : null}
+        {s.subheading ? <p className="text-base text-muted leading-relaxed">{s.subheading as string}</p> : null}
       </div>
 
       {/* Featured Project — large card */}
