@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../AdminToastProvider';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
@@ -98,47 +98,43 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
   const [searchOpen, setSearchOpen] = useState(false);
   const searchTimer = useState<any>(null)[0];
   const [changingIndex, setChangingIndex] = useState<number | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const markDirty = useCallback(() => {
     if (!dirty) setDirty(true);
     if (saveState !== 'idle') setSaveState('idle');
   }, [dirty, saveState]);
 
-  const buildFormData = useCallback((form: HTMLFormElement) => {
-    const fd = new FormData(form);
-    let images: string[] = [];
-    try { images = JSON.parse((fd.get('images') as string) || '[]'); } catch { /* keep [] */ }
-
-    return {
-      title: fd.get('title') as string,
-      slug: fd.get('slug') as string,
-      shortDescription: fd.get('shortDescription') as string,
-      richDescription: fd.get('richDescription') as string,
-      category: fd.get('category') as string,
-      industry: fd.get('industry') as string,
-      systemType: fd.get('systemType') as string,
-      capacity: fd.get('capacity') as string,
-      pvModule: fd.get('pvModule') as string,
-      inverter: fd.get('inverter') as string,
-      battery: fd.get('battery') as string,
-      location: fd.get('location') as string,
-      customer: fd.get('customer') as string,
-      year: parseInt(fd.get('year') as string) || 2025,
-      coverImage: fd.get('coverImage') as string,
-      images,
-      featured: fd.get('featured') === 'true',
-      storyData: story,
-      impactData: impact,
-      seoData: seo,
-      productIds: linkedProducts.map(p => ({ slug: p.slug, quantity: p.quantity })),
-    };
-  }, [story, impact, seo, linkedProducts]);
+  // Build publish data from React state (not FormData — fields may be hidden in other tabs)
+  const buildPublishData = useCallback(() => ({
+    title: project.title,
+    slug: project.slug,
+    shortDescription: project.shortDescription,
+    richDescription: project.richDescription,
+    category: project.category,
+    industry: project.industry,
+    systemType: project.systemType,
+    capacity: project.capacity,
+    pvModule: project.pvModule,
+    inverter: project.inverter,
+    battery: project.battery,
+    location: project.location,
+    customer: project.customer,
+    year: project.year,
+    coverImage: project.coverImage,
+    images: project.images,
+    featured: project.featured,
+    storyData: story,
+    impactData: impact,
+    seoData: seo,
+    productIds: linkedProducts.map(p => ({ slug: p.slug, quantity: p.quantity })),
+  }), [project, story, impact, seo, linkedProducts]);
 
   const handleSaveDraft = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     try {
-      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      const data = buildPublishData();
       await saveDraft({ entity: 'project', id: project.id, data });
       setDirty(false);
       setSaveState('saved');
@@ -149,14 +145,14 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
     } finally {
       setSaving(false);
     }
-  }, [project.id, buildFormData, router, showToast]);
+  }, [project.id, buildPublishData, router, showToast]);
 
   const handlePublish = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (saving) return;
     setSaving(true);
     try {
-      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      const data = buildPublishData();
       await saveDraft({ entity: 'project', id: project.id, data });
       await publishEntity({ entity: 'project', id: project.id });
       setDirty(false);
@@ -164,19 +160,19 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
       showToast('✓ Proyek berhasil dipublikasikan', 'success');
       router.refresh();
       router.push('/admin/projects');
-    } catch {
-      showToast('✕ Gagal mempublikasikan', 'error');
+    } catch (err: any) {
+      showToast('✕ Gagal: ' + (err?.message || 'Unknown error'), 'error');
     } finally {
       setSaving(false);
     }
-  }, [project.id, buildFormData, saving, router, showToast]);
+  }, [project.id, buildPublishData, saving, router, showToast]);
 
   const handleSubmitForReview = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (saving) return;
     setSaving(true);
     try {
-      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      const data = buildPublishData();
       await saveDraft({ entity: 'project', id: project.id, data });
       await submitForReview('project', project.id);
       setDirty(false);
@@ -188,7 +184,7 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
     } finally {
       setSaving(false);
     }
-  }, [project.id, buildFormData, saving, router, showToast]);
+  }, [project.id, buildPublishData, saving, router, showToast]);
 
   const handleSearchProducts = useCallback(async (query: string) => {
     if (!query || query.length < 2) { setSearchResults([]); setSearchOpen(false); return; }
@@ -255,7 +251,7 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
   const status = project.status as 'draft' | 'published' | 'archived';
 
   return (
-    <form onSubmit={handleSaveDraft}>
+    <form ref={formRef} onSubmit={handleSaveDraft}>
       {/* ── Tab Bar ── */}
       <div className="flex gap-0 border-b border-border px-6 overflow-x-auto">
         {TABS.map(tab => (
