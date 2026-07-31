@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import Image from 'next/image';
 
 interface GalleryImage {
   url: string;
@@ -102,12 +101,10 @@ export function PhotoGallery({ images, title }: { images: string[]; title: strin
           {parsed.map((img, i) => (
             <button key={i} onClick={() => setLightbox(i)}
               className="group relative aspect-[4/3] overflow-hidden rounded-lg bg-surface focus:outline-none focus:ring-2 focus:ring-primary/50">
-              <Image
+              <img
                 src={img.url}
                 alt={img.alt}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
               {img.caption && (
