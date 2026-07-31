@@ -4,6 +4,7 @@ import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { ProductCard } from '@components/product/ProductCard';
 import { SortDropdown } from '@components/category/SortDropdown';
+import TrackPage from '@/components/ui/TrackPage';
 import { Pagination } from '@ui/Pagination';
 import { getProductsPaginated } from '@/lib/api/products';
 import { resolvePriceDisplay } from '@/lib/services/product-pricing';
@@ -49,7 +50,8 @@ export default async function AllProductsPage({ searchParams }: Props) {
     if (pd.mode !== 'SHOW_PRICE') priceLabels.set(p.id, pd.label);
   }));
 
-  return (
+  return (<>
+    <TrackPage />
     <Container className="py-6">
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Semua Produk' }]} />
 
@@ -84,6 +86,6 @@ export default async function AllProductsPage({ searchParams }: Props) {
           Tidak ada produk tersedia saat ini.
         </p>
       )}
-    </Container>
+    </Container></>
   );
 }

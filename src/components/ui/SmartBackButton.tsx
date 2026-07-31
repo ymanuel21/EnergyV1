@@ -1,7 +1,7 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 
 interface SmartBackButtonProps {
   fallbackRoute: string;
@@ -9,58 +9,63 @@ interface SmartBackButtonProps {
   className?: string;
 }
 
-const HISTORY_KEY = 'ebtplaza-nav-history';
+const HISTORY_KEY = 'ebtplaza-prev-page';
 
-// Store current page as a listing page (called from listing pages)
-export function useStoreListingHistory() {
-  const pathname = usePathname();
+/**
+ * Store the current page URL. Call this from any page that should
+ * be returned to via the Smart Back Button.
+ */
+export function TrackPageForBack() {
+  if (typeof window === 'undefined') return null;
+  const recorded = useRef(false);
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (recorded.current) return;
+    recorded.current = true;
     try {
-      const entry = { path: pathname + window.location.search, ts: Date.now() };
-      sessionStorage.setItem(HISTORY_KEY, JSON.stringify(entry));
+      sessionStorage.setItem(HISTORY_KEY, window.location.pathname + window.location.search);
     } catch {}
-  }, [pathname]);
+  }, []);
+  return null;
 }
 
 export function SmartBackButton({ fallbackRoute, label, className = '' }: SmartBackButtonProps) {
   const router = useRouter();
-  const [hasHistory, setHasHistory] = useState(false);
-  const [historyLabel, setHistoryLabel] = useState('');
+  const [storedPath, setStoredPath] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
     try {
       const raw = sessionStorage.getItem(HISTORY_KEY);
-      if (raw) {
-        const entry = JSON.parse(raw);
-        // Valid if stored within last 30 minutes
-        if (Date.now() - entry.ts < 30 * 60 * 1000) {
-          setHasHistory(true);
-          setHistoryLabel(entry.path);
-          return;
-        }
-      }
+      if (raw) setStoredPath(raw);
     } catch {}
-    setHasHistory(false);
   }, []);
 
   const handleBack = () => {
-    if (hasHistory) {
-      router.back();
+    if (storedPath) {
+      // Navigate to the exact stored URL, then clear it
+      try { sessionStorage.removeItem(HISTORY_KEY); } catch {}
+      router.push(storedPath);
+    } else if (typeof document !== 'undefined' && document.referrer) {
+      // Check if referrer is from our own site
+      const referrerHost = new URL(document.referrer).host;
+      const ourHost = window.location.host;
+      if (referrerHost === ourHost) {
+        router.back();
+      } else {
+        router.push(fallbackRoute);
+      }
     } else {
       router.push(fallbackRoute);
     }
   };
 
-  const displayLabel = label || (hasHistory ? '← Kembali' : `← Kembali ke ${fallbackRoute.replace('/', '').replace(/^\w/, c => c.toUpperCase())}`);
+  const displayLabel = label || (storedPath ? '← Kembali' : `← Kembali ke ${fallbackRoute.replace(/^\//, '').replace(/^\w/, c => c.toUpperCase())}`);
 
   return (
     <button
       type="button"
       onClick={handleBack}
       className={`inline-flex items-center gap-1.5 text-sm text-muted hover:text-primary transition-colors ${className}`}
-      aria-label={hasHistory ? 'Kembali ke halaman sebelumnya' : `Kembali ke ${fallbackRoute}`}
+      aria-label={storedPath ? 'Kembali ke halaman sebelumnya' : `Kembali ke ${fallbackRoute}`}
     >
       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

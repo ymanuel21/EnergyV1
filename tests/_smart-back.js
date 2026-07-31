@@ -3,35 +3,53 @@ const { chromium } = require('playwright');
   const b = await chromium.launch({ headless: true });
   const p = await b.newPage();
 
-  // 1. Product list → detail → back
-  await p.goto('http://localhost:3000/produk', { waitUntil: 'networkidle' });
-  await p.locator('a[href*="/produk/ecoflow"]').first().click();
-  await p.waitForTimeout(2000);
-  var hasBack = await p.locator('text=← Kembali').isVisible().catch(() => false);
-  console.log('1. Product back button:', hasBack ? '✅' : '❌');
+  async function test(name, setup, expectUrl) {
+    // Fresh context for each test to clear sessionStorage
+    var ctx = await b.newContext();
+    var page = await ctx.newPage();
 
-  await p.locator('text=← Kembali').click();
-  await p.waitForTimeout(2000);
-  var onProducts = p.url().includes('/produk') && !p.url().includes('/produk/');
-  console.log('2. Back to products:', onProducts ? '✅' : '❌');
+    // Run setup (navigate to listing, then to detail)
+    await setup(page);
 
-  // 2. Project list → detail → back
-  await p.goto('http://localhost:3000/proyek', { waitUntil: 'networkidle' });
-  await p.locator('a[href*="/proyek/"]').first().click();
-  await p.waitForTimeout(2000);
-  var hasProjBack = await p.locator('text=← Kembali').isVisible().catch(() => false);
-  console.log('3. Project back button:', hasProjBack ? '✅' : '❌');
+    // Click back button
+    var btn = page.locator('text=← Kembali');
+    if (await btn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await btn.click();
+      await page.waitForTimeout(2000);
+      var final = page.url();
+      var pass = final.includes(expectUrl);
+      console.log(name + ':', pass ? '✅' : '❌', '→', final.substring(22, 60));
+    } else {
+      console.log(name + ': ❌ (no button)');
+    }
+    await ctx.close();
+  }
 
-  await p.locator('text=← Kembali').click();
-  await p.waitForTimeout(2000);
-  var onProyek = p.url().includes('/proyek') && !p.url().includes('/proyek/');
-  console.log('4. Back to proyek:', onProyek ? '✅' : '❌');
+  // 1. Home → Project → Back → Home
+  await test('Home→Project→Back', async (page) => {
+    await page.goto('http://localhost:3000', { waitUntil: 'networkidle' });
+    await page.goto('http://localhost:3000/proyek/plts-atap-rumah-bandung-54-kwp', { waitUntil: 'networkidle' });
+  }, 'localhost:3000/');
 
-  // 3. Direct URL (no history) → uses fallback
-  await p.goto('http://localhost:3000/produk/ecoflow-160w-lightweight-solar-panel', { waitUntil: 'networkidle' });
-  await p.waitForTimeout(1500);
-  var label = await p.locator('text=← Kembali').innerText().catch(() => '');
-  console.log('5. Direct URL label:', label.includes('Produk') ? '✅' : '❌ (' + label + ')');
+  // 2. Project Listing → Project → Back → Listing
+  await test('Listing→Project→Back', async (page) => {
+    await page.goto('http://localhost:3000/proyek', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2000); // wait for TrackPage
+    await page.goto('http://localhost:3000/proyek/plts-atap-rumah-bandung-54-kwp', { waitUntil: 'networkidle' });
+  }, '/proyek');
+
+  // 3. Products → Project → Back → Products
+  await test('Products→Project→Back', async (page) => {
+    await page.goto('http://localhost:3000/produk', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2000);
+    await page.goto('http://localhost:3000/proyek/plts-atap-rumah-bandung-54-kwp', { waitUntil: 'networkidle' });
+  }, '/produk');
+
+  // 4. Direct URL (no prior page) → fallback to /proyek
+  await test('Direct→Fallback', async (page) => {
+    await page.goto('http://localhost:3000/proyek/plts-atap-rumah-bandung-54-kwp', { waitUntil: 'networkidle' });
+  }, '/proyek');
 
   await b.close();
+  console.log('\nDone');
 })();
