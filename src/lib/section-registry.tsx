@@ -485,33 +485,102 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
   if (!projects.length) return null;
   const s = section.settings || {};
   const max = Number(s.maxProjects) || 6;
+
+  // First featured project gets hero treatment, rest are cards
+  const featured = projects.find((p: any) => p.featured) || projects[0];
+  const others = projects.filter((p: any) => p.slug !== featured.slug).slice(0, max - 1);
+
   return (
     <SectionWrapper section={section}>
-      {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {projects.slice(0, max).map((p: any) => (
-          <Link key={p.id} href={`/proyek/${p.slug}`}
-            className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition">
-            {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
-              <div className="aspect-[4/3] overflow-hidden bg-surface">
-                <img src={p.coverImage || p.images[0]} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
-              </div>
+      {/* Featured Project — large card */}
+      <Link href={`/proyek/${featured.slug}`}
+        className="group block overflow-hidden rounded-2xl border border-border bg-card hover:shadow-lg transition-shadow">
+        <div className="grid md:grid-cols-2">
+          {/* Image */}
+          <div className="aspect-[4/3] md:aspect-auto overflow-hidden bg-surface">
+            {(featured.coverImage || (Array.isArray(featured.images) && featured.images[0])) ? (
+              <img src={featured.coverImage || featured.images[0]} alt={featured.title}
+                className="h-full w-full object-cover group-hover:scale-105 transition duration-700" />
             ) : (
-              <div className="aspect-[4/3] flex items-center justify-center bg-surface text-3xl text-muted">☀️</div>
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-6xl">☀️</div>
             )}
-            <div className="p-4">
-              <h4 className="font-semibold text-primary text-sm line-clamp-2">{p.title}</h4>
-              <p className="text-xs text-muted mt-1">
-                {s.showLocation !== false && p.location}{s.showLocation !== false && s.showCapacity !== false && p.location && p.capacity ? ' · ' : ''}
-                {s.showCapacity !== false && p.capacity}
-              </p>
-              <p className="text-xs text-muted">
-                {s.showCustomer !== false && p.customer}{s.showCustomer !== false && s.showYear !== false && p.customer && p.year ? ' · ' : ''}
-                {s.showYear !== false && p.year}
-              </p>
+          </div>
+          {/* Info */}
+          <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              {featured.category && (
+                <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-emerald-700">
+                  {featured.category}
+                </span>
+              )}
+              {featured.year && (
+                <span className="text-xs text-muted">{featured.year}</span>
+              )}
             </div>
-          </Link>
-        ))}
+            <h3 className="text-xl sm:text-2xl font-semibold text-primary group-hover:text-primary-hover transition-colors">
+              {featured.title}
+            </h3>
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
+              {s.showLocation !== false && featured.location && (
+                <span className="inline-flex items-center gap-1.5">📍 {featured.location}</span>
+              )}
+              {s.showCapacity !== false && featured.capacity && (
+                <span className="inline-flex items-center gap-1.5">⚡ {featured.capacity}</span>
+              )}
+              {s.showCustomer !== false && featured.customer && (
+                <span className="inline-flex items-center gap-1.5">🏢 {featured.customer}</span>
+              )}
+            </div>
+            {featured.shortDescription && (
+              <p className="mt-4 text-sm text-muted leading-relaxed line-clamp-3">{featured.shortDescription}</p>
+            )}
+            <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all">
+              {s.buttonLabel || 'Lihat Detail Proyek'} <span className="text-lg">→</span>
+            </span>
+          </div>
+        </div>
+      </Link>
+
+      {/* Other Projects */}
+      {others.length > 0 && (
+        <div className="mt-10">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {others.map((p: any) => (
+              <Link key={p.id} href={`/proyek/${p.slug}`}
+                className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+                <div className="aspect-[16/10] overflow-hidden bg-surface">
+                  {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
+                    <img src={p.coverImage || p.images[0]} alt={p.title}
+                      className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-4xl">☀️</div>
+                  )}
+                </div>
+                <div className="p-4">
+                  {p.category && (
+                    <span className="mb-2 inline-block rounded-full bg-surface px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted">
+                      {p.category}
+                    </span>
+                  )}
+                  <h4 className="font-semibold text-primary text-sm line-clamp-2 group-hover:text-primary-hover transition-colors">{p.title}</h4>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted">
+                    {s.showLocation !== false && p.location && <span>{p.location}</span>}
+                    {s.showYear !== false && p.year && <span>{p.year}</span>}
+                    {s.showCapacity !== false && p.capacity && <span>{p.capacity}</span>}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* View all CTA */}
+      <div className="mt-10 text-center">
+        <Link href={s.buttonLink || '/proyek'}
+          className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-primary hover:bg-surface transition-colors">
+          {s.buttonLabel || 'Lihat Semua Proyek'} <span className="text-lg">→</span>
+        </Link>
       </div>
     </SectionWrapper>
   );
