@@ -60,7 +60,7 @@ export async function saveDraft(data: {
   });
 }
 
-export async function publishSection(id: string, data?: { title?: string; subtitle?: string; settings?: Record<string, unknown> }) {
+export async function publishSection(id: string, data?: { type?: string; title?: string; subtitle?: string; settings?: Record<string, unknown> }) {
   await requireAuth();
   const prisma = await getAdminPrisma();
 
@@ -117,6 +117,7 @@ export async function upsertSection(data: {
     if (data.status === 'published') {
       // Publish atomically — save settings + promote in one transaction
       await publishSection(data.id, {
+        type: data.type,
         title: data.title || '',
         subtitle: data.subtitle || '',
         settings: data.settings || {},
