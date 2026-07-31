@@ -67,9 +67,14 @@ export default function RfqPage() {
   // ── Project context auto-fill ──
   const searchParams = useSearchParams();
   const projectSlug = searchParams.get('project');
+  const [importedSlug, setImportedSlug] = useState<string | null>(null);
+  const [showMergeDialog, setShowMergeDialog] = useState(false);
+  const [pendingProjectItems, setPendingProjectItems] = useState<RfqItem[]>([]);
+  const [pendingProject, setPendingProject] = useState<any>(null);
 
   useEffect(() => {
-    if (!projectSlug) return;
+    if (!projectSlug || projectSlug === importedSlug) return;
+
     (async () => {
       try {
         const res = await fetch(`/api/projects?slug=${encodeURIComponent(projectSlug)}`);
@@ -79,9 +84,24 @@ export default function RfqPage() {
 
         // Build items from project's linked products
         const newItems: RfqItem[] = [];
-        if (Array.isArray(project.productIds) && project.productIds.length > 0) {
-          for (const pid of project.productIds) {
-            newItems.push({ name: pid, quantity: 1, notes: 'Dari proyek referensi' });
+        const rawIds: string[] = Array.isArray(project.productIds) ? project.productIds : [];
+
+        if (rawIds.length > 0) {
+          // Fetch product details to validate they still exist
+          for (const slug of rawIds.slice(0, 50)) { // cap at 50
+            try {
+              const pRes = await fetch(`/api/products?slug=${encodeURIComponent(slug)}`);
+              if (pRes.ok) {
+                const prod = await pRes.json();
+                // Take first product from array response
+                const p = Array.isArray(prod) ? prod[0] : prod;
+                newItems.push({ name: p?.name || slug, quantity: 1, notes: `Dari proyek: ${project.title}` });
+              } else {
+                newItems.push({ name: `[Dihapus] ${slug}`, quantity: 1, notes: 'Produk tidak tersedia — perlu ditinjau' });
+              }
+            } catch {
+              newItems.push({ name: slug, quantity: 1, notes: 'Verifikasi produk gagal' });
+            }
           }
         } else {
           // Fallback: generic item
@@ -92,27 +112,63 @@ export default function RfqPage() {
           });
         }
 
-        setItems(prev => {
-          // Don't overwrite existing items if user already has some
-          if (prev.length > 0) return prev;
-          return newItems;
-        });
+        // Check if user already has items → show merge dialog
+        if (items.length > 0 && !showMergeDialog) {
+          setPendingProjectItems(newItems);
+          setPendingProject(project);
+          setShowMergeDialog(true);
+          return;
+        }
 
-        setForm(prev => ({
-          ...prev,
-          location: project.location || prev.location,
-          projectName: prev.projectName || project.title || '',
-          notes: prev.notes
-            ? prev.notes
-            : `Proyek Referensi:\n${project.title}\n\nLokasi: ${project.location || '—'}\n\nDiminta: Solusi energi terbarukan serupa.`,
-        }));
-
-        showToast(`✅ RFQ otomatis dibuat dari ${project.title}`);
+        applyProjectItems(newItems, project);
       } catch {
         showToast('⚠️ Proyek tidak ditemukan');
       }
     })();
-  }, [projectSlug]); // only run when projectSlug changes
+  }, [projectSlug, importedSlug]);
+
+  function applyProjectItems(newItems: RfqItem[], project: any) {
+    setItems(newItems);
+    setImportedSlug(project.slug);
+    setShowMergeDialog(false);
+
+    setForm(prev => ({
+      ...prev,
+      location: project.location || prev.location,
+      projectName: project.title || prev.projectName,
+      notes: prev.notes || `Proyek Referensi:\n${project.title}\n\nLokasi: ${project.location || '—'}\n\nDiminta: Solusi energi terbarukan serupa.\n\nSource Project: ${project.slug}`,
+    }));
+
+    // Clear sessionStorage for this project import
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('rfq-source-project', project.slug);
+    }
+
+    showToast(`✅ RFQ diisi dari ${project.title}`);
+  }
+
+  function handleMergeAppend() {
+    setItems(prev => [...prev, ...pendingProjectItems]);
+    if (pendingProject) {
+      setForm(prev => ({
+        ...prev,
+        notes: prev.notes + `\n\n+ Ditambahkan dari: ${pendingProject.title} (${pendingProject.slug})`,
+      }));
+    }
+    setImportedSlug(pendingProject?.slug || null);
+    setShowMergeDialog(false);
+    showToast(`✅ ${pendingProjectItems.length} item ditambahkan dari ${pendingProject?.title}`);
+  }
+
+  function handleMergeReplace() {
+    if (pendingProject) applyProjectItems(pendingProjectItems, pendingProject);
+  }
+
+  function handleMergeCancel() {
+    setShowMergeDialog(false);
+    setPendingProjectItems([]);
+    setPendingProject(null);
+  }
   // ── Cart import ──
   const importFromCart = useCallback(() => {
     const cartItems: RfqItem[] = cart.items.map((i) => ({
@@ -265,6 +321,30 @@ export default function RfqPage() {
       )}
 
       <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-8" data-track="rfq-form">
+
+        {/* Merge dialog */}
+        {showMergeDialog && (
+          <div className="rounded-lg border-2 border-primary bg-primary/5 p-5 animate-scale-in" role="dialog">
+            <p className="text-sm font-semibold text-primary mb-1">Anda sudah memiliki {items.length} item di RFQ</p>
+            <p className="text-xs text-muted mb-3">
+              {pendingProjectItems.length} item dari proyek &quot;{pendingProject?.title}&quot; siap ditambahkan.
+            </p>
+            <div className="flex gap-2">
+              <button type="button" onClick={handleMergeAppend}
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover transition">
+                ➕ Tambahkan ({pendingProjectItems.length})
+              </button>
+              <button type="button" onClick={handleMergeReplace}
+                className="rounded-lg border border-border px-4 py-2 text-sm text-muted hover:bg-surface transition">
+                🔄 Ganti semua
+              </button>
+              <button type="button" onClick={handleMergeCancel}
+                className="rounded-lg px-4 py-2 text-sm text-muted hover:text-primary transition">
+                Batal
+              </button>
+            </div>
+          </div>
+        )}
         {/* ── Customer Type ── */}
         <section className="rounded-lg border border-border bg-card p-6 space-y-3">
           <RequiredLabel>Customer Type</RequiredLabel>
