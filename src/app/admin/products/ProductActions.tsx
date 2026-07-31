@@ -10,16 +10,16 @@ export function ProductActions() {
     <>
       <div className="flex items-center gap-2">
         <a
-          href="/api/admin/products/export"
+          href="/api/admin/products/export-xlsx"
           className="rounded-lg border border-border px-3 py-2 text-sm text-muted hover:bg-surface transition"
         >
-          Export CSV
+          📥 Export Excel (.xlsx)
         </a>
         <button
           onClick={() => setShowImport(true)}
           className="rounded-lg border border-border px-3 py-2 text-sm text-muted hover:bg-surface transition"
         >
-          Import CSV
+          📤 Import Excel (.xlsx)
         </button>
       </div>
       {showImport && <ImportModal onClose={() => setShowImport(false)} />}

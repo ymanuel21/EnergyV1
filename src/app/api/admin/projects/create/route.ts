@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminPrisma } from '../../lib/admin-prisma';
+import { getAdminPrisma } from '@/app/admin/lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
 
 export async function POST(request: NextRequest) {

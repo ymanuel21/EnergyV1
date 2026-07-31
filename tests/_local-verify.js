@@ -1,50 +1,39 @@
 const { chromium } = require('playwright');
 (async () => {
   const b = await chromium.launch({ headless: true });
-  const ctx = await b.newContext();
-  const p = await ctx.newPage();
-  const BASE = 'http://localhost:3002';
+  const p = await b.newPage();
 
-  // Login
-  await p.goto(BASE + '/admin/login', { waitUntil: 'domcontentloaded' });
+  // Capture console errors
+  var errors = [];
+  p.on('console', function(msg) {
+    if (msg.type() === 'error') errors.push(msg.text());
+  });
+  p.on('pageerror', function(err) { errors.push(err.message); });
+
+  await p.goto('http://localhost:3000/admin/login', { waitUntil: 'networkidle' });
   await p.fill('input[name="email"]', 'admin@ebtplaza.com');
   await p.fill('input[name="password"]', 'qwe');
   await p.locator('form[action="/api/login"] button[type="submit"]').click();
   await p.waitForTimeout(5000);
 
-  async function check(path, label) {
-    await p.goto(BASE + path, { waitUntil: 'domcontentloaded' });
-    await p.waitForTimeout(3000);
-    var text = await p.evaluate(function() { return document.body.innerText.substring(0,150); });
-    var ok = text.indexOf('500') < 0 && text.indexOf("couldn't load") < 0 && text.indexOf('error') < 0;
-    console.log(label + ': ' + (ok ? '✅' : '❌'));
-    if (!ok) console.log('  → ' + text.substring(0,80).replace(/\n/g,' '));
-  }
+  await p.goto('http://localhost:3000/admin/projects', { waitUntil: 'load' });
+  await p.waitForTimeout(5000);
 
-  await check('/admin/projects', 'Projects list');
-  await check('/admin/homepage', 'Homepage');
-  await check('/admin/products', 'Products');
-  await check('/', 'Public homepage');
+  var text = await p.evaluate(function() { return document.body.innerText; });
+  console.log('1. Error overlay:', text.indexOf('couldn') >= 0 ? '❌' : '✅');
+  console.log('2. + New Project:', text.indexOf('+ New Project') >= 0 ? '✅' : '❌');
+  console.log('3. Sidebar visible:', text.indexOf('Dashboard') >= 0 ? '✅' : '❌');
 
-  // Check project list has + New Project button
-  await p.goto(BASE + '/admin/projects', { waitUntil: 'domcontentloaded' });
+  // Check console errors
+  var reactErrors = errors.filter(function(e) { return e.indexOf('Event handlers') >= 0 || e.indexOf('Hydration') >= 0 || e.indexOf('cannot be passed') >= 0; });
+  console.log('4. React errors:', reactErrors.length, reactErrors);
+
+  // Navigate to public page to check cart hydration
+  await p.goto('http://localhost:3000', { waitUntil: 'load' });
   await p.waitForTimeout(3000);
-  var hasCreate = await p.locator('text=+ New Project').isVisible({ timeout: 3000 }).catch(function() { return false; });
-  console.log('+ New Project button: ' + (hasCreate ? '✅' : '❌'));
+  var pubText = await p.evaluate(function() { return document.body.innerText; });
+  console.log('5. Public page:', pubText.indexOf('Tenaga surya') >= 0 ? '✅' : '❌');
 
-  var hasDelete = await p.locator('text=Delete').isVisible({ timeout: 3000 }).catch(function() { return false; });
-  console.log('Delete button: ' + (hasDelete ? '✅' : '❌'));
-
-  var hasEdit = await p.locator('text=Edit').isVisible({ timeout: 3000 }).catch(function() { return false; });
-  console.log('Edit link: ' + (hasEdit ? '✅' : '❌'));
-
-  // Test create + delete
-  if (hasCreate) {
-    await p.locator('button:has-text("+ New Project")').click();
-    await p.waitForTimeout(3000);
-    var afterCreate = await p.evaluate(function() { return document.body.innerText; });
-    console.log('After create: ' + (afterCreate.indexOf('New Project') >= 0 ? '✅' : '❌'));
-  }
-
+  console.log('\nError count:', errors.length);
   await b.close();
 })();
