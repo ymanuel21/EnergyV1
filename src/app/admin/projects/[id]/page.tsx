@@ -5,15 +5,11 @@ import { getAdminPrisma } from '../../lib/admin-prisma';
 import Link from 'next/link';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { ProjectEditForm } from '../ProjectEditForm';
-import { getLatestReview } from '@/lib/services/review';
 
 export default async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const prisma = await getAdminPrisma();
-  const [project, review] = await Promise.all([
-    prisma.project.findUnique({ where: { id } }),
-    getLatestReview('project', id),
-  ]);
+  const project = await prisma.project.findUnique({ where: { id } });
   if (!project) notFound();
 
   // Merge draftData — draft values override live fields for form defaults
@@ -32,15 +28,6 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
   }
 
   const status = project.status as 'draft' | 'published' | 'archived';
-  const reviewStatus = review?.status as string | null;
-  const reviewNotes = review?.notes as string | null;
-
-  const headerStatus = (
-    reviewStatus === 'pending' ? 'review_pending' as const :
-    reviewStatus === 'approved' ? 'review_approved' as const :
-    reviewStatus === 'rejected' ? 'review_rejected' as const :
-    status
-  );
 
   return (
     <div>
@@ -49,7 +36,7 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
         <div className="flex items-center gap-3">
           <Link href="/admin/projects" className="text-muted hover:text-primary text-sm">← Back</Link>
           <h1 className="text-xl font-bold text-primary">{merged.title || 'Edit Project'}</h1>
-          <StatusBadge status={headerStatus} />
+          <StatusBadge status={status} />
         </div>
         <form action={handleDelete}>
           <button className="rounded-lg border border-red-300 px-4 py-2 text-sm text-red-600 hover:bg-red-50">Delete</button>
@@ -86,8 +73,6 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
             status: project.status,
             updatedAt: project.updatedAt.toISOString(),
           }}
-          reviewStatus={reviewStatus}
-          reviewNotes={reviewNotes}
         />
       </div>
     </div>

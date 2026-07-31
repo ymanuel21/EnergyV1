@@ -4,7 +4,6 @@ import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../AdminToastProvider';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
-import { submitForReview } from '@/lib/services/review';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { ProjectMediaPanel } from './ProjectMediaPanel';
 import Link from 'next/link';
@@ -43,11 +42,9 @@ interface ProjectEditFormProps {
     status: string;
     updatedAt: string;
   };
-  reviewStatus?: string | null;
-  reviewNotes?: string | null;
 }
 
-export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectEditFormProps) {
+export function ProjectEditForm({ project }: ProjectEditFormProps) {
   const router = useRouter();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('Overview');
@@ -162,25 +159,6 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
       router.push('/admin/projects');
     } catch (err: any) {
       showToast('✕ Gagal: ' + (err?.message || 'Unknown error'), 'error');
-    } finally {
-      setSaving(false);
-    }
-  }, [project.id, buildPublishData, saving, router, showToast]);
-
-  const handleSubmitForReview = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (saving) return;
-    setSaving(true);
-    try {
-      const data = buildPublishData();
-      await saveDraft({ entity: 'project', id: project.id, data });
-      await submitForReview('project', project.id);
-      setDirty(false);
-      setSaveState('saved');
-      showToast('✓ Proyek berhasil dikirim untuk review', 'success');
-      router.refresh();
-    } catch {
-      showToast('✕ Gagal mengirim review', 'error');
     } finally {
       setSaving(false);
     }
@@ -542,18 +520,10 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
       {/* ── Sticky Save Bar ── */}
       <div className="sticky bottom-0 border-t border-border bg-card rounded-b-xl px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <StatusBadge status={
-            reviewStatus === 'pending' ? 'review_pending' :
-            reviewStatus === 'approved' ? 'review_approved' :
-            reviewStatus === 'rejected' ? 'review_rejected' :
-            status
-          } />
+          <StatusBadge status={status} />
           <span className="text-xs text-muted hidden sm:inline">
             Last updated: {new Date(project.updatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
           </span>
-          {reviewStatus === 'rejected' && reviewNotes && (
-            <span className="text-xs text-red-600 truncate max-w-[150px]">Rejected: {reviewNotes}</span>
-          )}
           {dirty && <span className="text-xs text-amber-600">Unsaved changes</span>}
           {saveState === 'saved' && <span className="text-xs text-green-600">Saved</span>}
         </div>
@@ -561,41 +531,12 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
           <Link href="/admin/projects" className="rounded-lg border border-border px-3 py-2 text-sm text-muted hover:bg-surface transition">
             Cancel
           </Link>
-
-          {reviewStatus === 'pending' && (
-            <>
-              <button type="button" disabled className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted opacity-50">Save Draft</button>
-              <button type="button" disabled className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white opacity-50">Waiting for Review</button>
-            </>
-          )}
-
-          {reviewStatus === 'approved' && (
-            <>
-              <button type="submit" disabled={saving} className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface transition disabled:opacity-50">
-                {saving ? 'Saving...' : 'Save Draft'}
-              </button>
-              <button type="button" onClick={handlePublish} disabled={saving} className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
-                {saving ? 'Publishing...' : 'Publish'}
-              </button>
-            </>
-          )}
-
-          {(!reviewStatus || reviewStatus === 'rejected') && (
-            <>
-              <button type="submit" disabled={saving} className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface transition disabled:opacity-50">
-                {saving ? 'Saving...' : 'Save Draft'}
-              </button>
-              <button type="button" onClick={handleSubmitForReview} disabled={saving} className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
-                {saving ? 'Submitting...' : 'Submit for Review'}
-              </button>
-            </>
-          )}
-
-          {!reviewStatus && status === 'published' && (
-            <button type="button" onClick={handlePublish} disabled={saving} className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
-              {saving ? 'Publishing...' : 'Publish'}
-            </button>
-          )}
+          <button type="submit" disabled={saving} className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface transition disabled:opacity-50">
+            {saving ? 'Saving...' : 'Save Draft'}
+          </button>
+          <button type="button" onClick={handlePublish} disabled={saving} className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
+            {saving ? 'Publishing...' : 'Publish'}
+          </button>
         </div>
       </div>
     </form>
