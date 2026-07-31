@@ -24,16 +24,26 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   // Resolve linked product names from productIds slugs
   const prisma = await getPrisma();
-  const rawIds: string[] = Array.isArray(project.productIds) ? project.productIds : [];
-  let linkedProducts: { slug: string; name: string }[] = [];
-  if (rawIds.length > 0) {
+  const rawIds: any[] = Array.isArray(project.productIds) ? project.productIds : [];
+  // Support both old format (string[]) and new format ({slug, quantity}[])
+  const slugs: string[] = rawIds.map((p: any) => typeof p === 'string' ? p : p.slug || p.productId || '');
+  const quantities: Record<string, number> = {};
+  rawIds.forEach((p: any) => {
+    if (typeof p === 'string') { quantities[p] = 1; }
+    else { quantities[p.slug || p.productId || ''] = p.quantity || 1; }
+  });
+  let linkedProducts: { slug: string; name: string; quantity: number }[] = [];
+  if (slugs.length > 0) {
     const products = await prisma.product.findMany({
-      where: { slug: { in: rawIds } },
+      where: { slug: { in: slugs } },
       select: { slug: true, name: true },
     });
-    // Preserve order from productIds
     const nameMap = new Map(products.map((p: any) => [p.slug, p.name]));
-    linkedProducts = rawIds.map(slug => ({ slug, name: nameMap.get(slug) || slug }));
+    linkedProducts = slugs.map(slug => ({
+      slug,
+      name: nameMap.get(slug) || slug,
+      quantity: quantities[slug] || 1,
+    }));
   }
 
   const images: string[] = Array.isArray(project.images) ? project.images : [];

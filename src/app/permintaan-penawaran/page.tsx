@@ -84,18 +84,19 @@ export default function RfqPage() {
 
         // Build items from project's linked products
         const newItems: RfqItem[] = [];
-        const rawIds: string[] = Array.isArray(project.productIds) ? project.productIds : [];
+        const rawIds: any[] = Array.isArray(project.productIds) ? project.productIds : [];
 
         if (rawIds.length > 0) {
-          // Fetch product details to validate they still exist
-          for (const slug of rawIds.slice(0, 50)) { // cap at 50
+          for (const item of rawIds.slice(0, 50)) {
+            const slug = typeof item === 'string' ? item : item.slug || item.productId || '';
+            const qty = typeof item === 'string' ? 1 : (item.quantity || 1);
             try {
               const pRes = await fetch(`/api/products?slug=${encodeURIComponent(slug)}`);
               if (pRes.ok) {
                 const prod = await pRes.json();
                 // Take first product from array response
                 const p = Array.isArray(prod) ? prod[0] : prod;
-                newItems.push({ name: p?.name || slug, quantity: 1, notes: `Dari proyek: ${project.title}` });
+                newItems.push({ name: p?.name || slug, quantity: qty, notes: `Dari proyek: ${project.title}` });
               } else {
                 newItems.push({ name: `[Dihapus] ${slug}`, quantity: 1, notes: 'Produk tidak tersedia — perlu ditinjau' });
               }

@@ -76,11 +76,28 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
     ogImage: project.seoData?.ogImage || '',
   });
 
-  // Product linking
-  const [linkedProductIds, setLinkedProductIds] = useState<string[]>(project.productIds || []);
+  // Product linking with quantities
+  const [linkedProducts, setLinkedProducts] = useState<{ slug: string; name: string; brand: string; category: string; image: string; quantity: number }[]>(() => {
+    // Migrate from old productIds[] format
+    const ids = project.productIds || [];
+    if (ids.length > 0 && typeof ids[0] === 'string') {
+      return (ids as string[]).map(slug => ({ slug, name: '', brand: '', category: '', image: '', quantity: 1 }));
+    }
+    return (ids as any[]).map((p: any) => ({
+      slug: p.slug || p.productId || '',
+      name: p.name || '',
+      brand: p.brand || '',
+      category: p.category || '',
+      image: p.image || '',
+      quantity: p.quantity || 1,
+    }));
+  });
   const [productSearch, setProductSearch] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchTimer = useState<any>(null)[0];
+  const [changingIndex, setChangingIndex] = useState<number | null>(null);
 
   const markDirty = useCallback(() => {
     if (!dirty) setDirty(true);
@@ -113,9 +130,9 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
       storyData: story,
       impactData: impact,
       seoData: seo,
-      productIds: linkedProductIds,
+      productIds: linkedProducts.map(p => ({ slug: p.slug, quantity: p.quantity })),
     };
-  }, [story, impact, seo, linkedProductIds]);
+  }, [story, impact, seo, linkedProducts]);
 
   const handleSaveDraft = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -173,29 +190,63 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
     }
   }, [project.id, buildFormData, saving, router, showToast]);
 
-  const handleSearchProducts = useCallback(async () => {
-    if (!productSearch.trim()) return;
+  const handleSearchProducts = useCallback(async (query: string) => {
+    if (!query || query.length < 2) { setSearchResults([]); setSearchOpen(false); return; }
     setSearching(true);
     try {
-      const res = await fetch(`/api/admin/search-products?q=${encodeURIComponent(productSearch)}`);
+      const res = await fetch(`/api/admin/search-products?q=${encodeURIComponent(query)}`);
       const data = await res.json();
-      setSearchResults(data.products || data || []);
+      const results = (data.products || data || []).slice(0, 8);
+      setSearchResults(results);
+      setSearchOpen(results.length > 0);
     } catch { setSearchResults([]); }
     setSearching(false);
-  }, [productSearch]);
+  }, []);
 
-  const addProduct = useCallback((productId: string) => {
-    if (!linkedProductIds.includes(productId)) {
-      setLinkedProductIds(prev => [...prev, productId]);
-      markDirty();
-    }
+  const addProduct = useCallback((prod: any) => {
+    const slug = prod.slug;
+    if (linkedProducts.some(p => p.slug === slug)) return; // duplicate prevention
+    setLinkedProducts(prev => [...prev, {
+      slug,
+      name: prod.name || '',
+      brand: prod.brand?.name || prod.brand || '',
+      category: prod.category || '',
+      image: prod.images?.[0] || prod.image || '',
+      quantity: 1,
+    }]);
+    markDirty();
     setProductSearch('');
     setSearchResults([]);
-  }, [linkedProductIds, markDirty]);
+    setSearchOpen(false);
+    setChangingIndex(null);
+  }, [linkedProducts, markDirty]);
 
-  const removeProduct = useCallback((productId: string) => {
-    setLinkedProductIds(prev => prev.filter(id => id !== productId));
+  const removeProduct = useCallback((index: number) => {
+    setLinkedProducts(prev => prev.filter((_, i) => i !== index));
     markDirty();
+  }, [markDirty]);
+
+  const updateQuantity = useCallback((index: number, qty: number) => {
+    if (qty < 1) qty = 1;
+    if (qty > 99999) qty = 99999;
+    setLinkedProducts(prev => prev.map((p, i) => i === index ? { ...p, quantity: qty } : p));
+    markDirty();
+  }, [markDirty]);
+
+  const changeProduct = useCallback((index: number, newProd: any) => {
+    setLinkedProducts(prev => prev.map((p, i) => i === index ? {
+      ...p,
+      slug: newProd.slug,
+      name: newProd.name || '',
+      brand: newProd.brand?.name || newProd.brand || '',
+      category: newProd.category || '',
+      image: newProd.images?.[0] || newProd.image || '',
+    } : p));
+    markDirty();
+    setProductSearch('');
+    setSearchResults([]);
+    setSearchOpen(false);
+    setChangingIndex(null);
   }, [markDirty]);
 
   const inputCls = 'w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card';
@@ -362,45 +413,75 @@ export function ProjectEditForm({ project, reviewStatus, reviewNotes }: ProjectE
       {/* ═══ Products Tab ═══ */}
       {activeTab === 'Products' && (
         <div className="p-6 space-y-4">
-          <p className="text-xs text-muted">Link products used in this project. They will appear on the public project page.</p>
+          <p className="text-xs text-muted">Link products used in this project. They appear on the public project page and RFQ.</p>
 
-          {/* Search */}
-          <div className="flex gap-2">
-            <input value={productSearch}
-              onChange={e => setProductSearch(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleSearchProducts(); } }}
-              className={inputCls} placeholder="Search products by name..." />
-            <button type="button" onClick={handleSearchProducts} disabled={searching}
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50">
-              {searching ? '...' : 'Search'}
-            </button>
-          </div>
-
-          {/* Results */}
-          {searchResults.length > 0 && (
-            <div className="rounded-lg border border-border max-h-48 overflow-auto">
-              {searchResults.map((p: any) => (
-                <button key={p.id} type="button"
-                  onClick={() => addProduct(p.id)}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-surface border-b border-border/50 last:border-0 flex justify-between items-center">
-                  <span className="text-primary">{p.name}</span>
-                  <span className="text-xs text-muted">{p.brand?.name || ''}</span>
-                </button>
-              ))}
+          {/* Search with autocomplete */}
+          <div className="relative">
+            <div className="flex gap-2">
+              <input value={productSearch}
+                onChange={e => { setProductSearch(e.target.value); handleSearchProducts(e.target.value); }}
+                onKeyDown={e => { if (e.key === 'Escape') { setSearchOpen(false); setSearchResults([]); } }}
+                onFocus={() => { if (productSearch.length >= 2 && searchResults.length > 0) setSearchOpen(true); }}
+                className={inputCls} placeholder="Search products by name..." />
+              <button type="button" onClick={() => handleSearchProducts(productSearch)} disabled={searching}
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover disabled:opacity-50">
+                {searching ? '...' : 'Search'}
+              </button>
             </div>
-          )}
+
+            {/* Autocomplete dropdown */}
+            {searchOpen && searchResults.length > 0 && (
+              <div className="absolute z-20 left-0 right-0 mt-1 rounded-lg border border-border bg-card shadow-xl max-h-80 overflow-auto">
+                {searching && <div className="px-3 py-4 text-xs text-muted text-center">Searching...</div>}
+                {searchResults.map((p: any) => (
+                  <button key={p.id} type="button"
+                    onClick={() => changingIndex !== null ? changeProduct(changingIndex, p) : addProduct(p)}
+                    className="w-full text-left px-3 py-3 hover:bg-surface border-b border-border/50 last:border-0 flex items-center gap-3 transition-colors">
+                    <img src={p.images?.[0] || '/images/placeholder/product-placeholder.png'} alt="" className="h-10 w-10 rounded object-cover shrink-0 bg-surface" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-primary font-medium truncate">{p.name}</p>
+                      <p className="text-xs text-muted">{p.brand?.name || p.brand || ''}{p.category ? ` • ${p.category}` : ''}</p>
+                    </div>
+                    <span className="text-xs text-muted shrink-0">{p.price ? `Rp ${Number(p.price).toLocaleString('id-ID')}` : 'Hubungi Kami'}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Linked products */}
           <div className="space-y-2">
-            <label className={labelCls}>Linked Products ({linkedProductIds.length})</label>
-            {linkedProductIds.length === 0 && (
-              <p className="text-sm text-muted">No products linked yet.</p>
+            <label className={labelCls}>Linked Products ({linkedProducts.length})</label>
+            {linkedProducts.length === 0 && (
+              <p className="text-sm text-muted">No products linked yet. Search above to add.</p>
             )}
-            {linkedProductIds.map((pid, i) => (
-              <div key={pid} className="flex items-center justify-between rounded-lg border border-border px-3 py-2">
-                <span className="text-sm text-primary font-mono text-xs">{pid}</span>
-                <button type="button" onClick={() => removeProduct(pid)}
-                  className="text-xs text-red-500 hover:underline">Remove</button>
+            {linkedProducts.map((lp, i) => (
+              <div key={lp.slug + i} className="flex items-center gap-3 rounded-lg border border-border p-3 bg-card">
+                <img
+                  src={lp.image || '/images/placeholder/product-placeholder.png'}
+                  alt={lp.name} className="h-12 w-12 rounded-lg object-cover shrink-0 bg-surface"
+                  onError={e => { (e.target as HTMLImageElement).src = '/images/placeholder/product-placeholder.png'; }}
+                />
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-medium text-primary truncate">{lp.name || lp.slug}</h4>
+                  <p className="text-xs text-muted">{lp.category || ''}{lp.brand ? ` • ${lp.brand}` : ''}</p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button type="button" onClick={() => updateQuantity(i, lp.quantity - 1)}
+                    className="flex h-7 w-7 items-center justify-center rounded border border-border text-sm text-muted hover:bg-surface transition">−</button>
+                  <input
+                    type="number" min={1} max={99999}
+                    value={lp.quantity}
+                    onChange={e => { const v = parseInt(e.target.value); updateQuantity(i, isNaN(v) ? 1 : v); }}
+                    className="h-7 w-14 rounded border border-border text-center text-sm bg-card [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <button type="button" onClick={() => updateQuantity(i, lp.quantity + 1)}
+                    className="flex h-7 w-7 items-center justify-center rounded border border-border text-sm text-muted hover:bg-surface transition">+</button>
+                </div>
+                <button type="button" onClick={() => { setChangingIndex(i); setProductSearch(''); setSearchOpen(false); }}
+                  className="text-xs text-primary hover:underline shrink-0">Change</button>
+                <button type="button" onClick={() => removeProduct(i)}
+                  className="text-xs text-red-500 hover:underline shrink-0">Remove</button>
               </div>
             ))}
           </div>
