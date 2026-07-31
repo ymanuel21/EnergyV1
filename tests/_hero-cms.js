@@ -3,59 +3,57 @@ const { chromium } = require('playwright');
   const b = await chromium.launch({ headless: true });
   const ctx = await b.newContext();
   const p = await ctx.newPage();
+
+  // Capture ALL form submissions to homepage endpoint
+  var captureDone = false;
+  p.on('request', function(r) {
+    if (r.url().includes('homepage') && r.method() === 'POST' && !captureDone) {
+      captureDone = true;
+      var body = r.postData();
+      // Extract the settings field from form data
+      var match = body.match(/settings=([^&]+)/);
+      if (match) {
+        var decoded = decodeURIComponent(match[1]);
+        var parsed = JSON.parse(decoded);
+        console.log('SAVE PAYLOAD — heroProductId:', JSON.stringify(parsed.heroProductId));
+      }
+    }
+  });
+
   await p.goto('https://energyv1.vercel.app/admin/login', { waitUntil: 'domcontentloaded' });
   await p.fill('input[name="email"]', 'admin@ebtplaza.com');
   await p.fill('input[name="password"]', 'qwe');
   await p.locator('form[action="/api/login"] button[type="submit"]').click();
   await p.waitForTimeout(5000);
-  await p.goto('https://energyv1.vercel.app/admin/homepage', { waitUntil: 'domcontentloaded' });
+  await p.goto('https://energyv1.vercel.app/admin/homepage', { waitUntil: 'domcontentloaded' }).catch(function() {});
   await p.waitForTimeout(6000);
 
-  // Click first section (Hero) — use the first clickable row with "Tenaga surya" that's near "Published"
-  var rows = await p.evaluate(function() {
-    var all = document.querySelectorAll('[class*="cursor-pointer"]');
-    return Array.from(all).slice(0, 15).map(function(el, i) {
-      return i + ': ' + el.textContent.substring(0, 40);
-    });
-  });
-  console.log('Rows:', JSON.stringify(rows));
-
-  // Click the FIRST section (Hero = Tenaga surya)
-  var heroEl = p.locator('[class*="cursor-pointer"]').first();
-  await heroEl.click();
+  // Click Hero
+  var heroRow = p.locator('[class*="cursor-pointer"]').first();
+  await heroRow.click();
   await p.waitForTimeout(2000);
+  console.log('1. Hero opened');
 
-  // Check which section is being edited
-  var titleInput = p.locator('input[placeholder="Section Title"]');
-  var titleVal = await titleInput.inputValue().catch(function() { return 'not found'; });
-  console.log('Editing section title:', titleVal);
-
-  // If this is "Tenaga surya", find the picker
-  if (titleVal === 'Tenaga surya') {
-    var picker = p.locator('input[placeholder="Pilih produk unggulan..."]');
-    if (await picker.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
-      await picker.click();
-      await picker.fill('delta');
-      await p.waitForTimeout(2500);
+  // Select product
+  var picker = p.locator('input[placeholder="Pilih produk unggulan..."]');
+  if (await picker.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
+    await picker.click();
+    await picker.fill('delta');
+    await p.waitForTimeout(2500);
+    var c = await p.evaluate(function() { return document.querySelectorAll('.absolute button.w-full').length; });
+    if (c > 0) {
+      await p.evaluate(function() { document.querySelectorAll('.absolute button.w-full')[0].click(); });
+      await p.waitForTimeout(1500);
       
-      var c = await p.evaluate(function() { return document.querySelectorAll('.absolute button.w-full').length; });
-      console.log('Dropdown:', c);
-      
-      if (c > 0) {
-        await p.evaluate(function() { document.querySelectorAll('.absolute button.w-full')[0].click(); });
-        await p.waitForTimeout(1500);
-        
-        var pub = p.locator('button:has-text("Publish")').first();
-        if (await pub.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
-          await pub.click();
-          await p.waitForTimeout(4000);
-          console.log('Published');
-        }
+      // Publish
+      var pub = p.locator('button:has-text("Publish")').first();
+      if (await pub.isVisible({ timeout: 2000 }).catch(function() { return false; })) {
+        await pub.click();
+        await p.waitForTimeout(5000);
       }
     }
-  } else {
-    console.log('Wrong section opened — title:', titleVal);
   }
 
+  if (!captureDone) console.log('No POST captured');
   await b.close();
 })();

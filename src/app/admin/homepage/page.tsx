@@ -21,7 +21,6 @@ export default async function HomepageBuilderPage() {
       subtitle: data.get('subtitle') as string,
       settings: JSON.parse((data.get('settings') as string) || '{}'),
     });
-    console.log('[upsertSection] heroProductId:', JSON.parse((data.get('settings') as string) || '{}').heroProductId);
     revalidatePath('/admin/homepage');
     revalidatePath('/');
   }
