@@ -179,9 +179,13 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     type: 'projects',
     label: 'Projects',
     icon: '☀️',
-    defaultSettings: { source: 'latest', maxProjects: 6, showCustomer: true, showCapacity: true, showYear: true, showLocation: true, buttonLabel: 'Lihat Proyek', buttonLink: '/proyek' },
+    defaultSettings: { source: 'latest', maxProjects: 4, showCustomer: true, showCapacity: true, showYear: true, showLocation: true, eyebrow: 'Project Referensi', heading: 'Energi Terbarukan untuk Semua.', subheading: 'Jelajahi proyek energi terbarukan yang telah kami selesaikan di berbagai sektor.', buttonLabel: 'Lihat Semua Proyek', buttonLink: '/proyek', projectIds: [] },
     fields: [
-      { key: 'source', label: 'Source', type: 'select', options: [{ value: 'latest', label: 'Latest' }, { value: 'featured', label: 'Featured' }, { value: 'manual', label: 'Manual' }], group: 'content' },
+      { key: 'eyebrow', label: 'Eyebrow', type: 'text', group: 'content' },
+      { key: 'heading', label: 'Heading', type: 'text', group: 'content' },
+      { key: 'subheading', label: 'Support Text', type: 'textarea', group: 'content' },
+      { key: 'source', label: 'Content Source', type: 'select', options: [{ value: 'latest', label: 'Latest Projects' }, { value: 'manual', label: 'Manual Selection' }], group: 'content' },
+      { key: 'projectIds', label: 'Featured Projects', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek...' },
       { key: 'maxProjects', label: 'Max Projects', type: 'number', group: 'content' },
       { key: 'showCustomer', label: 'Show Customer', type: 'toggle', group: 'styling' },
       { key: 'showCapacity', label: 'Show Capacity', type: 'toggle', group: 'styling' },
@@ -481,22 +485,42 @@ function CtaRenderer({ section }: SectionRendererProps) {
 /* ===== NEW SECTION TYPES ===== */
 
 function ProjectsRenderer({ section, data }: SectionRendererProps) {
-  const projects = data?.projects || [];
-  if (!projects.length) return null;
   const s = section.settings || {};
-  const max = Number(s.maxProjects) || 6;
+  let projects = data?.projects || [];
 
-  // First featured project gets hero treatment, rest are cards
-  const featured = projects.find((p: any) => p.featured) || projects[0];
-  const others = projects.filter((p: any) => p.slug !== featured.slug).slice(0, max - 1);
+  // Manual selection: filter to selected project slugs, preserve order
+  const projectIds: string[] = s.projectIds || [];
+  if (s.source === 'manual' && projectIds.length > 0) {
+    projects = projectIds
+      .map((id: string) => projects.find((p: any) => p.slug === id || p.id === id))
+      .filter(Boolean);
+  }
+
+  const max = Number(s.maxProjects) || 4;
+  const display = projects.slice(0, max);
+
+  // Empty state
+  if (!display.length) {
+    if (s.source === 'manual') return null; // gracefully hide
+    return null;
+  }
+
+  const featured = display[0];
+  const others = display.slice(1);
 
   return (
     <SectionWrapper section={section}>
+      {/* Premium header */}
+      <div className="mb-12 text-center max-w-2xl mx-auto">
+        {s.eyebrow && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-4">{String(s.eyebrow)}</p>}
+        {s.heading && <h2 className="text-3xl font-light tracking-tight lg:text-4xl mb-4">{String(s.heading)}</h2>}
+        {s.subheading && <p className="text-base text-muted leading-relaxed">{String(s.subheading)}</p>}
+      </div>
+
       {/* Featured Project — large card */}
       <Link href={`/proyek/${featured.slug}`}
         className="group block overflow-hidden rounded-2xl border border-border bg-card hover:shadow-lg transition-shadow">
         <div className="grid md:grid-cols-2">
-          {/* Image */}
           <div className="aspect-[4/3] md:aspect-auto overflow-hidden bg-surface">
             {(featured.coverImage || (Array.isArray(featured.images) && featured.images[0])) ? (
               <img src={featured.coverImage || featured.images[0]} alt={featured.title}
@@ -505,7 +529,6 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-6xl">☀️</div>
             )}
           </div>
-          {/* Info */}
           <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
             <div className="flex flex-wrap items-center gap-3 mb-4">
               {featured.category && (
@@ -513,9 +536,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
                   {featured.category}
                 </span>
               )}
-              {featured.year && (
-                <span className="text-xs text-muted">{featured.year}</span>
-              )}
+              {featured.year && <span className="text-xs text-muted">{featured.year}</span>}
             </div>
             <h3 className="text-xl sm:text-2xl font-semibold text-primary group-hover:text-primary-hover transition-colors">
               {featured.title}
@@ -535,7 +556,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
               <p className="mt-4 text-sm text-muted leading-relaxed line-clamp-3">{featured.shortDescription}</p>
             )}
             <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary group-hover:gap-3 transition-all">
-              {String(s.buttonLabel || 'Lihat Detail Proyek')} <span className="text-lg">→</span>
+              Lihat Detail Proyek <span className="text-lg">→</span>
             </span>
           </div>
         </div>
@@ -577,7 +598,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
 
       {/* View all CTA */}
       <div className="mt-10 text-center">
-        <Link href={s.buttonLink || '/proyek'}
+        <Link href={String(s.buttonLink || '/proyek')}
           className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-primary hover:bg-surface transition-colors">
           {String(s.buttonLabel || 'Lihat Semua Proyek')} <span className="text-lg">→</span>
         </Link>

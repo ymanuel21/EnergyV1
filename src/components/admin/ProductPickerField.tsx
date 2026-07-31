@@ -5,11 +5,12 @@ import { useState, useCallback } from 'react';
 interface ProductPickerFieldProps {
   value: string[];
   onChange: (ids: string[]) => void;
-  /** Limit to single product selection */
   single?: boolean;
+  placeholder?: string;
+  searchUrl?: string;
 }
 
-export function ProductPickerField({ value, onChange, single = false }: ProductPickerFieldProps) {
+export function ProductPickerField({ value, onChange, single, placeholder, searchUrl }: ProductPickerFieldProps) {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
@@ -18,7 +19,8 @@ export function ProductPickerField({ value, onChange, single = false }: ProductP
     setSearch(q);
     if (q.length < 2) { setResults([]); setOpen(false); return; }
     try {
-      const res = await fetch(`/api/admin/search-products?q=${encodeURIComponent(q)}`);
+      const url = searchUrl || '/api/admin/search-products';
+      const res = await fetch(`${url}?q=${encodeURIComponent(q)}`);
       const data = await res.json();
       setResults((data.products || data || []).slice(0, 8));
       setOpen(true);
@@ -63,7 +65,7 @@ export function ProductPickerField({ value, onChange, single = false }: ProductP
             onChange={e => handleSearch(e.target.value)}
             onFocus={() => { if (results.length > 0) setOpen(true); }}
             onBlur={() => setTimeout(() => setOpen(false), 200)}
-            placeholder={single ? 'Pilih produk unggulan...' : 'Cari produk untuk ditambahkan...'}
+            placeholder={placeholder || (single ? 'Pilih produk unggulan...' : 'Cari produk untuk ditambahkan...')}
             className="w-full rounded border border-border px-2.5 py-1.5 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card"
           />
           {open && results.length > 0 && (
