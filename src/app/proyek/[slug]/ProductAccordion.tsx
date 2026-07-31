@@ -52,7 +52,8 @@ export function ProductAccordion({ products }: { products: LinkedProduct[] }) {
               <div className="my-3 border-t border-border" />
               <ul className="space-y-2">
                 {products.map(p => (
-                  <li key={p.slug}>
+                  <li key={p.slug || p.name}>
+                    {p.slug ? (
                     <Link
                       href={`/produk/${p.slug}`}
                       className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-surface transition-colors group"
@@ -63,6 +64,12 @@ export function ProductAccordion({ products }: { products: LinkedProduct[] }) {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                       </svg>
                     </Link>
+                    ) : (
+                    <span className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm text-muted/60">
+                      {p.name}
+                      {p.quantity && p.quantity > 1 ? <span className="text-xs text-muted ml-1">×{p.quantity}</span> : null}
+                    </span>
+                    )}
                   </li>
                 ))}
               </ul>

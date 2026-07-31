@@ -36,14 +36,28 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   if (slugs.length > 0) {
     const products = await prisma.product.findMany({
       where: { slug: { in: slugs } },
-      select: { slug: true, name: true },
+      select: { id: true, slug: true, name: true },
     });
-    const nameMap = new Map(products.map((p: any) => [p.slug, p.name]));
-    linkedProducts = slugs.map(slug => ({
-      slug,
-      name: nameMap.get(slug) || slug,
-      quantity: quantities[slug] || 1,
-    }));
+    const bySlug = new Map(products.map((p: any) => [p.slug, p]));
+    const byId = new Map(products.map((p: any) => [p.id, p]));
+
+    // For unresolved slugs (likely internal IDs), try finding by product.id
+    const unresolved = slugs.filter(s => !bySlug.has(s));
+    if (unresolved.length > 0) {
+      const byIdProducts = await prisma.product.findMany({
+        where: { id: { in: unresolved } },
+        select: { id: true, slug: true, name: true },
+      });
+      byIdProducts.forEach((p: any) => { if (!bySlug.has(p.slug)) { bySlug.set(p.slug, p); } byId.set(p.id, p); });
+    }
+
+    linkedProducts = slugs.map(ref => {
+      const qty = quantities[ref] || 1;
+      const product = bySlug.get(ref) || byId.get(ref);
+      if (product) return { slug: product.slug, name: product.name, quantity: qty };
+      // Unknown reference — show "Product unavailable" to public
+      return { slug: '', name: 'Produk tidak tersedia', quantity: qty };
+    });
   }
 
   const images: string[] = Array.isArray(project.images) ? project.images : [];
