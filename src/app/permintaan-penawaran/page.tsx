@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, type FormEvent, useCallback } from 'react';
+import { useState, type FormEvent, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { Button } from '@ui/Button';
@@ -46,8 +47,58 @@ export default function RfqPage() {
 
   function showToast(msg: string) {
     setToast(msg);
-    setTimeout(() => setToast(null), 2500);
+    setTimeout(() => setToast(null), 3000);
   }
+
+  // ── Project context auto-fill ──
+  const searchParams = useSearchParams();
+  const projectSlug = searchParams.get('project');
+
+  useEffect(() => {
+    if (!projectSlug) return;
+    (async () => {
+      try {
+        const res = await fetch(`/api/projects?slug=${encodeURIComponent(projectSlug)}`);
+        if (!res.ok) throw new Error('not found');
+        const project = await res.json();
+        if (!project) return;
+
+        // Build items from project's linked products
+        const newItems: RfqItem[] = [];
+        if (Array.isArray(project.productIds) && project.productIds.length > 0) {
+          for (const pid of project.productIds) {
+            newItems.push({ name: pid, quantity: 1, notes: 'Dari proyek referensi' });
+          }
+        } else {
+          // Fallback: generic item
+          newItems.push({
+            name: `Solusi serupa dengan proyek: ${project.title}`,
+            quantity: 1,
+            notes: `Referensi: ${project.slug}`,
+          });
+        }
+
+        setItems(prev => {
+          // Don't overwrite existing items if user already has some
+          if (prev.length > 0) return prev;
+          return newItems;
+        });
+
+        setForm(prev => ({
+          ...prev,
+          location: project.location || prev.location,
+          projectName: prev.projectName || project.title || '',
+          notes: prev.notes
+            ? prev.notes
+            : `Proyek Referensi:\n${project.title}\n\nLokasi: ${project.location || '—'}\n\nDiminta: Solusi energi terbarukan serupa.`,
+        }));
+
+        showToast(`✅ RFQ otomatis dibuat dari ${project.title}`);
+      } catch {
+        showToast('⚠️ Proyek tidak ditemukan');
+      }
+    })();
+  }, [projectSlug]); // only run when projectSlug changes
   // ── Cart import ──
   const importFromCart = useCallback(() => {
     const cartItems: RfqItem[] = cart.items.map((i) => ({

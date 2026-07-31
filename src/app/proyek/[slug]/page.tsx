@@ -138,7 +138,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             </div>
           )}
 
-          <Link href="/permintaan-penawaran" className="block w-full rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-hover transition">
+          <Link href={`/permintaan-penawaran?project=${project.slug}`} className="block w-full rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-hover transition">
             Minta Penawaran Serupa
           </Link>
         </div>

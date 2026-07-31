@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
+import { Suspense } from 'react';
+
 export default function RfqLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <Suspense fallback={<div className="py-12 text-center text-muted">Loading...</div>}>{children}</Suspense>;
 }
