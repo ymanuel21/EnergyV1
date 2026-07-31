@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { projectRepo } from '@/lib/repositories/project';
+import { getPrisma } from '@/lib/db';
+import { ProductAccordion } from './ProductAccordion';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +20,20 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const { slug } = await params;
   const project = await projectRepo.findBySlug(slug) as any;
   if (!project) notFound();
+
+  // Resolve linked product names from productIds slugs
+  const prisma = await getPrisma();
+  const rawIds: string[] = Array.isArray(project.productIds) ? project.productIds : [];
+  let linkedProducts: { slug: string; name: string }[] = [];
+  if (rawIds.length > 0) {
+    const products = await prisma.product.findMany({
+      where: { slug: { in: rawIds } },
+      select: { slug: true, name: true },
+    });
+    // Preserve order from productIds
+    const nameMap = new Map(products.map((p: any) => [p.slug, p.name]));
+    linkedProducts = rawIds.map(slug => ({ slug, name: nameMap.get(slug) || slug }));
+  }
 
   const images: string[] = Array.isArray(project.images) ? project.images : [];
   const highlights: string[] = Array.isArray(project.highlights) ? project.highlights : [];
@@ -130,13 +146,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             </div>
           ) : null}
 
-          {/* Linked Products */}
-          {Array.isArray(project.productIds) && (project.productIds as string[]).length > 0 && (
-            <div className="rounded-xl border border-border bg-card p-6 space-y-2">
-              <h3 className="text-sm font-semibold text-primary">Produk Digunakan</h3>
-              <p className="text-xs text-muted">{(project.productIds as string[]).length} produk terkait</p>
-            </div>
-          )}
+          {/* Linked Products Accordion */}
+          <ProductAccordion products={linkedProducts} />
 
           <Link href={`/permintaan-penawaran?project=${project.slug}`} className="block w-full rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-hover transition">
             Minta Penawaran Serupa
