@@ -1,14 +1,13 @@
 export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { getAdminPrisma } from '../lib/admin-prisma';
+import { revalidatePath } from 'next/cache';
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
   const raw = await prisma.project.findMany({ orderBy: { createdAt: 'desc' } });
   const projects = raw.map((p: any) => ({
-    ...p,
-    createdAt: p.createdAt?.toISOString?.() || p.createdAt,
-    updatedAt: p.updatedAt?.toISOString?.() || p.updatedAt,
+    ...p, createdAt: p.createdAt?.toISOString?.() || p.createdAt,
   }));
 
   return (
@@ -22,4 +21,12 @@ export default async function ProjectsAdminPage() {
       ))}
     </div>
   );
+}
+
+async function createProject() {
+  'use server';
+  const prisma = await getAdminPrisma();
+  const slug = 'project-' + Date.now();
+  await prisma.project.create({ data: { title: 'New Project', slug, coverImage: '', images: [], highlights: [] } });
+  revalidatePath('/admin/projects');
 }
