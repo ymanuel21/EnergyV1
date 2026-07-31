@@ -136,7 +136,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       source: 'manual', maxProducts: 1, layout: 'showcase',
       showPrice: true, showBadge: true,
       showDescription: true, showSpecifications: true, showShipping: true,
-      buttonLabel: 'Lihat Semua', buttonLink: '/produk',
+      buttonLabel: 'Lihat Semua Produk', buttonLink: '/produk',
     },
     fields: [
       { key: 'source', label: 'Content Source', type: 'select', options: [
