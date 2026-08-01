@@ -69,12 +69,32 @@ export async function getMediaDatabase(search?: string): Promise<MediaItem[]> {
     if (settings?.imageId) items.push({ id: `${s.id}-hero`, url: settings.imageId, name: settings.imageId.split('/').pop() || settings.imageId, source: 'homepage', sourceName: v?.title || s.type, sourceId: s.id, type: 'image' });
   }
 
+  // Group by URL to detect shared usage
+  const byUrl = new Map<string, MediaItem[]>();
+  for (const item of items) {
+    const existing = byUrl.get(item.url) || [];
+    existing.push(item);
+    byUrl.set(item.url, existing);
+  }
+
   // Filter by search
   let result = items;
   if (search) {
     const q = search.toLowerCase();
-    result = items.filter(i => i.name.toLowerCase().includes(q) || i.url.toLowerCase().includes(q) || i.sourceName.toLowerCase().includes(q));
+    result = result.filter(i => i.name.toLowerCase().includes(q) || i.url.toLowerCase().includes(q) || i.sourceName.toLowerCase().includes(q));
   }
 
-  return result;
+  return result.map(item => ({ ...item, usages: byUrl.get(item.url) || [item] }));
+}
+
+// Re-export with usages
+export interface MediaItem {
+  id: string;
+  url: string;
+  name: string;
+  source: string;
+  sourceName: string;
+  sourceId: string;
+  type: 'image';
+  usages?: MediaItem[];
 }

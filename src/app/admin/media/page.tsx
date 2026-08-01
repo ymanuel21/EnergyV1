@@ -11,12 +11,16 @@ export default async function MediaPage({ searchParams }: { searchParams: Promis
   const counts = { all: items.length, product: 0, project: 0, brand: 0, banner: 0, testimonial: 0, homepage: 0 };
   items.forEach(i => { if (counts[i.source as keyof typeof counts] !== undefined) (counts as any)[i.source]++; });
 
+  // Deduplicate by URL for display
+  const seen = new Set<string>();
+  const unique = items.filter(i => { if (seen.has(i.url)) return false; seen.add(i.url); return true; });
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-2xl font-bold text-primary">Media Library</h1>
-          <p className="text-sm text-muted mt-1">{items.length} assets across all modules</p>
+          <p className="text-sm text-muted mt-1">{unique.length} unique assets · {items.length} total references</p>
         </div>
       </div>
 
@@ -34,7 +38,7 @@ export default async function MediaPage({ searchParams }: { searchParams: Promis
         ))}
       </div>
 
-      <MediaBrowser items={items} />
+      <MediaBrowser items={unique} />
     </div>
   );
 }

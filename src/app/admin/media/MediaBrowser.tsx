@@ -65,6 +65,22 @@ export function MediaBrowser({ items }: { items: MediaItem[] }) {
               <a href={selectedItem.url} target="_blank" rel="noopener" className="rounded border border-border px-3 py-1.5 text-xs text-muted hover:bg-surface">View</a>
             </div>
           </div>
+
+          {/* Used by section */}
+          {selectedItem.usages && selectedItem.usages.length > 1 && (
+            <div className="mt-3 pt-3 border-t border-border">
+              <p className="text-xs font-medium text-primary mb-2">Used by ({selectedItem.usages.length})</p>
+              <div className="flex flex-wrap gap-1.5">
+                {selectedItem.usages.map((u, i) => (
+                  <a key={i} href={`/admin/${u.source}s${u.source === 'homepage' ? '' : '/' + u.sourceId}`}
+                    className="inline-flex items-center gap-1 rounded-full bg-surface px-2.5 py-1 text-[11px] text-muted hover:text-primary hover:bg-surface/80 transition">
+                    <span className="font-medium">{SOURCE_LABELS[u.source] || u.source}</span>
+                    <span className="text-[10px] opacity-60">{u.sourceName}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
