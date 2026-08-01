@@ -68,7 +68,7 @@ export default async function EditBrandPage({ params }: Props) {
         />
 
         <div className="flex gap-3">
-          <SubmitButton label="Simpan" />
+          <SubmitButton label="Save Changes" />
           <a
             href="/admin/brands"
             className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-primary hover:bg-surface"
