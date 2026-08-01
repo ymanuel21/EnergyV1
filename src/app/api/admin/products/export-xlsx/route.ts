@@ -46,10 +46,18 @@ export async function GET(request: NextRequest) {
     { header: 'Created At', key: 'createdAt', width: 20 },
     { header: 'Updated At', key: 'updatedAt', width: 20 },
   ];
-  styleSheet(ws1);
+  ws1.views = [{ state: 'frozen', ySplit: 1 }];
+  ws1.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: ws1.columnCount } };
+  const headerRow = ws1.getRow(1);
+  headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+  headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2563EB' } };
+  headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
+  headerRow.height = 24;
 
+  let rowNum = 1;
   for (const p of products) {
-    ws1.addRow({
+    rowNum++;
+    const row = ws1.addRow({
       id: p.id,
       name: p.name,
       slug: p.slug,
@@ -68,6 +76,7 @@ export async function GET(request: NextRequest) {
       createdAt: formatDate(p.createdAt),
       updatedAt: formatDate(p.updatedAt),
     });
+    if (rowNum % 2 === 0) row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
   }
 
   // ── Sheet 2: Specifications ──
@@ -78,7 +87,6 @@ export async function GET(request: NextRequest) {
     { header: 'Key', key: 'key', width: 30 },
     { header: 'Value', key: 'value', width: 40 },
   ];
-  styleSheet(ws2);
   for (const p of products) {
     const specs = parseJsonArray(p.specifications);
     for (const s of specs) {
@@ -96,7 +104,6 @@ export async function GET(request: NextRequest) {
     { header: 'Sort Order', key: 'sort', width: 12 },
     { header: 'Primary', key: 'primary', width: 10 },
   ];
-  styleSheet(ws3);
   for (const p of products) {
     const imgs = parseJsonArray(p.images);
     imgs.forEach((img: any, i: number) => {
@@ -115,7 +122,6 @@ export async function GET(request: NextRequest) {
     { header: 'URL', key: 'url', width: 60 },
     { header: 'Type', key: 'type', width: 20 },
   ];
-  styleSheet(ws4);
   for (const p of products) {
     const dls = parseJsonArray(p.downloads);
     for (const d of dls) {
@@ -130,7 +136,6 @@ export async function GET(request: NextRequest) {
     { header: 'Product Name', key: 'productName', width: 40 },
     { header: 'Related Product Slug', key: 'relatedSlug', width: 40 },
   ];
-  styleSheet(ws5);
   // Product model may have productIds field for related
   for (const p of products) {
     const related = parseJsonArray((p as any).productIds);
@@ -148,7 +153,6 @@ export async function GET(request: NextRequest) {
     { header: 'Keywords', key: 'keywords', width: 50 },
     { header: 'Canonical URL', key: 'canonical', width: 60 },
   ];
-  styleSheet(ws6);
   for (const p of products) {
     ws6.addRow({
       productId: p.id,
@@ -171,21 +175,6 @@ export async function GET(request: NextRequest) {
 }
 
 // ── Helpers ──
-
-function styleSheet(ws: ExcelJS.Worksheet) {
-  ws.views = [{ state: 'frozen', ySplit: 1 }];
-  ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: ws.columnCount } };
-  const headerRow = ws.getRow(1);
-  headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-  headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2563EB' } };
-  headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
-  headerRow.height = 24;
-  // Alternating row colors
-  for (let i = 2; i <= 10000; i++) {
-    const row = ws.getRow(i);
-    if (i % 2 === 0) row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
-  }
-}
 
 function parseJsonArray(val: any): any[] {
   if (Array.isArray(val)) return val;
