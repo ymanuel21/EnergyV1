@@ -1,15 +1,23 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getAdminPrisma, requireAuth } from '@/app/admin/lib/admin-prisma';
 import ExcelJS from 'exceljs';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   await requireAuth();
   const prisma = await getAdminPrisma();
 
+  const idsParam = request.nextUrl.searchParams.get('ids');
+  const where: any = {};
+  if (idsParam) {
+    const ids = idsParam.split(',').filter(Boolean);
+    where.id = { in: ids };
+  }
+
   const products = await prisma.product.findMany({
+    where,
     include: { brand: true, categories: { include: { category: true } } },
     orderBy: { createdAt: 'desc' },
   });
