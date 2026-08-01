@@ -27,7 +27,7 @@ export async function getMediaDatabase(search?: string): Promise<MediaItem[]> {
   for (const p of products) {
     const imgs = (p.images as unknown as string[]) || [];
     imgs.forEach((url, i) => {
-      if (url) items.push({ id: `${p.id}-${i}`, url, name: url.split('/').pop() || url, source: 'product', sourceName: p.name, sourceId: p.id, type: 'image' });
+      if (url) items.push({ id: `${p.id}-${i}`, url, name: extractName(url), source: 'product', sourceName: p.name, sourceId: p.id, type: 'image' });
     });
   }
 
@@ -39,7 +39,7 @@ export async function getMediaDatabase(search?: string): Promise<MediaItem[]> {
     if (p.coverImage) items.push({ id: `${p.id}-cover`, url: p.coverImage, name: p.coverImage.split('/').pop() || p.coverImage, source: 'project', sourceName: p.title, sourceId: p.id, type: 'image' });
     const imgs = (p.images as unknown as string[]) || [];
     imgs.forEach((url, i) => {
-      if (url) items.push({ id: `${p.id}-img-${i}`, url, name: url.split('/').pop() || url, source: 'project', sourceName: p.title, sourceId: p.id, type: 'image' });
+      if (url) items.push({ id: `${p.id}-img-${i}`, url, name: extractName(url), source: 'project', sourceName: p.title, sourceId: p.id, type: 'image' });
     });
   }
 
@@ -69,13 +69,25 @@ export async function getMediaDatabase(search?: string): Promise<MediaItem[]> {
     if (settings?.imageId) items.push({ id: `${s.id}-hero`, url: settings.imageId, name: settings.imageId.split('/').pop() || settings.imageId, source: 'homepage', sourceName: v?.title || s.type, sourceId: s.id, type: 'image' });
   }
 
-  // Group by URL to detect shared usage
+  // Group by URL (strip query params for matching)
+  const normalizeUrl = (url: string) => { try { const u = new URL(url); return u.origin + u.pathname; } catch { return url; } };
   const byUrl = new Map<string, MediaItem[]>();
   for (const item of items) {
-    const existing = byUrl.get(item.url) || [];
+    const key = normalizeUrl(item.url);
+    const existing = byUrl.get(key) || [];
     existing.push(item);
-    byUrl.set(item.url, existing);
+    byUrl.set(key, existing);
   }
+
+  // Helper: extract readable filename
+  const extractName = (url: string) => {
+    try {
+      const p = new URL(url).pathname;
+      const name = p.split('/').pop() || url;
+      const clean = name.split('?')[0]; // strip query params
+      return clean || url.split('/').pop() || url;
+    } catch { return url.split('/').pop() || url; }
+  };
 
   // Filter by search
   let result = items;

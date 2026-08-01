@@ -38,7 +38,8 @@ export function MediaBrowser({ items }: { items: MediaItem[] }) {
             className={`rounded-lg border bg-card overflow-hidden transition cursor-pointer ${selected === a.id ? 'ring-2 ring-primary' : 'hover:shadow-md'}`}
             onClick={() => setSelected(selected === a.id ? null : a.id)}>
             <div className="aspect-square flex items-center justify-center bg-surface">
-              <img src={a.url} alt={a.name} className="max-h-full max-w-full object-contain p-2" />
+              <img src={a.url} alt={a.name} className="max-h-full max-w-full object-contain p-2"
+                onError={e => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect fill="%23f3f4f6" width="40" height="40"/><text x="50%" y="55%" text-anchor="middle" fill="%239ca3af" font-size="10">404</text></svg>'; }} />
             </div>
             <div className="p-2">
               <p className="text-xs text-primary truncate font-medium">{a.sourceName}</p>
