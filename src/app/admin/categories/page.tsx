@@ -18,6 +18,8 @@ export default async function CategoriesPage() {
     if (!name || !slug) return;
     await createCategory({ name, slug, parentId: parentId || null });
     revalidatePath('/admin/categories');
+    revalidatePath('/kategori');
+    revalidatePath('/produk');
   }
 
   return (

@@ -26,6 +26,9 @@ export default async function EditBrandPage({ params }: Props) {
     if (!name || !slug) return;
     await updateBrand(id, { name, slug, logo });
     revalidatePath('/admin/brands');
+    revalidatePath('/brands');
+    revalidatePath(`/brand/${slug}`);
+    revalidatePath('/produk');
     redirect('/admin/brands');
   }
 
