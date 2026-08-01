@@ -17,8 +17,8 @@ type CompareAction =
 interface CompareContextType {
   items: string[];
   isComparing: (productId: string) => boolean;
-  toggleItem: (productId: string) => void;
-  removeItem: (productId: string) => void;
+  toggleItem: (productSlug: string) => void;
+  removeItem: (productSlug: string) => void;
   clearAll: () => void;
 }
 

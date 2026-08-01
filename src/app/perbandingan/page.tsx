@@ -38,7 +38,7 @@ export default function ComparePage() {
     });
   }, []);
 
-  const compareProducts = allProducts.filter((p) => items.includes(p.id));
+  const compareProducts = allProducts.filter((p) => items.includes(p.slug));
   const getBrand = (brandId: string) => brands.find(b => b.id === brandId);
 
   function addToCart(productId: string) {
@@ -116,7 +116,7 @@ export default function ComparePage() {
                   <div className="space-y-2">
                     <div className="relative h-48 w-full overflow-hidden rounded-lg bg-surface">
                       <SafeImage src={p.images[0]} alt={p.name} fill className="object-contain p-2" sizes="200px" />
-                      <button onClick={() => removeItem(p.id)} className="absolute right-1 top-1 rounded-full bg-white/90 p-1 text-muted hover:text-red-500 transition-colors shadow-sm" aria-label={`Hapus ${p.name}`}>✕</button>
+                      <button onClick={() => removeItem(p.slug)} className="absolute right-1 top-1 rounded-full bg-white/90 p-1 text-muted hover:text-red-500 transition-colors shadow-sm" aria-label={`Hapus ${p.name}`}>✕</button>
                     </div>
                     <Link href={`/produk/${p.slug}`} className="block text-sm font-medium text-primary line-clamp-2">{p.name}</Link>
                     <PriceDisplay product={p} showDiscount />

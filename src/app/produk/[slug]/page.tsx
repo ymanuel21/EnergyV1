@@ -188,7 +188,7 @@ export default async function ProductDetail({ params }: Props) {
 
             <div className="flex gap-3">
               <WishlistToggleButton productId={product.id} />
-              <CompareToggleButton productId={product.id} />
+              <CompareToggleButton productSlug={product.slug} />
             </div>
 
             <p className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-600">
