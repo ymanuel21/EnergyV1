@@ -54,9 +54,9 @@ export async function GET(request: NextRequest) {
   headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
   headerRow.height = 24;
 
-  let rowNum = 1;
+  const evenFill: ExcelJS.Fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+
   for (const p of products) {
-    rowNum++;
     const row = ws1.addRow({
       id: p.id,
       name: p.name,
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
       createdAt: formatDate(p.createdAt),
       updatedAt: formatDate(p.updatedAt),
     });
-    if (rowNum % 2 === 0) row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+    if (row.number % 2 === 0) row.fill = evenFill;
   }
 
   // ── Sheet 2: Specifications ──
