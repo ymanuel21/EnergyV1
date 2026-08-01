@@ -703,17 +703,31 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
 }
 
 function TestimonialsRenderer({ section, data }: SectionRendererProps) {
+  const testimonials = (data as any).testimonials || [];
+  const active = testimonials.filter((t: any) => t.featured);
+
+  if (active.length === 0) return null;
+
   return (
     <section className="bg-surface py-16 sm:py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 sm:gap-6">
-          {[1,2,3].map(i => (
-            <div key={i} className="rounded-xl border border-border bg-card p-6">
-              <div className="flex mb-3">{'⭐'.repeat(5)}</div>
-              <p className="text-sm text-muted italic">&ldquo;Produk berkualitas, pemasangan profesional.&rdquo;</p>
-              <p className="text-xs text-primary mt-3 font-medium">Customer {i}</p>
-              <p className="text-xs text-muted">Company · Role</p>
+          {active.slice(0, 6).map((t: any) => (
+            <div key={t.id} className="rounded-xl border border-border bg-card p-6">
+              <div className="flex items-center gap-3 mb-4">
+                {t.photo ? (
+                  <img src={t.photo} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm">👤</div>
+                )}
+                <div>
+                  <p className="text-sm font-medium text-primary">{t.name}</p>
+                  <p className="text-xs text-muted">{t.company}{t.company && t.role ? ' · ' : ''}{t.role}</p>
+                </div>
+              </div>
+              <div className="flex mb-2">{'★'.repeat(t.rating || 5)}{'☆'.repeat(5 - (t.rating || 5))}</div>
+              <p className="text-sm text-muted italic">&ldquo;{t.quote}&rdquo;</p>
             </div>
           ))}
         </div>
