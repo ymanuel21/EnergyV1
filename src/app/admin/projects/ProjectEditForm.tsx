@@ -97,10 +97,44 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
   const [changingIndex, setChangingIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Highlights
+  const [highlights, setHighlights] = useState<string[]>(() => {
+    const raw = project.highlights;
+    if (Array.isArray(raw)) return raw.filter(h => typeof h === 'string' && h.trim());
+    return [];
+  });
+
   const markDirty = useCallback(() => {
     if (!dirty) setDirty(true);
     if (saveState !== 'idle') setSaveState('idle');
   }, [dirty, saveState]);
+
+  const addHighlight = useCallback(() => {
+    if (highlights.length >= 20) return;
+    setHighlights(prev => [...prev, '']);
+    markDirty();
+  }, [highlights.length, markDirty]);
+
+  const updateHighlight = useCallback((i: number, value: string) => {
+    setHighlights(prev => prev.map((h, j) => j === i ? value : h));
+    markDirty();
+  }, [markDirty]);
+
+  const removeHighlight = useCallback((i: number) => {
+    setHighlights(prev => prev.filter((_, j) => j !== i));
+    markDirty();
+  }, [markDirty]);
+
+  const moveHighlight = useCallback((i: number, dir: number) => {
+    const target = i + dir;
+    if (target < 0 || target >= highlights.length) return;
+    setHighlights(prev => {
+      const next = [...prev];
+      [next[i], next[target]] = [next[target], next[i]];
+      return next;
+    });
+    markDirty();
+  }, [highlights.length, markDirty]);
 
   // Build publish data from React state (not FormData — fields may be hidden in other tabs)
   const buildPublishData = useCallback(() => ({
@@ -125,7 +159,8 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
     impactData: impact,
     seoData: seo,
     productIds: linkedProducts.map(p => ({ slug: p.slug, quantity: p.quantity })),
-  }), [project, story, impact, seo, linkedProducts]);
+    highlights: highlights.filter(h => h.trim()),
+  }), [project, story, impact, seo, linkedProducts, highlights]);
 
   const handleSaveDraft = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -504,14 +539,36 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
           <div className="pt-4 border-t border-border">
             <label className={labelCls}>Project Highlights</label>
             <p className="text-xs text-muted mb-2">Key achievements shown on the public page.</p>
-            {((project.highlights as string[]) || []).map((h: string, i: number) => (
+
+            {highlights.length === 0 && (
+              <p className="text-sm text-muted py-2">No highlights yet.</p>
+            )}
+
+            {highlights.map((h, i) => (
               <div key={i} className="flex items-center gap-2 py-1">
-                <span className="text-primary shrink-0">✓</span>
-                <span className="text-sm text-muted">{h}</span>
+                <span className="text-primary shrink-0 text-xs">✓</span>
+                <input value={h} onChange={e => updateHighlight(i, e.target.value)}
+                  placeholder="Highlight text..."
+                  className="flex-1 rounded border border-border px-2 py-1 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card" />
+                <div className="flex gap-0.5">
+                  <button type="button" onClick={() => moveHighlight(i, -1)} disabled={i === 0}
+                    className="rounded px-1 py-0.5 text-[10px] text-muted hover:bg-surface transition disabled:opacity-20">↑</button>
+                  <button type="button" onClick={() => moveHighlight(i, 1)} disabled={i === highlights.length - 1}
+                    className="rounded px-1 py-0.5 text-[10px] text-muted hover:bg-surface transition disabled:opacity-20">↓</button>
+                </div>
+                <button type="button" onClick={() => removeHighlight(i)}
+                  className="text-[10px] text-red-500 hover:underline shrink-0">Hapus</button>
               </div>
             ))}
-            {(!project.highlights || (project.highlights as string[]).length === 0) && (
-              <p className="text-sm text-muted">No highlights. Edit highlights via the database or seed script.</p>
+
+            {highlights.length < 20 && (
+              <button type="button" onClick={addHighlight}
+                className="mt-2 text-xs text-primary hover:underline">
+                + Add Highlight
+              </button>
+            )}
+            {highlights.length >= 20 && (
+              <p className="text-xs text-muted mt-1">Maximum 20 highlights.</p>
             )}
           </div>
         </div>
