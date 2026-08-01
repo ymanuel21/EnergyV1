@@ -55,7 +55,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <Container className="py-6">
-      <SmartBackButton fallbackRoute="/proyek" scope="projects" label="← Kembali ke Proyek" className="mb-3" />
+      <SmartBackButton fallbackRoute="/proyek" label="← Kembali ke Proyek" className="mb-3" />
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Proyek', href: '/proyek' }, { label: project.title }]} />
 
       {/* Hero */}

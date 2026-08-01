@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { projectRepo } from '@/lib/repositories/project';
-import TrackPage from '@/components/ui/TrackPage';
 
 export const metadata: Metadata = { title: 'Proyek — EBTPlaza', description: 'Portofolio instalasi energi surya.' };
 
@@ -16,9 +15,7 @@ export default async function ProjectsPage() {
   const projects = await projectRepo.findPublic();
 
   return (
-    <>
-      <TrackPage scope="projects" />
-      <Container className="py-6">
+    <Container className="py-6">
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Proyek' }]} />
       <div className="mt-4">
         <h1 className="text-2xl font-bold text-primary">Proyek Referensi</h1>
@@ -51,6 +48,5 @@ export default async function ProjectsPage() {
       </div>
       {projects.length === 0 && <p className="text-center py-16 text-muted">Belum ada proyek.</p>}
     </Container>
-    </>
   );
 }
