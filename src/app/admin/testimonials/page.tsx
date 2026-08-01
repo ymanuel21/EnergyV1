@@ -4,11 +4,24 @@ import { getAdminPrisma } from '../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import Link from 'next/link';
-import { getLatestReview } from '@/lib/services/review';
 
 export default async function TestimonialsPage() {
   const prisma = await getAdminPrisma();
-  const testimonials = await prisma.testimonial.findMany({ orderBy: { sortOrder: 'asc' } });
+  let testimonials: any[] = [];
+  let error: string | null = null;
+
+  try {
+    testimonials = await prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } });
+  } catch (e: any) {
+    console.error('[Testimonials] findMany failed:', e?.message || e);
+    error = e?.message || 'Database error';
+    // Fallback: try without sortOrder if that's the issue
+    try {
+      testimonials = await prisma.testimonial.findMany();
+    } catch (e2: any) {
+      console.error('[Testimonials] fallback failed:', e2?.message || e2);
+    }
+  }
 
   async function handleDelete(formData: FormData) {
     'use server';
