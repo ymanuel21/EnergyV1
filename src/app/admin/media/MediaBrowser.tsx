@@ -1,54 +1,69 @@
 'use client';
 
 import { useState } from 'react';
+import type { MediaItem } from './actions';
 
-export function MediaBrowser({ assets, onDelete }: { assets: any[]; onDelete: (id: string) => Promise<{ success: boolean; message: string }> }) {
+const SOURCE_LABELS: Record<string, string> = {
+  product: 'Produk',
+  project: 'Proyek',
+  brand: 'Brand',
+  banner: 'Banner',
+  testimonial: 'Testimoni',
+  homepage: 'Homepage',
+};
+
+export function MediaBrowser({ items }: { items: MediaItem[] }) {
   const [selected, setSelected] = useState<string | null>(null);
-  const [usages, setUsages] = useState<string[]>([]);
-  const [deleteMsg, setDeleteMsg] = useState<string | null>(null);
+  const [copyMsg, setCopyMsg] = useState<string | null>(null);
 
-  async function handleDelete(id: string) {
-    const r = await onDelete(id);
-    setDeleteMsg(r.message);
-    setTimeout(() => setDeleteMsg(null), 3000);
-  }
+  const selectedItem = items.find(i => i.id === selected);
 
-  function handleCopy(id: string) {
-    const url = `${window.location.origin}/api/asset/${id}`;
+  function handleCopy(url: string) {
     navigator.clipboard.writeText(url).then(() => {
-      setDeleteMsg('URL copied!');
-      setTimeout(() => setDeleteMsg(null), 2000);
+      setCopyMsg('URL copied!');
+      setTimeout(() => setCopyMsg(null), 2000);
     });
   }
 
-  if (!assets.length) return <p className="text-muted text-sm py-8 text-center">No assets yet. Upload via Products, Banners, or Brand editors.</p>;
+  if (!items.length) return <p className="text-muted text-sm py-8 text-center">No assets found.</p>;
 
   return (
     <div>
-      {deleteMsg && (
-        <div className="mb-3 rounded-lg bg-blue-50 px-4 py-2 text-sm text-blue-700">{deleteMsg}</div>
+      {copyMsg && (
+        <div className="mb-3 rounded-lg bg-blue-50 px-4 py-2 text-sm text-blue-700">{copyMsg}</div>
       )}
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
-        {assets.map((a: any) => (
-          <div key={a.id} className={`rounded-lg border bg-card overflow-hidden transition cursor-pointer ${selected === a.id ? 'ring-2 ring-primary' : 'hover:shadow-md'}`}
+        {items.map(a => (
+          <div key={a.id}
+            className={`rounded-lg border bg-card overflow-hidden transition cursor-pointer ${selected === a.id ? 'ring-2 ring-primary' : 'hover:shadow-md'}`}
             onClick={() => setSelected(selected === a.id ? null : a.id)}>
             <div className="aspect-square flex items-center justify-center bg-surface">
-              <img src={`/api/asset/${a.id}`} alt={a.filename} className="max-h-full max-w-full object-contain p-2" />
+              <img src={a.url} alt={a.name} className="max-h-full max-w-full object-contain p-2" />
             </div>
             <div className="p-2">
-              <p className="text-xs text-muted truncate">{a.filename || a.id.substring(0, 8)}</p>
-              <p className="text-[10px] text-muted/60">{Math.round(a.size / 1024)}KB · {a.mimeType?.replace('image/', '')}</p>
+              <p className="text-xs text-primary truncate font-medium">{a.sourceName}</p>
+              <p className="text-[10px] text-muted truncate">{a.name}</p>
+              <span className="inline-block mt-1 rounded-full bg-surface px-2 py-0.5 text-[10px] font-medium text-muted">
+                {SOURCE_LABELS[a.source] || a.source}
+              </span>
             </div>
           </div>
         ))}
       </div>
 
-      {selected && (
+      {selectedItem && (
         <div className="mt-4 rounded-lg border border-border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <button onClick={() => handleCopy(selected)} className="rounded border border-border px-3 py-1.5 text-xs text-muted hover:bg-surface">Copy URL</button>
-            <button onClick={() => handleDelete(selected)} className="rounded border border-red-200 px-3 py-1.5 text-xs text-red-600 hover:bg-red-50">Delete</button>
-            <a href={`/api/asset/${selected}`} target="_blank" className="rounded border border-border px-3 py-1.5 text-xs text-muted hover:bg-surface">View</a>
+          <div className="flex items-center gap-3 flex-wrap">
+            <img src={selectedItem.url} alt={selectedItem.name} className="h-16 w-16 rounded object-cover bg-surface" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-primary">{selectedItem.sourceName}</p>
+              <p className="text-xs text-muted truncate">{selectedItem.url}</p>
+              <p className="text-xs text-muted">{SOURCE_LABELS[selectedItem.source] || selectedItem.source}</p>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => handleCopy(selectedItem.url)} className="rounded border border-border px-3 py-1.5 text-xs text-muted hover:bg-surface">Copy URL</button>
+              <a href={selectedItem.url} target="_blank" rel="noopener" className="rounded border border-border px-3 py-1.5 text-xs text-muted hover:bg-surface">View</a>
+            </div>
           </div>
         </div>
       )}
