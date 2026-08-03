@@ -144,22 +144,6 @@ model SiteSetting {
   @@map("settings")
 }
 
-model Banner {
-  id        String  @id
-  type      String  @default("hero")
-  title     String?
-  src       String?
-  image     String?
-  alt       String?
-  link      String?
-  label     String?
-  description String?
-  isActive  Boolean @default(true) @map("is_active")
-  sortOrder Int     @default(0) @map("sort_order")
-
-  @@map("banners")
-}
-
 model Asset {
   id        String   @id @default(uuid())
   filename  String   @default("")  // original filename

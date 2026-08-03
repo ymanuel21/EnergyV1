@@ -96,14 +96,6 @@ export interface Brand {
   productCount: number;
 }
 
-export interface Banner {
-  src: string;
-  alt: string;
-  href?: string;
-  width: number;
-  height: number;
-}
-
 export interface NeedCard {
   title: string;
   description: string;

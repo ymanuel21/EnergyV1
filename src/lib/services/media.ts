@@ -47,14 +47,6 @@ export async function aggregateMediaDatabase(prisma: PrismaClient): Promise<Medi
     }
   } catch (e: any) { console.error('[Media] Brands:', e?.message); }
 
-  // Banners
-  try {
-    const banners = await prisma.banner.findMany({ select: { id: true, title: true, image: true } });
-    for (const b of banners) {
-      if (b.image) items.push({ id: `bn-${b.id}`, url: b.image, name: extractName(b.image), source: 'banner', sourceName: b.title || b.id, sourceId: b.id, type: 'image' });
-    }
-  } catch (e: any) { console.error('[Media] Banners:', e?.message); }
-
   // Testimonials
   try {
     const testimonials = await prisma.testimonial.findMany({ select: { id: true, name: true, photo: true } });

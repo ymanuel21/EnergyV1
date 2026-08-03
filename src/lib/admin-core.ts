@@ -5,7 +5,7 @@ import { getAdminPrisma, requireAuth } from '@/app/admin/lib/admin-prisma';
 // Default role-based permission sets
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   owner: ['*'],
-  admin: ['manage_products', 'manage_categories', 'manage_brands', 'manage_banners',
+  admin: ['manage_products', 'manage_categories', 'manage_brands',
     'manage_articles', 'manage_faq', 'manage_pages', 'manage_homepage', 'manage_navigation',
     'manage_media', 'manage_quotes', 'manage_testimonials', 'manage_projects',
     'publish_content', 'delete_content'],

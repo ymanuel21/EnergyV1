@@ -8,7 +8,6 @@ export type {
   ProductQuestion,
   Category,
   Brand,
-  Banner,
   NeedCard,
   SortOption,
 } from './product';

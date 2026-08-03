@@ -23,22 +23,6 @@ export class CategoryRepository {
 
 export const categoryRepo = new CategoryRepository();
 
-// Banner
-export class BannerRepository {
-  async findPublic() {
-    const prisma = await getPrisma();
-    return prisma.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } });
-  }
-  async findAll() {
-    const prisma = await getPrisma();
-    return prisma.banner.findMany({ orderBy: { sortOrder: 'asc' } });
-  }
-  async create(data: any) { const prisma = await getPrisma(); return prisma.banner.create({ data }); }
-  async update(id: string, data: any) { const prisma = await getPrisma(); return prisma.banner.update({ where: { id }, data }); }
-  async delete(id: string) { const prisma = await getPrisma(); return prisma.banner.delete({ where: { id } }); }
-}
-export const bannerRepo = new BannerRepository();
-
 // Homepage Sections
 export class HomepageRepository {
   async findPublic(pageId?: string) {

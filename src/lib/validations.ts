@@ -34,17 +34,6 @@ export const navigationLinkSchema = z.object({
   enabled: z.boolean().default(true),
 });
 
-// Banner
-export const bannerSchema = z.object({
-  title: z.string().default(''),
-  type: z.enum(['hero', 'need-card']),
-  image: z.string().default(''),
-  alt: z.string().default(''),
-  link: z.string().default(''),
-  isActive: z.boolean().default(true),
-  sortOrder: z.number().int().default(0),
-});
-
 // Brand
 export const brandSchema = z.object({
   name: z.string().min(1),
