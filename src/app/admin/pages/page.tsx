@@ -27,9 +27,10 @@ export default async function LandingPagesPage() {
   async function handleDelete(id: string) {
     'use server';
     const prisma = await getAdminPrisma();
+    const page = await prisma.landingPage.findUnique({ where: { id }, select: { slug: true } });
     await prisma.landingPage.delete({ where: { id } });
     revalidatePath('/admin/pages');
-    revalidatePath('/' + slug);
+    if (page?.slug) revalidatePath('/' + page.slug);
   }
 
   async function handleTogglePublished(id: string, current: boolean) {
