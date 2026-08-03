@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
-import { getPrisma } from '@/lib/db';
 import Link from 'next/link';
 
 export const metadata: Metadata = { title: 'Testimoni — EBTPlaza', description: 'Apa kata pelanggan kami.' };
 
 async function getPublicTestimonials() {
+  const { getPrisma } = await import('@/lib/db');
   const prisma = await getPrisma();
   return prisma.testimonial.findMany({
     where: { status: 'published' },

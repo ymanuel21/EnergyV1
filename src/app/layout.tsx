@@ -27,12 +27,12 @@ export const metadata: Metadata = {
   },
   description: SITE_CONFIG.description,
   openGraph: {
-    type: SITE_CONFIG.og.type,
-    siteName: SITE_CONFIG.og.siteName,
-    locale: SITE_CONFIG.og.locale,
+    type: 'website',
+    siteName: 'EBTPlaza',
+    locale: 'id_ID',
   },
   twitter: {
-    card: SITE_CONFIG.og.twitterCard,
+    card: 'summary_large_image',
   },
   robots: {
     index: true,

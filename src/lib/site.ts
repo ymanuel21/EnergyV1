@@ -34,15 +34,16 @@ const DEFAULTS: SiteSettings = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ebtplaza.vercel.app',
   company: 'EBTPlaza',
   logo: { letter: 'E', text: 'EBTPlaza' },
-  og: { type: 'website', siteName: 'EBTPlaza', locale: 'id_ID', twitterCard: 'summary_large_image' },
+  og: { type: 'website' as const, siteName: 'EBTPlaza', locale: 'id_ID', twitterCard: 'summary_large_image' as const },
 };
 
 /** DB-first: reads site_settings, falls back to DEFAULTS */
 export async function getSite(): Promise<SiteSettings> {
   try {
     if (!process.env.DATABASE_URL) return DEFAULTS;
-    const { getPrisma } = await import('@/lib/db');
-    const prisma = await getPrisma();
+    // Use global Prisma to avoid bundling db.ts into client components
+    const { PrismaClient } = await import('@prisma/client');
+    const prisma = new PrismaClient();
     const rows = await prisma.siteSetting.findMany();
     const map: Record<string, string> = {};
     for (const r of rows) map[r.key] = r.value;

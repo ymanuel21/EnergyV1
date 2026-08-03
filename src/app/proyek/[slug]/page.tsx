@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { projectRepo } from '@/lib/repositories/project';
-import { getPrisma } from '@/lib/db';
+
 import { ProductAccordion } from './ProductAccordion';
 import { SmartBackButton } from '@/components/ui/SmartBackButton';
 import { PhotoGallery } from '@/components/project/PhotoGallery';
@@ -24,6 +24,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   if (!project) notFound();
 
   // Resolve linked product names from productIds slugs
+  const { getPrisma } = await import('@/lib/db');
   const prisma = await getPrisma();
   const rawIds: any[] = Array.isArray(project.productIds) ? project.productIds : [];
   // Support both old format (string[]) and new format ({slug, quantity}[])

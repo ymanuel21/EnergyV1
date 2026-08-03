@@ -32,6 +32,9 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30,
   },
   serverExternalPackages: ['pg', '@prisma/adapter-pg'],
+  experimental: {
+    serverComponentsExternalPackages: ['pg', '@prisma/adapter-pg', '@prisma/client'],
+  },
   async headers() {
     return [
       {
