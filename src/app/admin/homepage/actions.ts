@@ -160,6 +160,10 @@ export async function moveSection(id: string, direction: 'up' | 'down') {
   if (idx < 0) return;
   const target = direction === 'up' ? idx - 1 : idx + 1;
   if (target < 0 || target >= sections.length) return;
+  // Swap sortOrder; if equal, force distinct by incrementing target first
+  if (sections[idx].sortOrder === sections[target].sortOrder) {
+    await prisma.homepageSection.update({ where: { id: sections[target].id }, data: { sortOrder: sections[target].sortOrder + 1 } });
+  }
   const tmp = sections[idx].sortOrder;
   await prisma.homepageSection.update({ where: { id: sections[idx].id }, data: { sortOrder: sections[target].sortOrder } });
   await prisma.homepageSection.update({ where: { id: sections[target].id }, data: { sortOrder: tmp } });
