@@ -11,7 +11,8 @@ import { CompareProvider } from '@providers/CompareProvider';
 import { ToastProvider } from '@providers/ToastProvider';
 import { ThemeProvider } from '@components/providers/ThemeProvider';
 import { getThemeSettings } from '@/lib/api/theme';
-import { SITE_CONFIG, getSite, setCachedSite } from '@/lib/site';
+import { SITE_CONFIG } from '@/lib/site';
+import { loadSiteFromDb } from '@/lib/site-server';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -45,8 +46,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const themeSettings = await getThemeSettings();
-  const site = await getSite();
-  setCachedSite(site);
+  await loadSiteFromDb();
 
   return (
     <html lang="id" className={inter.variable}>
