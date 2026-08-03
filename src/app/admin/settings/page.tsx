@@ -27,7 +27,7 @@ export default async function SettingsPage() {
       }
     }
     revalidatePath('/admin/settings');
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
     clearPricingCache();
   }
 
