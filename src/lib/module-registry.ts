@@ -126,6 +126,16 @@ export const moduleRegistry: Record<string, ModuleDefinition> = {
     permission: 'manage_pages',
     searchFields: ['title', 'content', 'slug'],
   },
+  'static-pages': {
+    id: 'static-pages',
+    label: 'Static Pages',
+    icon: '📜',
+    group: 'content',
+    route: '/admin/static-pages',
+    description: 'Edit About, Privacy, Terms, Shipping, Returns pages',
+    permission: 'manage_static_pages',
+    searchFields: ['title', 'content', 'slug'],
+  },
   projects: {
     id: 'projects',
     label: 'Projects',
