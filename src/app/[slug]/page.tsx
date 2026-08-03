@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getAllProducts } from '@/lib/api/products';
 import { getAllBrands } from '@/lib/api/brands';
-import { getPublicBanners } from '@/lib/api/banners';
 import { getPublicHomepageSections, getLandingPages } from '@/lib/api/homepage-sections';
 import { sectionRegistry } from '@/lib/section-registry';
 import type { Metadata } from 'next';
@@ -32,14 +31,13 @@ export default async function LandingPage({ params }: Props) {
   const page = pages.find(p => p.slug === slug);
   if (!page) notFound();
 
-  const [products, brands, banners, sections] = await Promise.all([
+  const [products, brands, sections] = await Promise.all([
     getAllProducts(),
     getAllBrands(),
-    getPublicBanners().catch(() => []),
     getPublicHomepageSections(page.id),
   ]);
 
-  const contextData = { products, brands, banners };
+  const contextData = { products, brands };
 
   return (
     <>

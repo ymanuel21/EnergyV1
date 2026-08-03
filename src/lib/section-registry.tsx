@@ -15,7 +15,6 @@ export interface SectionRendererProps {
   data?: {
     products?: any[];
     brands?: any[];
-    banners?: any[];
     projects?: any[];
     productsById?: Record<string, any>;
     priceLabels?: Map<string, string | undefined>;
@@ -297,11 +296,10 @@ function SectionWrapper({ section, children }: { section: any; children: React.R
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
 function HeroRenderer({ section, data }: SectionRendererProps) {
-  const banner = data?.banners?.[0];
   const productIdRaw = section.settings.heroProductId;
   const productId = Array.isArray(productIdRaw) ? productIdRaw[0] : productIdRaw;
   const heroProduct = productId ? data?.products?.find((p: any) => p.slug === productId || p.id === productId) : null;
-  const heroImage = heroProduct?.images?.[0] || banner?.image || banner?.src || '/images/prototype/hero-power-station.png';
+  const heroImage = heroProduct?.images?.[0] || section.settings.imageId || '/images/prototype/hero-power-station.png';
   return (
     <section className="relative flex min-h-[calc(100vh-4rem)] flex-col justify-center overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FAFAF5 40%, #F5F5F0 100%)' }}>
       <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-emerald-100/40 blur-3xl" />
@@ -323,7 +321,7 @@ function HeroRenderer({ section, data }: SectionRendererProps) {
         </div>
         <div className="relative">
           <div className="aspect-square overflow-hidden rounded-3xl bg-card shadow-2xl shadow-gray-900/5 ring-1 ring-gray-900/5">
-            <img src={heroImage} alt={heroProduct?.name || banner?.alt || 'Hero'} className="h-full w-full object-contain p-8" />
+            <img src={heroImage} alt={heroProduct?.name || section.settings.title || 'Hero'} className="h-full w-full object-contain p-8" />
           </div>
         </div>
       </div>
