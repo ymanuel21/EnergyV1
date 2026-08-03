@@ -2,12 +2,13 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 const ERROR_MESSAGES: Record<string, { title: string; desc: string }> = {
   CredentialsSignin: { title: 'Login Gagal', desc: 'Email atau password tidak sesuai.' },
   AccessDenied: { title: 'Akses Ditolak', desc: 'Akun Anda tidak memiliki izin untuk mengakses halaman ini.' },
   Configuration: { title: 'Kesalahan Server', desc: 'Terjadi masalah konfigurasi. Silakan hubungi administrator.' },
-  SessionRequired: { title: 'Sesi Diperlukan', desc: 'Silakan login terlebih dahulu untuk melanjutkan.' },
+  RateLimited: { title: 'Terlalu Banyak Percobaan', desc: 'Terlalu banyak percobaan login. Silakan coba lagi nanti.' },
   default: { title: 'Login Gagal', desc: 'Tidak dapat login. Silakan coba lagi.' },
 };
 
@@ -34,14 +35,27 @@ function LoginForm() {
     e.preventDefault();
     if (loading) return;
     setLoading(true); setAlert(null);
+
     try {
       const fd = new FormData(e.currentTarget as HTMLFormElement);
-      const res = await fetch('/api/login', { method: 'POST', body: fd, redirect: 'manual' });
-      if (res.redirected || res.ok) { router.push('/admin'); return; }
-      const code = res.status === 401 ? 'CredentialsSignin' : res.status === 403 ? 'AccessDenied' : res.status === 500 ? 'Configuration' : 'default';
-      setAlert(ERROR_MESSAGES[code] || ERROR_MESSAGES.default);
-    } catch { setAlert(ERROR_MESSAGES.default); }
-    finally { setLoading(false); }
+      const result = await signIn('credentials', {
+        email: fd.get('email') as string,
+        password: fd.get('password') as string,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setAlert(ERROR_MESSAGES[result.error] || ERROR_MESSAGES.default);
+        setLoading(false);
+        return;
+      }
+
+      // Success — hard refresh to ensure session cookie is applied
+      window.location.href = '/admin';
+    } catch {
+      setAlert(ERROR_MESSAGES.default);
+      setLoading(false);
+    }
   }
 
   return (
