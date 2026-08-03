@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useReducer } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../AdminToastProvider';
 import { SlugInput } from '../SlugInput';
@@ -13,6 +13,8 @@ import { RelatedProductsEditor } from './RelatedProductsEditor';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
 import { submitForReview } from '@/lib/services/review';
+import { productReducer, makeInitialState, buildPayload } from './productReducer';
+import type { ProductState, ProductAction } from './productReducer';
 
 /* ═══════════════════════════════════════
    ProductForm — tabbed enterprise editor
@@ -37,60 +39,31 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('Overview');
   const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false);
   const [saveState, setSaveState] = useState<'idle' | 'saved' | 'error'>('idle');
-  const [specs, setSpecs] = useState<any[]>((defaultValues?.specifications) || []);
-  const [gallery, setGallery] = useState<string[]>(() => {
-    const raw = defaultValues?.images;
-    if (!raw || (Array.isArray(raw) && raw.length === 0)) return [];
-    return Array.isArray(raw) ? raw : [];
-  });
-  const [downloads, setDownloads] = useState<any[]>((defaultValues?.downloads) || []);
-  const [relations, setRelations] = useState<any[]>((defaultValues?.relations) || []);
+
+  const [state, dispatch] = useReducer(productReducer, defaultValues, makeInitialState);
 
   const defaultCatIds: string[] = defaultValues?.categories?.map((pc: any) => pc.categoryId)
     || (defaultValues?.categoryId ? [defaultValues.categoryId] : []);
   const topCategories = categories.filter((c: any) => !c.parentId);
 
-  const markDirty = () => { if (!dirty) setDirty(true); };
-
   const productId = defaultValues?.id;
-
-  const buildFormPayload = useCallback((form: HTMLFormElement) => {
-    const fd = new FormData(form);
-    const categoryIds = categories.filter((c: any) => fd.get(`cat-${c.id}`) === 'on').map((c: any) => c.id);
-    return {
-      name: fd.get('name'), slug: fd.get('slug'),
-      price: parseInt(fd.get('price') as string) || 0,
-      originalPrice: fd.get('originalPrice') ? parseInt(fd.get('originalPrice') as string) || null : null,
-      stock: parseInt(fd.get('stock') as string) || 0,
-      sku: fd.get('sku') || null, description: fd.get('description'),
-      images: gallery.length ? gallery : ['/images/placeholder/product-placeholder.png'],
-      specifications: specs.filter((s: any) => s.key?.trim()),
-      downloads, relations: relations.map((r: any) => ({ relatedProductId: r.relatedProductId, type: r.type })),
-      badges: [], badgeIds: [], brandId: fd.get('brandId'),
-      categoryIds, categoryId: categoryIds[0] || null,
-      condition: fd.get('condition') || 'new',
-      warranty: fd.get('warranty') || '1 Tahun',
-      weight: parseFloat(fd.get('weight') as string) || 0,
-      isActive: true,
-    };
-  }, [categories, gallery, specs, downloads, relations]);
+  const isDirty = Object.values(state.dirtySections).some(Boolean);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const data = buildFormPayload(e.currentTarget as HTMLFormElement);
+    const data = buildPayload(state, productId);
 
     try {
     if (productId) {
       await saveDraft({ entity: 'product', id: productId, data });
-      setSaving(false); setDirty(false); setSaveState('saved');
+      setSaving(false); setSaveState('saved');
       showToast('✓ Draft berhasil disimpan', 'success');
       router.refresh();
     } else {
       await onSubmit(data);
-      setSaving(false); setDirty(false);
+      setSaving(false); 
       showToast('✓ Produk berhasil dibuat', 'success');
       router.push('/admin/products'); router.refresh();
     }
@@ -98,41 +71,41 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
       setSaving(false);
       showToast('✕ Gagal menyimpan', 'error');
     }
-  }, [productId, buildFormPayload, onSubmit, router, showToast]);
+  }, [productId, buildPayload, onSubmit, router, showToast]);
 
   const handlePublish = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productId) return;
     setSaving(true);
-    const data = buildFormPayload(e.currentTarget as HTMLFormElement);
+    const data = buildPayload(state, productId);
     try {
     await saveDraft({ entity: 'product', id: productId, data });
     await publishEntity({ entity: 'product', id: productId });
-    setSaving(false); setDirty(false);
+    setSaving(false); 
     showToast('✓ Produk berhasil dipublikasikan', 'success');
     router.push('/admin/products'); router.refresh();
     } catch {
       setSaving(false);
       showToast('✕ Gagal mempublikasikan', 'error');
     }
-  }, [productId, buildFormPayload, router, showToast]);
+  }, [productId, buildPayload, router, showToast]);
 
   const handleSubmitForReview = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productId) return;
     setSaving(true);
-    const data = buildFormPayload(e.currentTarget as HTMLFormElement);
+    const data = buildPayload(state, productId);
     try {
     await saveDraft({ entity: 'product', id: productId, data });
     await submitForReview('product', productId);
-    setSaving(false); setDirty(false);
+    setSaving(false); 
     showToast('✓ Produk berhasil dikirim untuk review', 'success');
     router.refresh();
     } catch {
       setSaving(false);
       showToast('✕ Gagal mengirim review', 'error');
     }
-  }, [productId, buildFormPayload, router, showToast]);
+  }, [productId, buildPayload, router, showToast]);
 
   const inputCls = 'w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card';
 
@@ -155,7 +128,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Nama Produk <span className="text-red-500">*</span></label>
-              <input name="name" defaultValue={defaultValues?.name} required onChange={markDirty} className={inputCls} />
+              <input name="name" defaultValue={defaultValues?.name} required onChange={() => {}} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Slug <span className="text-red-500">*</span></label>
@@ -184,11 +157,11 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">SKU</label>
-              <input name="sku" defaultValue={defaultValues?.sku} onChange={markDirty} className={inputCls} />
+              <input name="sku" defaultValue={defaultValues?.sku} onChange={() => {}} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Stok <span className="text-red-500">*</span></label>
-              <input name="stock" type="number" defaultValue={defaultValues?.stock ?? 0} required onChange={markDirty} className={inputCls} />
+              <input name="stock" type="number" defaultValue={defaultValues?.stock ?? 0} required onChange={() => {}} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Kondisi</label>
@@ -200,16 +173,16 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Garansi</label>
-              <input name="warranty" defaultValue={defaultValues?.warranty ?? '1 Tahun'} onChange={markDirty} className={inputCls} />
+              <input name="warranty" defaultValue={defaultValues?.warranty ?? '1 Tahun'} onChange={() => {}} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Berat (kg)</label>
-              <input name="weight" type="number" step="0.1" defaultValue={defaultValues?.weight ?? 0} onChange={markDirty} className={inputCls} />
+              <input name="weight" type="number" step="0.1" defaultValue={defaultValues?.weight ?? 0} onChange={() => {}} className={inputCls} />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-primary mb-1">Deskripsi</label>
-            <textarea name="description" rows={4} defaultValue={defaultValues?.description} onChange={markDirty} className={inputCls + ' resize-y'} />
+            <textarea name="description" rows={4} defaultValue={defaultValues?.description} onChange={() => {}} className={inputCls + ' resize-y'} />
           </div>
         </div>
       )}
@@ -217,7 +190,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
       {/* ── Media Tab ── */}
       {activeTab === 'Media' && (
         <div className="space-y-6">
-          <ImageGallery images={gallery} onChange={setGallery} />
+          <ImageGallery images={state.media.images} onChange={v => dispatch({ type: 'SET_IMAGES', value: v })} />
           <div className="pt-4 border-t border-border">
             <p className="text-xs font-medium text-primary mb-2">Badges</p>
             <BadgeSelector defaultBadgeIds={defaultValues?.badges || []} />
@@ -257,17 +230,17 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
 
       {/* ── Specifications Tab ── */}
       {activeTab === 'Specifications' && (
-        <SpecEditor value={specs} onChange={setSpecs} />
+        <SpecEditor value={state.specifications} onChange={v => dispatch({ type: 'SET_SPECS', value: v })} />
       )}
 
       {/* ── Downloads Tab ── */}
       {activeTab === 'Downloads' && (
-        <DownloadManager value={downloads} onChange={setDownloads} />
+        <DownloadManager value={state.downloads as any} onChange={v => dispatch({ type: 'SET_DOWNLOADS', value: v })} />
       )}
 
       {/* ── Related Tab ── */}
       {activeTab === 'Related' && (
-        <RelatedProductsEditor value={relations} onChange={setRelations} currentProductId={defaultValues?.id || ''} />
+        <RelatedProductsEditor value={state.related as any} onChange={v => dispatch({ type: 'SET_RELATIONS', value: v })} currentProductId={defaultValues?.id || ''} />
       )}
 
       {/* ── SEO Tab ── */}
@@ -301,7 +274,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
           {reviewStatus === 'rejected' && reviewNotes && (
             <span className="text-xs text-red-600 truncate max-w-[200px]">Rejected: {reviewNotes}</span>
           )}
-          {dirty && <span className="text-xs text-amber-600">Unsaved changes</span>}
+          {isDirty && <span className="text-xs text-amber-600">Unsaved changes</span>}
         </div>
         <div className="flex gap-2">
           <button type="button" onClick={() => router.back()}
