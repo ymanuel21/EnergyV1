@@ -4,7 +4,7 @@ import { getPublicNavigationLinks } from '@/lib/api/navigation';
 import { cache } from '@/lib/platform';
 
 export async function Footer() {
-  const { name, email, phone } = SITE_CONFIG;
+  const { name, email, phone, tagline } = SITE_CONFIG;
   const nav = await cache.getOrSet('nav:footer', 300, () =>
     getPublicNavigationLinks().catch(() => ({} as Record<string, { label: string; href: string }[]>))
   );
@@ -18,7 +18,7 @@ export async function Footer() {
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <span className="text-sm font-semibold text-white">{name}</span>
-            <p className="mt-2 text-sm text-muted">Energi terbarukan untuk semua.</p>
+            <p className="mt-2 text-sm text-muted">{tagline}</p>
             <p className="mt-3 text-sm text-muted">{email} • {phone}</p>
           </div>
           {belanja.length > 0 && (
