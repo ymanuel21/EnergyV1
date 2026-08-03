@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 import { getStaticPages, updateStaticPage } from './actions';
 import Link from 'next/link';
 import { SlugInput } from '../SlugInput';
-import { MarkdownPreview } from './MarkdownPreview';
+import { StaticPageEditorClient } from './StaticPageEditorClient';
 
 export default async function StaticPagesPage() {
   const pages = await getStaticPages();
@@ -24,41 +24,14 @@ export default async function StaticPagesPage() {
                 className="rounded border border-border px-2 py-0.5 text-xs text-muted hover:bg-surface">Preview →</Link>
             </summary>
 
-            <form action={async (formData: FormData) => {
-              'use server';
-              await updateStaticPage(p.id, {
-                title: formData.get('title') as string || undefined,
-                slug: formData.get('slug') as string || undefined,
-                content: formData.get('content') as string || undefined,
-                description: formData.get('description') as string || undefined,
-              });
-            }} className="mt-4 space-y-3 border-t border-border pt-4">
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="block text-xs font-medium text-primary mb-1">Title</label>
-                  <input name="title" defaultValue={p.title}
-                    className="w-full rounded-lg border border-border px-3 py-1.5 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-primary mb-1">Slug</label>
-                  <SlugInput name="slug" defaultValue={p.slug} className="w-full rounded-lg border border-border px-3 py-1.5 text-sm" />
-                </div>
-              </div>
-              <div>
-                <MarkdownPreview initialContent={p.content} />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-primary mb-1">SEO Description</label>
-                <input name="description" defaultValue={p.description || ''} placeholder="Brief meta description for search engines"
-                  className="w-full rounded-lg border border-border px-3 py-1.5 text-sm" />
-              </div>
-              <div className="flex justify-end">
-                <button type="submit"
-                  className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover">
-                  Save Changes
-                </button>
-              </div>
-            </form>
+            <StaticPageEditorClient
+              pageId={p.id}
+              title={p.title}
+              slug={p.slug}
+              content={p.content}
+              description={p.description || ''}
+              updateAction={updateStaticPage}
+            />
           </details>
         ))}
       </div>
