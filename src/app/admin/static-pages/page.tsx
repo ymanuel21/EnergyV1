@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 import { getStaticPages, updateStaticPage } from './actions';
 import Link from 'next/link';
 import { SlugInput } from '../SlugInput';
-import { MarkdownPreview } from '../MarkdownPreview';
+import { MarkdownPreview } from './MarkdownPreview';
 
 export default async function StaticPagesPage() {
   const pages = await getStaticPages();
