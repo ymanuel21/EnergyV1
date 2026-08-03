@@ -22,11 +22,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const [products, categories, brands, articles, pages] = await Promise.all([
-    getAllProducts(),
-    getAllCategories(),
-    getAllBrands(),
-    getAllArticles(),
-    getAllPages(),
+    getAllProducts().catch(() => []),
+    getAllCategories().catch(() => []),
+    getAllBrands().catch(() => []),
+    getAllArticles().catch(() => []),
+    getAllPages().catch(() => []),
   ]);
 
   for (const p of products) {
