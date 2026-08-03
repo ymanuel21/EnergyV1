@@ -15,7 +15,7 @@ export function OrganizationSchema() {
           telephone: SITE.phone,
           address: {
             '@type': 'PostalAddress',
-            streetAddress: 'Jl. Terusan Jakarta, Puri Dago Raya No.342 Kav 31',
+            streetAddress: SITE.address,
             addressLocality: 'Bandung',
             addressRegion: 'Jawa Barat',
             postalCode: '40293',

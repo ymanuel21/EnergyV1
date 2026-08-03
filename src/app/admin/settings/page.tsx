@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { revalidatePath } from 'next/cache';
 import { getPrisma } from '@/lib/db';
 import { clearPricingCache } from '@/lib/services/product-pricing';
+import { SITE_CONFIG } from '@/lib/site';
 import { SettingsClientWrapper } from './SettingsClientWrapper';
 
 async function getSettings() {
@@ -30,13 +31,13 @@ export default async function SettingsPage() {
   }
 
   const siteFields = [
-    { key: 'name', label: 'Nama Situs', defaultValue: 'EBTPlaza' },
-    { key: 'tagline', label: 'Tagline', defaultValue: 'Energi Terbarukan, Harga Terjangkau!' },
-    { key: 'email', label: 'Email', defaultValue: 'info@ebtplaza.com' },
-    { key: 'phone', label: 'Telepon', defaultValue: '(022) 20522279' },
-    { key: 'whatsapp', label: 'WhatsApp', defaultValue: '6282112850215' },
-    { key: 'address', label: 'Alamat', defaultValue: 'Jl. Terusan Jakarta, Puri Dago Raya No.342, Bandung' },
-    { key: 'description', label: 'SEO Description', defaultValue: 'Pusat produk energi terbarukan...' },
+    { key: 'name', label: 'Nama Situs', defaultValue: SITE_CONFIG.name },
+    { key: 'tagline', label: 'Tagline', defaultValue: SITE_CONFIG.tagline },
+    { key: 'email', label: 'Email', defaultValue: SITE_CONFIG.email },
+    { key: 'phone', label: 'Telepon', defaultValue: SITE_CONFIG.phone },
+    { key: 'whatsapp', label: 'WhatsApp', defaultValue: SITE_CONFIG.whatsapp },
+    { key: 'address', label: 'Alamat', defaultValue: SITE_CONFIG.address },
+    { key: 'description', label: 'SEO Description', defaultValue: SITE_CONFIG.description },
   ];
 
   const PRICE_MODES = [
