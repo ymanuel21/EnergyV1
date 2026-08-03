@@ -95,16 +95,6 @@ export const moduleRegistry: Record<string, ModuleDefinition> = {
     permission: 'manage_badges',
     searchFields: ['name'],
   },
-  banners: {
-    id: 'banners',
-    label: 'Banner',
-    icon: '🖼️',
-    group: 'content',
-    route: '/admin/banners',
-    description: 'Manage promotional banners',
-    permission: 'manage_banners',
-    searchFields: ['title'],
-  },
   articles: {
     id: 'articles',
     label: 'Artikel',

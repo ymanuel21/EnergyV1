@@ -7,13 +7,12 @@ import { aggregateMediaDatabase, countUniqueAssets } from '@/lib/services/media'
 async function getStats() {
   try {
     const prisma = await getAdminPrisma();
-    const [products, categories, brands, articles, faqs, banners, sections, navLinks] = await Promise.all([
+    const [products, categories, brands, articles, faqs, sections, navLinks] = await Promise.all([
       prisma.product.count(),
       prisma.category.count(),
       prisma.brand.count(),
       prisma.article.count(),
       prisma.faq.count(),
-      prisma.banner.count(),
       prisma.homepageSectionVersion.count({ where: { status: 'published' } }),
       prisma.navigationLink.count({ where: { enabled: true } }),
     ]);
@@ -21,7 +20,7 @@ async function getStats() {
     const mediaItems = await aggregateMediaDatabase(prisma);
     const assets = countUniqueAssets(mediaItems);
 
-    return { products, categories, brands, articles, faqs, banners, sections, navLinks, assets };
+    return { products, categories, brands, articles, faqs, sections, navLinks, assets };
   } catch {
     return null;
   }
@@ -42,7 +41,6 @@ export default async function DashboardPage() {
           <Card label="Brand" value={stats.brands} href="/admin/brands" />
           <Card label="Artikel" value={stats.articles} href="/admin/articles" />
           <Card label="FAQ" value={stats.faqs} href="/admin/faq" />
-          <Card label="Banner" value={stats.banners} href="/admin/banners" />
           <Card label="Homepage Sections" value={stats.sections} href="/admin/homepage" />
           <Card label="Nav Links" value={stats.navLinks} href="/admin/navigation" />
           <Card label="Media Assets" value={stats.assets} href="/admin/media" />
