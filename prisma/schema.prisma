@@ -132,6 +132,7 @@ model StaticPage {
   slug      String   @unique
   title     String
   content   String
+  description String? @default("") @map("description")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("pages")
