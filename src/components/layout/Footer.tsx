@@ -4,7 +4,7 @@ import { getPublicNavigationLinks } from '@/lib/api/navigation';
 import { cache } from '@/lib/platform';
 
 export async function Footer() {
-  const { name, email, phone, tagline } = SITE_CONFIG;
+  const { name, email, phone, tagline, address } = SITE_CONFIG;
   const nav = await cache.getOrSet('nav:footer', 300, () =>
     getPublicNavigationLinks().catch(() => ({} as Record<string, { label: string; href: string }[]>))
   );
@@ -20,6 +20,7 @@ export async function Footer() {
             <span className="text-sm font-semibold text-white">{name}</span>
             <p className="mt-2 text-sm text-muted">{tagline}</p>
             <p className="mt-3 text-sm text-muted">{email} • {phone}</p>
+            <p className="mt-1 text-sm text-muted">{address}</p>
           </div>
           {belanja.length > 0 && (
             <div>
