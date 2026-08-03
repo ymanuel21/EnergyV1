@@ -2,11 +2,12 @@ export const dynamic = 'force-dynamic';
 
 import Link from 'next/link';
 import { getAdminPrisma } from './lib/admin-prisma';
+import { aggregateMediaDatabase, countUniqueAssets } from '@/lib/services/media';
 
 async function getStats() {
   try {
     const prisma = await getAdminPrisma();
-    const [products, categories, brands, articles, faqs, banners, sections, navLinks, assets] = await Promise.all([
+    const [products, categories, brands, articles, faqs, banners, sections, navLinks] = await Promise.all([
       prisma.product.count(),
       prisma.category.count(),
       prisma.brand.count(),
@@ -15,8 +16,11 @@ async function getStats() {
       prisma.banner.count(),
       prisma.homepageSectionVersion.count({ where: { status: 'published' } }),
       prisma.navigationLink.count({ where: { enabled: true } }),
-      prisma.asset.count(),
     ]);
+    // Media — from shared aggregator (same as Media Library)
+    const mediaItems = await aggregateMediaDatabase(prisma);
+    const assets = countUniqueAssets(mediaItems);
+
     return { products, categories, brands, articles, faqs, banners, sections, navLinks, assets };
   } catch {
     return null;

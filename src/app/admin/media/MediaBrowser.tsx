@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { MediaItem } from './actions';
+import type { MediaItem } from '@/lib/services/media';
 
 const SOURCES = ['all', 'product', 'project', 'brand', 'banner', 'testimonial'] as const;
 type SourceFilter = typeof SOURCES[number];
