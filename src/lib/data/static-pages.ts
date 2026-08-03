@@ -2,6 +2,7 @@ export interface StaticPage {
   slug: string;
   title: string;
   content: string;
+  description?: string;
 }
 
 export const staticPages: StaticPage[] = [
