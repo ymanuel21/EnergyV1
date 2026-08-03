@@ -24,9 +24,12 @@ export async function getProduct(id: string) {
     },
   });
   if (!product) return null;
+  // Merge draftData overlay if status=draft
+  const draftData = (product.status === 'draft' && product.draftData) ? (product.draftData as Record<string, unknown>) : {};
   // Flatten relations for the editor
   return {
     ...product,
+    ...draftData,
     relations: product.relations.map((r: any) => ({
       id: r.id,
       productId: r.productId,

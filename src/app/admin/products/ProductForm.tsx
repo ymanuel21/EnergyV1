@@ -71,7 +71,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
       setSaving(false);
       showToast('✕ Gagal menyimpan', 'error');
     }
-  }, [productId, buildPayload, onSubmit, router, showToast]);
+  }, [productId, buildPayload, state, onSubmit, router, showToast]);
 
   const handlePublish = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +88,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
       setSaving(false);
       showToast('✕ Gagal mempublikasikan', 'error');
     }
-  }, [productId, buildPayload, router, showToast]);
+  }, [productId, buildPayload, state, router, showToast]);
 
   const handleSubmitForReview = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,7 +105,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
       setSaving(false);
       showToast('✕ Gagal mengirim review', 'error');
     }
-  }, [productId, buildPayload, router, showToast]);
+  }, [productId, buildPayload, state, router, showToast]);
 
   const inputCls = 'w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card';
 
