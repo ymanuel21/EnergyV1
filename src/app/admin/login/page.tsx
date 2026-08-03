@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 
 const ERROR_MESSAGES: Record<string, { title: string; desc: string }> = {
   CredentialsSignin: { title: 'Login Gagal', desc: 'Email atau password tidak sesuai.' },
@@ -15,8 +15,16 @@ const ERROR_MESSAGES: Record<string, { title: string; desc: string }> = {
 function LoginForm() {
   const router = useRouter();
   const params = useSearchParams();
+  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState<{ title: string; desc: string } | null>(null);
+
+  // Redirect authenticated users away from login page
+  useEffect(() => {
+    if (status === 'authenticated') {
+      window.location.href = '/admin';
+    }
+  }, [status]);
 
   useEffect(() => {
     const errorCode = params.get('error');

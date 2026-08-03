@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AdminToastProvider } from './AdminToastProvider';
 import { SessionManager } from '@/components/admin/SessionManager';
+import { SessionProvider } from 'next-auth/react';
 import { moduleRegistry, MODULE_GROUPS } from '@/lib/module-registry';
 
 const sidebarModules = Object.values(moduleRegistry).filter(m => m.id !== 'dashboard');
@@ -18,9 +19,10 @@ for (const m of sidebarModules) {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isLogin = pathname === '/admin/login';
-  if (isLogin) return <>{children}</>;
+  if (isLogin) return <SessionProvider>{children}</SessionProvider>;
 
   return (
+    <SessionProvider>
     <AdminToastProvider>
       <SessionManager />
       <div className="flex min-h-screen bg-surface">
@@ -70,5 +72,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <main className="flex-1 p-6">{children}</main>
       </div>
     </AdminToastProvider>
+    </SessionProvider>
   );
 }
