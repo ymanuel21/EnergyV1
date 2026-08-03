@@ -6,6 +6,7 @@ import { useToast } from '../AdminToastProvider';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
 import { submitForReview } from '@/lib/services/review';
 import { StatusBadge } from '@/components/admin/StatusBadge';
+import { ImageUpload } from '../ImageUpload';
 import Link from 'next/link';
 
 interface TestimonialEditFormProps {
@@ -158,11 +159,11 @@ export function TestimonialEditForm({ testimonial, reviewStatus, reviewNotes }: 
         {/* Photo */}
         <div className="border-t border-border pt-6">
           <h3 className="text-sm font-semibold text-primary mb-3">Photo</h3>
-          <input name="photo" defaultValue={testimonial.photo} className={inputCls}
-            placeholder="https://... (photo URL)" onChange={markDirty} />
-          {testimonial.photo && (
-            <img src={testimonial.photo} alt="Preview" className="mt-2 w-20 h-20 rounded-full object-cover border" />
-          )}
+          <ImageUpload name="photo" defaultValue={testimonial.photo} />
+          <Link href="/admin/media" target="_blank"
+            className="inline-block mt-2 text-xs text-muted underline hover:text-primary">
+            📁 Pilih dari Media Library
+          </Link>
         </div>
 
         {/* Linked Projects */}
