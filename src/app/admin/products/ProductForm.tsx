@@ -128,7 +128,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Nama Produk <span className="text-red-500">*</span></label>
-              <input name="name" defaultValue={defaultValues?.name} required onChange={() => {}} className={inputCls} />
+              <input name="name" value={state.overview.name} onChange={e => dispatch({ type: 'SET_NAME', value: e.target.value })} required className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Slug <span className="text-red-500">*</span></label>
@@ -136,7 +136,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Brand <span className="text-red-500">*</span></label>
-              <select name="brandId" defaultValue={defaultValues?.brandId} required className={inputCls}>
+              <select name="brandId" value={state.overview.brandId} onChange={e => dispatch({ type: "SET_BRAND_ID", value: e.target.value })} required className={inputCls}>
                 <option value="">Pilih Brand</option>
                 {brands.map((b: any) => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
@@ -157,15 +157,15 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">SKU</label>
-              <input name="sku" defaultValue={defaultValues?.sku} onChange={() => {}} className={inputCls} />
+              <input name="sku" value={state.overview.sku} onChange={e => dispatch({ type: "SET_SKU", value: e.target.value })} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Stok <span className="text-red-500">*</span></label>
-              <input name="stock" type="number" defaultValue={defaultValues?.stock ?? 0} required onChange={() => {}} className={inputCls} />
+              <input name="stock" type="number" value={state.overview.stock} onChange={e => dispatch({ type: "SET_STOCK", value: parseInt(e.target.value) || 0 })} required className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Kondisi</label>
-              <select name="condition" defaultValue={defaultValues?.condition ?? 'new'} className={inputCls}>
+              <select name="condition" value={state.overview.condition} onChange={e => dispatch({ type: 'SET_CONDITION', value: e.target.value })} className={inputCls}>
                 <option value="new">Baru</option><option value="new-minor-defect">Baru — Minor Defect</option>
                 <option value="new-project-leftover">Baru — Sisa Proyek</option><option value="open-box">Open Box</option>
                 <option value="display">Display</option><option value="used">Bekas</option>
@@ -173,16 +173,16 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Garansi</label>
-              <input name="warranty" defaultValue={defaultValues?.warranty ?? '1 Tahun'} onChange={() => {}} className={inputCls} />
+              <input name="warranty" value={state.overview.warranty} onChange={e => dispatch({ type: 'SET_WARRANTY', value: e.target.value })} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Berat (kg)</label>
-              <input name="weight" type="number" step="0.1" defaultValue={defaultValues?.weight ?? 0} onChange={() => {}} className={inputCls} />
+              <input name="weight" type="number" step="0.1" value={state.overview.weight} onChange={e => dispatch({ type: "SET_WEIGHT", value: parseFloat(e.target.value) || 0 })} className={inputCls} />
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-primary mb-1">Deskripsi</label>
-            <textarea name="description" rows={4} defaultValue={defaultValues?.description} onChange={() => {}} className={inputCls + ' resize-y'} />
+            <textarea name="description" rows={4} value={state.overview.description} onChange={e => dispatch({ type: "SET_DESCRIPTION", value: e.target.value })} className={inputCls + ' resize-y'} />
           </div>
         </div>
       )}
@@ -206,7 +206,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
           
           <div className="sm:col-span-2 border-t border-border pt-4">
             <label className="block text-sm font-medium text-primary mb-2">Price Display Mode</label>
-            <select name="priceDisplayMode" defaultValue={defaultValues?.priceDisplayMode || ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm">
+            <select name="priceDisplayMode" value={state.pricing.priceDisplayMode} onChange={e => dispatch({ type: 'SET_PRICE_DISPLAY_MODE', value: e.target.value })} className="w-full rounded-lg border border-border px-3 py-2 text-sm">
               <option value="">Use Global Setting</option>
               <option value="SHOW_PRICE">Show Price</option>
               <option value="STARTING_FROM">Starting From</option>
@@ -218,7 +218,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
 
           <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-primary mb-1">Custom Price Label</label>
-            <input name="customPriceLabel" defaultValue={defaultValues?.customPriceLabel || ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm" placeholder="Digunakan saat mode Custom Text dipilih" />
+            <input name="customPriceLabel" value={state.pricing.customPriceLabel} onChange={e => dispatch({ type: 'SET_CUSTOM_PRICE_LABEL', value: e.target.value })} className="w-full rounded-lg border border-border px-3 py-2 text-sm" placeholder="Digunakan saat mode Custom Text dipilih" />
           </div>
 
           <div className="sm:col-span-2 p-4 rounded-lg bg-surface text-xs text-muted">
@@ -248,11 +248,11 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-primary mb-1">SEO Title</label>
-            <input name="seoTitle" defaultValue={defaultValues?.seoTitle || ''} className={inputCls} placeholder={defaultValues?.name ? `${defaultValues.name} | EBTPlaza` : 'Nama Produk | EBTPlaza'} />
+            <input name="seoTitle" value={state.seo.seoTitle} onChange={e => dispatch({ type: 'SET_SEO_TITLE', value: e.target.value })} className={inputCls} placeholder={defaultValues?.name ? `${defaultValues.name} | EBTPlaza` : 'Nama Produk | EBTPlaza'} />
           </div>
           <div>
             <label className="block text-sm font-medium text-primary mb-1">Meta Description</label>
-            <textarea name="metaDescription" rows={3} defaultValue={defaultValues?.metaDescription || ''} className={inputCls + ' resize-y'} placeholder="Deskripsi singkat produk untuk hasil pencarian (120-160 karakter)" />
+            <textarea name="metaDescription" rows={3} value={state.seo.metaDescription} onChange={e => dispatch({ type: 'SET_META_DESCRIPTION', value: e.target.value })} className={inputCls + ' resize-y'} placeholder="Deskripsi singkat produk untuk hasil pencarian (120-160 karakter)" />
           </div>
           <div className="p-4 rounded-lg bg-surface text-xs text-muted">
             <p className="font-medium text-primary mb-1">💡 SEO</p>
