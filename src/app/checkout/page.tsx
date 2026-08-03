@@ -13,8 +13,6 @@ import { CartIcon } from '@ui/Icons';
 import type { Metadata } from 'next';
 import { SITE } from '@lib/constants';
 
-const WA_NUMBER = '6282112850215';
-
 type CheckoutStep = 'shipping' | 'payment' | 'review';
 
 export default function CheckoutPage() {
@@ -59,7 +57,7 @@ export default function CheckoutPage() {
     );
 
     saveOrderToSheets(order).then(() => {
-      const waUrl = buildWhatsAppMessage(WA_NUMBER, order);
+      const waUrl = buildWhatsAppMessage(SITE.whatsapp, order);
       cart.clearCart();
       window.open(waUrl, '_blank');
     });
