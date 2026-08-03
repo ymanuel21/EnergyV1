@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { getStaticPages, updateStaticPage } from './actions';
 import Link from 'next/link';
 import { SlugInput } from '../SlugInput';
+import { MarkdownPreview } from '../MarkdownPreview';
 
 export default async function StaticPagesPage() {
   const pages = await getStaticPages();
@@ -44,9 +45,7 @@ export default async function StaticPagesPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-primary mb-1">Content (Markdown)</label>
-                <textarea name="content" rows={16} defaultValue={p.content}
-                  className="w-full rounded-lg border border-border px-3 py-2 text-sm font-mono resize-y" />
+                <MarkdownPreview initialContent={p.content} />
               </div>
               <div>
                 <label className="block text-xs font-medium text-primary mb-1">SEO Description</label>
