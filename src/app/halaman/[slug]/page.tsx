@@ -8,7 +8,23 @@ import remarkGfm from 'remark-gfm';
 
 function RenderContent({ content }: { content: string }) {
   if (content.trim().startsWith('<')) {
-    return <div className="prose prose-sm sm:prose max-w-none" dangerouslySetInnerHTML={{ __html: content }} />;
+    // Backward-compat: convert legacy HTML attrs → inline styles.
+    // Handles both old format (<p lineHeight="2" spaceAfter="32">)
+    // and new format (<p style="line-height:2; margin-bottom:32px">).
+    const html = content.replace(
+      /<p\b([^>]*?)>/g,
+      (match, attrs) => {
+        const lh = attrs.match(/lineHeight="([^"]*)"/)?.[1];
+        const sa = attrs.match(/spaceAfter="([^"]*)"/)?.[1];
+        if (!lh && !sa) return match;
+        const parts: string[] = [];
+        if (lh) parts.push(`line-height: ${lh}`);
+        if (sa) parts.push(`margin-bottom: ${sa}px`);
+        const clean = attrs.replace(/\s*lineHeight="[^"]*"/g, '').replace(/\s*spaceAfter="[^"]*"/g, '');
+        return `<p${clean} style="${parts.join('; ')}">`;
+      }
+    );
+    return <div className="prose prose-sm sm:prose max-w-none" dangerouslySetInnerHTML={{ __html: html }} />;
   }
   return (
     <div className="prose prose-sm sm:prose max-w-none">
