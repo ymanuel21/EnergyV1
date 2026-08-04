@@ -21,22 +21,32 @@ export const ParagraphSpacing = Extension.create({
         attributes: {
           lineHeight: {
             default: null,
-            parseHTML: (el: HTMLElement) => el.style.lineHeight || null,
+            // Read from existing style or the parsed HTML attribute
+            parseHTML: (el: HTMLElement) => {
+              const existing = el.style.lineHeight;
+              if (existing) return existing;
+              // Also accept the rendered HTML attribute form (backward compat)
+              const attr = el.getAttribute('lineheight') || el.getAttribute('lineHeight');
+              return attr || null;
+            },
           },
           spaceAfter: {
             default: null,
             parseHTML: (el: HTMLElement) => {
-              const mb = el.style.marginBottom || '';
-              return mb && mb !== '0px' ? parseInt(mb) : null;
+              const existing = el.style.marginBottom;
+              if (existing && existing !== '0px') return parseInt(existing);
+              const attr = el.getAttribute('spaceafter') || el.getAttribute('spaceAfter');
+              return attr ? parseInt(attr) : null;
             },
           },
         },
-        // Merge both styles into a single style string so neither is dropped
+        // Single merged renderHTML — combines all attributes into one style string.
+        // Existing inline styles on the element are preserved via parseHTML above.
         renderHTML: (attrs: Record<string, any>) => {
-          const styles: string[] = [];
-          if (attrs.lineHeight) styles.push(`line-height: ${attrs.lineHeight}`);
-          if (attrs.spaceAfter) styles.push(`margin-bottom: ${attrs.spaceAfter}px`);
-          return styles.length > 0 ? { style: styles.join('; ') } : {};
+          const parts: string[] = [];
+          if (attrs.lineHeight) parts.push(`line-height: ${attrs.lineHeight}`);
+          if (attrs.spaceAfter) parts.push(`margin-bottom: ${attrs.spaceAfter}px`);
+          return parts.length > 0 ? { style: parts.join('; ') } : {};
         },
       },
     ];

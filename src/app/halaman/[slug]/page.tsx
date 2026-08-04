@@ -7,24 +7,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 function RenderContent({ content }: { content: string }) {
-  // Convert paragraph spacing attributes to inline styles
-  let html = content.replace(
-    / lineheight="([^"]*)"( spaceafter="([^"]*)")?/g,
-    (_, lh, __, sa) => {
-      const styles: string[] = [];
-      if (lh) styles.push(`line-height: ${lh}`);
-      if (sa) styles.push(`margin-bottom: ${sa}px`);
-      return styles.length ? ` style="${styles.join('; ')}"` : '';
-    }
-  );
-
-  // Render as HTML (Tiptap output) or Markdown (legacy)
-  if (html.trim().startsWith('<')) {
-    return <div className="prose prose-sm sm:prose max-w-none" dangerouslySetInnerHTML={{ __html: html }} />;
+  if (content.trim().startsWith('<')) {
+    return <div className="prose prose-sm sm:prose max-w-none" dangerouslySetInnerHTML={{ __html: content }} />;
   }
   return (
     <div className="prose prose-sm sm:prose max-w-none">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{html}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
     </div>
   );
 }
