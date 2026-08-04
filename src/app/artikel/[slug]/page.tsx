@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
-import { getAllArticles, getArticleBySlug } from '@/lib/api/articles';
+import { getArticleBySlug } from '@/lib/api/articles';
+import { formatDate } from '@/lib/formatDate';
 import { notFound } from 'next/navigation';
 
 export const revalidate = 3600;
@@ -30,7 +31,7 @@ export default async function ArticleDetail({ params }: Props) {
       <article className="mx-auto mt-6 max-w-3xl">
         <div className="flex items-center gap-2 text-xs text-muted">
           <span>{article.category}</span><span>•</span>
-          <span>{article.date}</span><span>•</span>
+          <span>{formatDate(article.date)}</span><span>•</span>
           <span>{article.readTime} menit</span><span>•</span>
           <span>{article.author}</span>
         </div>

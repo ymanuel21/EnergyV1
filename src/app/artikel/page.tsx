@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { getAllArticles } from '@/lib/api/articles';
+import { formatDate } from '@/lib/formatDate';
 
 export const metadata: Metadata = {
   title: 'Panduan Energi Surya',
@@ -27,7 +28,7 @@ export default async function ArticlesPage() {
             <div className="flex items-center gap-2 text-xs text-muted">
               <span>{article.category}</span>
               <span>•</span>
-              <span>{article.date}</span>
+              <span>{formatDate(article.date)}</span>
               <span>•</span>
               <span>{article.readTime} menit</span>
             </div>
