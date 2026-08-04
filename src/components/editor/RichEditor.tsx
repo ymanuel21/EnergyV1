@@ -10,6 +10,8 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Gapcursor from '@tiptap/extension-gapcursor';
 import Dropcursor from '@tiptap/extension-dropcursor';
 import { EditorToolbar } from './EditorToolbar';
+import { SpacingControls } from './SpacingControls';
+import { ParagraphSpacing } from './ParagraphSpacing';
 import { cn } from '@/lib/utils/cn';
 
 interface RichEditorProps {
@@ -31,6 +33,7 @@ export function RichEditor({ content, onChange, placeholder = 'Start writing...'
       Placeholder.configure({ placeholder }),
       Gapcursor,
       Dropcursor,
+      ParagraphSpacing,
     ],
     content,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -45,7 +48,11 @@ export function RichEditor({ content, onChange, placeholder = 'Start writing...'
 
   return (
     <div className="rounded-lg border border-border bg-card">
-      <EditorToolbar editor={editor} />
+      <div className="flex flex-wrap items-center gap-1 px-3 py-2 border-b border-border bg-surface/50 rounded-t-lg">
+        <EditorToolbar editor={editor} />
+        <span className="w-px h-5 bg-border mx-1" />
+        <SpacingControls editor={editor} />
+      </div>
       <EditorContent editor={editor} />
     </div>
   );

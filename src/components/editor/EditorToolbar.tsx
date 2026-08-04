@@ -25,51 +25,32 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
   );
 
   return (
-    <div className="flex flex-wrap items-center gap-1 px-3 py-2 border-b border-border bg-surface/50 rounded-t-lg">
-      {/* Undo/Redo */}
+    <>
       {btn(() => editor.chain().focus().undo().run(), '↩', false, !editor.can().undo())}
       {btn(() => editor.chain().focus().redo().run(), '↪', false, !editor.can().redo())}
-
       <span className="w-px h-5 bg-border mx-1" />
-
-      {/* Paragraph + Headings */}
       {btn(() => editor.chain().focus().setParagraph().run(), '¶', editor.isActive('paragraph'))}
       {btn(() => editor.chain().focus().toggleHeading({ level: 1 }).run(), 'H1', editor.isActive('heading', { level: 1 }))}
       {btn(() => editor.chain().focus().toggleHeading({ level: 2 }).run(), 'H2', editor.isActive('heading', { level: 2 }))}
       {btn(() => editor.chain().focus().toggleHeading({ level: 3 }).run(), 'H3', editor.isActive('heading', { level: 3 }))}
-
       <span className="w-px h-5 bg-border mx-1" />
-
-      {/* Inline */}
       {btn(() => editor.chain().focus().toggleBold().run(), 'B', editor.isActive('bold'))}
       {btn(() => editor.chain().focus().toggleItalic().run(), 'I', editor.isActive('italic'))}
       {btn(() => editor.chain().focus().toggleUnderline().run(), 'U', editor.isActive('underline'))}
-
       <span className="w-px h-5 bg-border mx-1" />
-
-      {/* Lists */}
       {btn(() => editor.chain().focus().toggleBulletList().run(), '• List', editor.isActive('bulletList'))}
       {btn(() => editor.chain().focus().toggleOrderedList().run(), '1. List', editor.isActive('orderedList'))}
-
       <span className="w-px h-5 bg-border mx-1" />
-
-      {/* Blocks */}
       {btn(() => editor.chain().focus().toggleBlockquote().run(), '"', editor.isActive('blockquote'))}
       {btn(() => editor.chain().focus().toggleCodeBlock().run(), '<>', editor.isActive('codeBlock'))}
       {btn(() => editor.chain().focus().setHorizontalRule().run(), '—', false)}
       {btn(addLink, '🔗', editor.isActive('link'))}
       {btn(addImage, '🖼', false)}
-
       <span className="w-px h-5 bg-border mx-1" />
-
-      {/* Table */}
       {btn(() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(), '⊞ Table', editor.isActive('table'))}
       {btn(() => editor.chain().focus().deleteTable().run(), '⌫ Table', false, !editor.can().deleteTable())}
-
       <span className="w-px h-5 bg-border mx-1" />
-
-      {/* Clear formatting */}
       {btn(() => editor.chain().focus().unsetAllMarks().clearNodes().run(), '✕ Clear', false)}
-    </div>
+    </>
   );
 }
