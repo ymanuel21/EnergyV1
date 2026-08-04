@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
-import { getArticleBySlug } from '@/lib/api/articles';
+import { getAllArticles, getArticleBySlug } from '@/lib/api/articles';
 import { formatDate } from '@/lib/formatDate';
 import { notFound } from 'next/navigation';
 
