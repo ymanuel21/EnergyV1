@@ -42,12 +42,8 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
   const [saveState, setSaveState] = useState<'idle' | 'saved' | 'error'>('idle');
 
   const [state, dispatch] = useReducer(productReducer, defaultValues, makeInitialState);
-
-  const defaultCatIds: string[] = defaultValues?.categories?.map((pc: any) => pc.categoryId)
-    || (defaultValues?.categoryId ? [defaultValues.categoryId] : []);
-  const topCategories = categories.filter((c: any) => !c.parentId);
-
   const productId = defaultValues?.id;
+  const topCategories = categories.filter((c: any) => !c.parentId);
   const isDirty = Object.values(state.dirtySections).some(Boolean);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
@@ -147,9 +143,29 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
                 {topCategories.length === 0 && <p className="text-xs text-muted">Tidak ada kategori</p>}
                 {topCategories.map((cat: any) => (
                   <div key={cat.id}>
-                    <label className="flex items-center gap-2 py-0.5 cursor-pointer"><input type="checkbox" name={`cat-${cat.id}`} defaultChecked={defaultCatIds.includes(cat.id)} className="rounded border-border" /><span className="text-sm font-medium text-primary">{cat.name}</span></label>
+                    <label className="flex items-center gap-2 py-0.5 cursor-pointer">
+                      <input type="checkbox" checked={state.overview.categoryIds.includes(cat.id)}
+                        onChange={() => {
+                          const ids = state.overview.categoryIds.includes(cat.id)
+                            ? state.overview.categoryIds.filter(id => id !== cat.id)
+                            : [...state.overview.categoryIds, cat.id];
+                          dispatch({ type: 'SET_CATEGORY_IDS', value: ids });
+                        }}
+                        className="rounded border-border" />
+                      <span className="text-sm font-medium text-primary">{cat.name}</span>
+                    </label>
                     {cat.children?.map((child: any) => (
-                      <label key={child.id} className="flex items-center gap-2 py-0.5 pl-6 cursor-pointer"><input type="checkbox" name={`cat-${child.id}`} defaultChecked={defaultCatIds.includes(child.id)} className="rounded border-border" /><span className="text-sm text-muted">{child.name}</span></label>
+                      <label key={child.id} className="flex items-center gap-2 py-0.5 pl-6 cursor-pointer">
+                        <input type="checkbox" checked={state.overview.categoryIds.includes(child.id)}
+                          onChange={() => {
+                            const ids = state.overview.categoryIds.includes(child.id)
+                              ? state.overview.categoryIds.filter(id => id !== child.id)
+                              : [...state.overview.categoryIds, child.id];
+                            dispatch({ type: 'SET_CATEGORY_IDS', value: ids });
+                          }}
+                          className="rounded border-border" />
+                        <span className="text-sm text-muted">{child.name}</span>
+                      </label>
                     ))}
                   </div>
                 ))}
