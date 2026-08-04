@@ -58,7 +58,7 @@ const COMMON_ADVANCED: SectionField[] = [
   { key: '_textColor', label: 'Text Color', type: 'select', options: [{ value: 'auto', label: 'Auto' }], group: 'advanced', defaultValue: '' },
   { key: '_borderRadius', label: 'Border Radius', type: 'select', options: [{ value: 'square', label: 'Square' }], group: 'advanced', defaultValue: 'medium' },
   { key: '_shadow', label: 'Shadow', type: 'select', options: [{ value: 'none', label: 'None' }], group: 'advanced', defaultValue: 'none' },
-  { key: '_animation', label: 'Animation', type: 'select', options: [{ value: 'none', label: 'None' }, { value: 'fade', label: 'Fade In' }, { value: 'slide', label: 'Slide Up' }], group: 'advanced', defaultValue: 'none' },
+  { key: '_animation', label: 'Animation', type: 'select', options: [{ value: 'none', label: 'None' }, { value: 'fade', label: 'Fade In' }, { value: 'slide', label: 'Slide Up' }, { value: 'slideDown', label: 'Slide Down' }, { value: 'zoom', label: 'Zoom In' }], group: 'advanced', defaultValue: 'none' },
   { key: '_cssClass', label: 'CSS Class', type: 'text', group: 'advanced', defaultValue: '', placeholder: 'custom-class' },
   { key: '_anchorId', label: 'Anchor ID', type: 'text', group: 'advanced', defaultValue: '', placeholder: 'section-id' },
 ];
@@ -255,7 +255,7 @@ export const sectionTypes = Object.values(sectionRegistry);
 
 const PADDING_MAP: Record<string, string> = { compact: 'py-8', default: 'py-16 sm:py-24', spacious: 'py-24 sm:py-40' };
 const CONTAINER_MAP: Record<string, string> = { boxed: 'max-w-5xl px-4 sm:px-8', wide: 'max-w-[90rem] px-4 sm:px-8', full: 'px-0' };
-const ANIMATION_MAP: Record<string, string> = { fade: 'animate-fadeIn', slide: 'animate-slideUp', none: '' };
+const ANIMATION_MAP: Record<string, string> = { none: '', fade: 'animate-fade-in', slide: 'animate-slide-up', slideDown: 'animate-slide-down', zoom: 'animate-scale-in' };
 
 /** Single source of truth for all color values — used by both editor and frontend */
 export const COLOR_MAP: Record<string, { bg: string; text: string; border: string; label: string }> = {
