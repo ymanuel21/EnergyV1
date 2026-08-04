@@ -22,10 +22,6 @@ export const ParagraphSpacing = Extension.create({
           lineHeight: {
             default: null,
             parseHTML: (el: HTMLElement) => el.style.lineHeight || null,
-            renderHTML: (attrs: Record<string, any>) => {
-              if (!attrs.lineHeight) return {};
-              return { style: `line-height: ${attrs.lineHeight}` };
-            },
           },
           spaceAfter: {
             default: null,
@@ -33,11 +29,14 @@ export const ParagraphSpacing = Extension.create({
               const mb = el.style.marginBottom || '';
               return mb && mb !== '0px' ? parseInt(mb) : null;
             },
-            renderHTML: (attrs: Record<string, any>) => {
-              if (!attrs.spaceAfter) return {};
-              return { style: `margin-bottom: ${attrs.spaceAfter}px` };
-            },
           },
+        },
+        // Merge both styles into a single style string so neither is dropped
+        renderHTML: (attrs: Record<string, any>) => {
+          const styles: string[] = [];
+          if (attrs.lineHeight) styles.push(`line-height: ${attrs.lineHeight}`);
+          if (attrs.spaceAfter) styles.push(`margin-bottom: ${attrs.spaceAfter}px`);
+          return styles.length > 0 ? { style: styles.join('; ') } : {};
         },
       },
     ];
