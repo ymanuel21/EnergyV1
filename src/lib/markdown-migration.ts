@@ -1,29 +1,83 @@
 /**
- * Data migration: Markdown ↔ HTML
+ * Data migration: Markdown → HTML
  *
- * Static pages previously stored Markdown. Tiptap saves HTML.
- * This utility converts between formats for backward compatibility.
- *
- * Long-term: HTML is the better format for Tiptap (preserves rich
- * formatting, image dimensions, table structure). Tiptap JSON is
- * even better but requires schema changes — defer to later.
+ * Converts legacy Markdown content to clean semantic HTML.
+ * Strips all Markdown syntax prefixes (##, -, >, ---, **, etc.)
  */
 
-/** Convert legacy Markdown to HTML (for editor prefill) */
 export function markdownToHtml(md: string): string {
   if (!md) return '';
-  // Simple conversion: wrap paragraphs, convert headings
-  return md
-    .split('\n\n')
-    .map(block => block.trim())
-    .filter(Boolean)
-    .map(block => {
-      if (block.startsWith('### ')) return `<h3>${block.slice(4)}</h3>`;
-      if (block.startsWith('## ')) return `<h2>${block.slice(3)}</h2>`;
-      if (block.startsWith('# ')) return `<h1>${block.slice(2)}</h1>`;
-      if (block.startsWith('- ')) return `<ul>${block.split('\n').map(l => `<li>${l.slice(2)}</li>`).join('')}</ul>`;
-      if (block.startsWith('> ')) return `<blockquote>${block.slice(2)}</blockquote>`;
-      return `<p>${block.replace(/\n/g, '<br/>')}</p>`;
-    })
-    .join('\n');
+  if (md.trim().startsWith('<') && !md.includes('## ') && !md.includes('<p>- ')) {
+    // Already HTML without Markdown artifacts
+    return md;
+  }
+
+  const lines = md.split('\n');
+  const result: string[] = [];
+  let inList: boolean = false;
+  let inBlockquote: boolean = false;
+
+  function closeList() {
+    if (inList) { result.push('</ul>'); inList = false; }
+  }
+  function closeBlockquote() {
+    if (inBlockquote) { result.push('</blockquote>'); inBlockquote = false; }
+  }
+
+  for (const raw of lines) {
+    let line = raw.trim();
+    if (!line) { closeList(); closeBlockquote(); result.push('<br/>'); continue; }
+
+    // Headings — strip ## markers
+    if (/^#{1,4}\s/.test(line)) {
+      closeList(); closeBlockquote();
+      const level = line.match(/^(#{1,4})/)?.[1].length || 1;
+      const text = line.replace(/^#{1,4}\s*/, '').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      result.push(`<h${level}>${text}</h${level}>`);
+      continue;
+    }
+
+    // Unordered list — strip - markers, convert to <li>
+    if (/^[-*]\s/.test(line)) {
+      closeBlockquote();
+      if (!inList) { result.push('<ul>'); inList = true; }
+      const text = line.replace(/^[-*]\s+/, '').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      result.push(`<li>${text}</li>`);
+      continue;
+    }
+
+    // Ordered list
+    if (/^\d+\.\s/.test(line)) {
+      closeBlockquote();
+      if (!inList) { result.push('<ol>'); inList = true; }
+      const text = line.replace(/^\d+\.\s+/, '').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      result.push(`<li>${text}</li>`);
+      continue;
+    }
+
+    // Blockquote — strip >
+    if (/^>\s/.test(line)) {
+      closeList();
+      if (!inBlockquote) { result.push('<blockquote>'); inBlockquote = true; }
+      const text = line.replace(/^>\s+/, '').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      result.push(`<p>${text}</p>`);
+      continue;
+    }
+
+    // Horizontal rule
+    if (/^---\s*$/.test(line)) {
+      closeList(); closeBlockquote();
+      result.push('<hr>');
+      continue;
+    }
+
+    // Paragraph
+    closeList(); closeBlockquote();
+    const text = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\*(.+?)\*/g, '<em>$1</em>');
+    result.push(`<p>${text}</p>`);
+  }
+
+  closeList();
+  closeBlockquote();
+  return result.join('\n');
 }

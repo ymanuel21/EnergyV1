@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* ── Table borders (prose + editor) ── */
+/* ── Table layout + borders (prose + editor) ── */
 .prose table,
 .ProseMirror table {
+  table-layout: fixed;
+  width: 100%;
   border-collapse: collapse;
   border: 1px solid var(--ebt-border, #E5E7EB);
 }
@@ -13,6 +15,8 @@
 .ProseMirror td {
   border: 1px solid var(--ebt-border, #E5E7EB);
   padding: 0.5rem 0.75rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 .prose thead th,
 .ProseMirror th {
