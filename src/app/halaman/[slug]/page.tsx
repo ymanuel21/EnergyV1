@@ -20,7 +20,7 @@ function RenderContent({ content }: { content: string }) {
         const parts: string[] = [];
         if (lh) parts.push(`line-height: ${lh}`);
         if (sa) parts.push(`margin-bottom: ${sa}px`);
-        const clean = attrs.replace(/\s*lineHeight="[^"]*"/g, '').replace(/\s*spaceAfter="[^"]*"/g, '');
+        const clean = attrs.replace(/\s*lineHeight="[^"]*"/ig, '').replace(/\s*spaceAfter="[^"]*"/ig, '');
         return `<p${clean} style="${parts.join('; ')}">`;
       }
     );
