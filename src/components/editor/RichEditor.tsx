@@ -12,6 +12,8 @@ import Dropcursor from '@tiptap/extension-dropcursor';
 import { EditorToolbar } from './EditorToolbar';
 import { SpacingControls } from './SpacingControls';
 import { ParagraphSpacing } from './ParagraphSpacing';
+import { GridPicker } from './GridPicker';
+import { TableMenu } from './TableMenu';
 import { cn } from '@/lib/utils/cn';
 
 interface RichEditorProps {
@@ -51,9 +53,12 @@ export function RichEditor({ content, onChange, placeholder = 'Start writing...'
       <div className="flex flex-wrap items-center gap-1 px-3 py-2 border-b border-border bg-surface/50 rounded-t-lg">
         <EditorToolbar editor={editor} />
         <span className="w-px h-5 bg-border mx-1" />
+        <GridPicker onSelect={(r, c) => editor.chain().focus().insertTable({ rows: r, cols: c, withHeaderRow: true }).run()} />
+        <span className="w-px h-5 bg-border mx-1" />
         <SpacingControls editor={editor} />
       </div>
       <EditorContent editor={editor} />
+      <TableMenu editor={editor} />
     </div>
   );
 }

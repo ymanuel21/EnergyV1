@@ -45,10 +45,6 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       {btn(() => editor.chain().focus().toggleCodeBlock().run(), '<>', editor.isActive('codeBlock'))}
       {btn(() => editor.chain().focus().setHorizontalRule().run(), '—', false)}
       {btn(addLink, '🔗', editor.isActive('link'))}
-      {btn(addImage, '🖼', false)}
-      <span className="w-px h-5 bg-border mx-1" />
-      {btn(() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(), '⊞ Table', editor.isActive('table'))}
-      {btn(() => editor.chain().focus().deleteTable().run(), '⌫ Table', false, !editor.can().deleteTable())}
       <span className="w-px h-5 bg-border mx-1" />
       {btn(() => editor.chain().focus().unsetAllMarks().clearNodes().run(), '✕ Clear', false)}
     </>
