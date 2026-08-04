@@ -193,7 +193,10 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
           <ImageGallery images={state.media.images} onChange={v => dispatch({ type: 'SET_IMAGES', value: v })} />
           <div className="pt-4 border-t border-border">
             <p className="text-xs font-medium text-primary mb-2">Badges</p>
-            <BadgeSelector defaultBadgeIds={defaultValues?.badges || []} />
+            <BadgeSelector
+              value={state.media.badges}
+              onChange={(badges) => dispatch({ type: 'SET_BADGES', value: badges })}
+            />
           </div>
         </div>
       )}
