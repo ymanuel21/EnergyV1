@@ -14,8 +14,8 @@ function RenderContent({ content }: { content: string }) {
     const html = content.replace(
       /<p\b([^>]*?)>/g,
       (match, attrs) => {
-        const lh = attrs.match(/lineHeight="([^"]*)"/)?.[1];
-        const sa = attrs.match(/spaceAfter="([^"]*)"/)?.[1];
+        const lh = attrs.match(/lineHeight="([^"]*)"/i)?.[1];
+        const sa = attrs.match(/spaceAfter="([^"]*)"/i)?.[1];
         if (!lh && !sa) return match;
         const parts: string[] = [];
         if (lh) parts.push(`line-height: ${lh}`);
