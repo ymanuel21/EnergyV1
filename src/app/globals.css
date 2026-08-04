@@ -1,6 +1,25 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ── Table borders (prose + editor) ── */
+.prose table,
+.ProseMirror table {
+  border-collapse: collapse;
+  border: 1px solid var(--ebt-border, #E5E7EB);
+}
+.prose th,
+.prose td,
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid var(--ebt-border, #E5E7EB);
+  padding: 0.5rem 0.75rem;
+}
+.prose thead th,
+.ProseMirror th {
+  background: var(--ebt-surface, #F8FAFC);
+  font-weight: 600;
+}
+
 @theme inline {
   /* ── Semantic Design Tokens (admin-editable via /admin/appearance) ── */
   --color-primary: var(--ebt-primary, #111827);
