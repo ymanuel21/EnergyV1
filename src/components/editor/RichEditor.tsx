@@ -7,6 +7,8 @@ import LinkExtension from '@tiptap/extension-link';
 import ImageExtension from '@tiptap/extension-image';
 import { Table, TableRow, TableCell, TableHeader } from '@tiptap/extension-table';
 import Placeholder from '@tiptap/extension-placeholder';
+import Gapcursor from '@tiptap/extension-gapcursor';
+import Dropcursor from '@tiptap/extension-dropcursor';
 import { EditorToolbar } from './EditorToolbar';
 import { cn } from '@/lib/utils/cn';
 
@@ -27,6 +29,8 @@ export function RichEditor({ content, onChange, placeholder = 'Start writing...'
       Table.configure({ resizable: true }),
       TableRow, TableCell, TableHeader,
       Placeholder.configure({ placeholder }),
+      Gapcursor,
+      Dropcursor,
     ],
     content,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
