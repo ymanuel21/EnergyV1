@@ -468,9 +468,8 @@ function BrandsRenderer({ section, data }: SectionRendererProps) {
         <div className="flex flex-wrap items-center justify-center gap-4">
           {brands.slice(0, 12).map((b: any) => (
             <Link key={b.id} href={`/brand/${b.slug}`}
-              className="group inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold tracking-wide text-gray-600 transition-all duration-200 hover:border-black hover:bg-black hover:text-white hover:shadow-md">
+              className="group inline-flex items-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold tracking-wide text-gray-600 transition-all duration-200 hover:border-black hover:bg-black hover:text-white hover:shadow-md">
               {b.name}
-              <span className="text-xs opacity-0 -ml-1 translate-x-0 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-1">→</span>
             </Link>
           ))}
         </div>
