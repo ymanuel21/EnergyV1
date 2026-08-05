@@ -215,7 +215,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     type: 'testimonials',
     label: 'Testimonials',
     icon: '💬',
-    defaultSettings: { source: 'latest', maxTestimonials: 6, cardLayout: 'card', showRating: true, showCompany: true, autoRotate: false },
+    defaultSettings: { source: 'latest', maxTestimonials: 6, cardLayout: 'card', showRating: true, showCompany: true, autoRotate: false, buttonLabel: 'Lihat Semua Testimoni', buttonLink: '/testimoni' },
     fields: [
       { key: 'source', label: 'Source', type: 'select', options: [{ value: 'latest', label: 'Latest' }, { value: 'featured', label: 'Featured' }, { value: 'manual', label: 'Manual' }], group: 'content' },
       { key: 'maxTestimonials', label: 'Max Testimonials', type: 'number', group: 'content' },
@@ -223,6 +223,8 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       { key: 'showRating', label: 'Show Rating', type: 'toggle', group: 'styling' },
       { key: 'showCompany', label: 'Show Company', type: 'toggle', group: 'styling' },
       { key: 'autoRotate', label: 'Auto Rotate', type: 'toggle', group: 'styling' },
+      { key: 'buttonLabel', label: 'Button Label', type: 'text', group: 'content' },
+      { key: 'buttonLink', label: 'Button Link', type: 'text', group: 'content' },
       ...COMMON_ADVANCED,
     ],
     Renderer: TestimonialsRenderer,
@@ -703,9 +705,39 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
   );
 }
 
+function getTestimonialsForSection(
+  testimonials: any[],
+  settings: Record<string, any> = {},
+): any[] {
+  const max = typeof settings.maxTestimonials === 'number' && settings.maxTestimonials > 0
+    ? settings.maxTestimonials
+    : 6;
+  const source = String(settings.source || 'latest');
+
+  let pool: any[];
+
+  if (source === 'featured') {
+    pool = testimonials.filter((t: any) => t.featured);
+  } else if (source === 'manual') {
+    const ids: string[] = Array.isArray(settings.testimonialIds)
+      ? settings.testimonialIds
+      : [];
+    pool = testimonials.filter((t: any) => ids.includes(t.id));
+  } else {
+    // latest: sort by createdAt descending, no featured filter
+    pool = [...testimonials].sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt || 0).getTime() -
+        new Date(a.createdAt || 0).getTime(),
+    );
+  }
+
+  return pool.slice(0, max);
+}
+
 function TestimonialsRenderer({ section, data }: SectionRendererProps) {
   const testimonials = (data as any).testimonials || [];
-  const active = testimonials.filter((t: any) => t.featured);
+  const active = getTestimonialsForSection(testimonials, section.settings || {});
 
   if (active.length === 0) return null;
 
@@ -714,7 +746,7 @@ function TestimonialsRenderer({ section, data }: SectionRendererProps) {
       <div className="mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 sm:gap-6">
-          {active.slice(0, 6).map((t: any) => (
+          {active.map((t: any) => (
             <div key={t.id} className="rounded-xl border border-border bg-card p-6">
               <div className="flex items-center gap-3 mb-4">
                 {t.photo ? (
@@ -731,6 +763,13 @@ function TestimonialsRenderer({ section, data }: SectionRendererProps) {
               <p className="text-sm text-muted italic">&ldquo;{t.quote}&rdquo;</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link href={String(section.settings.buttonLink || '/testimoni')}
+            className="inline-block rounded-full border border-border px-6 py-2.5 text-sm text-muted hover:text-primary hover:border-primary transition">
+            {String(section.settings.buttonLabel || 'Lihat Semua Testimoni')}
+          </Link>
         </div>
       </div>
     </section>
