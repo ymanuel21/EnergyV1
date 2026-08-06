@@ -93,7 +93,8 @@ export function Button({
       ) : leftIcon ? (
         <span className="shrink-0">{leftIcon}</span>
       ) : null}
-      {!isLoading && children}
+      {/* Only render children bare when idle (success/error states already render them with icons) */}
+      {!isLoading && feedbackState === 'idle' && children}
       {rightIcon && !isLoading && <span className="shrink-0">{rightIcon}</span>}
     </button>
   );
