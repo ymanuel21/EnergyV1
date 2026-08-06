@@ -517,9 +517,13 @@ export default function RfqPage() {
           <div className="flex items-center justify-between">
             <RequiredLabel>Daftar Kebutuhan</RequiredLabel>
             {cart.items.length > 0 && (
-              <Button type="button" variant="outline" size="sm" onClick={importFromCart} data-track="rfq-import-cart">
+              <button type="button"
+                onClick={importFromCart}
+                data-track="rfq-import-cart"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] h-8 px-3 border border-primary text-primary hover:bg-surface"
+              >
                 📋 Import dari keranjang ({cart.itemCount})
-              </Button>
+              </button>
             )}
           </div>
 
@@ -562,9 +566,13 @@ export default function RfqPage() {
               onChange={(e) => setNewItem((prev) => ({ ...prev, quantity: parseInt(e.target.value) || 1 }))}
               className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
             />
-            <Button type="button" variant="outline" size="sm" onClick={addItem} data-track="rfq-add-item">
+            <button type="button"
+              onClick={addItem}
+              data-track="rfq-add-item"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] h-8 px-3 border border-primary text-primary hover:bg-surface"
+            >
               + Tambah
-            </Button>
+            </button>
           </div>
           {itemError && (
             <p className="text-xs text-red-500 animate-scale-in" role="alert">{itemError}</p>
