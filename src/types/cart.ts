@@ -8,6 +8,7 @@ export interface CartItem {
   quantity: number;
   maxQuantity: number;
   weight: number;
+  showPrice: boolean;
 }
 
 export interface CartState {

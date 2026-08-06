@@ -172,6 +172,7 @@ export default async function ProductDetail({ params }: Props) {
               price={product.price}
               maxQuantity={product.stock}
               weight={product.weight}
+              showPrice={priceDisplay.showPrice}
             />
             )}
 

@@ -34,6 +34,7 @@ export default function WishlistPage() {
       productId: product.id, slug: product.slug, name: product.name,
       brandName: brand?.name ?? '', image: product.images[0],
       price: product.price, maxQuantity: product.stock, weight: product.weight,
+      showPrice: true,
     }, 1);
   }
 

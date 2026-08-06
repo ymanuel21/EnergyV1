@@ -13,6 +13,17 @@ import { CartIcon } from '@ui/Icons';
 import type { Metadata } from 'next';
 import { SITE } from '@lib/constants';
 
+/** Compute subtotal for items where showPrice=true */
+function visibleSubtotal(items: { price: number; quantity: number; showPrice: boolean }[]) {
+  return items
+    .filter(i => i.showPrice !== false)
+    .reduce((sum, i) => sum + i.price * i.quantity, 0);
+}
+
+function hasAnyVisiblePrice(items: { showPrice: boolean }[]) {
+  return items.some(i => i.showPrice !== false);
+}
+
 type CheckoutStep = 'shipping' | 'payment' | 'review';
 
 export default function CheckoutPage() {
@@ -287,7 +298,8 @@ export default function CheckoutPage() {
                   <p className="font-medium text-gray-700">Items:</p>
                   {cart.items.map((item) => (
                     <p key={item.productId} className="text-gray-600">
-                      {item.quantity}× {item.name} — {formatCurrency(item.price * item.quantity)}
+                      {item.quantity}× {item.name}
+                      {item.showPrice !== false ? ` — ${formatCurrency(item.price * item.quantity)}` : ''}
                     </p>
                   ))}
                 </div>
@@ -298,7 +310,7 @@ export default function CheckoutPage() {
                   ← Kembali
                 </Button>
                 <Button type="submit" variant="primary" size="lg">
-                  Buat Pesanan — {formatCurrency(cart.subtotal)}
+                  Buat Pesanan{hasAnyVisiblePrice(cart.items) ? ` — ${formatCurrency(visibleSubtotal(cart.items))}` : ''}
                 </Button>
               </div>
             </div>
@@ -313,16 +325,26 @@ export default function CheckoutPage() {
               <div key={item.productId} className="flex gap-3 py-2">
                 <span className="text-sm text-gray-600 w-6">{item.quantity}×</span>
                 <span className="flex-1 text-sm text-gray-900 line-clamp-1">{item.name}</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {formatCurrency(item.price * item.quantity)}
-                </span>
+                {item.showPrice !== false ? (
+                  <span className="text-sm font-medium text-gray-900">
+                    {formatCurrency(item.price * item.quantity)}
+                  </span>
+                ) : (
+                  <span className="text-xs italic text-gray-400">Konfirmasi sales</span>
+                )}
               </div>
             ))}
           </div>
           <div className="border-t border-gray-200 pt-4">
             <div className="flex justify-between text-base font-semibold text-gray-900">
               <span>Total</span>
-              <span>{formatCurrency(cart.subtotal)}</span>
+              {hasAnyVisiblePrice(cart.items) ? (
+                <span>{formatCurrency(visibleSubtotal(cart.items))}</span>
+              ) : (
+                <span className="italic text-sm font-normal text-gray-400">
+                  Harga akan dikonfirmasi oleh tim sales
+                </span>
+              )}
             </div>
           </div>
         </div>

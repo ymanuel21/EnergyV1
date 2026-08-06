@@ -16,6 +16,7 @@ interface AddToCartProps {
   price: number;
   maxQuantity: number;
   weight: number;
+  showPrice: boolean;
 }
 
 export function AddToCartButton({
@@ -27,13 +28,14 @@ export function AddToCartButton({
   price,
   maxQuantity,
   weight,
+  showPrice,
 }: AddToCartProps) {
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
   const { showToast } = useToast();
 
   function handleAdd() {
-    addItem({ productId, slug, name, brandName, image, price, maxQuantity, weight }, quantity);
+    addItem({ productId, slug, name, brandName, image, price, maxQuantity, weight, showPrice }, quantity);
     showToast(`${name} ×${quantity} ditambahkan ke keranjang`);
     setQuantity(1);
   }

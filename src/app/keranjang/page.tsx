@@ -11,6 +11,18 @@ import { useCart } from '@providers/CartProvider';
 import { CartIcon } from '@ui/Icons';
 import { formatCurrency } from '@lib/utils/format';
 
+/** Compute subtotal for items where showPrice=true */
+function visibleSubtotal(items: { price: number; quantity: number; showPrice: boolean }[]) {
+  return items
+    .filter(i => i.showPrice !== false)
+    .reduce((sum, i) => sum + i.price * i.quantity, 0);
+}
+
+/** Check if ANY item has showPrice=true */
+function hasAnyVisiblePrice(items: { showPrice: boolean }[]) {
+  return items.some(i => i.showPrice !== false);
+}
+
 export default function CartPage() {
   const cart = useCart();
 
@@ -28,6 +40,9 @@ export default function CartPage() {
       </Container>
     );
   }
+
+  const showPrices = hasAnyVisiblePrice(cart.items);
+  const subtotal = visibleSubtotal(cart.items);
 
   return (
     <Container className="py-6">
@@ -76,16 +91,24 @@ export default function CartPage() {
                     max={item.maxQuantity}
                     onChange={(qty) => cart.updateQuantity(item.productId, qty)}
                   />
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900">
-                      {formatCurrency(item.price * item.quantity)}
-                    </p>
-                    {item.quantity > 1 && (
-                      <p className="text-xs text-gray-400">
-                        {formatCurrency(item.price)} / item
+                  {item.showPrice !== false ? (
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-gray-900">
+                        {formatCurrency(item.price * item.quantity)}
                       </p>
-                    )}
-                  </div>
+                      {item.quantity > 1 && (
+                        <p className="text-xs text-gray-400">
+                          {formatCurrency(item.price)} / item
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-right">
+                      <p className="text-xs italic text-gray-400">
+                        Harga akan dikonfirmasi oleh tim sales
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <button
@@ -106,7 +129,11 @@ export default function CartPage() {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-gray-600">
               <span>Subtotal ({cart.itemCount} item)</span>
-              <span>{formatCurrency(cart.subtotal)}</span>
+              {showPrices ? (
+                <span>{formatCurrency(subtotal)}</span>
+              ) : (
+                <span className="italic text-gray-400">Konfirmasi sales</span>
+              )}
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Berat total</span>
@@ -121,7 +148,13 @@ export default function CartPage() {
           <div className="border-t border-gray-200 pt-4">
             <div className="flex justify-between text-base font-semibold text-gray-900">
               <span>Total</span>
-              <span>{formatCurrency(cart.subtotal)}</span>
+              {showPrices ? (
+                <span>{formatCurrency(subtotal)}</span>
+              ) : (
+                <span className="italic text-sm font-normal text-gray-400">
+                  Harga akan dikonfirmasi oleh tim sales
+                </span>
+              )}
             </div>
           </div>
 

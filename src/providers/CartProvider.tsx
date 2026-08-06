@@ -100,7 +100,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   );
 
   const clearLastAdded = useCallback(() => {
-    dispatch({ type: 'ADD_ITEM', product: { productId: '', slug: '', name: '', brandName: '', image: '', price: 0, maxQuantity: 0, weight: 0 } });
+    dispatch({ type: 'ADD_ITEM', product: { productId: '', slug: '', name: '', brandName: '', image: '', price: 0, maxQuantity: 0, weight: 0, showPrice: true } });
     // hack: reset lastAddedId by re-adding a dummy item, then immediately removing it
     // Better approach: add a CLEAR_LAST_ADDED action
     state.lastAddedId = null;
