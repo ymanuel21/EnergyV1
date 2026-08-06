@@ -15,6 +15,7 @@ export interface PriceDisplay {
   mode: PriceDisplayMode;
   label: string;
   showPrice: boolean;
+  showAddToCart: boolean;
   cta: string | null;
   ctaHref?: string;
   price?: number;
@@ -88,6 +89,7 @@ export async function resolvePriceDisplay(
         mode,
         label: `Rp ${product.price.toLocaleString('id-ID')}`,
         showPrice: true,
+        showAddToCart: true,
         cta: null,
         price: product.price,
         originalPrice: product.originalPrice ?? undefined,
@@ -98,6 +100,7 @@ export async function resolvePriceDisplay(
         mode,
         label: `Mulai dari Rp ${product.price.toLocaleString('id-ID')}`,
         showPrice: true,
+        showAddToCart: true,
         cta: null,
         price: product.price,
         originalPrice: product.originalPrice ?? undefined,
@@ -108,6 +111,7 @@ export async function resolvePriceDisplay(
         mode,
         label: 'Hubungi Kami untuk Harga',
         showPrice: false,
+        showAddToCart: true,
         cta: 'Hubungi Sales',
         ctaHref: product.slug ? `/permintaan-penawaran?product=${product.slug}` : undefined,
       };
@@ -117,6 +121,7 @@ export async function resolvePriceDisplay(
         mode,
         label: 'Harga Berdasarkan Penawaran',
         showPrice: false,
+        showAddToCart: true,
         cta: 'Minta Penawaran',
         ctaHref: product.slug ? `/permintaan-penawaran?product=${product.slug}` : undefined,
       };
@@ -126,6 +131,7 @@ export async function resolvePriceDisplay(
         mode,
         label: product.customPriceLabel || await getGlobalCustomLabel() || 'Hubungi Kami',
         showPrice: false,
+        showAddToCart: true,
         cta: null,
       };
 
@@ -134,6 +140,7 @@ export async function resolvePriceDisplay(
         mode: 'SHOW_PRICE',
         label: `Rp ${product.price.toLocaleString('id-ID')}`,
         showPrice: true,
+        showAddToCart: true,
         cta: null,
         price: product.price,
         originalPrice: product.originalPrice ?? undefined,

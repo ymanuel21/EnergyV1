@@ -162,7 +162,7 @@ export default async function ProductDetail({ params }: Props) {
               </a>
             )}
 
-            {priceDisplay.showPrice && (
+            {priceDisplay.showAddToCart && (
             <AddToCartButton
               productId={product.id}
               slug={product.slug}
