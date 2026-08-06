@@ -3,15 +3,13 @@ export const dynamic = "force-dynamic";
 import { notFound, redirect } from 'next/navigation';
 import { getProduct, deleteProduct, getBrandsForSelect, getCategoriesForSelect } from '../actions';
 import { ProductForm } from '../ProductForm';
-import { getLatestReview } from '@/lib/services/review';
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [product, brands, categories, review] = await Promise.all([
+  const [product, brands, categories] = await Promise.all([
     getProduct(id),
     getBrandsForSelect(),
     getCategoriesForSelect(),
-    getLatestReview('product', id),
   ]);
   if (!product) notFound();
 
@@ -31,8 +29,6 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           brands={brands}
           categories={categories}
           onSubmit={async (data: any) => { 'use server'; }}
-          reviewStatus={review?.status || null}
-          reviewNotes={review?.notes || null}
         />
       </div>
     </div>

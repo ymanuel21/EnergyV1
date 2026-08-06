@@ -551,6 +551,13 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
           <button type="button" onClick={handlePublish} disabled={saving} className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
             {saving ? 'Publishing...' : 'Publish'}
           </button>
+          <button type="button"
+            onClick={() => window.open(`/proyek/${state.slug}`, '_blank')}
+            disabled={!state.slug || status !== 'published'}
+            title={!state.slug || status !== 'published' ? 'Publish the project first.' : 'View on public site'}
+            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface hover:text-primary transition disabled:opacity-40 disabled:cursor-not-allowed">
+            View Project ↗
+          </button>
         </div>
       </div>
     </form>

@@ -12,7 +12,6 @@ import { DownloadManager } from './DownloadManager';
 import { RelatedProductsEditor } from './RelatedProductsEditor';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
-import { submitForReview } from '@/lib/services/review';
 import { productReducer, makeInitialState, buildPayload } from './productReducer';
 import type { ProductState, ProductAction } from './productReducer';
 
@@ -28,11 +27,9 @@ interface ProductFormProps {
   brands: any[];
   categories: any[];
   onSubmit: (data: any) => Promise<void>;
-  reviewStatus?: string | null;
-  reviewNotes?: string | null;
 }
 
-export function ProductForm({ defaultValues, brands, categories, onSubmit, reviewStatus, reviewNotes }: ProductFormProps) {
+export function ProductForm({ defaultValues, brands, categories, onSubmit }: ProductFormProps) {
   console.log('[FORM] rendering, productId:', defaultValues?.id, 'status:', defaultValues?.status);
 
   const router = useRouter();
@@ -86,22 +83,9 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
     }
   }, [productId, buildPayload, state, router, showToast]);
 
-  const handleSubmitForReview = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!productId) return;
-    setSaving(true);
-    const data = buildPayload(state, productId);
-    try {
-    await saveDraft({ entity: 'product', id: productId, data });
-    await submitForReview('product', productId);
-    setSaving(false); 
-    showToast('✓ Produk berhasil dikirim untuk review', 'success');
-    router.refresh();
-    } catch {
-      setSaving(false);
-      showToast('✕ Gagal mengirim review', 'error');
-    }
-  }, [productId, buildPayload, state, router, showToast]);
+  const productSlug = state.overview.slug;
+  const isPublished = defaultValues?.status === 'published';
+  const canView = productSlug && isPublished;
 
   const inputCls = 'w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card';
 
@@ -280,37 +264,20 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
         </div>
       )}
 
-      {/* ── Sticky Save Bar with Review Workflow ── */}
+      {/* ── Sticky Save Bar ── */}
       <div className="sticky bottom-0 -mx-6 -mb-6 mt-8 px-6 py-4 bg-card border-t border-border flex items-center justify-between rounded-b-xl">
         <div className="flex items-center gap-3">
           <StatusBadge status={
-            reviewStatus === 'pending' ? 'review_pending' :
-            reviewStatus === 'approved' ? 'review_approved' :
-            reviewStatus === 'rejected' ? 'review_rejected' :
             (defaultValues?.status === 'draft' ? 'draft' :
              defaultValues?.status === 'archived' ? 'archived' : 'published')
           } />
-          {reviewStatus === 'rejected' && reviewNotes && (
-            <span className="text-xs text-red-600 truncate max-w-[200px]">Rejected: {reviewNotes}</span>
-          )}
           {isDirty && <span className="text-xs text-amber-600">Unsaved changes</span>}
         </div>
         <div className="flex gap-2">
           <button type="button" onClick={() => router.back()}
             className="rounded-lg border border-border px-3 py-2 text-sm text-muted hover:bg-surface transition">Cancel</button>
 
-          {/* Pending review — read-only */}
-          {reviewStatus === 'pending' && (
-            <>
-              <button type="button" disabled
-                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted opacity-50">Save Draft</button>
-              <button type="button" disabled
-                className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white opacity-50">Waiting for Review</button>
-            </>
-          )}
-
-          {/* Approved — can publish */}
-          {reviewStatus === 'approved' && (
+          {productId ? (
             <>
               <button type="submit" disabled={saving}
                 className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface transition disabled:opacity-50">
@@ -320,36 +287,18 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit, revie
                 className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
                 {saving ? 'Publishing...' : 'Publish'}
               </button>
-            </>
-          )}
-
-          {/* Draft (no review) or rejected — can edit and submit */}
-          {(!reviewStatus || reviewStatus === 'rejected') && productId && (
-            <>
-              <button type="submit" disabled={saving}
-                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface transition disabled:opacity-50">
-                {saving ? 'Saving...' : 'Save Draft'}
-              </button>
-              <button type="button" onClick={handleSubmitForReview} disabled={saving}
-                className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
-                {saving ? 'Submitting...' : 'Submit for Review'}
+              <button type="button"
+                onClick={() => window.open(`/produk/${productSlug}`, '_blank')}
+                disabled={!canView}
+                title={!canView ? 'Publish the product first.' : 'View on public site'}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted hover:bg-surface hover:text-primary transition disabled:opacity-40 disabled:cursor-not-allowed">
+                View Product ↗
               </button>
             </>
-          )}
-
-          {/* New product (no productId) — just save */}
-          {(!reviewStatus || reviewStatus === 'rejected') && !productId && (
+          ) : (
             <button type="submit" disabled={saving}
               className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
               {saving ? 'Saving...' : 'Save'}
-            </button>
-          )}
-
-          {/* Published — existing behavior */}
-          {!reviewStatus && defaultValues?.status === 'published' && (
-            <button type="submit" disabled={saving}
-              className="rounded-lg bg-primary px-6 py-2 text-sm font-medium text-white hover:bg-primary-hover transition disabled:opacity-50">
-              {saving ? 'Publishing...' : 'Publish'}
             </button>
           )}
         </div>
