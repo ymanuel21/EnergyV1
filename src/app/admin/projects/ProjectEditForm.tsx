@@ -1,17 +1,19 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useReducer } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../AdminToastProvider';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
 import { StatusBadge } from '@/components/admin/StatusBadge';
 import { ProjectMediaPanel } from './ProjectMediaPanel';
+import { projectReducer, makeInitialProjectState, buildProjectPayload } from './projectReducer';
+import type { ProjectAction } from './projectReducer';
 import Link from 'next/link';
 
 const TABS = ['Overview', 'Story', 'Media', 'Impact', 'Products', 'SEO', 'Settings'] as const;
 type Tab = typeof TABS[number];
 
-const CATEGORIES = ['residential', 'commercial', 'industrial', 'government', 'school'];
+const CATEGORIES = ['residential', 'commercial', 'industrial', 'government', 'school', 'social'];
 const SYSTEM_TYPES = ['', 'On-Grid', 'Off-Grid', 'Hybrid'];
 
 interface ProjectEditFormProps {
@@ -34,10 +36,10 @@ interface ProjectEditFormProps {
     coverImage: string;
     images: string[];
     highlights: string[];
-    productIds: string[];
-    storyData: { challenge?: string; solution?: string; result?: string };
-    impactData: { co2Reduction?: string; annualSavings?: string; energyGenerated?: string };
-    seoData: { title?: string; description?: string; ogImage?: string };
+    productIds: any;
+    storyData: any;
+    impactData: any;
+    seoData: any;
     featured: boolean;
     status: string;
     updatedAt: string;
@@ -48,128 +50,27 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
   const router = useRouter();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>('Overview');
-  const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [saveState, setSaveState] = useState<'idle' | 'saved' | 'error'>('idle');
 
-  // Story state
-  const [story, setStory] = useState({
-    challenge: project.storyData?.challenge || '',
-    solution: project.storyData?.solution || '',
-    result: project.storyData?.result || '',
-  });
+  const [state, dispatch] = useReducer(projectReducer, project, makeInitialProjectState);
 
-  // Impact state
-  const [impact, setImpact] = useState({
-    co2Reduction: project.impactData?.co2Reduction || '',
-    annualSavings: project.impactData?.annualSavings || '',
-    energyGenerated: project.impactData?.energyGenerated || '',
-  });
-
-  // SEO state
-  const [seo, setSeo] = useState({
-    title: project.seoData?.title || '',
-    description: project.seoData?.description || '',
-    ogImage: project.seoData?.ogImage || '',
-  });
-
-  // Product linking with quantities
-  const [linkedProducts, setLinkedProducts] = useState<{ slug: string; name: string; brand: string; category: string; image: string; quantity: number }[]>(() => {
-    // Migrate from old productIds[] format
-    const ids = project.productIds || [];
-    if (ids.length > 0 && typeof ids[0] === 'string') {
-      return (ids as string[]).map(slug => ({ slug, name: '', brand: '', category: '', image: '', quantity: 1 }));
-    }
-    return (ids as any[]).map((p: any) => ({
-      slug: p.slug || p.productId || '',
-      name: p.name || '',
-      brand: p.brand || '',
-      category: p.category || '',
-      image: p.image || '',
-      quantity: p.quantity || 1,
-    }));
-  });
+  // Product search state (local — not part of project data until selected)
   const [productSearch, setProductSearch] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const searchTimer = useState<any>(null)[0];
   const [changingIndex, setChangingIndex] = useState<number | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
 
-  // Highlights
-  const [highlights, setHighlights] = useState<string[]>(() => {
-    const raw = project.highlights;
-    if (Array.isArray(raw)) return raw.filter(h => typeof h === 'string' && h.trim());
-    return [];
-  });
-
-  const markDirty = useCallback(() => {
-    if (!dirty) setDirty(true);
-    if (saveState !== 'idle') setSaveState('idle');
-  }, [dirty, saveState]);
-
-  const addHighlight = useCallback(() => {
-    if (highlights.length >= 20) return;
-    setHighlights(prev => [...prev, '']);
-    markDirty();
-  }, [highlights.length, markDirty]);
-
-  const updateHighlight = useCallback((i: number, value: string) => {
-    setHighlights(prev => prev.map((h, j) => j === i ? value : h));
-    markDirty();
-  }, [markDirty]);
-
-  const removeHighlight = useCallback((i: number) => {
-    setHighlights(prev => prev.filter((_, j) => j !== i));
-    markDirty();
-  }, [markDirty]);
-
-  const moveHighlight = useCallback((i: number, dir: number) => {
-    const target = i + dir;
-    if (target < 0 || target >= highlights.length) return;
-    setHighlights(prev => {
-      const next = [...prev];
-      [next[i], next[target]] = [next[target], next[i]];
-      return next;
-    });
-    markDirty();
-  }, [highlights.length, markDirty]);
-
-  // Build publish data from React state (not FormData — fields may be hidden in other tabs)
-  const buildPublishData = useCallback(() => ({
-    title: project.title,
-    slug: project.slug,
-    shortDescription: project.shortDescription,
-    richDescription: project.richDescription,
-    category: project.category,
-    industry: project.industry,
-    systemType: project.systemType,
-    capacity: project.capacity,
-    pvModule: project.pvModule,
-    inverter: project.inverter,
-    battery: project.battery,
-    location: project.location,
-    customer: project.customer,
-    year: project.year,
-    coverImage: project.coverImage,
-    images: project.images,
-    featured: project.featured,
-    storyData: story,
-    impactData: impact,
-    seoData: seo,
-    productIds: linkedProducts.map(p => ({ slug: p.slug, quantity: p.quantity })),
-    highlights: highlights.filter(h => h.trim()),
-  }), [project, story, impact, seo, linkedProducts, highlights]);
+  const projectId = project.id;
+  const status = project.status as 'draft' | 'published' | 'archived';
 
   const handleSaveDraft = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     try {
-      const data = buildPublishData();
-      await saveDraft({ entity: 'project', id: project.id, data });
-      setDirty(false);
-      setSaveState('saved');
+      const data = buildProjectPayload(state);
+      await saveDraft({ entity: 'project', id: projectId, data });
+      dispatch({ type: 'MARK_CLEAN' });
       showToast('✓ Draft berhasil disimpan', 'success');
       router.refresh();
     } catch {
@@ -177,18 +78,17 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
     } finally {
       setSaving(false);
     }
-  }, [project.id, buildPublishData, router, showToast]);
+  }, [projectId, state, router, showToast]);
 
   const handlePublish = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (saving) return;
     setSaving(true);
     try {
-      const data = buildPublishData();
-      await saveDraft({ entity: 'project', id: project.id, data });
-      await publishEntity({ entity: 'project', id: project.id });
-      setDirty(false);
-      setSaveState('saved');
+      const data = buildProjectPayload(state);
+      await saveDraft({ entity: 'project', id: projectId, data });
+      await publishEntity({ entity: 'project', id: projectId });
+      dispatch({ type: 'MARK_CLEAN' });
       showToast('✓ Proyek berhasil dipublikasikan', 'success');
       router.refresh();
       router.push('/admin/projects');
@@ -197,8 +97,9 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
     } finally {
       setSaving(false);
     }
-  }, [project.id, buildPublishData, saving, router, showToast]);
+  }, [projectId, state, saving, router, showToast]);
 
+  // Product search
   const handleSearchProducts = useCallback(async (query: string) => {
     if (!query || query.length < 2) { setSearchResults([]); setSearchOpen(false); return; }
     setSearching(true);
@@ -214,57 +115,91 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
 
   const addProduct = useCallback((prod: any) => {
     const slug = prod.slug;
-    if (linkedProducts.some(p => p.slug === slug)) return; // duplicate prevention
-    setLinkedProducts(prev => [...prev, {
-      slug,
-      name: prod.name || '',
-      brand: prod.brand?.name || prod.brand || '',
-      category: prod.category || '',
-      image: prod.images?.[0] || prod.image || '',
-      quantity: 1,
-    }]);
-    markDirty();
+    if (state.linkedProducts.some(p => p.slug === slug)) return;
+    dispatch({
+      type: 'SET_LINKED_PRODUCTS',
+      value: [...state.linkedProducts, {
+        slug,
+        name: prod.name || '',
+        brand: prod.brand?.name || prod.brand || '',
+        category: prod.category || '',
+        image: prod.images?.[0] || prod.image || '',
+        quantity: 1,
+      }],
+    });
     setProductSearch('');
     setSearchResults([]);
     setSearchOpen(false);
     setChangingIndex(null);
-  }, [linkedProducts, markDirty]);
+  }, [state.linkedProducts]);
 
   const removeProduct = useCallback((index: number) => {
-    setLinkedProducts(prev => prev.filter((_, i) => i !== index));
-    markDirty();
-  }, [markDirty]);
+    dispatch({
+      type: 'SET_LINKED_PRODUCTS',
+      value: state.linkedProducts.filter((_, i) => i !== index),
+    });
+  }, [state.linkedProducts]);
 
   const updateQuantity = useCallback((index: number, qty: number) => {
     if (qty < 1) qty = 1;
     if (qty > 99999) qty = 99999;
-    setLinkedProducts(prev => prev.map((p, i) => i === index ? { ...p, quantity: qty } : p));
-    markDirty();
-  }, [markDirty]);
+    dispatch({
+      type: 'SET_LINKED_PRODUCTS',
+      value: state.linkedProducts.map((p, i) => i === index ? { ...p, quantity: qty } : p),
+    });
+  }, [state.linkedProducts]);
 
   const changeProduct = useCallback((index: number, newProd: any) => {
-    setLinkedProducts(prev => prev.map((p, i) => i === index ? {
-      ...p,
-      slug: newProd.slug,
-      name: newProd.name || '',
-      brand: newProd.brand?.name || newProd.brand || '',
-      category: newProd.category || '',
-      image: newProd.images?.[0] || newProd.image || '',
-    } : p));
-    markDirty();
+    dispatch({
+      type: 'SET_LINKED_PRODUCTS',
+      value: state.linkedProducts.map((p, i) => i === index ? {
+        ...p,
+        slug: newProd.slug,
+        name: newProd.name || '',
+        brand: newProd.brand?.name || newProd.brand || '',
+        category: newProd.category || '',
+        image: newProd.images?.[0] || newProd.image || '',
+      } : p),
+    });
     setProductSearch('');
     setSearchResults([]);
     setSearchOpen(false);
     setChangingIndex(null);
-  }, [markDirty]);
+  }, [state.linkedProducts]);
+
+  // Highlights
+  const addHighlight = useCallback(() => {
+    if (state.highlights.length >= 20) return;
+    dispatch({ type: 'SET_HIGHLIGHTS', value: [...state.highlights, ''] });
+  }, [state.highlights]);
+
+  const updateHighlight = useCallback((i: number, value: string) => {
+    dispatch({
+      type: 'SET_HIGHLIGHTS',
+      value: state.highlights.map((h, j) => j === i ? value : h),
+    });
+  }, [state.highlights]);
+
+  const removeHighlight = useCallback((i: number) => {
+    dispatch({
+      type: 'SET_HIGHLIGHTS',
+      value: state.highlights.filter((_, j) => j !== i),
+    });
+  }, [state.highlights]);
+
+  const moveHighlight = useCallback((i: number, dir: number) => {
+    const target = i + dir;
+    if (target < 0 || target >= state.highlights.length) return;
+    const next = [...state.highlights];
+    [next[i], next[target]] = [next[target], next[i]];
+    dispatch({ type: 'SET_HIGHLIGHTS', value: next });
+  }, [state.highlights]);
 
   const inputCls = 'w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card';
   const labelCls = 'block text-sm font-medium text-primary mb-1';
 
-  const status = project.status as 'draft' | 'published' | 'archived';
-
   return (
-    <form ref={formRef} onSubmit={handleSaveDraft}>
+    <form onSubmit={handleSaveDraft}>
       {/* ── Tab Bar ── */}
       <div className="flex gap-0 border-b border-border px-6 overflow-x-auto">
         {TABS.map(tab => (
@@ -281,53 +216,63 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className={labelCls}>Project Name <span className="text-red-500">*</span></label>
-              <input name="title" defaultValue={project.title} required className={inputCls} onChange={markDirty} />
+              <input name="title" value={state.title} required className={inputCls}
+                onChange={e => dispatch({ type: 'SET_TITLE', value: e.target.value })} />
             </div>
             <div>
               <label className={labelCls}>Slug <span className="text-red-500">*</span></label>
-              <input name="slug" defaultValue={project.slug} required className={inputCls} onChange={markDirty} />
+              <input name="slug" value={state.slug} required className={inputCls}
+                onChange={e => dispatch({ type: 'SET_SLUG', value: e.target.value })} />
             </div>
             <div>
               <label className={labelCls}>Category</label>
-              <select name="category" defaultValue={project.category} className={inputCls} onChange={markDirty}>
+              <select name="category" value={state.category} className={inputCls}
+                onChange={e => dispatch({ type: 'SET_CATEGORY', value: e.target.value })}>
                 {CATEGORIES.map(c => <option key={c} value={c} className="capitalize">{c}</option>)}
               </select>
             </div>
             <div>
               <label className={labelCls}>Industry</label>
-              <input name="industry" defaultValue={project.industry} className={inputCls} onChange={markDirty} />
+              <input name="industry" value={state.industry} className={inputCls}
+                onChange={e => dispatch({ type: 'SET_INDUSTRY', value: e.target.value })} />
             </div>
           </div>
           <div>
             <label className={labelCls}>Short Description</label>
-            <textarea name="shortDescription" rows={2} defaultValue={project.shortDescription} className={inputCls + ' resize-y'} onChange={markDirty} />
+            <textarea name="shortDescription" rows={2} value={state.shortDescription} className={inputCls + ' resize-y'}
+              onChange={e => dispatch({ type: 'SET_SHORT_DESCRIPTION', value: e.target.value })} />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
               <label className={labelCls}>System Type</label>
-              <select name="systemType" defaultValue={project.systemType || ''} className={inputCls} onChange={markDirty}>
+              <select name="systemType" value={state.systemType || ''} className={inputCls}
+                onChange={e => dispatch({ type: 'SET_SYSTEM_TYPE', value: e.target.value })}>
                 {SYSTEM_TYPES.map(t => <option key={t} value={t}>{t || '—'}</option>)}
               </select>
             </div>
             <div>
               <label className={labelCls}>Capacity</label>
-              <input name="capacity" defaultValue={project.capacity} className={inputCls} placeholder="e.g. 10 kWp" onChange={markDirty} />
+              <input name="capacity" value={state.capacity} className={inputCls} placeholder="e.g. 10 kWp"
+                onChange={e => dispatch({ type: 'SET_CAPACITY', value: e.target.value })} />
             </div>
             <div>
               <label className={labelCls}>Completion Year</label>
-              <input name="year" type="number" defaultValue={project.year} className={inputCls} onChange={markDirty} />
+              <input name="year" type="number" value={state.year} className={inputCls}
+                onChange={e => dispatch({ type: 'SET_YEAR', value: parseInt(e.target.value) || 2025 })} />
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className={labelCls}>Customer Name</label>
-              <input name="customer" defaultValue={project.customer} className={inputCls} onChange={markDirty} />
+              <input name="customer" value={state.customer} className={inputCls}
+                onChange={e => dispatch({ type: 'SET_CUSTOMER', value: e.target.value })} />
             </div>
             <div>
               <label className={labelCls}>Location</label>
-              <input name="location" defaultValue={project.location} className={inputCls} placeholder="e.g. Jakarta Selatan" onChange={markDirty} />
+              <input name="location" value={state.location} className={inputCls} placeholder="e.g. Jakarta Selatan"
+                onChange={e => dispatch({ type: 'SET_LOCATION', value: e.target.value })} />
             </div>
           </div>
         </div>
@@ -339,26 +284,27 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
           <p className="text-xs text-muted">Structure the project as a case study.</p>
           <div>
             <label className={labelCls}>Challenge</label>
-            <textarea rows={3} value={story.challenge}
-              onChange={e => { setStory(s => ({ ...s, challenge: e.target.value })); markDirty(); }}
+            <textarea rows={3} value={state.storyChallenge}
+              onChange={e => dispatch({ type: 'SET_STORY_CHALLENGE', value: e.target.value })}
               className={inputCls + ' resize-y'} placeholder="What problem did the customer face?" />
           </div>
           <div>
             <label className={labelCls}>Solution</label>
-            <textarea rows={3} value={story.solution}
-              onChange={e => { setStory(s => ({ ...s, solution: e.target.value })); markDirty(); }}
+            <textarea rows={3} value={state.storySolution}
+              onChange={e => dispatch({ type: 'SET_STORY_SOLUTION', value: e.target.value })}
               className={inputCls + ' resize-y'} placeholder="How did you solve it?" />
           </div>
           <div>
             <label className={labelCls}>Result</label>
-            <textarea rows={3} value={story.result}
-              onChange={e => { setStory(s => ({ ...s, result: e.target.value })); markDirty(); }}
+            <textarea rows={3} value={state.storyResult}
+              onChange={e => dispatch({ type: 'SET_STORY_RESULT', value: e.target.value })}
               className={inputCls + ' resize-y'} placeholder="What were the outcomes?" />
           </div>
           <div>
             <label className={labelCls}>Full Story (Rich Text)</label>
-            <textarea name="richDescription" rows={6} defaultValue={project.richDescription}
-              className={inputCls + ' resize-y'} onChange={markDirty}
+            <textarea name="richDescription" rows={6} value={state.richDescription}
+              className={inputCls + ' resize-y'}
+              onChange={e => dispatch({ type: 'SET_RICH_DESCRIPTION', value: e.target.value })}
               placeholder="Detailed narrative with formatting..." />
           </div>
         </div>
@@ -368,8 +314,10 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
       {activeTab === 'Media' && (
         <div className="p-6 space-y-4">
           <ProjectMediaPanel
-            defaultCoverImage={project.coverImage}
-            defaultImages={project.images || []}
+            coverImage={state.coverImage}
+            onCoverImageChange={v => dispatch({ type: 'SET_COVER_IMAGE', value: v })}
+            images={state.images}
+            onImagesChange={v => dispatch({ type: 'SET_IMAGES', value: v })}
           />
         </div>
       )}
@@ -381,39 +329,47 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className={labelCls}>CO₂ Reduction</label>
-              <input value={impact.co2Reduction}
-                onChange={e => { setImpact(i => ({ ...i, co2Reduction: e.target.value })); markDirty(); }}
+              <input value={state.impactCo2Reduction}
+                onChange={e => dispatch({ type: 'SET_IMPACT_CO2', value: e.target.value })}
                 className={inputCls} placeholder="e.g. 12.5 tons/year" />
             </div>
             <div>
               <label className={labelCls}>Annual Savings</label>
-              <input value={impact.annualSavings}
-                onChange={e => { setImpact(i => ({ ...i, annualSavings: e.target.value })); markDirty(); }}
+              <input value={state.impactAnnualSavings}
+                onChange={e => dispatch({ type: 'SET_IMPACT_SAVINGS', value: e.target.value })}
                 className={inputCls} placeholder="e.g. Rp 45.000.000" />
             </div>
             <div>
               <label className={labelCls}>Energy Generated</label>
-              <input value={impact.energyGenerated}
-                onChange={e => { setImpact(i => ({ ...i, energyGenerated: e.target.value })); markDirty(); }}
+              <input value={state.impactEnergyGenerated}
+                onChange={e => dispatch({ type: 'SET_IMPACT_ENERGY', value: e.target.value })}
                 className={inputCls} placeholder="e.g. 15.000 kWh/year" />
             </div>
             <div>
               <label className={labelCls}>Installation Capacity</label>
-              <input name="capacity" defaultValue={project.capacity} className={inputCls} placeholder="e.g. 10 kWp" onChange={markDirty} />
+              <input value={state.capacity}
+                onChange={e => dispatch({ type: 'SET_CAPACITY', value: e.target.value })}
+                className={inputCls} placeholder="e.g. 10 kWp" />
             </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
               <label className={labelCls}>PV Module</label>
-              <input name="pvModule" defaultValue={project.pvModule} className={inputCls} placeholder="e.g. Longi 550W" onChange={markDirty} />
+              <input value={state.pvModule}
+                onChange={e => dispatch({ type: 'SET_PV_MODULE', value: e.target.value })}
+                className={inputCls} placeholder="e.g. Longi 550W" />
             </div>
             <div>
               <label className={labelCls}>Inverter</label>
-              <input name="inverter" defaultValue={project.inverter} className={inputCls} onChange={markDirty} />
+              <input value={state.inverter}
+                onChange={e => dispatch({ type: 'SET_INVERTER', value: e.target.value })}
+                className={inputCls} />
             </div>
             <div>
               <label className={labelCls}>Battery</label>
-              <input name="battery" defaultValue={project.battery} className={inputCls} onChange={markDirty} />
+              <input value={state.battery}
+                onChange={e => dispatch({ type: 'SET_BATTERY', value: e.target.value })}
+                className={inputCls} />
             </div>
           </div>
         </div>
@@ -460,11 +416,11 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
 
           {/* Linked products */}
           <div className="space-y-2">
-            <label className={labelCls}>Linked Products ({linkedProducts.length})</label>
-            {linkedProducts.length === 0 && (
+            <label className={labelCls}>Linked Products ({state.linkedProducts.length})</label>
+            {state.linkedProducts.length === 0 && (
               <p className="text-sm text-muted">No products linked yet. Search above to add.</p>
             )}
-            {linkedProducts.map((lp, i) => (
+            {state.linkedProducts.map((lp, i) => (
               <div key={lp.slug + i} className="flex items-center gap-3 rounded-lg border border-border p-3 bg-card">
                 <img
                   src={lp.image || '/images/placeholder/product-placeholder.png'}
@@ -503,20 +459,20 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
           <p className="text-xs text-muted">Control how this project appears in search results and social shares.</p>
           <div>
             <label className={labelCls}>SEO Title</label>
-            <input value={seo.title}
-              onChange={e => { setSeo(s => ({ ...s, title: e.target.value })); markDirty(); }}
-              className={inputCls} placeholder={project.title ? `${project.title} | EBTPlaza` : 'Project Title | EBTPlaza'} />
+            <input value={state.seoTitle}
+              onChange={e => dispatch({ type: 'SET_SEO_TITLE', value: e.target.value })}
+              className={inputCls} placeholder={state.title ? `${state.title} | EBTPlaza` : 'Project Title | EBTPlaza'} />
           </div>
           <div>
             <label className={labelCls}>Meta Description</label>
-            <textarea rows={3} value={seo.description}
-              onChange={e => { setSeo(s => ({ ...s, description: e.target.value })); markDirty(); }}
+            <textarea rows={3} value={state.seoDescription}
+              onChange={e => dispatch({ type: 'SET_SEO_DESCRIPTION', value: e.target.value })}
               className={inputCls + ' resize-y'} placeholder="Brief summary for search results (120-160 characters)" />
           </div>
           <div>
             <label className={labelCls}>OG Image URL</label>
-            <input value={seo.ogImage}
-              onChange={e => { setSeo(s => ({ ...s, ogImage: e.target.value })); markDirty(); }}
+            <input value={state.seoOgImage}
+              onChange={e => dispatch({ type: 'SET_SEO_OG_IMAGE', value: e.target.value })}
               className={inputCls} placeholder="https://..." />
           </div>
           <div className="p-4 rounded-lg bg-surface text-xs text-muted">
@@ -531,7 +487,9 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
         <div className="p-6 space-y-4">
           <div>
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" name="featured" value="true" defaultChecked={project.featured} onChange={markDirty} className="rounded border-border" />
+              <input type="checkbox" checked={state.featured}
+                onChange={e => dispatch({ type: 'SET_FEATURED', value: e.target.checked })}
+                className="rounded border-border" />
               <span className="text-sm text-primary">Featured Project</span>
             </label>
             <p className="text-xs text-muted mt-1 ml-6">Featured projects appear on the homepage and top of the portfolio list.</p>
@@ -540,11 +498,11 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
             <label className={labelCls}>Project Highlights</label>
             <p className="text-xs text-muted mb-2">Key achievements shown on the public page.</p>
 
-            {highlights.length === 0 && (
+            {state.highlights.length === 0 && (
               <p className="text-sm text-muted py-2">No highlights yet.</p>
             )}
 
-            {highlights.map((h, i) => (
+            {state.highlights.map((h, i) => (
               <div key={i} className="flex items-center gap-2 py-1">
                 <span className="text-primary shrink-0 text-xs">✓</span>
                 <input value={h} onChange={e => updateHighlight(i, e.target.value)}
@@ -553,7 +511,7 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
                 <div className="flex gap-0.5">
                   <button type="button" onClick={() => moveHighlight(i, -1)} disabled={i === 0}
                     className="rounded px-1 py-0.5 text-[10px] text-muted hover:bg-surface transition disabled:opacity-20">↑</button>
-                  <button type="button" onClick={() => moveHighlight(i, 1)} disabled={i === highlights.length - 1}
+                  <button type="button" onClick={() => moveHighlight(i, 1)} disabled={i === state.highlights.length - 1}
                     className="rounded px-1 py-0.5 text-[10px] text-muted hover:bg-surface transition disabled:opacity-20">↓</button>
                 </div>
                 <button type="button" onClick={() => removeHighlight(i)}
@@ -561,13 +519,13 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
               </div>
             ))}
 
-            {highlights.length < 20 && (
+            {state.highlights.length < 20 && (
               <button type="button" onClick={addHighlight}
                 className="mt-2 text-xs text-primary hover:underline">
                 + Add Highlight
               </button>
             )}
-            {highlights.length >= 20 && (
+            {state.highlights.length >= 20 && (
               <p className="text-xs text-muted mt-1">Maximum 20 highlights.</p>
             )}
           </div>
@@ -581,8 +539,7 @@ export function ProjectEditForm({ project }: ProjectEditFormProps) {
           <span className="text-xs text-muted hidden sm:inline">
             Last updated: {new Date(project.updatedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
           </span>
-          {dirty && <span className="text-xs text-amber-600">Unsaved changes</span>}
-          {saveState === 'saved' && <span className="text-xs text-green-600">Saved</span>}
+          {state.dirty && <span className="text-xs text-amber-600">Unsaved changes</span>}
         </div>
         <div className="flex gap-2">
           <Link href="/admin/projects" className="rounded-lg border border-border px-3 py-2 text-sm text-muted hover:bg-surface transition">
