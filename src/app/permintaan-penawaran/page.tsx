@@ -297,7 +297,6 @@ export default function RfqPage() {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={resetForm}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-green-500 px-6 py-3 text-sm font-medium text-white hover:bg-green-600 transition-colors"
               data-track="rfq-whatsapp-send"
             >
