@@ -158,11 +158,19 @@ export default function CartPage() {
             </div>
           </div>
 
-          <Link href="/checkout">
-            <Button variant="primary" size="lg" className="w-full">
-              Lanjutkan ke Pembayaran
-            </Button>
-          </Link>
+          {showPrices ? (
+            <Link href="/checkout">
+              <Button variant="primary" size="lg" className="w-full">
+                Lanjutkan ke Pembayaran
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/permintaan-penawaran">
+              <Button variant="primary" size="lg" className="w-full">
+                Minta Penawaran
+              </Button>
+            </Link>
+          )}
 
           <Link
             href="/produk"
