@@ -41,6 +41,7 @@ export function ClipboardCopyButton() {
       size="sm"
       onClick={handleCopy}
       disabled={!isIdle}
+      className="hover:bg-black hover:text-white"
     >
       {isIdle && 'Salin Link'}
       {isSuccess && '✓ Tersalin'}
