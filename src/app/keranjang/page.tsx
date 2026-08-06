@@ -146,16 +146,19 @@ export default function CartPage() {
           </div>
 
           <div className="border-t border-gray-200 pt-4">
-            <div className="flex justify-between text-base font-semibold text-gray-900">
-              <span>Total</span>
-              {showPrices ? (
+            {showPrices ? (
+              <div className="flex justify-between text-base font-semibold text-gray-900">
+                <span>Total</span>
                 <span>{formatCurrency(subtotal)}</span>
-              ) : (
-                <span className="italic text-sm font-normal text-gray-400">
+              </div>
+            ) : (
+              <div>
+                <span className="text-base font-semibold text-gray-900">Total</span>
+                <p className="mt-1 italic text-sm font-normal text-gray-400">
                   Harga akan dikonfirmasi oleh tim sales
-                </span>
-              )}
-            </div>
+                </p>
+              </div>
+            )}
           </div>
 
           {showPrices ? (
