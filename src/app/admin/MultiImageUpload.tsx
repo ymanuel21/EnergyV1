@@ -1,18 +1,56 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface MultiImageUploadProps {
   name?: string;
   label?: string;
   defaultValue?: string[];
+  /** Controlled mode: current images */
+  value?: string[];
+  /** Controlled mode: called when images change */
+  onChange?: (images: string[]) => void;
   className?: string;
 }
 
-export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', defaultValue = [], className = '' }: MultiImageUploadProps) {
-  const [images, setImages] = useState<string[]>(defaultValue);
+/**
+ * Multi-image uploader with file upload, reorder, delete, preview.
+ * 
+ * Uncontrolled: pass `defaultValue` + `name` — uses hidden input with JSON string.
+ * Controlled: pass `value` + `onChange` — calls onChange with updated array.
+ */
+export function MultiImageUpload({
+  name = 'images',
+  label = 'Gambar',
+  defaultValue = [],
+  value: controlledValue,
+  onChange: controlledOnChange,
+  className = '',
+}: MultiImageUploadProps) {
+  const isControlled = controlledOnChange !== undefined;
+  const initialValue = isControlled ? (controlledValue ?? defaultValue) : defaultValue;
+
+  const [images, setImages] = useState<string[]>(initialValue);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync when controlled value changes externally
+  useEffect(() => {
+    if (isControlled && controlledValue !== undefined) {
+      const cur = JSON.stringify(images);
+      const ext = JSON.stringify(controlledValue);
+      if (cur !== ext) {
+        setImages(controlledValue);
+      }
+    }
+  }, [isControlled, controlledValue]); // eslint-disable-line
+
+  function emit(newImages: string[]) {
+    setImages(newImages);
+    if (isControlled) {
+      controlledOnChange!(newImages);
+    }
+  }
 
   async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
@@ -35,26 +73,23 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
       }
     }
 
-    setImages(prev => [...prev, ...newUrls]);
+    emit([...images, ...newUrls]);
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   function removeImage(index: number) {
-    setImages(prev => prev.filter((_, i) => i !== index));
+    emit(images.filter((_, i) => i !== index));
   }
 
   function moveImage(index: number, direction: -1 | 1) {
     const newIdx = index + direction;
     if (newIdx < 0 || newIdx >= images.length) return;
-    setImages(prev => {
-      const copy = [...prev];
-      [copy[index], copy[newIdx]] = [copy[newIdx], copy[index]];
-      return copy;
-    });
+    const copy = [...images];
+    [copy[index], copy[newIdx]] = [copy[newIdx], copy[index]];
+    emit(copy);
   }
 
-  // Serialize images as JSON string array for the form
   const imagesJson = JSON.stringify(images);
 
   return (
@@ -64,11 +99,12 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
       {/* Gallery */}
       <div className="grid grid-cols-4 gap-3 mb-3">
         {images.map((url, i) => (
-          <div key={i} className="relative group rounded-lg border border-border overflow-hidden">
+          <div key={`${url}-${i}`} className="relative group rounded-lg border border-border overflow-hidden">
             <img
               src={url}
-              alt={`Product image ${i + 1}`}
+              alt={`Image ${i + 1}`}
               className="h-24 w-full object-cover"
+              onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
             {/* Badges */}
             <div className="absolute top-1 left-1 flex gap-1">
@@ -134,8 +170,10 @@ export function MultiImageUpload({ name = 'images', label = 'Gambar Produk', def
         className="hidden"
       />
 
-      {/* Hidden input submits the JSON array */}
-      <input type="hidden" name={name} value={imagesJson} />
+      {/* Hidden input for uncontrolled mode (form submission) */}
+      {!isControlled && (
+        <input type="hidden" name={name} value={imagesJson} />
+      )}
     </div>
   );
 }

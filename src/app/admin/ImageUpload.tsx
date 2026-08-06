@@ -1,22 +1,57 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface ImageUploadProps {
   name?: string;
   label?: string;
   defaultValue?: string;
+  /** Controlled mode: current value */
+  value?: string;
+  /** Controlled mode: called when value changes */
+  onChange?: (url: string) => void;
   className?: string;
 }
 
-export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '', className = '' }: ImageUploadProps) {
-  const [preview, setPreview] = useState<string>(defaultValue);
+/**
+ * Single image uploader with file upload + URL fallback.
+ * 
+ * Uncontrolled: pass `defaultValue` + `name` — uses hidden input for form submission.
+ * Controlled: pass `value` + `onChange` — calls onChange with the permanent URL.
+ */
+export function ImageUpload({
+  name = 'image',
+  label = 'Gambar',
+  defaultValue = '',
+  value: controlledValue,
+  onChange: controlledOnChange,
+  className = '',
+}: ImageUploadProps) {
+  const isControlled = controlledOnChange !== undefined;
+  const initialValue = isControlled ? (controlledValue ?? defaultValue) : defaultValue;
+
+  const [preview, setPreview] = useState<string>(initialValue);
   const [fileName, setFileName] = useState<string>('');
   const [urlMode, setUrlMode] = useState(false);
   const [urlValue, setUrlValue] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [storedUrl, setStoredUrl] = useState<string>(defaultValue);
+  const [storedUrl, setStoredUrl] = useState<string>(initialValue);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync when controlled value changes externally
+  useEffect(() => {
+    if (isControlled && controlledValue !== undefined && controlledValue !== storedUrl) {
+      setStoredUrl(controlledValue);
+      setPreview(controlledValue);
+    }
+  }, [isControlled, controlledValue, storedUrl]);
+
+  function emit(url: string) {
+    setStoredUrl(url);
+    if (isControlled) {
+      controlledOnChange!(url);
+    }
+  }
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -38,7 +73,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
       if (!res.ok) throw new Error('Upload failed');
 
       const { url } = await res.json();
-      setStoredUrl(url);
+      emit(url);
       setPreview(url); // Replace blob preview with permanent URL
     } catch (err) {
       console.error('Upload error:', err);
@@ -54,16 +89,17 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
   function handleRemove() {
     setPreview('');
     setFileName('');
-    setStoredUrl('');
     setUrlValue('');
     if (fileInputRef.current) fileInputRef.current.value = '';
+    emit('');
   }
 
   function handleUrlSubmit() {
     if (urlValue.trim()) {
-      setPreview(urlValue.trim());
-      setStoredUrl(urlValue.trim());
-      setFileName(urlValue.trim().split('/').pop() || '');
+      const url = urlValue.trim();
+      setPreview(url);
+      setFileName(url.split('/').pop() || '');
+      emit(url);
     }
   }
 
@@ -128,6 +164,7 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
             placeholder="https://... atau /images/..."
             value={urlValue}
             onChange={(e) => setUrlValue(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleUrlSubmit(); } }}
             className="flex-1 rounded-lg border border-border px-3 py-1.5 text-xs"
           />
           <button
@@ -140,8 +177,10 @@ export function ImageUpload({ name = 'image', label = 'Gambar', defaultValue = '
         </div>
       )}
 
-      {/* Hidden input submits the permanent URL (from upload or manual entry) */}
-      <input type="hidden" name={name} value={storedUrl} />
+      {/* Hidden input for uncontrolled mode (form submission) */}
+      {!isControlled && (
+        <input type="hidden" name={name} value={storedUrl} />
+      )}
 
       {fileName && (
         <p className="mt-1 text-xs text-muted">{fileName}</p>
