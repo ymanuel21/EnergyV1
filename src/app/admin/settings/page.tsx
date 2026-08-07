@@ -83,6 +83,23 @@ export default async function SettingsPage() {
             <input name="product_custom_price_label" defaultValue={saved['product_custom_price_label'] || ''} className="w-full rounded-lg border border-border px-3 py-2 text-sm" placeholder="Digunakan saat mode CUSTOM_TEXT dipilih" />
           </div>
         </div>
+
+        {/* Quote Notifications */}
+        <div className="mt-6 space-y-4 rounded-xl border bg-card p-6">
+          <h2 className="text-lg font-semibold text-primary">Quote Notifications</h2>
+          <p className="text-sm text-muted">Email notifications dikirim saat customer mengirim permintaan penawaran.</p>
+
+          <div>
+            <label className="block text-sm font-medium text-primary mb-1">Recipient Emails</label>
+            <input
+              name="quote_notification_recipients"
+              defaultValue={saved['quote_notification_recipients'] || ''}
+              className="w-full rounded-lg border border-border px-3 py-2 text-sm"
+              placeholder="sales@company.com, admin@company.com"
+            />
+            <p className="mt-1 text-xs text-muted">Pisahkan dengan koma untuk multiple recipients.</p>
+          </div>
+        </div>
       </SettingsClientWrapper>
     </div>
   );
