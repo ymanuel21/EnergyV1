@@ -110,7 +110,12 @@ export function TestimonialSection({ testimonials, variant = 'default' }: Testim
                   )}
                   <div>
                     <p className="text-sm font-medium text-primary">{t.name}</p>
-                    <p className="text-xs text-muted">{t.company}{t.company && t.role ? ' · ' : ''}{t.role}</p>
+                    {(t.company || t.role || t.createdAt) && (
+                      <p className="text-xs text-muted">
+                        {[t.company, t.role, t.createdAt ? new Date(t.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : null]
+                          .filter(Boolean).join(' · ')}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex mb-2 text-amber-400">{'★'.repeat(t.rating || 5)}{'☆'.repeat(5 - (t.rating || 5))}</div>
@@ -127,8 +132,11 @@ export function TestimonialSection({ testimonials, variant = 'default' }: Testim
                   )}
                   <div>
                     <p className="text-sm font-medium text-primary">{t.name}</p>
-                    {(t.company || t.role) && (
-                      <p className="text-xs text-muted">{t.company}{t.company && t.role ? ' · ' : ''}{t.role}</p>
+                    {(t.company || t.role || t.createdAt) && (
+                      <p className="text-xs text-muted">
+                        {[t.company, t.role, t.createdAt ? new Date(t.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : null]
+                          .filter(Boolean).join(' · ')}
+                      </p>
                     )}
                   </div>
                 </div>
