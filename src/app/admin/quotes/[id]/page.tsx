@@ -5,11 +5,21 @@ import { getAdminPrisma } from '../../lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth';
 import Link from 'next/link';
+import { QuoteActions } from '../QuoteActions';
+import { FollowUpForm, NotesForm } from '../QuoteForms';
 
-const STATUSES = ['pending', 'contacted', 'survey_scheduled', 'proposal_sent', 'won', 'lost'] as const;
 const STATUS_LABELS: Record<string, string> = {
   pending: 'Pending', contacted: 'Contacted', survey_scheduled: 'Survey Scheduled',
   proposal_sent: 'Proposal Sent', won: 'Won', lost: 'Lost',
+};
+
+const NEXT_ACTIONS: Record<string, string[]> = {
+  pending: ['contacted'],
+  contacted: ['survey_scheduled'],
+  survey_scheduled: ['proposal_sent'],
+  proposal_sent: ['won', 'lost'],
+  won: [],
+  lost: [],
 };
 
 export default async function QuoteDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -56,14 +66,7 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
     revalidatePath(`/admin/quotes/${id}`);
   }
 
-  const nextActions: Record<string, string[]> = {
-    pending: ['contacted'],
-    contacted: ['survey_scheduled'],
-    survey_scheduled: ['proposal_sent'],
-    proposal_sent: ['won', 'lost'],
-    won: [],
-    lost: [],
-  };
+  const nextActions = NEXT_ACTIONS[quote.status] || [];
 
   return (
     <div className="p-6">
@@ -107,25 +110,13 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
               ))}
             </div>
 
-            {/* Add follow-up */}
-            <form action={handleAddNote} className="mt-4 flex gap-2">
-              <input type="hidden" name="id" value={quote.id} />
-              <input name="note" placeholder="Add follow-up note..." required
-                className="flex-1 rounded-lg border border-border px-3 py-1.5 text-sm focus:border-primary outline-none bg-card" />
-              <button type="submit" className="rounded-lg bg-primary px-3 py-1.5 text-sm text-white hover:bg-primary-hover">Add</button>
-            </form>
+            <FollowUpForm quoteId={quote.id} handleAddNote={handleAddNote} />
           </div>
 
           {/* Notes */}
           <div className="rounded-xl border border-border bg-card p-6">
             <h2 className="text-sm font-semibold text-primary mb-3">Internal Notes</h2>
-            <form action={handleUpdateNotes}>
-              <input type="hidden" name="id" value={quote.id} />
-              <textarea name="notes" rows={3} defaultValue={quote.notes}
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary outline-none bg-card resize-y mb-2"
-                placeholder="Internal notes about this lead..." />
-              <button type="submit" className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted hover:bg-surface">Save Notes</button>
-            </form>
+            <NotesForm quoteId={quote.id} defaultValue={quote.notes || ''} handleUpdateNotes={handleUpdateNotes} />
           </div>
         </div>
 
@@ -143,23 +134,12 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
               {STATUS_LABELS[quote.status] || quote.status}
             </span>
 
-            {/* Quick actions */}
-            {nextActions[quote.status]?.length > 0 && (
-              <div className="mt-4 space-y-2">
-                <p className="text-xs text-muted">Quick Actions:</p>
-                {nextActions[quote.status].map(next => (
-                  <form key={next} action={handleStatusUpdate} className="inline-block mr-2">
-                    <input type="hidden" name="id" value={quote.id} />
-                    <input type="hidden" name="status" value={next} />
-                    <button type="submit" className={`rounded-lg px-3 py-1.5 text-xs font-medium text-white hover:opacity-90 transition ${
-                      next === 'won' ? 'bg-green-600' : next === 'lost' ? 'bg-red-600' : 'bg-primary'
-                    }`}>
-                      Mark {STATUS_LABELS[next]}
-                    </button>
-                  </form>
-                ))}
-              </div>
-            )}
+            <QuoteActions
+              quoteId={quote.id}
+              currentStatus={quote.status}
+              nextActions={nextActions}
+              handleStatusUpdate={handleStatusUpdate}
+            />
           </div>
 
           {/* Timeline */}
