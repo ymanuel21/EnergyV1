@@ -58,6 +58,8 @@ export default function RfqPage() {
   const [newItem, setNewItem] = useState({ name: '', quantity: 1, notes: '' });
   const [itemError, setItemError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   function showToast(msg: string) {
     setToast(msg);
@@ -226,11 +228,55 @@ export default function RfqPage() {
     return Object.keys(e).length === 0;
   }
 
-  // ── Submit → WhatsApp ──
-  function handleSubmit(e: FormEvent) {
+  // ── Submit → save to DB then show confirm ──
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setSubmitError(null);
     if (!validate()) return;
-    setStep('confirm');
+
+    setSubmitting(true);
+    try {
+      // Build message from items + project context
+      const itemLines = items.map((item, i) =>
+        `  ${i + 1}. ${item.name} — Qty: ${item.quantity}${item.notes ? ` (${item.notes})` : ''}`
+      );
+      const messageParts = [
+        `Jenis Customer: ${form.customerType === 'BUSINESS' ? 'Business / Corporate' : 'Residential'}`,
+        form.company ? `Perusahaan: ${form.company}` : '',
+        form.position ? `Jabatan: ${form.position}` : '',
+        form.projectName ? `Nama Proyek: ${form.projectName}` : '',
+        form.location ? `Lokasi: ${form.location}` : '',
+        form.targetDate ? `Target: ${form.targetDate}` : '',
+        form.needsInstallation ? 'Butuh jasa instalasi: Ya' : '',
+        form.notes ? `Catatan: ${form.notes}` : '',
+        `--- Daftar Kebutuhan (${items.length} item) ---`,
+        ...itemLines,
+      ];
+      const message = messageParts.filter(Boolean).join('\n');
+
+      const res = await fetch('/api/quotes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          company: form.company.trim(),
+          message,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Server error');
+      }
+
+      setSubmitting(false);
+      setStep('confirm');
+    } catch (err: any) {
+      setSubmitting(false);
+      setSubmitError(err?.message || 'Gagal mengirim. Coba lagi.');
+    }
   }
 
   function buildWhatsAppMessage(): string {
@@ -598,9 +644,14 @@ export default function RfqPage() {
         </section>
 
         {/* ── Submit ── */}
+        {submitError && (
+          <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-3" role="alert">
+            {submitError}
+          </p>
+        )}
         <div className="flex gap-3">
-          <Button type="submit" variant="primary" size="lg" data-track="rfq-submit">
-            Kirim Permintaan
+          <Button type="submit" variant="primary" size="lg" disabled={submitting} data-track="rfq-submit">
+            {submitting ? 'Mengirim...' : 'Kirim Permintaan'}
           </Button>
           <Button type="button" variant="ghost" size="lg" onClick={() => window.history.back()}>
             Batal
