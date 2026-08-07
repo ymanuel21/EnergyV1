@@ -38,10 +38,13 @@ export async function POST(request: Request) {
         const recipients = await prisma.siteSetting.findUnique({
           where: { key: 'quote_notification_recipients' }
         });
+        console.log('[Quotes] Email configured:', emailService.isConfigured, '| recipients:', recipients?.value || '(none)');
         if (recipients?.value) {
           emailService.sendQuoteNotification(quote, recipients.value).catch(err => {
             console.error('[Quotes] Email notification failed:', err);
           });
+        } else {
+          console.log('[Quotes] No recipients configured — skipping email.');
         }
       } catch (err) {
         console.error('[Quotes] Failed to read recipients setting:', err);
