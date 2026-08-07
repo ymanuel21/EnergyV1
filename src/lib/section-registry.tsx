@@ -748,25 +748,7 @@ function TestimonialsRenderer({ section, data }: SectionRendererProps) {
       <div className="mx-auto max-w-5xl px-4 sm:px-8">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-8 text-center">{section.title}</p>}
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 sm:gap-6">
-          <TestimonialSection testimonials={active}>
-            {(t) => (
-              <div className="rounded-xl border border-border bg-card p-6 h-full">
-                <div className="flex items-center gap-3 mb-4">
-                  {t.photo ? (
-                    <img src={t.photo} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm">👤</div>
-                  )}
-                  <div>
-                    <p className="text-sm font-medium text-primary">{t.name}</p>
-                    <p className="text-xs text-muted">{t.company}{t.company && t.role ? ' · ' : ''}{t.role}</p>
-                  </div>
-                </div>
-                <div className="flex mb-2 text-amber-400">{'★'.repeat(t.rating || 5)}{'☆'.repeat(5 - (t.rating || 5))}</div>
-                <p className="text-sm text-muted italic line-clamp-3">&ldquo;{t.quote}&rdquo;</p>
-              </div>
-            )}
-          </TestimonialSection>
+          <TestimonialSection testimonials={active} variant="compact" />
         </div>
 
         <div className="mt-8 text-center">

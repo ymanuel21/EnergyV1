@@ -49,9 +49,7 @@ function Modal({ t, onClose }: { t: TestimonialData; onClose: () => void }) {
               )}
             </div>
           </div>
-          <div className="flex mb-4 text-xl text-amber-400">
-            {'★'.repeat(t.rating)}{'☆'.repeat(5 - t.rating)}
-          </div>
+          <div className="flex mb-4 text-xl text-amber-400">{'★'.repeat(t.rating)}{'☆'.repeat(5 - t.rating)}</div>
           <blockquote className="text-gray-700 leading-relaxed text-sm sm:text-base">&ldquo;{t.quote}&rdquo;</blockquote>
           {t.createdAt && (
             <p className="mt-3 text-xs text-gray-400">
@@ -73,18 +71,24 @@ function Modal({ t, onClose }: { t: TestimonialData; onClose: () => void }) {
 
 interface TestimonialSectionProps {
   testimonials: TestimonialData[];
-  /** Renders each card. Receives testimonial + onClick handler. */
-  children: (t: TestimonialData, onClick: () => void) => React.ReactNode;
+  /** Card style variant */
+  variant?: 'default' | 'compact';
 }
 
-export function TestimonialSection({ testimonials, children }: TestimonialSectionProps) {
+export function TestimonialSection({ testimonials, variant = 'default' }: TestimonialSectionProps) {
   const [selected, setSelected] = useState<TestimonialData | null>(null);
   const close = useCallback(() => setSelected(null), []);
+
+  const isCompact = variant === 'compact';
 
   return (
     <>
       {testimonials.map((t) => {
         const onClick = () => setSelected(t);
+        const wrapperCls = `cursor-pointer hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 ${
+          isCompact ? '' : 'rounded-xl border border-border bg-card p-6 h-full'
+        }`;
+
         return (
           <div
             key={t.id}
@@ -93,9 +97,50 @@ export function TestimonialSection({ testimonials, children }: TestimonialSectio
             aria-label={`View testimonial from ${t.name}`}
             onClick={onClick}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
-            className="cursor-pointer hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200"
+            className={wrapperCls}
           >
-            {children(t, onClick)}
+            {isCompact ? (
+              // Compact: homepage variant (wrapper div provides border/padding)
+              <>
+                <div className="flex items-center gap-3 mb-4">
+                  {t.photo ? (
+                    <img src={t.photo} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm">👤</div>
+                  )}
+                  <div>
+                    <p className="text-sm font-medium text-primary">{t.name}</p>
+                    <p className="text-xs text-muted">{t.company}{t.company && t.role ? ' · ' : ''}{t.role}</p>
+                  </div>
+                </div>
+                <div className="flex mb-2 text-amber-400">{'★'.repeat(t.rating || 5)}{'☆'.repeat(5 - (t.rating || 5))}</div>
+                <p className="text-sm text-muted italic line-clamp-3">&ldquo;{t.quote}&rdquo;</p>
+              </>
+            ) : (
+              // Default: /testimoni full card
+              <>
+                <div className="flex items-center gap-3 mb-4">
+                  {t.photo ? (
+                    <img src={t.photo} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-surface flex items-center justify-center text-lg">👤</div>
+                  )}
+                  <div>
+                    <p className="text-sm font-medium text-primary">{t.name}</p>
+                    {(t.company || t.role) && (
+                      <p className="text-xs text-muted">{t.company}{t.company && t.role ? ' · ' : ''}{t.role}</p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex mb-3 text-amber-400">{'★'.repeat(t.rating)}{'☆'.repeat(5 - t.rating)}</div>
+                <p className="text-sm text-muted italic line-clamp-3">&ldquo;{t.quote}&rdquo;</p>
+                {Array.isArray(t.productIds) && (t.productIds as string[]).length > 0 && (
+                  <div className="mt-4 pt-3 border-t border-border">
+                    <span className="text-xs text-primary">Lihat Proyek Terkait →</span>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         );
       })}
