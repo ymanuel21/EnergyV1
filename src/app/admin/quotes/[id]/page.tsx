@@ -7,6 +7,7 @@ import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import { QuoteActions } from '../QuoteActions';
 import { FollowUpForm, NotesForm } from '../QuoteForms';
+import { RequestMessage } from '../RequestMessage';
 
 const STATUS_LABELS: Record<string, string> = {
   pending: 'Pending', contacted: 'Contacted', survey_scheduled: 'Survey Scheduled',
@@ -89,10 +90,9 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
             </div>
           </div>
 
-          {/* Message */}
+          {/* Request Details — structured UI */}
           <div className="rounded-xl border border-border bg-card p-6">
-            <h2 className="text-sm font-semibold text-primary mb-3">Request Message</h2>
-            <p className="text-sm text-muted whitespace-pre-wrap">{quote.message || 'No message provided.'}</p>
+            <RequestMessage message={quote.message || ''} />
           </div>
 
           {/* Follow-up Timeline */}
