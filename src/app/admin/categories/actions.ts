@@ -37,9 +37,20 @@ export async function updateCategory(id: string, data: { name?: string; slug?: s
   });
 }
 
+export async function getCategoryUsage(categoryId: string) {
+  await requireAuth();
+  const prisma = await getAdminPrisma();
+  const productCount = await prisma.productCategory.count({ where: { categoryId } });
+  return { productCount };
+}
+
 export async function deleteCategory(id: string) {
   await requireAuth();
   const prisma = await getAdminPrisma();
+  const usage = await prisma.productCategory.count({ where: { categoryId: id } });
+  if (usage > 0) {
+    throw new Error(`Category is currently used by ${usage} product${usage > 1 ? 's' : ''}.`);
+  }
   await prisma.category.updateMany({ where: { parentId: id }, data: { parentId: null } });
   return prisma.category.delete({ where: { id } });
 }

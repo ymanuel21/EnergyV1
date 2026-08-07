@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from 'next/link';
-import { getBrands, createBrand, deleteBrand } from './actions';
+import { getBrands, createBrand, deleteBrand, getBrandUsage } from './actions';
 import { revalidatePath } from 'next/cache';
 import { DeleteButton } from '../DeleteButton';
 import { SubmitButton } from '../SubmitButton';
@@ -11,6 +11,15 @@ import { BrandLogo } from '@ui/BrandLogo';
 
 export default async function BrandsPage() {
   const brands = await getBrands();
+
+  // Preload usage counts for all brands
+  const usageMap = new Map<string, number>();
+  await Promise.all(
+    brands.map(async (b: any) => {
+      const { productCount } = await getBrandUsage(b.id);
+      usageMap.set(b.id, productCount);
+    })
+  );
 
   async function handleCreate(data: FormData) {
     'use server';
@@ -50,17 +59,26 @@ export default async function BrandsPage() {
         <ImageUpload name="logo" label="Logo Brand (opsional)" />
       </form>
       <div className="mt-4 rounded-xl border bg-card">
-        {brands.map((b: any) => (
-          <div key={b.id} className="flex items-center justify-between border-b px-4 py-3 text-sm last:border-0 gap-3">
-            <BrandLogo name={b.name} logo={b.logo} size="sm" />
-            <span className="font-medium flex-1">{b.name}</span>
-            <span className="text-muted hidden sm:inline">{b.slug}</span>
-            <Link href={`/admin/brands/${b.id}`} className="text-gray-800 hover:text-gray-800 font-medium text-sm">
-              Edit
-            </Link>
-            <DeleteButton itemName={b.name} onDelete={handleDelete.bind(null, b.id)} />
-          </div>
-        ))}
+        {brands.map((b: any) => {
+          const usage = usageMap.get(b.id) || 0;
+          return (
+            <div key={b.id} className="flex items-center justify-between border-b px-4 py-3 text-sm last:border-0 gap-3">
+              <BrandLogo name={b.name} logo={b.logo} size="sm" />
+              <span className="font-medium flex-1">{b.name}</span>
+              <span className="text-xs text-muted min-w-[60px] text-right">
+                {usage} Produk
+              </span>
+              <span className="text-muted hidden sm:inline">{b.slug}</span>
+              <Link href={`/admin/brands/${b.id}`} className="text-gray-800 hover:text-gray-800 font-medium text-sm">
+                Edit
+              </Link>
+              <DeleteButton
+                itemName={b.name}
+                onDelete={handleDelete.bind(null, b.id)}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

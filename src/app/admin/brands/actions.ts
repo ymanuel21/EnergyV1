@@ -8,6 +8,13 @@ export async function getBrands() {
   return prisma.brand.findMany({ orderBy: { name: 'asc' } });
 }
 
+export async function getBrandUsage(brandId: string) {
+  await requireAuth();
+  const prisma = await getAdminPrisma();
+  const productCount = await prisma.product.count({ where: { brandId } });
+  return { productCount };
+}
+
 export async function getBrand(id: string) {
   await requireAuth();
   const prisma = await getAdminPrisma();
@@ -41,5 +48,9 @@ export async function updateBrand(
 export async function deleteBrand(id: string) {
   await requireAuth();
   const prisma = await getAdminPrisma();
+  const usage = await prisma.product.count({ where: { brandId: id } });
+  if (usage > 0) {
+    throw new Error(`Brand is currently used by ${usage} product${usage > 1 ? 's' : ''}.`);
+  }
   return prisma.brand.delete({ where: { id } });
 }

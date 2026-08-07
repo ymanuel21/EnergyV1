@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { notFound, redirect } from 'next/navigation';
-import { getBrand, updateBrand } from '../actions';
+import { getBrand, updateBrand, getBrandUsage } from '../actions';
 import { revalidatePath } from 'next/cache';
 import { SubmitButton } from '../../SubmitButton';
 import { SlugInput } from '../../SlugInput';
@@ -17,6 +17,7 @@ export default async function EditBrandPage({ params }: Props) {
   const { id } = await params;
   const brand = await getBrand(id);
   if (!brand) notFound();
+  const { productCount } = await getBrandUsage(id);
 
   async function handleUpdate(data: FormData) {
     'use server';
@@ -83,7 +84,7 @@ export default async function EditBrandPage({ params }: Props) {
 
       {/* Delete */}
       <div className="mt-8 border-t pt-6">
-        <DeleteBrandButton id={id} name={brand.name} />
+        <DeleteBrandButton id={id} name={brand.name} usageCount={productCount} />
       </div>
     </div>
   );
