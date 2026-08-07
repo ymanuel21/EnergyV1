@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../AdminToastProvider';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
@@ -37,6 +37,7 @@ export function TestimonialEditForm({ testimonial, reviewStatus, reviewNotes }: 
   const [projectSearch, setProjectSearch] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [linkedProjects, setLinkedProjects] = useState<string[]>(testimonial.productIds || []);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const markDirty = () => { if (!dirty) setDirty(true); };
 
@@ -56,12 +57,15 @@ export function TestimonialEditForm({ testimonial, reviewStatus, reviewNotes }: 
     e.preventDefault();
     setSaving(true);
     try {
-      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      const form = formRef.current;
+      if (!form) return;
+      const data = buildFormData(form);
       await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
       setDirty(false);
       showToast('✓ Draft berhasil disimpan', 'success');
       router.refresh();
-    } catch {
+    } catch (err) {
+      console.error('Save draft failed:', err);
       showToast('✕ Gagal menyimpan', 'error');
       setSaving(false);
     }
@@ -71,13 +75,16 @@ export function TestimonialEditForm({ testimonial, reviewStatus, reviewNotes }: 
     e.preventDefault();
     setSaving(true);
     try {
-      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      const form = formRef.current;
+      if (!form) return;
+      const data = buildFormData(form);
       await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
       await publishEntity({ entity: 'testimonial', id: testimonial.id });
       setDirty(false);
       showToast('✓ Testimoni berhasil dipublikasikan', 'success');
       router.push('/admin/testimonials');
-    } catch {
+    } catch (err) {
+      console.error('Publish failed:', err);
       showToast('✕ Gagal mempublikasikan', 'error');
       setSaving(false);
     }
@@ -87,13 +94,16 @@ export function TestimonialEditForm({ testimonial, reviewStatus, reviewNotes }: 
     e.preventDefault();
     setSaving(true);
     try {
-      const data = buildFormData(e.currentTarget as HTMLFormElement);
+      const form = formRef.current;
+      if (!form) return;
+      const data = buildFormData(form);
       await saveDraft({ entity: 'testimonial', id: testimonial.id, data });
       await submitForReview('testimonial', testimonial.id);
       setDirty(false);
       showToast('✓ Testimoni berhasil dikirim untuk review', 'success');
       router.refresh();
-    } catch {
+    } catch (err) {
+      console.error('Submit for review failed:', err);
       showToast('✕ Gagal mengirim review', 'error');
       setSaving(false);
     }
@@ -121,7 +131,7 @@ export function TestimonialEditForm({ testimonial, reviewStatus, reviewNotes }: 
   const labelCls = 'block text-sm font-medium text-primary mb-1';
 
   return (
-    <form onSubmit={handleSaveDraft}>
+    <form ref={formRef} onSubmit={handleSaveDraft}>
       <div className="p-6 space-y-6">
         {/* Content */}
         <div className="grid gap-4 sm:grid-cols-2">
