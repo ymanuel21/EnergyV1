@@ -271,6 +271,9 @@ export default function RfqPage() {
         throw new Error(err.error || 'Server error');
       }
 
+      // Clear cart after successful submission
+      cart.clearCart();
+
       setSubmitting(false);
       setStep('confirm');
     } catch (err: any) {
