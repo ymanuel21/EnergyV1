@@ -151,6 +151,11 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       { key: 'showDescription', label: 'Description Tab', type: 'toggle', group: 'styling' },
       { key: 'showSpecifications', label: 'Specifications Tab', type: 'toggle', group: 'styling' },
       { key: 'showShipping', label: 'Shipping & Warranty Tab', type: 'toggle', group: 'styling' },
+      { key: 'backgroundType', label: 'Background Type', type: 'select', options: [
+        { value: 'default', label: 'Current Design' },
+        { value: 'video', label: 'Video' },
+      ], group: 'styling', defaultValue: 'default' },
+      { key: 'backgroundVideo', label: 'Background Video (MP4 URL)', type: 'text', group: 'styling', showWhen: { backgroundType: 'video' }, placeholder: '/files/example.mp4' },
       { key: 'buttonLabel', label: 'Button Label', type: 'text', group: 'content' },
       { key: 'buttonLink', label: 'Button Link', type: 'text', group: 'content' },
       ...COMMON_ADVANCED,
@@ -387,10 +392,24 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
   const isManualSelection = productIds.length > 0;
   const useShowcase = isManualSelection && featured.length > 0;
 
+  // Video background
+  const backgroundType = String(section.settings.backgroundType || 'default');
+  const backgroundVideo = String(section.settings.backgroundVideo || '');
+  const showVideoBg = backgroundType === 'video' && backgroundVideo.length > 0;
+
   return (
-    <section className="relative py-16 sm:py-32 overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
-      <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-emerald-50/60 blur-3xl" />
-      <div className="relative mx-auto max-w-5xl px-4 sm:px-8">
+    <section className="relative py-16 sm:py-32 overflow-hidden" style={{ background: showVideoBg ? undefined : 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)' }}>
+      {showVideoBg && (
+        <video
+          autoPlay muted playsInline loop
+          role="presentation"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          src={backgroundVideo}
+        />
+      )}
+      {showVideoBg && <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(180deg, rgba(248,250,252,0.85) 0%, rgba(241,245,249,0.9) 100%)' }} />}
+      <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-emerald-50/60 blur-3xl z-[1]" />
+      <div className="relative mx-auto max-w-5xl px-4 sm:px-8 z-[2]">
         {section.title && <p className="text-xs font-medium uppercase tracking-[.25em] text-muted mb-2">{section.title}</p>}
         {section.subtitle && <h2 className="text-2xl font-light tracking-tight mb-8">{section.subtitle}</h2>}
 

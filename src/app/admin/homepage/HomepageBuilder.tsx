@@ -280,7 +280,13 @@ export function HomepageBuilder({ initialSections, onSave, onDelete, onMoveUp, o
 
             {/* Fields */}
             <div className="space-y-3">
-              {(fieldGroups[activeTab] || []).map(field => (
+              {(fieldGroups[activeTab] || []).filter(field => {
+                if (!field.showWhen) return true;
+                return Object.entries(field.showWhen).every(([k, expected]) => {
+                  const current = settings[k];
+                  return String(current ?? '') === expected;
+                });
+              }).map(field => (
                 <div key={field.key}>
                   <label className="mb-1 block text-xs font-medium text-muted">{field.label}</label>
                   <EditorField
