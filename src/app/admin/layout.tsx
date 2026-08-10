@@ -7,6 +7,7 @@ import { AdminToastProvider } from './AdminToastProvider';
 import { SessionManager } from '@/components/admin/SessionManager';
 import { SessionProvider } from 'next-auth/react';
 import { moduleRegistry, MODULE_GROUPS } from '@/lib/module-registry';
+import { NotificationBadge } from '@/components/admin/NotificationBadge';
 
 const sidebarModules = Object.values(moduleRegistry).filter(m => m.id !== 'dashboard');
 
@@ -71,7 +72,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
           </div>
         </aside>
-        <main className="flex-1 p-6">{children}</main>
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="h-14 border-b border-border bg-card px-6 flex items-center justify-between shrink-0">
+            <div className="text-sm font-medium text-muted">EBTPlaza Admin</div>
+            <div className="flex items-center gap-3">
+              <NotificationBadge />
+            </div>
+          </header>
+          <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+        </div>
       </div>
     </AdminToastProvider>
     </SessionProvider>

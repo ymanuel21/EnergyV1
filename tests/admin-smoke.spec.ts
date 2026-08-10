@@ -3,7 +3,7 @@
 const { test, expect } = require('./fixtures');
 
 test.describe('Admin smoke tests', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }: any) => {
     await page.goto('/admin/login');
     await page.fill('input[name="email"]', process.env.ADMIN_EMAIL || 'admin@ebtplaza.com');
     await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD || 'qwe');
@@ -11,25 +11,25 @@ test.describe('Admin smoke tests', () => {
     await page.waitForURL('**/admin');
   });
 
-  test('Dashboard loads', async ({ page }) => {
+  test('Dashboard loads', async ({ page }: any) => {
     await page.goto('/admin');
     await expect(page.locator('text=Dashboard')).toBeVisible({ timeout: 10000 });
   });
 
-  test('Projects list loads', async ({ page }) => {
+  test('Projects list loads', async ({ page }: any) => {
     await page.goto('/admin/projects');
     await expect(page.locator('h1:has-text("Projects")')).toBeVisible({ timeout: 10000 });
     await expect(page.locator('table')).toBeVisible();
   });
 
-  test('Project edit page loads', async ({ page }) => {
+  test('Project edit page loads', async ({ page }: any) => {
     await page.goto('/admin/projects');
     const firstLink = page.locator('a[href*="/admin/projects/"]').filter({ hasText: /PLTS|Pompa|PJU/ }).first();
     await firstLink.click();
     await expect(page.locator('text=Delete')).toBeVisible({ timeout: 10000 });
   });
 
-  test('Homepage builder loads', async ({ page }) => {
+  test('Homepage builder loads', async ({ page }: any) => {
     await page.goto('/admin/homepage');
     await expect(page.locator('text=Sections')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('text=Tenaga surya')).toBeVisible();
@@ -37,12 +37,12 @@ test.describe('Admin smoke tests', () => {
     await expect(page.locator('text=Project Referensi')).toBeVisible();
   });
 
-  test('Products page loads', async ({ page }) => {
+  test('Products page loads', async ({ page }: any) => {
     await page.goto('/admin/products');
     await expect(page.locator('text=Products, text=Produk').first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('Public homepage loads', async ({ page }) => {
+  test('Public homepage loads', async ({ page }: any) => {
     await page.goto('/');
     await expect(page.locator('text=Tenaga surya')).toBeVisible({ timeout: 15000 });
     await expect(page.locator('text=PRODUK UNGGULAN')).toBeVisible();
