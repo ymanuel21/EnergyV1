@@ -1,13 +1,15 @@
 export const dynamic = 'force-dynamic';
 import { getAdminPrisma } from '../lib/admin-prisma';
+import { ReorderButtons } from './ReorderButtons';
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
-  const raw = await prisma.project.findMany({ orderBy: { createdAt: 'desc' } });
+  const raw = await prisma.project.findMany({ orderBy: { sortOrder: 'asc' } });
   const projects = raw.map((p: any) => ({
     id: p.id, title: p.title, slug: p.slug,
     category: p.category, location: p.location,
     year: p.year, status: p.status,
+    sortOrder: p.sortOrder,
   }));
 
   return (
@@ -23,6 +25,7 @@ export default async function ProjectsAdminPage() {
       <div className="rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead><tr className="border-b border-border">
+            <th className="p-4 text-left font-medium text-primary w-8"></th>
             <th className="p-4 text-left font-medium text-primary">Title</th>
             <th className="p-4 text-left font-medium text-primary">Category</th>
             <th className="p-4 text-left font-medium text-primary">Location</th>
@@ -31,8 +34,15 @@ export default async function ProjectsAdminPage() {
             <th className="p-4 text-right font-medium text-primary">Actions</th>
           </tr></thead>
           <tbody>
-            {projects.map((p: any) => (
+            {projects.map((p: any, i: number) => (
               <tr key={p.id} className="border-b border-border/50">
+                <td className="p-2">
+                  <ReorderButtons
+                    projectId={p.id}
+                    isFirst={i === 0}
+                    isLast={i === projects.length - 1}
+                  />
+                </td>
                 <td className="p-4"><a href={`/admin/projects/${p.id}`} className="font-medium text-primary hover:text-primary-hover">{p.title || 'Untitled'}</a></td>
                 <td className="p-4 text-muted capitalize">{p.category}</td>
                 <td className="p-4 text-muted">{p.location || '-'}</td>

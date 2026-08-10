@@ -225,9 +225,13 @@ export function makeInitialProjectState(project: {
 
 /** Build API payload from reducer state ONLY — never reads from project props. */
 export function buildProjectPayload(state: ProjectState) {
+  const slug = state.slug
+    ? state.slug.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').substring(0, 100)
+    : '';
+
   return {
     title: state.title,
-    slug: state.slug,
+    slug,
     shortDescription: state.shortDescription,
     richDescription: state.richDescription,
     category: state.category,

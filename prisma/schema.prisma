@@ -307,6 +307,7 @@ model Project {
   published   Boolean  @default(false)
   status      String   @default("published") // draft | published | archived
   draftData   Json     @default("{}")        // unpublished changes
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
