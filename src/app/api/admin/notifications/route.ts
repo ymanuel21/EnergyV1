@@ -17,7 +17,7 @@ export async function GET() {
     const pendingQuotes = await prisma.quoteRequest.count({
       where: {
         status: {
-          in: NOTIFICATION_STATUSES,
+          in: ['pending', 'PENDING'],
         },
       },
     });

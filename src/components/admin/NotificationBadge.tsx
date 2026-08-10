@@ -82,7 +82,7 @@ export function NotificationBadge({ className = '', showTextLabel = true }: Noti
 
       {showTextLabel && (
         <span className="text-sm font-medium text-primary">
-          Notifications
+          Pending Quote
         </span>
       )}
     </Link>
