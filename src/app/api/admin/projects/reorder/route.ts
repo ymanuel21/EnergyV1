@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminPrisma } from '@/app/admin/lib/admin-prisma';
+import { getAdminPrisma, requireAuth } from '@/app/admin/lib/admin-prisma';
 import { revalidatePath } from 'next/cache';
 
 export async function POST(request: NextRequest) {
+  try {
+    await requireAuth();
+  } catch {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const prisma = await getAdminPrisma();
   
   try {
