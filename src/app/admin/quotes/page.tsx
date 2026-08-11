@@ -1,9 +1,8 @@
 export const dynamic = 'force-dynamic';
 
 import { getAdminPrisma } from '../lib/admin-prisma';
-import { revalidatePath } from 'next/cache';
-import { StatusBadge } from '@/components/admin/StatusBadge';
 import Link from 'next/link';
+import { CopyIdButton } from '@/components/admin/CopyIdButton';
 
 const STATUSES = ['pending', 'contacted', 'survey_scheduled', 'proposal_sent', 'won', 'lost'] as const;
 const STATUS_LABELS: Record<string, string> = {
@@ -31,7 +30,6 @@ export default async function QuotesPage({
   const prisma = await getAdminPrisma();
   const allQuotes = await prisma.quoteRequest.findMany({ orderBy: { createdAt: 'desc' } });
 
-  // Filter
   let quotes = allQuotes;
   if (activeStatus !== 'all') {
     quotes = quotes.filter((q: any) => q.status === activeStatus);
@@ -45,7 +43,6 @@ export default async function QuotesPage({
     );
   }
 
-  // Counts per status
   const counts: Record<string, number> = {};
   for (const s of STATUSES) counts[s] = allQuotes.filter((q: any) => q.status === s).length;
   counts.all = allQuotes.length;
@@ -54,7 +51,6 @@ export default async function QuotesPage({
     <div className="p-6">
       <h1 className="text-xl font-bold text-primary mb-4">Quote Requests</h1>
 
-      {/* Status Tabs */}
       <div className="flex gap-1 border-b border-border pb-3 mb-4 overflow-x-auto">
         {[{ value: 'all', label: 'All' }, ...STATUSES.map(s => ({ value: s, label: STATUS_LABELS[s] }))].map(tab => (
           <Link
@@ -71,7 +67,6 @@ export default async function QuotesPage({
         ))}
       </div>
 
-      {/* Search */}
       <form className="mb-4">
         <input type="hidden" name="status" value={activeStatus} />
         <input
@@ -82,11 +77,11 @@ export default async function QuotesPage({
         />
       </form>
 
-      {/* Table */}
       <div className="rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
+              <th className="p-3 text-left font-medium text-primary">Quote ID</th>
               <th className="p-3 text-left font-medium text-primary">Customer</th>
               <th className="p-3 text-left font-medium text-primary hidden md:table-cell">Company</th>
               <th className="p-3 text-left font-medium text-primary hidden md:table-cell">Contact</th>
@@ -97,7 +92,15 @@ export default async function QuotesPage({
           </thead>
           <tbody>
             {quotes.map((q: any) => (
-              <tr key={q.id} className="border-b border-border/50 hover:bg-surface/50 transition">
+              <tr key={q.id} className="border-b border-border/50 hover:bg-surface/50 transition group">
+                <td className="p-3">
+                  <span className="inline-flex items-center gap-1">
+                    <span className="font-mono text-[10px] text-muted" title={q.id}>
+                      {q.id.substring(0, 8)}…
+                    </span>
+                    <CopyIdButton id={q.id} />
+                  </span>
+                </td>
                 <td className="p-3 font-medium text-primary">{q.name}</td>
                 <td className="p-3 hidden md:table-cell text-muted">{q.company || '—'}</td>
                 <td className="p-3 hidden md:table-cell text-muted text-xs">
@@ -120,7 +123,7 @@ export default async function QuotesPage({
               </tr>
             ))}
             {quotes.length === 0 && (
-              <tr><td colSpan={6} className="p-8 text-center text-muted">No quotes found.</td></tr>
+              <tr><td colSpan={7} className="p-8 text-center text-muted">No quotes found.</td></tr>
             )}
           </tbody>
         </table>

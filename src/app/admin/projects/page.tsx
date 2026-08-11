@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { getAdminPrisma } from '../lib/admin-prisma';
-import { ReorderButtons } from './ReorderButtons';
+import { ReorderButtons } from '@/components/admin/ReorderButtons';
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
@@ -38,9 +38,10 @@ export default async function ProjectsAdminPage() {
               <tr key={p.id} className="border-b border-border/50">
                 <td className="p-2">
                   <ReorderButtons
-                    projectId={p.id}
+                    id={p.id}
                     isFirst={i === 0}
                     isLast={i === projects.length - 1}
+                    apiPath="/api/admin/projects/reorder"
                   />
                 </td>
                 <td className="p-4"><a href={`/admin/projects/${p.id}`} className="font-medium text-primary hover:text-primary-hover">{p.title || 'Untitled'}</a></td>

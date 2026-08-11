@@ -111,6 +111,7 @@ model Article {
   readTime    Int?     @map("read_time")
   isPublished Boolean  @default(false) @map("is_published")
   publishedAt DateTime? @map("published_at")
+  sortOrder   Int      @default(0)
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 

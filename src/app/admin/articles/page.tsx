@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import Link from 'next/link';
 import { getArticles, deleteArticle } from './actions';
 import { revalidatePath } from 'next/cache';
+import { ReorderButtons } from '@/components/admin/ReorderButtons';
 
 export default async function ArticlesPage() {
   const articles = await getArticles();
@@ -25,6 +26,7 @@ export default async function ArticlesPage() {
         <table className="w-full text-sm">
           <thead className="border-b border-border bg-surface text-left text-muted">
             <tr>
+              <th className="px-4 py-3 w-8"></th>
               <th className="px-4 py-3">Judul</th>
               <th className="px-4 py-3">Penulis</th>
               <th className="px-4 py-3">Status</th>
@@ -32,8 +34,16 @@ export default async function ArticlesPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {articles.map((a: any) => (
+            {articles.map((a: any, i: number) => (
               <tr key={a.id} className="hover:bg-surface">
+                <td className="px-4 py-3">
+                  <ReorderButtons
+                    id={a.id}
+                    isFirst={i === 0}
+                    isLast={i === articles.length - 1}
+                    apiPath="/api/admin/articles/reorder"
+                  />
+                </td>
                 <td className="px-4 py-3 font-medium text-primary">{a.title}</td>
                 <td className="px-4 py-3 text-muted">{a.author}</td>
                 <td className="px-4 py-3">

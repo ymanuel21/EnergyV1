@@ -2,10 +2,11 @@ export const dynamic = 'force-dynamic';
 
 import { getAdminPrisma } from '../lib/admin-prisma';
 import Link from 'next/link';
+import { ReorderButtons } from '@/components/admin/ReorderButtons';
 
 export default async function TestimonialsPage() {
   const prisma = await getAdminPrisma();
-  const testimonials = await prisma.testimonial.findMany();
+  const testimonials = await prisma.testimonial.findMany({ orderBy: { sortOrder: 'asc' } });
 
   return (
     <div className="p-6">
@@ -20,6 +21,7 @@ export default async function TestimonialsPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
+              <th className="p-4 text-left font-medium text-primary w-8"></th>
               <th className="p-4 text-left font-medium text-primary">Customer</th>
               <th className="p-4 text-left font-medium text-primary hidden md:table-cell">Company</th>
               <th className="p-4 text-left font-medium text-primary">Rating</th>
@@ -27,8 +29,16 @@ export default async function TestimonialsPage() {
             </tr>
           </thead>
           <tbody>
-            {testimonials.map((t: any) => (
+            {testimonials.map((t: any, i: number) => (
               <tr key={t.id} className="border-b border-border/50 hover:bg-surface/50 transition">
+                <td className="p-2">
+                  <ReorderButtons
+                    id={t.id}
+                    isFirst={i === 0}
+                    isLast={i === testimonials.length - 1}
+                    apiPath="/api/admin/testimonials/reorder"
+                  />
+                </td>
                 <td className="p-4 font-medium text-primary">{t.name}</td>
                 <td className="p-4 hidden md:table-cell text-muted">{t.company || '—'}</td>
                 <td className="p-4">{'★'.repeat(t.rating)}{'☆'.repeat(5 - t.rating)}</td>
@@ -38,7 +48,7 @@ export default async function TestimonialsPage() {
               </tr>
             ))}
             {testimonials.length === 0 && (
-              <tr><td colSpan={4} className="p-8 text-center text-muted">No testimonials yet.</td></tr>
+              <tr><td colSpan={5} className="p-8 text-center text-muted">No testimonials yet.</td></tr>
             )}
           </tbody>
         </table>

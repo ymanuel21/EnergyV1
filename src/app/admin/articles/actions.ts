@@ -5,7 +5,7 @@ import { getAdminPrisma, requireAuth } from '../lib/admin-prisma';
 export async function getArticles() {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  return prisma.article.findMany({ orderBy: { createdAt: 'desc' } });
+  return prisma.article.findMany({ orderBy: { sortOrder: 'asc' } });
 }
 export async function getArticle(id: string) {
   await requireAuth();

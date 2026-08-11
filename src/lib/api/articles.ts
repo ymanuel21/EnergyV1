@@ -7,7 +7,7 @@ export async function getAllArticles(): Promise<Article[]> {
     async (prisma) => {
       const rows = await prisma.article.findMany({
         where: { isPublished: true },
-        orderBy: { publishedAt: 'desc' },
+        orderBy: { sortOrder: 'asc' },
       });
       return rows.map((a: any) => ({
         slug: a.slug,
