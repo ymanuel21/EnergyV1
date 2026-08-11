@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { sectionRegistry } from '@/lib/section-registry';
 import { COLOR_MAP } from '@/lib/section-registry';
 import { ProductPickerField } from '@/components/admin/ProductPickerField';
+import { VideoPicker } from '@/components/admin/VideoPicker';
 import type { SectionField } from '@/lib/section-registry';
 import { Button } from '@ui/Button';
 
@@ -434,6 +435,8 @@ function EditorField({ field, value, onChange }: { field: SectionField; value: a
         placeholder={(field as any).placeholder}
         displayFields={(field as any).displayFields}
       />;
+    case 'video':
+      return <VideoPicker value={String(value)} onChange={onChange} />;
     default:
       return <input type="text" value={String(value)} onChange={e => onChange(e.target.value)} className={inputClass} placeholder={field.placeholder} />;
   }

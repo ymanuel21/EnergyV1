@@ -24,7 +24,7 @@ export interface SectionRendererProps {
 export type SectionField = {
   key: string;
   label: string;
-  type: 'text' | 'textarea' | 'number' | 'toggle' | 'select' | 'image' | 'alignment' | 'color' | 'product-picker';
+  type: 'text' | 'textarea' | 'number' | 'toggle' | 'select' | 'image' | 'video' | 'alignment' | 'color' | 'product-picker';
   options?: { value: string; label: string }[];
   group?: 'content' | 'styling' | 'advanced';
   defaultValue?: any;
@@ -102,6 +102,13 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       { key: 'showSearch', label: 'Show Search Bar', type: 'toggle', group: 'styling' },
       { key: 'showCategories', label: 'Show Categories', type: 'toggle', group: 'styling' },
       { key: 'showStats', label: 'Show Statistics', type: 'toggle', group: 'styling' },
+      { key: 'backgroundType', label: 'Background Type', type: 'select', options: [
+        { value: 'default', label: 'Current Design' },
+        { value: 'video', label: 'Video' },
+      ], group: 'styling', defaultValue: 'default' },
+      { key: 'backgroundVideo', label: 'Background Video (MP4 URL)', type: 'video', group: 'styling', showWhen: { backgroundType: 'video' }, placeholder: '/files/example.mp4' },
+      { key: 'buttonLabel', label: 'Button Label', type: 'text', group: 'content' },
+      { key: 'buttonLink', label: 'Button Link', type: 'text', group: 'content' },
       ...COMMON_ADVANCED,
     ],
     Renderer: HeroRenderer,
@@ -155,7 +162,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
         { value: 'default', label: 'Current Design' },
         { value: 'video', label: 'Video' },
       ], group: 'styling', defaultValue: 'default' },
-      { key: 'backgroundVideo', label: 'Background Video (MP4 URL)', type: 'text', group: 'styling', showWhen: { backgroundType: 'video' }, placeholder: '/files/example.mp4' },
+      { key: 'backgroundVideo', label: 'Background Video (MP4 URL)', type: 'video', group: 'styling', showWhen: { backgroundType: 'video' }, placeholder: '/files/example.mp4' },
       { key: 'buttonLabel', label: 'Button Label', type: 'text', group: 'content' },
       { key: 'buttonLink', label: 'Button Link', type: 'text', group: 'content' },
       ...COMMON_ADVANCED,
@@ -307,11 +314,31 @@ function HeroRenderer({ section, data }: SectionRendererProps) {
   const productId = Array.isArray(productIdRaw) ? productIdRaw[0] : productIdRaw;
   const heroProduct = productId ? data?.products?.find((p: any) => p.slug === productId || p.id === productId) : null;
   const heroImage = heroProduct?.images?.[0] || section.settings.imageId || '/images/prototype/hero-power-station.png';
+
+  // Video background
+  const backgroundType = String(section.settings.backgroundType || 'default');
+  const backgroundVideo = String(section.settings.backgroundVideo || '');
+  const showVideoBg = backgroundType === 'video' && backgroundVideo.length > 0;
+
   return (
-    <section className="relative flex min-h-[calc(100vh-4rem)] flex-col justify-center overflow-hidden" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #FAFAF5 40%, #F5F5F0 100%)' }}>
-      <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-emerald-100/40 blur-3xl" />
-      <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-amber-50/50 blur-3xl" />
-      <div className="relative mx-auto grid max-w-5xl items-center gap-8 px-4 py-12 sm:px-8 sm:py-16 lg:grid-cols-2 lg:gap-16">
+    <section className="relative flex min-h-[calc(100vh-4rem)] flex-col justify-center overflow-hidden"
+      style={{ background: showVideoBg ? undefined : 'linear-gradient(180deg, #FFFFFF 0%, #FAFAF5 40%, #F5F5F0 100%)' }}>
+      {showVideoBg && (
+        <video
+          autoPlay muted playsInline loop
+          role="presentation"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          src={backgroundVideo}
+        />
+      )}
+      {showVideoBg && (
+        <div className="absolute inset-0 z-[1]"
+          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(250,250,245,0.85) 40%, rgba(245,245,240,0.9) 100%)' }}
+        />
+      )}
+      <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-emerald-100/40 blur-3xl z-[1]" />
+      <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-amber-50/50 blur-3xl z-[1]" />
+      <div className="relative mx-auto grid max-w-5xl items-center gap-8 px-4 py-12 sm:px-8 sm:py-16 lg:grid-cols-2 lg:gap-16 z-[2]">
         <div>
           <p className="text-xs font-medium uppercase tracking-[.25em] text-muted">{String(section.settings.tagline || 'Energi Terbarukan')}</p>
           <h1 className="mt-4 text-3xl font-light leading-tight tracking-tight text-primary sm:mt-6 sm:text-4xl lg:text-6xl">
