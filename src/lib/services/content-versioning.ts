@@ -49,17 +49,51 @@ export async function publishEntity({ entity, id }: PublishInput) {
       return;
     }
 
-    // Apply draft data to main fields
+    // Strip UI-only / non-column keys before sending to Prisma.
+    // categoryIds/badgeIds/relations are persisted to their own tables below;
+    // seoTitle/metaDescription have no Product column; publishedAt is not a column.
+    const { categoryIds, badgeIds, relations, seoTitle, metaDescription, ...productData } = draft;
+
+    // Apply draft data to main Product fields (columns only)
     await prisma.product.update({
       where: { id },
       data: {
-        ...draft,
+        ...productData,
         status: 'published',
-        publishedAt: new Date(),
         draftData: {},
         isActive: true,
       },
     });
+
+    // Persist category links
+    if (Array.isArray(categoryIds)) {
+      await prisma.productCategory.deleteMany({ where: { productId: id } });
+      if (categoryIds.length) {
+        await prisma.productCategory.createMany({
+          data: categoryIds.map((catId: string) => ({ productId: id, categoryId: catId })),
+        });
+      }
+    }
+
+    // Persist badge links
+    if (Array.isArray(badgeIds)) {
+      await prisma.productBadge.deleteMany({ where: { productId: id } });
+      if (badgeIds.length) {
+        await prisma.productBadge.createMany({
+          data: badgeIds.map((badgeId: string) => ({ productId: id, badgeId })),
+        });
+      }
+    }
+
+    // Persist related-product links
+    if (Array.isArray(relations)) {
+      await prisma.productRelation.deleteMany({ where: { productId: id } });
+      if (relations.length) {
+        await prisma.productRelation.createMany({
+          data: relations.map((r: any) => ({ productId: id, relatedProductId: r.relatedProductId, type: r.type })),
+        });
+      }
+    }
   } else if (entity === 'project') {
     const project = await prisma.project.findUnique({ where: { id } });
     if (!project) throw new Error('Not found');

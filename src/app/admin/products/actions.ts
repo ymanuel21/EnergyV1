@@ -43,7 +43,7 @@ export async function getProduct(id: string) {
 export async function createProduct(data: any) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  const { categoryIds, categoryId, badgeIds, relations, ...productData } = data;
+  const { categoryIds, categoryId, badgeIds, relations, seoTitle, metaDescription, ...productData } = data;
 
   productData.categoryId = categoryId || (categoryIds?.[0] || null);
   productData.status = 'draft';         // new products start as draft
@@ -74,7 +74,7 @@ export async function createProduct(data: any) {
 export async function updateProduct(id: string, data: any) {
   await requireAuth();
   const prisma = await getAdminPrisma();
-  const { categoryIds, categoryId, badgeIds, relations, ...productData } = data;
+  const { categoryIds, categoryId, badgeIds, relations, seoTitle, metaDescription, ...productData } = data;
 
   if (categoryId !== undefined) productData.categoryId = categoryId;
 
