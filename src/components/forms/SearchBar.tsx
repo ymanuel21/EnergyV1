@@ -93,7 +93,10 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-primary truncate">{highlight(s.name)}</p>
-                <p className="text-xs text-muted">{s.brand?.name && <span>{s.brand.name} · </span>}{formatPrice(s.price)}</p>
+                <p className="text-xs text-muted truncate">
+                  {[s.capacity, s.sku || s.model].filter(Boolean).join(' • ') || s.brand?.name || ''}
+                </p>
+                <p className="text-xs text-muted">{formatPrice(s.price)}</p>
               </div>
               <svg className="h-4 w-4 shrink-0 text-muted/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

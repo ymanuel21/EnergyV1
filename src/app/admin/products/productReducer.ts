@@ -1,12 +1,16 @@
 // Product editor state — section-based reducer architecture
 // Each tab owns one section. Reducer is pure. Validation runs outside.
 
+import { deriveFamilyKey } from '@/lib/product-family';
+
 export interface ProductState {
   overview: {
     name: string;
     slug: string;
     brandId: string;
     sku: string;
+    model: string;
+    capacity: string;
     stock: number;
     condition: string;
     warranty: string;
@@ -49,6 +53,8 @@ export type ProductAction =
   | { type: 'SET_SLUG'; value: string }
   | { type: 'SET_BRAND_ID'; value: string }
   | { type: 'SET_SKU'; value: string }
+  | { type: 'SET_MODEL'; value: string }
+  | { type: 'SET_CAPACITY'; value: string }
   | { type: 'SET_STOCK'; value: number }
   | { type: 'SET_CONDITION'; value: string }
   | { type: 'SET_WARRANTY'; value: string }
@@ -89,6 +95,8 @@ export function productReducer(state: ProductState, action: ProductAction): Prod
     case 'SET_SLUG':         return mark('overview', { overview: { ...state.overview, slug: action.value } });
     case 'SET_BRAND_ID':     return mark('overview', { overview: { ...state.overview, brandId: action.value } });
     case 'SET_SKU':          return mark('overview', { overview: { ...state.overview, sku: action.value } });
+    case 'SET_MODEL':        return mark('overview', { overview: { ...state.overview, model: action.value } });
+    case 'SET_CAPACITY':     return mark('overview', { overview: { ...state.overview, capacity: action.value } });
     case 'SET_STOCK':        return mark('overview', { overview: { ...state.overview, stock: action.value } });
     case 'SET_CONDITION':    return mark('overview', { overview: { ...state.overview, condition: action.value } });
     case 'SET_WARRANTY':     return mark('overview', { overview: { ...state.overview, warranty: action.value } });
@@ -129,6 +137,8 @@ export function makeInitialState(product: any): ProductState {
       slug: product?.slug || '',
       brandId: product?.brandId || '',
       sku: product?.sku || '',
+      model: product?.model || '',
+      capacity: product?.capacity || '',
       stock: product?.stock ?? 0,
       condition: product?.condition || 'new',
       warranty: product?.warranty || '1 Tahun',
@@ -160,13 +170,16 @@ export function makeInitialState(product: any): ProductState {
   };
 }
 
-/** Build API payload from state (serialized for saveDraft / publish) */
-export function buildPayload(state: ProductState, productId?: string) {
+/** Build API payload from state (serialized for saveDraft / publish). */
+export function buildPayload(state: ProductState, productId?: string, brandSlug?: string | null) {
   return {
     name: state.overview.name,
     slug: state.overview.slug,
     brandId: state.overview.brandId,
     sku: state.overview.sku || null,
+    model: state.overview.model || null,
+    capacity: state.overview.capacity || null,
+    familyKey: deriveFamilyKey(brandSlug, state.overview.model),
     stock: state.overview.stock,
     condition: state.overview.condition,
     warranty: state.overview.warranty,

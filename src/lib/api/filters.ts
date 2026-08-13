@@ -49,7 +49,13 @@ export function filterByBrand(products: Product[], brandId: string): Product[] {
 export function searchProducts(products: Product[], query: string): Product[] {
   const q = query.toLowerCase();
   return products.filter(
-    (p) => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q)
+    (p) =>
+      p.name?.toLowerCase().includes(q) ||
+      p.description?.toLowerCase().includes(q) ||
+      p.sku?.toLowerCase().includes(q) ||
+      p.model?.toLowerCase().includes(q) ||
+      p.capacity?.toLowerCase().includes(q) ||
+      p.familyKey?.toLowerCase().includes(q)
   );
 }
 

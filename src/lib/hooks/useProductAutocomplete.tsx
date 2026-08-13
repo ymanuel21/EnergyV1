@@ -8,6 +8,9 @@ export interface ProductSuggestion {
   slug: string;
   price: number;
   images: string[];
+  sku?: string | null;
+  model?: string | null;
+  capacity?: string | null;
   brand: { name: string; slug: string } | null;
 }
 

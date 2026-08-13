@@ -16,8 +16,10 @@ model Product {
   priceDisplayMode   String?  // null=use global | SHOW_PRICE|CONTACT_FOR_PRICE|REQUEST_QUOTE|STARTING_FROM|CUSTOM_TEXT
   customPriceLabel   String?  // label when mode=CUSTOM_TEXT
   stock              Int      @default(0)
-  sku                String?
+  sku                String?   @unique
   model              String?
+  capacity           String?   // e.g. "10 kW" — first-class capacity for search/sort
+  familyKey          String?   @map("family_key") // groups capacity variants of the same model family
   weight             Float?
   warranty           String?
   condition          String?
@@ -52,6 +54,7 @@ model Product {
 
   @@index([brandId])
   @@index([isActive])
+  @@index([familyKey])
   @@map("products")
 }
 

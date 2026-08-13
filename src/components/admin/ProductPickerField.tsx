@@ -22,6 +22,8 @@ export function ProductPickerField({ value, onChange, single, placeholder, searc
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
+  // Cache id → display name from search results so chips show human-readable labels
+  const [labelMap, setLabelMap] = useState<Map<string, string>>(new Map());
 
   const fields = {
     name: displayFields?.name || 'name',
@@ -43,19 +45,23 @@ export function ProductPickerField({ value, onChange, single, placeholder, searc
     } catch { setResults([]); }
   }, []);
 
-  const add = useCallback((slug: string) => {
+  // Store stable ID (not mutable slug) so homepage references survive slug changes
+  const add = useCallback((item: any) => {
+    const id = item.id;
+    const label = String(item[fields.name] || item.slug || id);
+    setLabelMap(prev => { const m = new Map(prev); m.set(id, label); return m; });
     if (single) {
-      onChange([slug]);
-    } else if (!value.includes(slug)) {
-      onChange([...value, slug]);
+      onChange([id]);
+    } else if (!value.includes(id)) {
+      onChange([...value, id]);
     }
     setSearch('');
     setResults([]);
     setOpen(false);
-  }, [value, onChange, single]);
+  }, [value, onChange, single, fields.name]);
 
-  const remove = useCallback((slug: string) => {
-    onChange(value.filter(id => id !== slug));
+  const remove = useCallback((id: string) => {
+    onChange(value.filter(v => v !== id));
   }, [value, onChange]);
 
   const getImage = (p: any): string | null => {
@@ -77,10 +83,10 @@ export function ProductPickerField({ value, onChange, single, placeholder, searc
       {/* Selected chips */}
       {value.length > 0 && (
         <div className="flex flex-wrap gap-1.5" onClick={e => e.stopPropagation()}>
-          {value.map(slug => (
-            <span key={slug} className="inline-flex items-center gap-1.5 rounded-full bg-surface border border-border px-2.5 py-1 text-[11px] font-medium">
-              <span className="text-primary">{slug}</span>
-              <button type="button" onClick={(e) => { e.stopPropagation(); remove(slug); }} className="text-[10px] text-muted hover:text-red-500 ml-1" title="Hapus">Hapus</button>
+          {value.map(id => (
+            <span key={id} className="inline-flex items-center gap-1.5 rounded-full bg-surface border border-border px-2.5 py-1 text-[11px] font-medium">
+              <span className="text-primary">{labelMap.get(id) || id}</span>
+              <button type="button" onClick={(e) => { e.stopPropagation(); remove(id); }} className="text-[10px] text-muted hover:text-red-500 ml-1" title="Hapus">Hapus</button>
             </span>
           ))}
         </div>
@@ -101,24 +107,27 @@ export function ProductPickerField({ value, onChange, single, placeholder, searc
           {open && results.length > 0 && (
             <div className="absolute z-20 mt-1 w-full rounded border border-border bg-card shadow-lg max-h-56 overflow-y-auto" onClick={e => e.stopPropagation()}>
               {results.map((p: any) => {
-                const slug = p[fields.slug] || p.id;
-                const selected = value.includes(slug);
+                const id = p.id;
+                const selected = value.includes(id);
                 const img = getImage(p);
                 const subtitle = getSubtitle(p);
                 const cat = fields.category ? p[fields.category] : null;
+                const specLine = [p.capacity, p.sku || p.model].filter(Boolean).join(' • ');
                 return (
                   <button
-                    key={slug}
+                    key={id}
                     type="button"
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); add(slug); }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); add(p); }}
                     disabled={selected}
                     className={`w-full px-3 py-2 text-left text-xs hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2.5 ${selected ? 'bg-surface/50' : ''}`}
                   >
                     {img && <img src={img} alt="" className="h-8 w-8 rounded object-cover shrink-0" />}
                     <div className="min-w-0">
                       <div className="font-medium text-primary truncate">{p[fields.name]}</div>
-                      {(subtitle || cat) && (
+                      {(specLine || subtitle || cat) && (
                         <div className="text-[10px] text-muted/60">
+                          {specLine && <span className="font-medium text-primary/70">{specLine}</span>}
+                          {specLine && (subtitle || cat) && ' · '}
                           {cat ? `${cat}` : ''}{cat && subtitle ? ' • ' : ''}{subtitle}
                         </div>
                       )}

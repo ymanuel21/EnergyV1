@@ -62,6 +62,8 @@ export interface Product {
   stock: number;
   sku: string;
   model?: string;
+  capacity?: string;
+  familyKey?: string;
   warranty: string;
   description: string;
   specifications: Specification[];

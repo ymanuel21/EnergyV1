@@ -71,10 +71,10 @@ export function ProductAutocomplete({
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-primary truncate">{highlight(s.name)}</p>
-                <p className="text-xs text-muted">
-                  {s.brand?.name && <span>{s.brand.name} · </span>}
-                  {formatPrice(s.price)}
+                <p className="text-xs text-muted truncate">
+                  {[s.capacity, s.sku || s.model].filter(Boolean).join(' • ') || s.brand?.name || ''}
                 </p>
+                <p className="text-xs text-muted">{formatPrice(s.price)}</p>
               </div>
             </div>
           ))}

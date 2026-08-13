@@ -42,11 +42,12 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
   const productId = defaultValues?.id;
   const topCategories = categories.filter((c: any) => !c.parentId);
   const isDirty = Object.values(state.dirtySections).some(Boolean);
+  const brandSlug = brands.find((b: any) => b.id === state.overview.brandId)?.slug ?? null;
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const data = buildPayload(state, productId);
+    const data = buildPayload(state, productId, brandSlug);
 
     try {
     if (productId) {
@@ -64,13 +65,13 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
       setSaving(false);
       showToast('✕ Gagal menyimpan', 'error');
     }
-  }, [productId, buildPayload, state, onSubmit, router, showToast]);
+  }, [productId, buildPayload, state, onSubmit, router, showToast, brandSlug]);
 
   const handlePublish = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productId) return;
     setSaving(true);
-    const data = buildPayload(state, productId);
+    const data = buildPayload(state, productId, brandSlug);
     try {
     await saveDraft({ entity: 'product', id: productId, data });
     await publishEntity({ entity: 'product', id: productId });
@@ -81,7 +82,7 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
       setSaving(false);
       showToast('✕ Gagal mempublikasikan', 'error');
     }
-  }, [productId, buildPayload, state, router, showToast]);
+  }, [productId, buildPayload, state, router, showToast, brandSlug]);
 
   const productSlug = state.overview.slug;
   const isPublished = defaultValues?.status === 'published';
@@ -158,6 +159,14 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
             <div>
               <label className="block text-sm font-medium text-primary mb-1">SKU</label>
               <input name="sku" value={state.overview.sku} onChange={e => dispatch({ type: "SET_SKU", value: e.target.value })} className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-primary mb-1">Model</label>
+              <input name="model" value={state.overview.model} onChange={e => dispatch({ type: "SET_MODEL", value: e.target.value })} placeholder="e.g. SG05LP3-EU-SM2" className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-primary mb-1">Kapasitas</label>
+              <input name="capacity" value={state.overview.capacity} onChange={e => dispatch({ type: "SET_CAPACITY", value: e.target.value })} placeholder="e.g. 10 kW" className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Stok <span className="text-red-500">*</span></label>

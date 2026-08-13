@@ -67,10 +67,16 @@ export class ProductRepository {
     const prisma = await getPrisma();
     if (!query || query.length < 1) return [];
 
-    // Priority: starts-with first, then contains
+    const select = {
+      id: true, name: true, slug: true, price: true, images: true,
+      sku: true, model: true, capacity: true,
+      brand: { select: { name: true, slug: true } },
+    };
+
+    // Priority: name startsWith first, then contains across name/sku/model/capacity/familyKey
     const startsWith = await prisma.product.findMany({
       where: { name: { startsWith: query, mode: 'insensitive' }, isActive: true },
-      select: { id: true, name: true, slug: true, price: true, images: true, brand: { select: { name: true, slug: true } } },
+      select,
       take: limit,
       orderBy: { name: 'asc' },
     });
@@ -80,8 +86,18 @@ export class ProductRepository {
     if (remaining > 0) {
       const excludeIds = startsWith.map(p => p.id);
       contains = await prisma.product.findMany({
-        where: { name: { contains: query, mode: 'insensitive' }, isActive: true, id: { notIn: excludeIds } },
-        select: { id: true, name: true, slug: true, price: true, images: true, brand: { select: { name: true, slug: true } } },
+        where: {
+          isActive: true,
+          id: { notIn: excludeIds },
+          OR: [
+            { name: { contains: query, mode: 'insensitive' } },
+            { sku: { contains: query, mode: 'insensitive' } },
+            { model: { contains: query, mode: 'insensitive' } },
+            { capacity: { contains: query, mode: 'insensitive' } },
+            { familyKey: { contains: query, mode: 'insensitive' } },
+          ],
+        },
+        select,
         take: remaining,
         orderBy: { name: 'asc' },
       });

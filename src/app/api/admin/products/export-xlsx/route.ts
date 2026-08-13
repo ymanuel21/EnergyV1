@@ -45,6 +45,8 @@ export async function GET(request: NextRequest) {
     { header: 'Published', key: 'published', width: 14 },
     { header: 'Created At', key: 'createdAt', width: 20 },
     { header: 'Updated At', key: 'updatedAt', width: 20 },
+    { header: 'Model', key: 'model', width: 24 },
+    { header: 'Capacity', key: 'capacity', width: 12 },
   ];
   ws1.views = [{ state: 'frozen', ySplit: 1 }];
   ws1.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: ws1.columnCount } };
@@ -75,6 +77,8 @@ export async function GET(request: NextRequest) {
       published: p.status === 'published' ? 'Yes' : 'No',
       createdAt: formatDate(p.createdAt),
       updatedAt: formatDate(p.updatedAt),
+      model: p.model || '',
+      capacity: p.capacity || '',
     });
     if (row.number % 2 === 0) row.fill = evenFill;
   }

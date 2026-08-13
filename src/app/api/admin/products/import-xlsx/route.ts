@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminPrisma, requireAuth } from '@/app/admin/lib/admin-prisma';
+import { deriveFamilyKey } from '@/lib/product-family';
 import ExcelJS from 'exceljs';
 
 export const maxDuration = 60;
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
       } else seenSkus.set(sku, rowNum);
     }
 
-    rows.push({ rowNum, cells: rowCellStrs(row, 17) });
+    rows.push({ rowNum, cells: rowCellStrs(row, 19) });
   });
 
   if (errors.length > 0) {
@@ -63,12 +64,13 @@ export async function POST(req: NextRequest) {
 
   // Pre-fetch lookup data
   const [brands, categories, existingProducts] = await Promise.all([
-    prisma.brand.findMany({ select: { id: true, name: true } }),
+    prisma.brand.findMany({ select: { id: true, name: true, slug: true } }),
     prisma.category.findMany({ select: { id: true, name: true } }),
     prisma.product.findMany({ select: { id: true, slug: true, sku: true } }),
   ]);
 
   const brandByName = new Map(brands.map(b => [b.name.toLowerCase(), b.id]));
+  const brandSlugByName = new Map(brands.map(b => [b.name.toLowerCase(), b.slug]));
   const categoryByName = new Map(categories.map(c => [c.name.toLowerCase(), c.id]));
   const existingBySlug = new Map(existingProducts.map(p => [p.slug, p.id]));
   const existingBySku = new Map(existingProducts.filter(p => p.sku).map(p => [p.sku!, p.id]));
@@ -123,7 +125,8 @@ export async function POST(req: NextRequest) {
       for (const { rowNum, cells } of rows) {
         const id = cells[0], name = cells[1], slug = cells[2], sku = cells[3], brandName = cells[4],
           catName = cells[5], status = cells[6] || 'published', featured = cells[7]?.toLowerCase() === 'yes',
-          price = parseFloat(cells[8]) || 0, desc = cells[11] || '';
+          price = parseFloat(cells[8]) || 0, desc = cells[11] || '',
+          model = cells[17] || null, capacity = cells[18] || null;
 
         if (!name || !slug) { result.skipped++; continue; }
 
@@ -135,9 +138,14 @@ export async function POST(req: NextRequest) {
         if (mode === 'update' && !existingId) { result.skipped++; continue; }
 
         let brandId = brandName ? brandByName.get(brandName.toLowerCase()) || '' : '';
+        const brandSlug = brandName ? brandSlugByName.get(brandName.toLowerCase()) || '' : '';
 
         try {
-          const data: any = { name, slug, sku: sku || null, price, description: desc, status, isActive: featured };
+          const data: any = {
+            name, slug, sku: sku || null, model, capacity,
+            familyKey: deriveFamilyKey(brandSlug, model),
+            price, description: desc, status, isActive: featured,
+          };
           if (brandId) data.brandId = brandId;
 
           if (existingId) {
