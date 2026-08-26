@@ -41,6 +41,9 @@ export async function createCategory(data: {
   slug: string;
   parentId?: string | null;
   color?: string | null;
+  showGradient?: boolean;
+  gradientColor?: string | null;
+  gradientHeight?: number | null;
 }) {
   await requireAuth();
   const prisma = await getAdminPrisma();
@@ -51,6 +54,9 @@ export async function createCategory(data: {
       slug: data.slug,
       parentId: data.parentId || null,
       color: data.color || null,
+      showGradient: data.showGradient ?? false,
+      gradientColor: data.gradientColor || null,
+      gradientHeight: data.gradientHeight ?? null,
     },
   });
 }

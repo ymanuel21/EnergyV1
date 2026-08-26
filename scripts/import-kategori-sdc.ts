@@ -14,8 +14,6 @@
 //   - Categories not in the Excel but HAVING products are left untouched (warned).
 //
 // Run: npx tsx scripts/import-kategori-sdc.ts [--apply]
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import 'dotenv/config';
 
@@ -57,14 +55,15 @@ const EXCEL: ExcelParent[] = [
   ]},
   { name: 'Portable Power', color: '#D9D2E9', children: [
     { name: 'Power Station' },
+    { name: 'Solar Generator' },
   ]},
 ];
 
 // Current-DB name → Excel name (renames). Keys are normalized.
+// These are the only safe renames — manually verified against DB state.
 const RENAME_TO_EXCEL: Record<string, string> = {
   'mounting & rangka': 'Mounting',
   'kabel, konektor & proteksi': 'Connector, Cable & Protection',
-  'portable power station': 'Portable Power',
   'lithium lifepo4': 'LifePO4',
   'rumah': 'Home',
   'kantor': 'Office',
@@ -81,14 +80,30 @@ const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
-async function main() {
-  const prisma = new PrismaClient({
-    adapter: new PrismaPg(new Pool({ connectionString: process.env.DATABASE_URL, max: 5 })),
-  });
+interface DbCategory {
+  id: string;
+  name: string;
+  slug: string;
+  sort_order: number;
+  is_active: boolean;
+  parent_id: string | null;
+  product_count: number;
+}
 
-  const existing = await prisma.category.findMany({ include: { parent: true, _count: { select: { products: true } } } });
-  const byId = new Map(existing.map((c) => [c.id, c]));
-  const byNormName = new Map<string, typeof existing[0][]>();
+async function main() {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 3 });
+  const client = await pool.connect();
+
+  // Fetch all categories with product counts via raw SQL
+  const res = await client.query(`
+    SELECT c.id, c.name, c.slug, c.sort_order, c.is_active, c.parent_id,
+           (SELECT COUNT(*) FROM product_categories pc WHERE pc."categoryId" = c.id) AS product_count
+    FROM categories c
+    ORDER BY c.sort_order ASC
+  `);
+  const existing: DbCategory[] = res.rows;
+
+  const byNormName = new Map<string, DbCategory[]>();
   for (const c of existing) {
     const key = norm(c.name);
     if (!byNormName.has(key)) byNormName.set(key, []);
@@ -100,34 +115,34 @@ async function main() {
   const log = (m: string) => { console.log(m); plan.push(m); };
 
   // Find an existing parent by Excel name (or a rename mapping to it).
-  function findParent(excelName: string) {
+  function findParent(excelName: string): DbCategory | undefined {
     const key = norm(excelName);
-    const direct = byNormName.get(key)?.find((c) => !c.parentId);
+    const direct = byNormName.get(key)?.find((c) => !c.parent_id);
     if (direct) return direct;
     // rename reverse-lookup: existing name X where RENAME_TO_EXCEL[norm(X)] === excelName
     for (const [existingKey, target] of Object.entries(RENAME_TO_EXCEL)) {
       if (norm(target) === key) {
-        const hit = byNormName.get(existingKey)?.find((c) => !c.parentId);
+        const hit = byNormName.get(existingKey)?.find((c) => !c.parent_id);
         if (hit) return hit;
       }
     }
     return undefined;
   }
-  function findChild(parentId: string, excelName: string) {
+  function findChild(parentId: string, excelName: string): DbCategory | undefined {
     const key = norm(excelName);
     // 1) direct child of this parent
-    const direct = existing.filter((c) => c.parentId === parentId && norm(c.name) === key)[0];
+    const direct = existing.filter((c) => c.parent_id === parentId && norm(c.name) === key)[0];
     if (direct) return direct;
     // 2) rename reverse-lookup within this parent
     for (const [existingKey, target] of Object.entries(RENAME_TO_EXCEL)) {
       if (norm(target) === key) {
-        const hit = existing.filter((c) => c.parentId === parentId && norm(c.name) === existingKey)[0];
+        const hit = existing.filter((c) => c.parent_id === parentId && norm(c.name) === existingKey)[0];
         if (hit) return hit;
       }
     }
     // 3) fallback: orphan/top-level with the same name that must be reparented
     //    (e.g. "Microinverter" currently top-level → move under Inverter)
-    return byNormName.get(key)?.find((c) => !usedIds.has(c.id)) ?? undefined;
+    return byNormName.get(key)?.find((c) => !usedIds.has(c.id));
   }
 
   console.log(`Mode: ${APPLY ? 'APPLY' : 'DRY-RUN'}\n`);
@@ -138,22 +153,26 @@ async function main() {
     let p = findParent(pName);
     const isNewParent = !p;
     if (isNewParent) {
-      const id = `cat-${Date.now()}-${parentPos}-${Math.random().toString(36).slice(2, 6)}`;
+      const id = `cat-sdc-${Date.now()}-${parentPos}-${Math.random().toString(36).slice(2, 6)}`;
       log(`CREATE parent "${pName}" (color ${parent.color})`);
       if (APPLY) {
-        p = await prisma.category.create({ data: { id, name: pName, slug: slugify(pName), sortOrder: parentPos, color: parent.color } });
-      } else {
-        p = { id, name: pName, slug: slugify(pName), sortOrder: parentPos, color: parent.color, isActive: true, parentId: null } as any;
+        await client.query(
+          `INSERT INTO categories (id, name, slug, sort_order, is_active, parent_id, color) VALUES ($1, $2, $3, $4, true, null, $5)`,
+          [id, pName, slugify(pName), parentPos, parent.color]
+        );
       }
+      p = { id, name: pName, slug: slugify(pName), sort_order: parentPos, is_active: true, parent_id: null, product_count: 0 };
     } else {
       const changes: string[] = [];
-      if (p.name !== pName) changes.push(`name "${p.name}"→"${pName}"`);
-      if (p.color !== parent.color) changes.push(`color ${p.color ?? 'null'}→${parent.color}`);
-      if (p.sortOrder !== parentPos) changes.push(`sortOrder ${p.sortOrder}→${parentPos}`);
-      if (p.parentId !== null) changes.push(`reparent to null (was ${p.parentId})`);
-      log(`${changes.length ? 'UPDATE' : 'KEEP'} parent "${pName}" (${p.id})${changes.length ? ': ' + changes.join(', ') : ''}`);
+      if (p!.name !== pName) changes.push(`name "${p!.name}"→"${pName}"`);
+      if (p!.sort_order !== parentPos) changes.push(`sortOrder ${p!.sort_order}→${parentPos}`);
+      if (p!.parent_id !== null) changes.push(`reparent to null (was ${p!.parent_id})`);
+      log(`${changes.length ? 'UPDATE' : 'KEEP'} parent "${pName}" (${p!.id})${changes.length ? ': ' + changes.join(', ') : ''}`);
       if (APPLY) {
-        await prisma.category.update({ where: { id: p.id }, data: { name: pName, color: parent.color, sortOrder: parentPos, parentId: null } });
+        await client.query(
+          `UPDATE categories SET name = $1, sort_order = $2, parent_id = null, color = $3 WHERE id = $4`,
+          [pName, parentPos, parent.color, p!.id]
+        );
       }
     }
     usedIds.add(p!.id);
@@ -164,21 +183,26 @@ async function main() {
       const isNewChild = !c;
       const childSlug = `${slugify(pName)}-${slugify(child.name)}`;
       if (isNewChild) {
-        const cid = `sub-${Date.now()}-${parentPos}-${childPos}-${Math.random().toString(36).slice(2, 6)}`;
+        const cid = `sub-sdc-${Date.now()}-${parentPos}-${childPos}-${Math.random().toString(36).slice(2, 6)}`;
         log(`  CREATE child "${child.name}" under "${pName}"`);
         if (APPLY) {
-          c = await prisma.category.create({ data: { id: cid, name: child.name, slug: childSlug, parentId: p!.id, sortOrder: childPos } });
-        } else {
-          c = { id: cid, name: child.name, slug: childSlug, parentId: p!.id, sortOrder: childPos, color: null, isActive: true } as any;
+          await client.query(
+            `INSERT INTO categories (id, name, slug, sort_order, is_active, parent_id) VALUES ($1, $2, $3, $4, true, $5)`,
+            [cid, child.name, childSlug, childPos, p!.id]
+          );
         }
+        c = { id: cid, name: child.name, slug: childSlug, sort_order: childPos, is_active: true, parent_id: p!.id, product_count: 0 };
       } else {
         const cchanges: string[] = [];
-        if (c.name !== child.name) cchanges.push(`name "${c.name}"→"${child.name}"`);
-        if (c.parentId !== p!.id) cchanges.push(`reparent ${c.parentId ?? 'null'}→${p!.id}`);
-        if (c.sortOrder !== childPos) cchanges.push(`sortOrder ${c.sortOrder}→${childPos}`);
-        log(`  ${cchanges.length ? 'UPDATE' : 'KEEP'} child "${child.name}" (${c.id})${cchanges.length ? ': ' + cchanges.join(', ') : ''}`);
+        if (c!.name !== child.name) cchanges.push(`name "${c!.name}"→"${child.name}"`);
+        if (c!.parent_id !== p!.id) cchanges.push(`reparent ${c!.parent_id ?? 'null'}→${p!.id}`);
+        if (c!.sort_order !== childPos) cchanges.push(`sortOrder ${c!.sort_order}→${childPos}`);
+        log(`  ${cchanges.length ? 'UPDATE' : 'KEEP'} child "${child.name}" (${c!.id})${cchanges.length ? ': ' + cchanges.join(', ') : ''}`);
         if (APPLY) {
-          await prisma.category.update({ where: { id: c.id }, data: { name: child.name, parentId: p!.id, sortOrder: childPos } });
+          await client.query(
+            `UPDATE categories SET name = $1, parent_id = $2, sort_order = $3 WHERE id = $4`,
+            [child.name, p!.id, childPos, c!.id]
+          );
         }
       }
       usedIds.add(c!.id);
@@ -191,19 +215,43 @@ async function main() {
   console.log('\n── Categories not in Excel ──');
   for (const c of existing) {
     if (usedIds.has(c.id)) continue;
-    const pc = c._count.products;
+    const pc = c.product_count;
     if (pc > 0) {
       log(`SKIP (has ${pc} products) "${c.name}" (${c.id}) — left active, needs manual decision`);
     } else {
-      log(`${c.isActive ? 'DEACTIVATE' : 'already inactive'} "${c.name}" (${c.id}, 0 products)`);
-      if (APPLY && c.isActive) {
-        await prisma.category.update({ where: { id: c.id }, data: { isActive: false } });
+      log(`${c.is_active ? 'DEACTIVATE' : 'already inactive'} "${c.name}" (${c.id}, 0 products)`);
+      if (APPLY && c.is_active) {
+        await client.query(`UPDATE categories SET is_active = false WHERE id = $1`, [c.id]);
       }
     }
   }
 
-  console.log(`\nPlan has ${plan.length} actions. ${APPLY ? 'APPLIED.' : 'Dry-run — nothing written. Re-run with --apply to apply.'}`);
-  await prisma.$disconnect();
+  // Summary
+  console.log(`\n=== DRY-RUN SUMMARY ===`);
+  const creates = plan.filter((p) => p.includes('CREATE'));
+  const updates = plan.filter((p) => p.includes('UPDATE'));
+  const keeps = plan.filter((p) => p.includes('KEEP'));
+  const skips = plan.filter((p) => p.includes('SKIP'));
+  const deactivates = plan.filter((p) => p.includes('DEACTIVATE'));
+  const alreadyInactive = plan.filter((p) => p.includes('already inactive'));
+  console.log(`Total planned actions: ${plan.length}`);
+  console.log(`  CREATE: ${creates.length} (${creates.filter((p) => p.includes('parent')).length} parents, ${creates.filter((p) => p.includes('child')).length} children)`);
+  console.log(`  UPDATE: ${updates.length}`);
+  console.log(`  KEEP (no change): ${keeps.length}`);
+  console.log(`  SKIP (has products): ${skips.length}`);
+  console.log(`  DEACTIVATE (0 products): ${deactivates.length}`);
+  console.log(`  Already inactive: ${alreadyInactive.length}`);
+
+  // Colors summary
+  console.log(`\n=== COLORS (parent → color) ===`);
+  for (const p of EXCEL) {
+    console.log(`  ${p.name}: ${p.color}`);
+  }
+
+  console.log(`\n${APPLY ? 'APPLIED.' : 'Dry-run — nothing written. Re-run with --apply to apply.'}`);
+
+  client.release();
+  await pool.end();
 }
 
 main().catch((e) => {
