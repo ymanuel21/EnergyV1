@@ -79,6 +79,28 @@ export function MegaMenu() {
     }
   }, [open, close]);
 
+  // Group categories by color — the color is a data-driven grouping key that
+  // determines where horizontal separators (border-t border-border) appear.
+  // The actual color values are NOT hardcoded or checked; consecutive
+  // categories with the same color belong to the same group.
+  const visibleCategories = categories.filter((cat) =>
+    featureFlags.isEnabled('showBrandCategoryInMegaMenu') || cat.slug !== 'brand'
+  );
+  const groups: Category[][] = [];
+  let curGroup: Category[] = [];
+  let curColor: string | null = null;
+  for (const cat of visibleCategories) {
+    const c = cat.color ?? null;
+    if (c !== curColor) {
+      if (curGroup.length) groups.push(curGroup);
+      curGroup = [cat];
+      curColor = c;
+    } else {
+      curGroup.push(cat);
+    }
+  }
+  if (curGroup.length) groups.push(curGroup);
+
   return (
     <>
       <button
@@ -108,17 +130,24 @@ export function MegaMenu() {
             {/* Scrollable grid — overflow-y-scroll forces visible scrollbar */}
             <div
               ref={scrollRef}
-              className="grid grid-cols-3 md:grid-cols-4 gap-x-8 gap-y-4 py-6 max-h-[60vh] overflow-y-scroll"
+              className="max-h-[60vh] overflow-y-scroll"
               style={{
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#d1d5db #f3f4f6',
                 scrollbarGutter: 'stable',
               }}
             >
-              {categories
-                .filter((cat) => featureFlags.isEnabled('showBrandCategoryInMegaMenu') || cat.slug !== 'brand')
-                .map((cat) => (
-                <CategoryColumn key={cat.id} category={cat} onClick={close} />
+              {groups.map((group, gi) => (
+                <div
+                  key={gi}
+                  className={`${gi > 0 ? 'border-t border-border' : ''}`}
+                >
+                  <div className="grid grid-cols-3 md:grid-cols-4 gap-x-8 gap-y-4 py-6">
+                    {group.map((cat) => (
+                      <CategoryColumn key={cat.id} category={cat} onClick={close} />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
 
