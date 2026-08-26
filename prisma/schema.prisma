@@ -76,6 +76,14 @@ model Category {
   sortOrder  Int        @default(0) @map("sort_order")
   isActive   Boolean    @default(true) @map("is_active")
 
+  // Visual group for the top-level category; children inherit their parent's color.
+  color          String?  @map("color")
+  // Gradient divider config (top-level categories only). The frontend generates
+  // the gradient element from these values — no raw HTML is stored.
+  showGradient   Boolean  @default(false) @map("show_gradient")
+  gradientColor  String?  @map("gradient_color")
+  gradientHeight Int?     @map("gradient_height")
+
   parentId   String?    @map("parent_id")
   parent     Category?  @relation("CategoryTree", fields: [parentId], references: [id])
   children   Category[] @relation("CategoryTree")

@@ -3,18 +3,25 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateCategory, deleteCategory } from './actions';
+import { ReorderButtons } from '@/components/admin/ReorderButtons';
 
 interface CategoryRowProps {
   category: any;
   allCategories: any[];
   usageCount: number;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
-export function CategoryRow({ category, allCategories, usageCount }: CategoryRowProps) {
+export function CategoryRow({ category, allCategories, usageCount, isFirst, isLast }: CategoryRowProps) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(category.name);
   const [slug, setSlug] = useState(category.slug);
   const [parentId, setParentId] = useState(category.parentId || '');
+  const [color, setColor] = useState(category.color || '');
+  const [showGradient, setShowGradient] = useState(!!category.showGradient);
+  const [gradientColor, setGradientColor] = useState(category.gradientColor || '#FFFFFF');
+  const [gradientHeight, setGradientHeight] = useState(category.gradientHeight ?? 48);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -27,7 +34,17 @@ export function CategoryRow({ category, allCategories, usageCount }: CategoryRow
   async function handleSave() {
     if (!name || !slug) return;
     setSaving(true);
-    await updateCategory(category.id, { name, slug, parentId: parentId || null });
+    await updateCategory(category.id, {
+      name,
+      slug,
+      parentId: parentId || null,
+      ...(isChild ? {} : {
+        color: color || null,
+        showGradient,
+        gradientColor: gradientColor || null,
+        gradientHeight: showGradient ? gradientHeight : null,
+      }),
+    });
     setSaving(false);
     setEditing(false);
     router.refresh();
@@ -59,13 +76,39 @@ export function CategoryRow({ category, allCategories, usageCount }: CategoryRow
   return (
     <div className={`flex items-center justify-between border-b px-4 py-3 text-sm ${isChild ? 'bg-surface border-gray-50' : ''}`}>
       {editing ? (
-        <div className="flex flex-1 items-center gap-3">
+        <div className="flex flex-1 flex-wrap items-center gap-3">
           <input value={name} onChange={(e) => setName(e.target.value)} className="w-40 rounded border px-2 py-1 text-sm" required />
           <input value={slug} onChange={(e) => setSlug(e.target.value)} className="w-40 rounded border px-2 py-1 text-sm" required />
           <select value={parentId} onChange={(e) => setParentId(e.target.value)} className="rounded border px-2 py-1 text-sm">
             <option value="">Top Level</option>
             {parentOptions.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
+
+          {!isChild && (
+            <>
+              <label className="flex items-center gap-1 text-xs text-muted">
+                Warna
+                <input type="color" value={color || '#000000'} onChange={(e) => setColor(e.target.value)} className="h-6 w-8 rounded border" />
+              </label>
+              <label className="flex items-center gap-1 text-xs text-muted">
+                <input type="checkbox" checked={showGradient} onChange={(e) => setShowGradient(e.target.checked)} />
+                Gradient
+              </label>
+              {showGradient && (
+                <>
+                  <label className="flex items-center gap-1 text-xs text-muted">
+                    Warna
+                    <input type="color" value={gradientColor} onChange={(e) => setGradientColor(e.target.value)} className="h-6 w-8 rounded border" />
+                  </label>
+                  <label className="flex items-center gap-1 text-xs text-muted">
+                    Tinggi
+                    <input type="number" min={0} value={gradientHeight} onChange={(e) => setGradientHeight(Number(e.target.value))} className="w-16 rounded border px-2 py-1 text-sm" />
+                  </label>
+                </>
+              )}
+            </>
+          )}
+
           <button onClick={handleSave} disabled={saving} className="rounded bg-gray-800 px-3 py-1 text-xs font-medium text-white hover:bg-gray-900 disabled:opacity-50">
             {saving ? 'Menyimpan...' : 'Simpan'}
           </button>
@@ -73,6 +116,19 @@ export function CategoryRow({ category, allCategories, usageCount }: CategoryRow
         </div>
       ) : (
         <>
+          <ReorderButtons
+            id={category.id}
+            isFirst={isFirst}
+            isLast={isLast}
+            apiPath="/api/admin/categories/reorder"
+          />
+          {!isChild && (
+            <span
+              className="inline-block h-4 w-4 shrink-0 rounded-full border border-border"
+              style={{ backgroundColor: category.color || 'transparent' }}
+              title={category.color ? `Color ${category.color}` : 'No color'}
+            />
+          )}
           <span className={isChild ? 'pl-6 text-primary' : 'font-semibold text-primary'}>
             {isChild ? `└ ${category.name}` : category.name}
           </span>
@@ -81,7 +137,9 @@ export function CategoryRow({ category, allCategories, usageCount }: CategoryRow
             {usageCount} Produk
           </span>
           {!isChild && (
-            <span className="text-muted text-xs">{category.children?.length || 0} sub</span>
+            <span className="text-muted text-xs">
+              {category.showGradient ? `grad ${category.gradientColor ?? '#fff'} ${category.gradientHeight ?? 48}px` : ''}{category.children?.length ? `${category.showGradient ? ' · ' : ''}${category.children.length} sub` : ''}
+            </span>
           )}
         </>
       )}

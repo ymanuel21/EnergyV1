@@ -182,15 +182,23 @@ export function MegaMenu() {
 }
 
 function CategoryColumn({ category, onClick }: { category: Category; onClick: () => void }) {
+  const color = category.color;
   return (
     <div>
       <Link
         href={`/kategori/${category.slug}`}
         onClick={onClick}
-        className="mb-2 block text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
+        className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
         role="menuitem"
       >
-        {category.name}
+        {color ? (
+          <span
+            className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+            style={{ backgroundColor: color }}
+            aria-hidden="true"
+          />
+        ) : null}
+        <span>{category.name}</span>
       </Link>
 
       {category.children && category.children.length > 0 && (
@@ -209,6 +217,17 @@ function CategoryColumn({ category, onClick }: { category: Category; onClick: ()
           ))}
         </ul>
       )}
+
+      {category.showGradient ? (
+        <div
+          aria-hidden="true"
+          className="mt-2"
+          style={{
+            height: `${category.gradientHeight ?? 48}px`,
+            background: `linear-gradient(to bottom, transparent, ${category.gradientColor ?? '#FFFFFF'})`,
+          }}
+        />
+      ) : null}
     </div>
   );
 }

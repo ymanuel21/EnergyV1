@@ -87,6 +87,10 @@ export interface Category {
   image?: string;
   children?: Category[];
   productCount: number;
+  color?: string | null;
+  showGradient?: boolean;
+  gradientColor?: string | null;
+  gradientHeight?: number | null;
 }
 
 export interface Brand {

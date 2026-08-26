@@ -7,13 +7,14 @@ import { SlugInput } from '../SlugInput';
 import { CategoryRow } from './CategoryRow';
 
 export default async function CategoriesPage() {
-  const allCategories = await getCategories();
-  const topLevel = allCategories.filter((c: any) => !c.parentId);
+  const ordered = await getCategories();
+  const parents = ordered.filter((c: any) => !c.parentId);
+  const topLevel = parents;
 
   // Preload usage counts
   const usageMap = new Map<string, number>();
   await Promise.all(
-    allCategories.map(async (c: any) => {
+    ordered.map(async (c: any) => {
       const { productCount } = await getCategoryUsage(c.id);
       usageMap.set(c.id, productCount);
     })
@@ -48,19 +49,23 @@ export default async function CategoriesPage() {
       </form>
 
       <div className="mt-4 rounded-xl border bg-card">
-        {topLevel.map((cat: any) => (
-          <div key={cat.id}>
+        {parents.map((parent: any, i: number) => (
+          <div key={parent.id}>
             <CategoryRow
-              category={cat}
-              allCategories={allCategories}
-              usageCount={usageMap.get(cat.id) || 0}
+              category={parent}
+              allCategories={ordered}
+              usageCount={usageMap.get(parent.id) || 0}
+              isFirst={i === 0}
+              isLast={i === parents.length - 1}
             />
-            {cat.children?.map((child: any) => (
+            {(parent.children ?? []).map((child: any, j: number) => (
               <CategoryRow
                 key={child.id}
                 category={child}
-                allCategories={allCategories}
+                allCategories={ordered}
                 usageCount={usageMap.get(child.id) || 0}
+                isFirst={j === 0}
+                isLast={j === (parent.children ?? []).length - 1}
               />
             ))}
           </div>
