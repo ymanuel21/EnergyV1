@@ -30,7 +30,7 @@ export async function getAllCategories(): Promise<any[]> {
     if (process.env.DATABASE_URL) {
       const prisma = await getPrisma();
       const rows = await prisma.category.findMany({
-        where: { isActive: true, isVisible: true },
+        where: { isVisible: true },
       });
       if (rows.length > 0) {
         // Build a lookup map for ancestor traversal.
@@ -97,17 +97,17 @@ export async function getCategoryBySlug(slug: string): Promise<any> {
         include: { children: true, parent: true },
       });
       if (!row) return null;
-      if (!row.isActive || !row.isVisible) return null;
+      if (!row.isVisible) return null;
 
       // Walk up the ancestor chain to verify effective visibility.
       let cur: any = row;
       while (cur.parentId) {
         const ancestor = await prisma.category.findUnique({
           where: { id: cur.parentId },
-          select: { id: true, isVisible: true, isActive: true, parentId: true },
+          select: { id: true, isVisible: true, parentId: true },
         });
         if (!ancestor) break;
-        if (!ancestor.isActive || !ancestor.isVisible) return null;
+        if (!ancestor.isVisible) return null;
         cur = ancestor;
       }
 
