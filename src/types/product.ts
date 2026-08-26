@@ -91,6 +91,8 @@ export interface Category {
   showGradient?: boolean;
   gradientColor?: string | null;
   gradientHeight?: number | null;
+  isVisible?: boolean;
+  effectiveVisible?: boolean;
 }
 
 export interface Brand {

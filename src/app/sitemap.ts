@@ -39,6 +39,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   for (const c of categories) {
+    // Only include effectively-visible categories in the sitemap.
+    // getAllCategories already filters by effective visibility, but we
+    // double-check here for safety.
+    if (c.effectiveVisible === false) continue;
     entries.push({
       url: `${baseUrl}/kategori/${c.slug}`,
       lastModified: now,

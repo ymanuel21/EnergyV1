@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { updateCategory, deleteCategory } from './actions';
+import { updateCategory, deleteCategory, toggleCategoryVisibility } from './actions';
 import { ReorderButtons } from '@/components/admin/ReorderButtons';
 
 interface CategoryRowProps {
@@ -26,10 +26,24 @@ export function CategoryRow({ category, allCategories, usageCount, isFirst, isLa
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [toggling, setToggling] = useState(false);
   const router = useRouter();
 
   const isChild = !!category.parentId;
   const parentOptions = allCategories.filter((c: any) => c.id !== category.id && !c.parentId);
+
+  // Visibility state
+  const ownVisible = category.isVisible ?? true;
+  const effectiveVisible = category.effectiveVisible ?? true;
+  const hiddenByAncestor = ownVisible && !effectiveVisible;
+
+  async function handleToggleVisibility() {
+    if (toggling) return;
+    setToggling(true);
+    await toggleCategoryVisibility(category.id, !ownVisible);
+    setToggling(false);
+    router.refresh();
+  }
 
   async function handleSave() {
     if (!name || !slug) return;
@@ -74,7 +88,7 @@ export function CategoryRow({ category, allCategories, usageCount, isFirst, isLa
   }
 
   return (
-    <div className={`flex items-center justify-between border-b px-4 py-3 text-sm ${isChild ? 'bg-surface border-gray-50' : ''}`}>
+    <div className={`flex items-center justify-between border-b px-4 py-3 text-sm ${isChild ? 'bg-surface border-gray-50' : ''} ${!effectiveVisible ? 'opacity-60' : ''}`}>
       {editing ? (
         <div className="flex flex-1 flex-wrap items-center gap-3">
           <input value={name} onChange={(e) => setName(e.target.value)} className="w-40 rounded border px-2 py-1 text-sm" required />
@@ -141,6 +155,29 @@ export function CategoryRow({ category, allCategories, usageCount, isFirst, isLa
               {category.showGradient ? `grad ${category.gradientColor ?? '#fff'} ${category.gradientHeight ?? 48}px` : ''}{category.children?.length ? `${category.showGradient ? ' · ' : ''}${category.children.length} sub` : ''}
             </span>
           )}
+
+          {/* Visibility toggle */}
+          <div className="flex items-center gap-1.5">
+            {hiddenByAncestor && (
+              <span className="text-[10px] text-amber-600 font-medium" title="Hidden because a parent category is hidden">
+                parent hidden
+              </span>
+            )}
+            <button
+              onClick={handleToggleVisibility}
+              disabled={toggling || hiddenByAncestor}
+              className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+                ownVisible ? 'bg-green-500' : 'bg-gray-300'
+              } ${hiddenByAncestor ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+              title={hiddenByAncestor ? 'Hidden by parent — unhide parent first' : ownVisible ? 'Visible — click to hide' : 'Hidden — click to show'}
+            >
+              <span
+                className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${
+                  ownVisible ? 'translate-x-4' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
         </>
       )}
 

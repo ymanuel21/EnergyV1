@@ -75,6 +75,7 @@ model Category {
   name       String
   sortOrder  Int        @default(0) @map("sort_order")
   isActive   Boolean    @default(true) @map("is_active")
+  isVisible  Boolean    @default(true) @map("is_visible")
 
   // Visual group for the top-level category; children inherit their parent's color.
   color          String?  @map("color")
