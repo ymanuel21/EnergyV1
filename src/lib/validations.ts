@@ -16,7 +16,7 @@ export const productSchema = z.object({
 
 // Homepage Section
 export const homepageSectionSchema = z.object({
-  type: z.enum(['hero', 'category-grid', 'featured-products', 'brands', 'cta', 'projects', 'testimonials']),
+  type: z.enum(['hero', 'category-grid', 'featured-products', 'brands', 'cta', 'projects', 'testimonials', 'system-types']),
   title: z.string().default(''),
   subtitle: z.string().default(''),
   enabled: z.boolean().default(true),

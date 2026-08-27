@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import { ProductShowcase } from '@components/home/ProductShowcase';
+import { SystemTypeTabs } from '@components/home/SystemTypeTabs';
 
 export interface SectionRendererProps {
   section: {
@@ -260,6 +261,47 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       ...COMMON_ADVANCED,
     ],
     Renderer: CtaRenderer,
+  },
+
+  // ── PLTS System Types ──
+  'system-types': {
+    type: 'system-types',
+    label: 'PLTS System Types',
+    icon: '⚡',
+    defaultSettings: {
+      heading: 'Pilih Sistem yang Tepat',
+      subheading: 'Ketahui perbedaan sistem PLTS dan temukan yang sesuai dengan kebutuhan Anda.',
+      card1Title: 'PLTS On-Grid', card1Desc: 'Terhubung ke jaringan PLN tanpa baterai. Kelebihan daya dijual ke PLN melalui meteran ekspor-impor.',
+      card1Image: '', card1Link: '/kategori/panel-surya',
+      card1Accent: '#F59E0B',
+      card2Title: 'PLTS Hybrid', card2Desc: 'Kombinasi jaringan PLN dengan baterai cadangan. Listrik tetap menyala saat terjadi pemadaman.',
+      card2Image: '', card2Link: '/kategori/inverter',
+      card2Accent: '#10B981',
+      card3Title: 'PLTS Off-Grid', card3Desc: 'Sistem mandiri tanpa koneksi PLN. Sepenuhnya mengandalkan panel surya dan baterai untuk daya 24 jam.',
+      card3Image: '', card3Link: '/kategori/baterai',
+      card3Accent: '#3B82F6',
+    },
+    fields: [
+      { key: 'heading', label: 'Section Heading', type: 'text', group: 'content' },
+      { key: 'subheading', label: 'Section Description', type: 'textarea', group: 'content' },
+      { key: 'card1Title', label: 'Card 1 — Title', type: 'text', group: 'content' },
+      { key: 'card1Desc', label: 'Card 1 — Description', type: 'textarea', group: 'content' },
+      { key: 'card1Image', label: 'Card 1 — Image', type: 'image', group: 'content' },
+      { key: 'card1Link', label: 'Card 1 — Link', type: 'text', group: 'content' },
+      { key: 'card1Accent', label: 'Card 1 — Accent Color', type: 'color', group: 'styling' },
+      { key: 'card2Title', label: 'Card 2 — Title', type: 'text', group: 'content' },
+      { key: 'card2Desc', label: 'Card 2 — Description', type: 'textarea', group: 'content' },
+      { key: 'card2Image', label: 'Card 2 — Image', type: 'image', group: 'content' },
+      { key: 'card2Link', label: 'Card 2 — Link', type: 'text', group: 'content' },
+      { key: 'card2Accent', label: 'Card 2 — Accent Color', type: 'color', group: 'styling' },
+      { key: 'card3Title', label: 'Card 3 — Title', type: 'text', group: 'content' },
+      { key: 'card3Desc', label: 'Card 3 — Description', type: 'textarea', group: 'content' },
+      { key: 'card3Image', label: 'Card 3 — Image', type: 'image', group: 'content' },
+      { key: 'card3Link', label: 'Card 3 — Link', type: 'text', group: 'content' },
+      { key: 'card3Accent', label: 'Card 3 — Accent Color', type: 'color', group: 'styling' },
+      ...COMMON_ADVANCED,
+    ],
+    Renderer: SystemTypesRenderer,
   },
 };
 
@@ -541,6 +583,29 @@ function CtaRenderer({ section }: SectionRendererProps) {
         </Link>
       </div>
     </section>
+  );
+}
+
+function SystemTypesRenderer({ section }: SectionRendererProps) {
+  const s = (section.settings || {}) as Record<string, string>;
+  const cards = [
+    { title: s.card1Title || '', desc: s.card1Desc || '', image: s.card1Image || '', link: s.card1Link || '', accent: s.card1Accent || '' },
+    { title: s.card2Title || '', desc: s.card2Desc || '', image: s.card2Image || '', link: s.card2Link || '', accent: s.card2Accent || '' },
+    { title: s.card3Title || '', desc: s.card3Desc || '', image: s.card3Image || '', link: s.card3Link || '', accent: s.card3Accent || '' },
+  ].filter(c => c.title || c.desc);
+
+  if (cards.length === 0) return null;
+
+  return (
+    <SectionWrapper section={section}>
+      {(s.heading || s.subheading) && (
+        <div className="mb-10 text-center max-w-2xl mx-auto">
+          {s.heading && <h2 className="text-3xl font-light tracking-tight lg:text-4xl mb-4">{s.heading}</h2>}
+          {s.subheading && <p className="text-base text-muted leading-relaxed">{s.subheading}</p>}
+        </div>
+      )}
+      <SystemTypeTabs cards={cards} />
+    </SectionWrapper>
   );
 }
 
