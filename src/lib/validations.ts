@@ -27,7 +27,7 @@ export const homepageSectionSchema = z.object({
 
 // Navigation Link
 export const navigationLinkSchema = z.object({
-  group: z.enum(['footer_belanja', 'footer_layanan', 'footer_legal', 'mobile', 'utility']),
+  group: z.enum(['header', 'footer_belanja', 'footer_layanan', 'footer_legal', 'mobile', 'utility']),
   label: z.string().min(1),
   href: z.string().min(1).startsWith('/'),
   sortOrder: z.number().int().default(0),

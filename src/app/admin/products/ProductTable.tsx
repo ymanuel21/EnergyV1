@@ -2,18 +2,36 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { BulkProductToolbar } from './BulkProductToolbar';
 import { ImportModal } from './ImportModal';
 
 interface ProductTableProps {
   products: any[];
   brands: { id: string; name: string }[];
-  categories: { id: string; name: string }[];
+  categories: { id: string; name: string; children?: { id: string; name: string }[] }[];
+  currentBrand?: string;
+  currentCategory?: string;
 }
 
-export function ProductTable({ products, brands, categories }: ProductTableProps) {
+export function ProductTable({ products, brands, categories, currentBrand, currentCategory }: ProductTableProps) {
+  const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showImport, setShowImport] = useState(false);
+
+  const applyFilter = (brand: string, category: string) => {
+    const params = new URLSearchParams();
+    if (brand) params.set('brand', brand);
+    if (category) params.set('category', category);
+    const qs = params.toString();
+    router.replace(qs ? `/admin/products?${qs}` : '/admin/products');
+  };
+
+  // Flatten categories (parents + children) for the filter dropdown.
+  const flatCategories = categories.flatMap((c) => [
+    { id: c.id, name: c.name, depth: 0 },
+    ...(c.children || []).map((ch) => ({ id: ch.id, name: ch.name, depth: 1 })),
+  ]);
 
   const toggle = (id: string) => {
     const next = new Set(selected);
@@ -53,6 +71,44 @@ export function ProductTable({ products, brands, categories }: ProductTableProps
       </div>
 
       {showImport && <ImportModal onClose={() => setShowImport(false)} />}
+
+      {/* Filters */}
+      <div className="mb-4 flex items-center gap-3 flex-wrap">
+        <select
+          value={currentBrand || ''}
+          onChange={(e) => applyFilter(e.target.value, currentCategory || '')}
+          className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-primary"
+          aria-label="Filter brand"
+        >
+          <option value="">Semua Brand</option>
+          {brands.map((b) => (
+            <option key={b.id} value={b.id}>{b.name}</option>
+          ))}
+        </select>
+
+        <select
+          value={currentCategory || ''}
+          onChange={(e) => applyFilter(currentBrand || '', e.target.value)}
+          className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-primary"
+          aria-label="Filter kategori"
+        >
+          <option value="">Semua Kategori</option>
+          {flatCategories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.depth ? `\u00A0\u00A0\u00A0${c.name}` : c.name}
+            </option>
+          ))}
+        </select>
+
+        {(currentBrand || currentCategory) && (
+          <button
+            onClick={() => applyFilter('', '')}
+            className="text-sm text-primary hover:underline"
+          >
+            Reset
+          </button>
+        )}
+      </div>
 
       <div className="rounded-xl border border-border bg-card">
         {/* Toolbar */}

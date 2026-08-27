@@ -23,6 +23,14 @@ export function Header() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  const [headerLinks, setHeaderLinks] = useState<{ label: string; href: string }[]>([]);
+  useEffect(() => {
+    fetch('/api/navigation')
+      .then(r => r.json())
+      .then(data => setHeaderLinks(data.header || []))
+      .catch(() => {});
+  }, []);
+
   // Lock body scroll when search expanded
   useEffect(() => {
     if (searchExpanded) document.body.style.overflow = 'hidden';
@@ -80,6 +88,21 @@ export function Header() {
             <MobileMenu />
           </div>
         </div>
+      )}
+      {headerLinks.length > 0 && (
+        <nav className="hidden lg:block border-t border-border/50" aria-label="Navigasi utama">
+          <div className="mx-auto flex max-w-[var(--ebt-container,64rem)] items-center gap-6 px-2 sm:px-8 py-2 overflow-x-auto">
+            {headerLinks.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className="shrink-0 text-sm font-medium text-primary hover:text-primary-hover transition-colors"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
       )}
     </header>
   );

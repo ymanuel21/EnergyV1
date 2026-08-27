@@ -11,7 +11,7 @@ interface NavLink { label: string; href: string; }
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [navLinks, setNavLinks] = useState<{ mobile: NavLink[]; footer_layanan: NavLink[] }>({ mobile: [], footer_layanan: [] });
+  const [navLinks, setNavLinks] = useState<{ header: NavLink[]; mobile: NavLink[]; footer_layanan: NavLink[] }>({ header: [], mobile: [], footer_layanan: [] });
   const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,6 +51,19 @@ export function MobileMenu() {
           </button>
         </div>
         <nav className="h-[calc(100%-57px)] overflow-y-auto px-5 py-4">
+          {navLinks.header.length > 0 && (
+            <div className="mb-6">
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Navigasi</h3>
+              <ul className="space-y-0.5">
+                {navLinks.header.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} onClick={() => setOpen(false)}
+                      className="block rounded-lg px-3 py-2.5 text-sm font-medium text-primary hover:bg-surface">{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {navLinks.mobile.length > 0 && (
             <div className="mb-6">
               <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Menu</h3>

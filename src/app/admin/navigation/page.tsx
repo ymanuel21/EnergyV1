@@ -4,6 +4,7 @@ import { getNavigationLinks, upsertNavLink, deleteNavLink } from './actions';
 import { revalidatePath } from 'next/cache';
 
 const GROUPS = [
+  { key: 'header', label: 'Header' },
   { key: 'footer_belanja', label: 'Footer — Belanja' },
   { key: 'footer_layanan', label: 'Footer — Layanan' },
   { key: 'footer_legal', label: 'Footer — Legal' },

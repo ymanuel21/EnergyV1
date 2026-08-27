@@ -2,10 +2,14 @@
 
 import { getAdminPrisma, requireAuth } from '../lib/admin-prisma';
 
-export async function getProducts() {
+export async function getProducts(filters?: { brandId?: string; categoryId?: string }) {
   await requireAuth();
   const prisma = await getAdminPrisma();
+  const where: any = {};
+  if (filters?.brandId) where.brandId = filters.brandId;
+  if (filters?.categoryId) where.categories = { some: { categoryId: filters.categoryId } };
   return prisma.product.findMany({
+    where,
     include: { brand: true, categories: { include: { category: true } }, badgeRelations: { include: { badge: true } } },
     orderBy: { createdAt: 'desc' },
   });
