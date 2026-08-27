@@ -1,11 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { BulkProductToolbar } from './BulkProductToolbar';
 import { ImportModal } from './ImportModal';
 import { VisibilityToggle } from '@/components/admin/VisibilityToggle';
+
+// Module-level: track back/forward navigation so the list restores scroll only when returning.
+let didNavigateBack = false;
+if (typeof window !== 'undefined') {
+  window.addEventListener('popstate', () => { didNavigateBack = true; });
+}
+
+function productScrollKey() {
+  return `products-scroll:${window.location.pathname}${window.location.search}`;
+}
 
 interface ProductTableProps {
   products: any[];
@@ -19,6 +29,32 @@ export function ProductTable({ products, brands, categories, currentBrand, curre
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showImport, setShowImport] = useState(false);
+
+  // Restore scroll position when returning to the list via Back (keyed by URL so each
+  // Brand/Category-filtered list keeps its own position). Runs before paint to avoid a flash.
+  useLayoutEffect(() => {
+    if (!didNavigateBack) return;
+    didNavigateBack = false;
+    const saved = sessionStorage.getItem(productScrollKey());
+    if (saved) window.scrollTo(0, parseInt(saved, 10));
+  }, []);
+
+  // Persist scroll position (throttled via requestAnimationFrame) while on the list.
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        sessionStorage.setItem(productScrollKey(), String(window.scrollY));
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   const applyFilter = (brand: string, category: string) => {
     const params = new URLSearchParams();

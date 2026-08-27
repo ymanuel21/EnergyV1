@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminPrisma, requireAuth } from '@/app/admin/lib/admin-prisma';
+import { revalidatePath } from 'next/cache';
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,8 +43,10 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: `${ids.length} products moved` });
 
       case 'delete':
-        // Soft delete — mark isActive=false
-        await prisma.product.updateMany({ where: { id: { in: ids } }, data: { isActive: false } });
+        // Hard delete (matches single-product deleteProduct): clean up polymorphic reviews first
+        await prisma.review.deleteMany({ where: { entityType: 'product', entityId: { in: ids } } });
+        await prisma.product.deleteMany({ where: { id: { in: ids } } });
+        revalidatePath('/admin/products');
         return NextResponse.json({ message: `${ids.length} products deleted` });
 
       default:
