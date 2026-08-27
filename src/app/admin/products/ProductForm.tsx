@@ -7,7 +7,7 @@ import { SlugInput } from '../SlugInput';
 import { CurrencyInput } from '../CurrencyInput';
 import { BadgeSelector } from '../BadgeSelector';
 import { SpecEditor } from './SpecEditor';
-import { ImageGallery } from './ImageGallery';
+import { MultiImageUpload } from '../MultiImageUpload';
 import { DownloadManager } from './DownloadManager';
 import { RelatedProductsEditor } from './RelatedProductsEditor';
 import { StatusBadge } from '@/components/admin/StatusBadge';
@@ -199,7 +199,11 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
       {/* ── Media Tab ── */}
       {activeTab === 'Media' && (
         <div className="space-y-6">
-          <ImageGallery images={state.media.images} onChange={v => dispatch({ type: 'SET_IMAGES', value: v })} />
+          <MultiImageUpload
+            label="Gambar Produk"
+            value={state.media.images}
+            onChange={v => dispatch({ type: 'SET_IMAGES', value: v })}
+          />
           <div className="pt-4 border-t border-border">
             <p className="text-xs font-medium text-primary mb-2">Badges</p>
             <BadgeSelector

@@ -10,6 +10,8 @@ interface MultiImageUploadProps {
   value?: string[];
   /** Controlled mode: called when images change */
   onChange?: (images: string[]) => void;
+  /** Called when upload state changes (true = uploading, false = done) */
+  onUploadingChange?: (uploading: boolean) => void;
   className?: string;
 }
 
@@ -25,6 +27,7 @@ export function MultiImageUpload({
   defaultValue = [],
   value: controlledValue,
   onChange: controlledOnChange,
+  onUploadingChange,
   className = '',
 }: MultiImageUploadProps) {
   const isControlled = controlledOnChange !== undefined;
@@ -57,6 +60,7 @@ export function MultiImageUpload({
     if (!files || files.length === 0) return;
 
     setUploading(true);
+    onUploadingChange?.(true);
     const newUrls: string[] = [];
 
     for (const file of Array.from(files)) {
@@ -75,6 +79,7 @@ export function MultiImageUpload({
 
     emit([...images, ...newUrls]);
     setUploading(false);
+    onUploadingChange?.(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
@@ -87,6 +92,14 @@ export function MultiImageUpload({
     if (newIdx < 0 || newIdx >= images.length) return;
     const copy = [...images];
     [copy[index], copy[newIdx]] = [copy[newIdx], copy[index]];
+    emit(copy);
+  }
+
+  function makeMain(index: number) {
+    if (index === 0) return;
+    const copy = [...images];
+    const [item] = copy.splice(index, 1);
+    copy.unshift(item);
     emit(copy);
   }
 
@@ -106,16 +119,25 @@ export function MultiImageUpload({
               className="h-24 w-full object-cover"
               onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
-            {/* Badges */}
-            <div className="absolute top-1 left-1 flex gap-1">
-              {i === 0 && (
-                <span className="rounded bg-gray-800 px-1.5 py-0.5 text-[10px] font-medium text-white">
-                  Utama
+            {/* Main badge / set-as-main control (always visible) */}
+            <div className="absolute top-1 left-1 flex gap-1 z-10">
+              {i === 0 ? (
+                <span className="rounded bg-primary px-1.5 py-0.5 text-[10px] font-medium text-white">
+                  ★ Utama
                 </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => makeMain(i)}
+                  className="rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white hover:bg-primary transition"
+                  title="Jadikan gambar utama"
+                >
+                  Jadikan Utama
+                </button>
               )}
             </div>
             {/* Hover controls */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100">
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
               {i > 0 && (
                 <button
                   type="button"
