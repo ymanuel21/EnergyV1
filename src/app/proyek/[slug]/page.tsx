@@ -37,7 +37,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   let linkedProducts: { slug: string; name: string; quantity: number }[] = [];
   if (slugs.length > 0) {
     const products = await prisma.product.findMany({
-      where: { slug: { in: slugs } },
+      where: { slug: { in: slugs }, brand: { isActive: true } },
       select: { slug: true, name: true },
     });
     const nameMap = new Map(products.map((p: any) => [p.slug, p.name]));

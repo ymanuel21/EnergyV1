@@ -8,6 +8,7 @@ import { SubmitButton } from '../SubmitButton';
 import { SlugInput } from '../SlugInput';
 import { ImageUpload } from '../ImageUpload';
 import { BrandLogo } from '@ui/BrandLogo';
+import { VisibilityToggle } from '@/components/admin/VisibilityToggle';
 
 export default async function BrandsPage() {
   const brands = await getBrands();
@@ -69,6 +70,7 @@ export default async function BrandsPage() {
                 {usage} Produk
               </span>
               <span className="text-muted hidden sm:inline">{b.slug}</span>
+              <VisibilityToggle id={b.id} active={b.isActive} endpoint="/api/admin/brands/toggle-active" />
               <Link href={`/admin/brands/${b.id}`} className="text-gray-800 hover:text-gray-800 font-medium text-sm">
                 Edit
               </Link>

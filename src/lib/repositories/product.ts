@@ -18,7 +18,7 @@ export interface ProductQuery {
 export class ProductRepository {
   async findAll(params?: ProductQuery): Promise<Product[]> {
     const prisma = await getPrisma();
-    const where: any = { isActive: params?.isActive ?? true };
+    const where: any = { isActive: params?.isActive ?? true, brand: { isActive: true } };
     if (params?.brandId) where.brandId = params.brandId;
     if (params?.categoryId) where.categories = { some: { categoryId: params.categoryId } };
     if (params?.search) where.name = { contains: params.search };
@@ -40,7 +40,7 @@ export class ProductRepository {
 
   async count(params?: Omit<ProductQuery, 'limit' | 'offset' | 'sort'>): Promise<number> {
     const prisma = await getPrisma();
-    const where: any = { isActive: params?.isActive ?? true };
+    const where: any = { isActive: params?.isActive ?? true, brand: { isActive: true } };
     if (params?.brandId) where.brandId = params.brandId;
     if (params?.categoryId) where.categories = { some: { categoryId: params.categoryId } };
     if (params?.search) where.name = { contains: params.search };
@@ -75,7 +75,7 @@ export class ProductRepository {
 
     // Priority: name startsWith first, then contains across name/sku/model/capacity/familyKey
     const startsWith = await prisma.product.findMany({
-      where: { name: { startsWith: query, mode: 'insensitive' }, isActive: true },
+      where: { name: { startsWith: query, mode: 'insensitive' }, isActive: true, brand: { isActive: true } },
       select,
       take: limit,
       orderBy: { name: 'asc' },
@@ -88,6 +88,7 @@ export class ProductRepository {
       contains = await prisma.product.findMany({
         where: {
           isActive: true,
+          brand: { isActive: true },
           id: { notIn: excludeIds },
           OR: [
             { name: { contains: query, mode: 'insensitive' } },

@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { getAdminPrisma } from '../lib/admin-prisma';
 import { ReorderButtons } from '@/components/admin/ReorderButtons';
+import { VisibilityToggle } from '@/components/admin/VisibilityToggle';
 
 export default async function ProjectsAdminPage() {
   const prisma = await getAdminPrisma();
@@ -8,7 +9,7 @@ export default async function ProjectsAdminPage() {
   const projects = raw.map((p: any) => ({
     id: p.id, title: p.title, slug: p.slug,
     category: p.category, location: p.location,
-    year: p.year, status: p.status,
+    year: p.year, status: p.status, published: p.published,
     sortOrder: p.sortOrder,
   }));
 
@@ -31,6 +32,7 @@ export default async function ProjectsAdminPage() {
             <th className="p-4 text-left font-medium text-primary">Location</th>
             <th className="p-4 text-left font-medium text-primary">Year</th>
             <th className="p-4 text-left font-medium text-primary">Status</th>
+            <th className="p-4 text-left font-medium text-primary">Visibility</th>
             <th className="p-4 text-right font-medium text-primary">Actions</th>
           </tr></thead>
           <tbody>
@@ -49,6 +51,7 @@ export default async function ProjectsAdminPage() {
                 <td className="p-4 text-muted">{p.location || '-'}</td>
                 <td className="p-4 text-muted">{p.year}</td>
                 <td className="p-4"><span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${p.status === 'published' ? 'bg-green-50 text-green-700' : p.status === 'archived' ? 'bg-red-50 text-red-700' : 'bg-surface text-muted'}`}>{p.status || 'draft'}</span></td>
+                <td className="p-4"><VisibilityToggle id={p.id} active={p.published} endpoint="/api/admin/projects/toggle-published" /></td>
                 <td className="p-4 text-right">
                   <a href={`/admin/projects/${p.id}`} className="text-sm text-primary hover:underline mr-3">Edit</a>
                   <form method="POST" action="/api/admin/projects/delete" className="inline">

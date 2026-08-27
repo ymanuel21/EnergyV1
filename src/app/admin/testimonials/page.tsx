@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { getAdminPrisma } from '../lib/admin-prisma';
 import Link from 'next/link';
 import { ReorderButtons } from '@/components/admin/ReorderButtons';
+import { VisibilityToggle } from '@/components/admin/VisibilityToggle';
 
 export default async function TestimonialsPage() {
   const prisma = await getAdminPrisma();
@@ -25,6 +26,7 @@ export default async function TestimonialsPage() {
               <th className="p-4 text-left font-medium text-primary">Customer</th>
               <th className="p-4 text-left font-medium text-primary hidden md:table-cell">Company</th>
               <th className="p-4 text-left font-medium text-primary">Rating</th>
+              <th className="p-4 text-left font-medium text-primary">Visibility</th>
               <th className="p-4 text-right font-medium text-primary">Actions</th>
             </tr>
           </thead>
@@ -42,6 +44,7 @@ export default async function TestimonialsPage() {
                 <td className="p-4 font-medium text-primary">{t.name}</td>
                 <td className="p-4 hidden md:table-cell text-muted">{t.company || '—'}</td>
                 <td className="p-4">{'★'.repeat(t.rating)}{'☆'.repeat(5 - t.rating)}</td>
+                <td className="p-4"><VisibilityToggle id={t.id} active={t.status === 'published'} endpoint="/api/admin/testimonials/toggle-published" /></td>
                 <td className="p-4 text-right">
                   <Link href={`/admin/testimonials/${t.id}`} className="text-sm text-primary hover:underline">Edit</Link>
                 </td>

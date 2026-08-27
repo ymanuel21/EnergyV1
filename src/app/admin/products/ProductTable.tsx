@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { BulkProductToolbar } from './BulkProductToolbar';
 import { ImportModal } from './ImportModal';
+import { VisibilityToggle } from '@/components/admin/VisibilityToggle';
 
 interface ProductTableProps {
   products: any[];
@@ -151,9 +152,7 @@ export function ProductTable({ products, brands, categories, currentBrand, curre
                 <td className="px-4 py-3 text-primary font-medium">Rp {p.price?.toLocaleString('id-ID')}</td>
                 <td className="px-4 py-3 text-muted">{p.stock}</td>
                 <td className="px-4 py-3">
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${p.isActive ? 'bg-green-50 text-green-700' : 'bg-surface text-muted'}`}>
-                    {p.isActive ? 'Active' : 'Inactive'}
-                  </span>
+                  <VisibilityToggle id={p.id} active={p.isActive} endpoint="/api/admin/products/toggle-active" />
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Link href={`/admin/products/${p.id}`} className="text-primary hover:underline text-xs">Edit</Link>

@@ -25,7 +25,7 @@ const PAGE_DEFAULTS = { limit: 24, offset: 0 };
 export async function getAllProducts(params?: ListParams): Promise<Product[]> {
   try {
     const prisma = await getPrisma();
-    const where: any = { isActive: true, status: params?.preview ? undefined : 'published' };
+    const where: any = { isActive: true, status: params?.preview ? undefined : 'published', brand: { isActive: true } };
     if (params?.brandId) where.brandId = params.brandId;
     if (params?.categoryId) {
       where.categories = { some: { categoryId: params.categoryId } };
@@ -58,7 +58,7 @@ export async function getProductsPaginated(params?: ListParams): Promise<Paginat
   const limit = params?.limit || PAGE_DEFAULTS.limit;
   const offset = params?.offset || PAGE_DEFAULTS.offset;
   const prisma = await getPrisma();
-  const where: any = { isActive: params?.isActive ?? true, status: params?.preview ? undefined : 'published' };
+  const where: any = { isActive: params?.isActive ?? true, status: params?.preview ? undefined : 'published', brand: { isActive: true } };
   if (params?.brandId) where.brandId = params.brandId;
   if (params?.categoryId) where.categories = { some: { categoryId: params.categoryId } };
   if (params?.search) where.name = { contains: params.search };
@@ -95,7 +95,9 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
       where: { slug },
       include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } }, relations: { include: { relatedProduct: { include: { brand: true } } }, orderBy: { type: 'asc' } } },
     });
+    if (row && !row.isActive) return undefined; // Hide inactive products from public detail
     if (row && row.status !== 'published') return undefined; // Hide drafts/archived from public
+    if (row && row.brand && !row.brand.isActive) return undefined; // Hide products of disabled brands
     return row as unknown as Product | undefined;
   } catch {
     const { products } = await import('@/lib/data/products');
@@ -106,7 +108,7 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
 export async function getProductsByCategory(categoryId: string): Promise<Product[]> {
   const prisma = await getPrisma();
   const rows = await prisma.productCategory.findMany({
-    where: { categoryId },
+    where: { categoryId, product: { isActive: true, status: 'published', brand: { isActive: true } } },
     include: { product: { include: { brand: true, badgeRelations: { include: { badge: true } } } } },
   });
   return rows.map(r => r.product) as unknown as Product[];
