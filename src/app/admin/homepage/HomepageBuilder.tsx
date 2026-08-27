@@ -359,14 +359,25 @@ function SectionCard({ section, index, total, isActive, onClick, onToggle, onDup
         </div>
         <span className="text-sm">{def?.icon || '📄'}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-medium text-primary truncate">{section.title || def?.label}</p>
-          <p className="text-[10px] text-muted">
-            {section.status === 'draft' ? 'Draft' : section.enabled ? 'Published' : 'Disabled'}
+          <p className="text-xs font-medium text-primary truncate">
+            {section.title || def?.label}
+            {isDraft && <span className="ml-1.5 text-[9px] font-normal text-amber-600">Draft</span>}
           </p>
         </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); onToggle(); }}
+          aria-pressed={!!section.enabled}
+          title={section.enabled ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan'}
+          className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-medium border transition ${
+            section.enabled
+              ? 'border-green-200 bg-green-50 text-green-700 hover:bg-green-100'
+              : 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100'
+          }`}
+        >
+          {section.enabled ? 'Enabled' : 'Disabled'}
+        </button>
         <div className="hidden group-hover:flex items-center gap-0.5">
           <button onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="p-1 text-[10px] text-muted hover:text-primary" title="Duplicate">⧉</button>
-          <button onClick={(e) => { e.stopPropagation(); onToggle(); }} className="p-1 text-[10px] text-muted hover:text-primary" title="Toggle">◉</button>
         </div>
       </div>
     </div>
