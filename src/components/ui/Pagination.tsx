@@ -47,7 +47,8 @@ export function Pagination({
     pages.push(...range(1, Math.min(leftSibling, totalPages)));
   }
 
-  for (let i = Math.max(leftSibling, 2); i <= Math.min(rightSibling, totalPages - 1); i++) {
+  const middleStart = leftSibling > 2 ? leftSibling : leftSibling + 1;
+  for (let i = middleStart; i <= Math.min(rightSibling, totalPages - 1); i++) {
     if (i > 1 && i < totalPages) pages.push(i);
   }
 

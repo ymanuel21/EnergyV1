@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { getAdminPrisma, requireAuth } from '@/app/admin/lib/admin-prisma';
 
 export type ContentEntity = 'product' | 'project' | 'testimonial';
@@ -94,6 +95,18 @@ export async function publishEntity({ entity, id }: PublishInput) {
         });
       }
     }
+
+    // Invalidate the public product page + listing so the ISR cache reflects the publish.
+    const publishedSlug = (draft.slug as string) || product.slug;
+    revalidatePath('/produk');
+    revalidatePath(`/produk/${publishedSlug}`);
+
+    // Invalidate the affected brand page(s) — the product's brand may have changed.
+    const brandIds = Array.from(new Set([product.brandId, draft.brandId].filter(Boolean))) as string[];
+    if (brandIds.length) {
+      const brands = await prisma.brand.findMany({ where: { id: { in: brandIds } }, select: { slug: true } });
+      for (const b of brands) revalidatePath(`/brand/${b.slug}`);
+    }
   } else if (entity === 'project') {
     const project = await prisma.project.findUnique({ where: { id } });
     if (!project) throw new Error('Not found');
@@ -144,7 +157,14 @@ export async function archiveEntity({ entity, id }: { entity: ContentEntity; id:
   const prisma = await getAdminPrisma();
 
   if (entity === 'product') {
+    const product = await prisma.product.findUnique({ where: { id }, select: { slug: true, brandId: true } });
     await prisma.product.update({ where: { id }, data: { status: 'archived', isActive: false } });
+    if (product) {
+      revalidatePath('/produk');
+      revalidatePath(`/produk/${product.slug}`);
+      const brand = await prisma.brand.findUnique({ where: { id: product.brandId }, select: { slug: true } });
+      if (brand) revalidatePath(`/brand/${brand.slug}`);
+    }
   } else if (entity === 'project') {
     await prisma.project.update({ where: { id }, data: { status: 'archived', published: false } });
   } else {

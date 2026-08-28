@@ -19,11 +19,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
     }
 
-    await prisma.product.update({ where: { id }, data: { isActive: active } });
+    const product = await prisma.product.update({ where: { id }, data: { isActive: active }, select: { slug: true, brandId: true } });
 
     revalidatePath('/');
     revalidatePath('/produk');
+    revalidatePath(`/produk/${product.slug}`);
     revalidatePath('/admin/products');
+
+    const brand = await prisma.brand.findUnique({ where: { id: product.brandId }, select: { slug: true } });
+    if (brand) revalidatePath(`/brand/${brand.slug}`);
 
     return NextResponse.json({ success: true, isActive: active });
   } catch (err: any) {
