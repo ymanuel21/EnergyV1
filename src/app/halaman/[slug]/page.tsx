@@ -7,11 +7,21 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 function RenderContent({ content }: { content: string }) {
-  if (content.trim().startsWith('<')) {
+  // The route already renders `page.title` as the page's <h1> (see StaticPage below).
+  // Strip any duplicate title heading at the top of legacy CMS content so the title
+  // doesn't render twice (markdown "# Title" or HTML "<h1>Title</h1>").
+  let body = content.trimStart();
+  if (/^#\s+[^\n]*/.test(body)) {
+    body = body.replace(/^#\s+[^\n]*(?:\n+)?/, '');
+  } else if (/^<h1\b/i.test(body)) {
+    body = body.replace(/^<h1\b[^>]*>[\s\S]*?<\/h1>/i, '');
+  }
+
+  if (body.trim().startsWith('<')) {
     // Backward-compat: convert legacy HTML attrs → inline styles.
     // Handles both old format (<p lineHeight="2" spaceAfter="32">)
     // and new format (<p style="line-height:2; margin-bottom:32px">).
-    const html = content.replace(
+    const html = body.replace(
       /<p\b([^>]*?)>/g,
       (match, attrs) => {
         const lh = attrs.match(/lineHeight="([^"]*)"/i)?.[1];
@@ -28,7 +38,7 @@ function RenderContent({ content }: { content: string }) {
   }
   return (
     <div className="prose prose-sm sm:prose max-w-none">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
     </div>
   );
 }
