@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
@@ -20,6 +21,20 @@ for (const m of sidebarModules) {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close the mobile drawer on navigation (covers back/forward and programmatic nav).
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
+  // Close the mobile drawer on Escape.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setSidebarOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const isLogin = pathname === '/admin/login';
   if (isLogin) return <SessionProvider>{children}</SessionProvider>;
 
@@ -28,11 +43,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <AdminToastProvider>
       <SessionManager />
       <div className="flex min-h-screen bg-surface">
-        <aside className="w-56 shrink-0 border-r border-border bg-card p-4 flex flex-col">
-          <Link href="/admin" className="mb-6 block text-lg font-bold text-primary">
-            EBTPlaza Admin
-          </Link>
-          <nav className="flex-1 space-y-6 overflow-y-auto">
+        {/* Mobile backdrop */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/50 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
+        <aside className={`fixed inset-y-0 left-0 z-50 w-56 shrink-0 border-r border-border bg-card p-4 flex flex-col transform transition-transform duration-200 ease-in-out md:static md:z-auto md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="mb-6 flex items-center justify-between">
+            <Link href="/admin" onClick={() => setSidebarOpen(false)} className="block text-lg font-bold text-primary">
+              EBTPlaza Admin
+            </Link>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="md:hidden rounded-lg p-1 text-muted hover:bg-surface hover:text-primary"
+              aria-label="Close menu"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <nav className="flex-1 space-y-6 overflow-y-auto" onClick={() => setSidebarOpen(false)}>
             {/* Dashboard */}
             <div>
               <Link
@@ -65,7 +100,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </nav>
           <div className="pt-6 border-t border-border">
             <button
-              onClick={() => signOut({ redirect: true, callbackUrl: '/admin/login' })}
+              onClick={() => { setSidebarOpen(false); signOut({ redirect: true, callbackUrl: '/admin/login' }); }}
               className="w-full rounded-lg px-3 py-2 text-left text-sm text-muted hover:bg-surface"
             >
               Logout
@@ -74,7 +109,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </aside>
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 border-b border-border bg-card px-6 flex items-center justify-between shrink-0">
-            <div className="text-sm font-medium text-muted">EBTPlaza Admin</div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="md:hidden rounded-lg p-1 text-muted hover:bg-surface hover:text-primary"
+                aria-label="Open menu"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <div className="text-sm font-medium text-muted">EBTPlaza Admin</div>
+            </div>
             <div className="flex items-center gap-3">
               <NotificationBadge />
             </div>

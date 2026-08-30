@@ -37,6 +37,7 @@ export default async function QuotesPage({
   if (search) {
     const q = search.toLowerCase();
     quotes = quotes.filter((r: any) =>
+      r.id.toLowerCase().includes(q) ||
       r.name.toLowerCase().includes(q) ||
       r.company.toLowerCase().includes(q) ||
       r.email.toLowerCase().includes(q)
@@ -72,7 +73,7 @@ export default async function QuotesPage({
         <input
           name="search"
           defaultValue={search}
-          placeholder="Search by name, company, or email..."
+          placeholder="Search by quote ID, name, company, or email..."
           className="w-full max-w-xs rounded-lg border border-border px-3 py-1.5 text-xs focus:border-primary outline-none bg-card"
         />
       </form>
