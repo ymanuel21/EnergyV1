@@ -35,6 +35,7 @@ export function MultiImageUpload({
 
   const [images, setImages] = useState<string[]>(initialValue);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync when controlled value changes externally
@@ -62,6 +63,7 @@ export function MultiImageUpload({
     setUploading(true);
     onUploadingChange?.(true);
     const newUrls: string[] = [];
+    let failed = 0;
 
     for (const file of Array.from(files)) {
       const form = new FormData();
@@ -71,10 +73,19 @@ export function MultiImageUpload({
         if (res.ok) {
           const { url } = await res.json();
           newUrls.push(url);
+        } else {
+          failed++;
         }
       } catch (err) {
         console.error('Upload error:', err);
+        failed++;
       }
+    }
+
+    if (failed > 0) {
+      setUploadError('Gambar produk gagal diunggah. Periksa file dan koneksi Anda lalu coba lagi.');
+    } else {
+      setUploadError(null);
     }
 
     emit([...images, ...newUrls]);
@@ -108,6 +119,12 @@ export function MultiImageUpload({
   return (
     <div className={className}>
       <label className="block text-sm font-medium text-primary mb-1">{label}</label>
+
+      {uploadError && (
+        <p role="alert" className="mb-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600">
+          {uploadError} <span className="text-red-400">Kode: PROD_UPLOAD_001</span>
+        </p>
+      )}
 
       {/* Gallery */}
       <div className="grid grid-cols-4 gap-3 mb-3">

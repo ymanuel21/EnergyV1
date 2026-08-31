@@ -14,6 +14,28 @@ export const productSchema = z.object({
   specifications: z.any().default([]),
 });
 
+// Product create payload — mirrors buildPayload() in
+// src/app/admin/products/productReducer.ts. Field-level Indonesian messages
+// so validation failures surface as actionable errors in the admin UI.
+// NOTE: price is validated as `min(0)` (NOT `> 0`) because this is a
+// solar-catalog where "contact for price" products legitimately have price 0
+// (see CONTACT_FOR_PRICE / REQUEST_QUOTE in src/lib/services/product-pricing.ts).
+// Remaining fields are passed through without validation here.
+export const productCreateSchema = z
+  .object({
+    name: z.string().trim().min(1, 'Nama produk wajib diisi.'),
+    slug: z
+      .string()
+      .trim()
+      .min(1, 'Slug wajib diisi.')
+      .regex(/^[a-z0-9-]+$/, 'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung.'),
+    brandId: z.string().min(1, 'Brand wajib dipilih.'),
+    price: z.number().int('Harga harus berupa angka bulat.').min(0, 'Harga tidak boleh negatif.'),
+    stock: z.number().int('Stok harus berupa angka bulat.').min(0, 'Stok tidak boleh negatif.'),
+    sku: z.string().nullable().optional(),
+  })
+  .passthrough();
+
 // Homepage Section
 export const homepageSectionSchema = z.object({
   type: z.enum(['hero', 'category-grid', 'featured-products', 'brands', 'cta', 'projects', 'testimonials', 'system-types']),

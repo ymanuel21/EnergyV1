@@ -9,6 +9,8 @@ interface CurrencyInputProps {
   defaultValue?: number;
   placeholder?: string;
   className?: string;
+  /** Called with the parsed integer value whenever the currency changes. */
+  onChange?: (value: number) => void;
 }
 
 function formatRupiah(value: number): string {
@@ -29,6 +31,7 @@ export function CurrencyInput({
   defaultValue,
   placeholder = '0',
   className = '',
+  onChange,
 }: CurrencyInputProps) {
   const displayValue = defaultValue ? formatRupiah(defaultValue) : '';
   const [formatted, setFormatted] = useState(displayValue);
@@ -53,6 +56,9 @@ export function CurrencyInput({
 
     // Format with separators
     const formatted = numeric === 0 ? '' : formatRupiah(numeric);
+
+    // Notify parent of the parsed numeric value (not the formatted string).
+    onChange?.(numeric);
 
     // Count separators before cursor to adjust position
     const sepBefore = (raw.substring(0, cursorRef.current).match(/\./g) || []).length;

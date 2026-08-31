@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useReducer } from 'react';
+import { useState, useCallback, useReducer, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../AdminToastProvider';
 import { SlugInput } from '../SlugInput';
@@ -14,6 +14,11 @@ import { StatusBadge } from '@/components/admin/StatusBadge';
 import { saveDraft, publishEntity } from '@/lib/services/content-versioning';
 import { productReducer, makeInitialState, buildPayload } from './productReducer';
 import type { ProductState, ProductAction } from './productReducer';
+import {
+  makeReportId,
+  type ProductCreateError,
+  type ProductCreateResult,
+} from '@/lib/product-errors';
 
 /* ═══════════════════════════════════════
    ProductForm — tabbed enterprise editor
@@ -26,7 +31,19 @@ interface ProductFormProps {
   defaultValues?: any;
   brands: any[];
   categories: any[];
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: any) => Promise<ProductCreateResult | void>;
+}
+
+/** Human-readable suggested action for a given error code. */
+function errorSuggestion(code: string, field?: string): string {
+  if (code.startsWith('PROD_DATABASE_DUPLICATE_SLUG')) return 'Gunakan slug yang berbeda.';
+  if (code.startsWith('PROD_DATABASE_DUPLICATE_SKU')) return 'Gunakan SKU yang berbeda.';
+  if (code === 'PROD_AUTH_001') return 'Silakan login kembali.';
+  if (code.startsWith('PROD_VALIDATION')) {
+    return field ? `Perbaiki field ${field} lalu coba lagi.` : 'Periksa data produk dan coba lagi.';
+  }
+  if (code.startsWith('PROD_UPLOAD')) return 'Periksa file dan koneksi Anda lalu coba lagi.';
+  return 'Silakan coba lagi. Jika masalah tetap terjadi, kirimkan ID laporan ini kepada administrator.';
 }
 
 export function ProductForm({ defaultValues, brands, categories, onSubmit }: ProductFormProps) {
@@ -37,6 +54,15 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
   const [activeTab, setActiveTab] = useState<Tab>('Overview');
   const [saving, setSaving] = useState(false);
   const [saveState, setSaveState] = useState<'idle' | 'saved' | 'error'>('idle');
+  const [formError, setFormError] = useState<ProductCreateError | null>(null);
+  const errorRef = useRef<HTMLDivElement | null>(null);
+
+  // Scroll the inline error panel into view whenever a new error appears.
+  useEffect(() => {
+    if (formError) {
+      errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [formError]);
 
   const [state, dispatch] = useReducer(productReducer, defaultValues, makeInitialState);
   const productId = defaultValues?.id;
@@ -47,23 +73,37 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setFormError(null);
     const data = buildPayload(state, productId, brandSlug);
 
     try {
-    if (productId) {
-      await saveDraft({ entity: 'product', id: productId, data });
-      setSaving(false); setSaveState('saved');
-      showToast('✓ Draft berhasil disimpan', 'success');
-      router.refresh();
-    } else {
-      await onSubmit(data);
-      setSaving(false); 
-      showToast('✓ Produk berhasil dibuat', 'success');
-      router.push('/admin/products'); router.refresh();
-    }
+      if (productId) {
+        await saveDraft({ entity: 'product', id: productId, data });
+        setSaving(false); setSaveState('saved');
+        showToast('✓ Draft berhasil disimpan', 'success');
+        router.refresh();
+      } else {
+        const result = await onSubmit(data);
+        if (result && result.success === false) {
+          // Structured error from the server action — show it verbatim.
+          setSaving(false);
+          setFormError(result);
+          return;
+        }
+        setSaving(false);
+        showToast('✓ Produk berhasil dibuat', 'success');
+        router.push('/admin/products'); router.refresh();
+      }
     } catch {
+      // The server action itself threw (network failure / unexpected exception),
+      // so no structured result is available. Show a safe fallback + report ID.
       setSaving(false);
-      showToast('✕ Gagal menyimpan', 'error');
+      setFormError({
+        success: false,
+        code: 'PROD_SERVER_001',
+        message: 'Gagal menyimpan produk. Silakan coba lagi.',
+        reportId: makeReportId(),
+      });
     }
   }, [productId, buildPayload, state, onSubmit, router, showToast, brandSlug]);
 
@@ -93,6 +133,29 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
   return (
     <form onSubmit={handleSubmit}>
 
+      {/* ── Inline error panel ── */}
+      {formError && (
+        <div ref={errorRef} role="alert" className="mb-6 rounded-lg border border-red-300 bg-red-50 p-4 text-sm">
+          <div className="flex items-start gap-3">
+            <span aria-hidden className="text-lg leading-none text-red-600">⚠</span>
+            <div className="flex-1 space-y-1">
+              <p className="font-semibold text-red-700">Gagal menyimpan produk</p>
+              <p className="text-red-700">{formError.message}</p>
+              {formError.field && (
+                <p className="text-xs font-medium text-red-600">
+                  Field: <span className="capitalize">{formError.field}</span>
+                </p>
+              )}
+              <p className="text-xs text-red-500">Kode: {formError.code}</p>
+              <p className="text-xs text-red-500">ID laporan: {formError.reportId}</p>
+              <p className="pt-1 text-xs font-medium text-red-700">
+                {errorSuggestion(formError.code, formError.field)}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Tab Bar ── */}
       <div className="flex gap-0 border-b border-border mb-6 -mx-6 px-6">
         {TABS.map(tab => (
@@ -113,7 +176,13 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Slug <span className="text-red-500">*</span></label>
-              <SlugInput name="slug" defaultValue={defaultValues?.slug} sourceName="name" className={inputCls} />
+              <SlugInput
+                name="slug"
+                defaultValue={defaultValues?.slug}
+                sourceName="name"
+                onChange={(value) => dispatch({ type: 'SET_SLUG', value })}
+                className={inputCls}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-primary mb-1">Brand <span className="text-red-500">*</span></label>
@@ -217,8 +286,8 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
       {/* ── Pricing Tab ── */}
       {activeTab === 'Pricing' && (
         <div className="grid gap-4 sm:grid-cols-2">
-          <CurrencyInput name="price" label="Harga" required defaultValue={defaultValues?.price} />
-          <CurrencyInput name="originalPrice" label="Harga Asli (coret)" defaultValue={defaultValues?.originalPrice ?? undefined} />
+          <CurrencyInput name="price" label="Harga" required defaultValue={defaultValues?.price} onChange={(v) => dispatch({ type: 'SET_PRICE', value: v })} />
+          <CurrencyInput name="originalPrice" label="Harga Asli (coret)" defaultValue={defaultValues?.originalPrice ?? undefined} onChange={(v) => dispatch({ type: 'SET_ORIGINAL_PRICE', value: v > 0 ? v : null })} />
           
           <div className="sm:col-span-2 border-t border-border pt-4">
             <label className="block text-sm font-medium text-primary mb-2">Price Display Mode</label>
