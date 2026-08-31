@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import type { MediaItem } from '@/lib/services/media';
 
-const SOURCES = ['all', 'product', 'project', 'brand', 'testimonial'] as const;
+const SOURCES = ['all', 'product', 'project', 'brand', 'testimonial', 'library'] as const;
 type SourceFilter = typeof SOURCES[number];
 
 const SOURCE_LABELS: Record<string, string> = {
-  product: 'Produk', project: 'Proyek', brand: 'Brand', testimonial: 'Testimoni',
+  product: 'Produk', project: 'Proyek', brand: 'Brand', testimonial: 'Testimoni', library: 'Library',
 };
 
 export function MediaBrowser({ items }: { items: MediaItem[] }) {

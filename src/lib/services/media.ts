@@ -55,6 +55,24 @@ export async function aggregateMediaDatabase(prisma: PrismaClient): Promise<Medi
     }
   } catch (e: any) { console.error('[Media] Testimonials:', e?.message); }
 
+  // Library uploads — raw `assets` table rows (images uploaded directly via /api/upload,
+  // e.g. from the Media page's "Upload Image"). Appended last so referenced images
+  // (products/projects/brands/testimonials above) win de-duplication and keep their source.
+  try {
+    const assets = await prisma.asset.findMany({ select: { id: true, filename: true }, orderBy: { createdAt: 'desc' } });
+    for (const a of assets) {
+      items.push({
+        id: `lib-${a.id}`,
+        url: `/api/asset/${a.id}`,
+        name: a.filename || 'Untitled',
+        source: 'library',
+        sourceName: a.filename || 'Media Library',
+        sourceId: a.id,
+        type: 'image',
+      });
+    }
+  } catch (e) { console.error('[Media] Assets:', e); }
+
   return items;
 }
 

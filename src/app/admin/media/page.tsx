@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { getMediaDatabase } from './actions';
 import { MediaBrowser } from './MediaBrowser';
+import { MediaUploadButton } from './MediaUploadButton';
 
 export default async function MediaPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const params = await searchParams;
@@ -14,6 +15,7 @@ export default async function MediaPage({ searchParams }: { searchParams: Promis
           <h1 className="text-2xl font-bold text-primary">Media Library</h1>
           <p className="text-sm text-muted mt-1">{items.length} total references</p>
         </div>
+        <MediaUploadButton />
       </div>
 
       <form className="mb-4">

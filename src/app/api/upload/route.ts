@@ -22,6 +22,7 @@ export async function POST(request: Request) {
     const asset = await prisma.asset.create({
       data: {
         data: dataUrl,
+        filename: file.name,
         mimeType,
         size: file.size,
       },

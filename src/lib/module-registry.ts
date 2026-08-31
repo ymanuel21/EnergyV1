@@ -11,6 +11,7 @@ export interface ModuleDefinition {
   permission: string;  // future RBAC key
   searchFields: string[]; // fields to search across
   crudRoutes?: { new?: string; edit?: string };
+  hidden?: boolean;    // hide from the admin sidebar (route + data remain intact)
 }
 
 export const moduleRegistry: Record<string, ModuleDefinition> = {
@@ -125,6 +126,7 @@ export const moduleRegistry: Record<string, ModuleDefinition> = {
     description: 'Manage static pages (About, Terms, etc.)',
     permission: 'manage_pages',
     searchFields: ['title', 'content', 'slug'],
+    hidden: true,
   },
   'static-pages': {
     id: 'static-pages',

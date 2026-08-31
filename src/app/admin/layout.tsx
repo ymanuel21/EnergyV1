@@ -10,7 +10,7 @@ import { SessionProvider } from 'next-auth/react';
 import { moduleRegistry, MODULE_GROUPS } from '@/lib/module-registry';
 import { NotificationBadge } from '@/components/admin/NotificationBadge';
 
-const sidebarModules = Object.values(moduleRegistry).filter(m => m.id !== 'dashboard');
+const sidebarModules = Object.values(moduleRegistry).filter(m => m.id !== 'dashboard' && !m.hidden);
 
 // Group modules
 const grouped: Record<string, typeof sidebarModules> = {};
