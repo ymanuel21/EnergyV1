@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { HamburgerIcon } from '@ui/Icons';
+import { HamburgerIcon, ChevronRightIcon } from '@ui/Icons';
 import { categories as defaultCategories } from '@/lib/data/categories';
 import { brandRepo } from '@/lib/repositories/brand';
 import { featureFlags } from '@/lib/platform';
@@ -126,6 +126,24 @@ export function MegaMenu() {
         }`}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          {/* Semua Produk — prominent action to view the full product catalog */}
+          <div className="border-b border-border px-4 sm:px-6 py-3">
+            <Link
+              href="/produk"
+              onClick={close}
+              role="menuitem"
+              className="group flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 hover:bg-surface transition-colors"
+            >
+              <span className="flex min-w-0 items-baseline gap-2.5">
+                <span className="text-sm font-semibold text-primary group-hover:text-primary-hover transition-colors">
+                  Semua Produk
+                </span>
+                <span className="text-xs text-muted">Lihat semua produk</span>
+              </span>
+              <ChevronRightIcon className="h-4 w-4 shrink-0 text-muted group-hover:text-primary transition-colors" />
+            </Link>
+          </div>
+
           <div className="relative">
             {/* Scrollable grid — overflow-y-scroll forces visible scrollbar */}
             <div
