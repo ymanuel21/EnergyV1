@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 import { ProductShowcase } from '@components/home/ProductShowcase';
 import { SystemTypeTabs } from '@components/home/SystemTypeTabs';
-import { resolveVideoSrc } from '@/lib/video-url';
 
 export interface SectionRendererProps {
   section: {
