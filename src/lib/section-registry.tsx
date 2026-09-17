@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { ProductShowcase } from '@components/home/ProductShowcase';
 import { SystemTypeTabs } from '@components/home/SystemTypeTabs';
+import { resolveVideoSrc } from '@/lib/video-url';
 
 export interface SectionRendererProps {
   section: {
@@ -396,8 +397,8 @@ function HeroRenderer({ section, data }: SectionRendererProps) {
           </div>
         </div>
         <div className="relative">
-          <div className="aspect-square overflow-hidden rounded-3xl bg-card shadow-2xl shadow-gray-900/5 ring-1 ring-gray-900/5">
-            <img src={heroImage} alt={heroProduct?.name || section.settings.title || 'Hero'} className="h-full w-full object-contain p-8" />
+          <div className="relative aspect-square overflow-hidden rounded-3xl bg-card shadow-2xl shadow-gray-900/5 ring-1 ring-gray-900/5">
+            <SafeImage src={heroImage} alt={heroProduct?.name || section.settings.title || 'Hero'} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-contain p-8" />
           </div>
         </div>
       </div>
@@ -646,9 +647,9 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
           <Link href={`/proyek/${featured.slug}`}
             className="group block overflow-hidden rounded-2xl border border-border bg-card hover:shadow-lg transition-shadow">
             <div className="grid md:grid-cols-2">
-              <div className="aspect-[4/3] md:aspect-auto overflow-hidden bg-surface">
+              <div className="relative aspect-[4/3] md:aspect-auto overflow-hidden bg-surface">
                 {(featured.coverImage || (Array.isArray(featured.images) && featured.images[0])) ? (
-                  <img src={featured.coverImage || featured.images[0]} alt={featured.title} className="h-full w-full object-cover group-hover:scale-105 transition duration-700" />
+                  <SafeImage src={featured.coverImage || featured.images[0]} alt={featured.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover group-hover:scale-105 transition duration-700" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-6xl">☀️</div>
                 )}
@@ -678,9 +679,9 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {grid.map((p: any) => (
                 <Link key={p.id} href={`/proyek/${p.slug}`} className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                  <div className="aspect-[16/10] overflow-hidden bg-surface">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-surface">
                     {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
-                      <img src={p.coverImage || p.images[0]} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
+                      <SafeImage src={p.coverImage || p.images[0]} alt={p.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition duration-500" />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-4xl">☀️</div>
                     )}
@@ -730,10 +731,10 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
       <Link href={`/proyek/${featured.slug}`}
         className="group block overflow-hidden rounded-2xl border border-border bg-card hover:shadow-lg transition-shadow">
         <div className="grid md:grid-cols-2">
-          <div className="aspect-[4/3] md:aspect-auto overflow-hidden bg-surface">
+          <div className="relative aspect-[4/3] md:aspect-auto overflow-hidden bg-surface">
             {(featured.coverImage || (Array.isArray(featured.images) && featured.images[0])) ? (
-              <img src={featured.coverImage || featured.images[0]} alt={featured.title}
-                className="h-full w-full object-cover group-hover:scale-105 transition duration-700" />
+              <SafeImage src={featured.coverImage || featured.images[0]} alt={featured.title}
+                fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover group-hover:scale-105 transition duration-700" />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-6xl">☀️</div>
             )}
@@ -778,10 +779,10 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
             {others.map((p: any) => (
               <Link key={p.id} href={`/proyek/${p.slug}`}
                 className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-                <div className="aspect-[16/10] overflow-hidden bg-surface">
+                <div className="relative aspect-[16/10] overflow-hidden bg-surface">
                   {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
-                    <img src={p.coverImage || p.images[0]} alt={p.title}
-                      className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
+                    <SafeImage src={p.coverImage || p.images[0]} alt={p.title}
+                      fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition duration-500" />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-4xl">☀️</div>
                   )}

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { SafeImage } from '@ui/SafeImage';
 
 interface TabCard {
   title: string;
@@ -46,9 +47,12 @@ export function SystemTypeTabs({ cards }: SystemTypeTabsProps) {
         {/* Image — full width, no cropping, natural aspect ratio */}
         {current.image && (
           <div className="bg-surface">
-            <img
+            <SafeImage
               src={current.image}
               alt={current.title}
+              width={1920}
+              height={862}
+              sizes="100vw"
               className="w-full h-auto"
             />
           </div>

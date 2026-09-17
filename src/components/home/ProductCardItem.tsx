@@ -16,6 +16,7 @@ export function ProductCardItem({ product: p, showPrice, showBadge, priceLabels,
       className={`group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition block ${isSingle ? 'flex flex-col sm:flex-row' : ''}`}>
       <div className={`overflow-hidden bg-surface ${isSingle ? 'sm:w-[55%] aspect-square sm:aspect-auto sm:h-full' : 'aspect-square'}`}>
         <SafeImage src={p.images?.[0] || ''} alt={p.name} width={400} height={400}
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="h-full w-full object-contain p-4 group-hover:scale-105 transition duration-500" />
       </div>
       <div className={`p-4 ${isSingle ? 'sm:w-[45%] flex flex-col justify-center' : ''}`}>
