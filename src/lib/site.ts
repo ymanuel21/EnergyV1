@@ -11,12 +11,12 @@ export interface SiteSettings {
   og: { type: string; siteName: string; locale: string; twitterCard: string };
 }
 
-const DEFAULTS: SiteSettings = {
+export const DEFAULTS: SiteSettings = {
   name: 'EBTPlaza', shortName: 'EBTPlaza',
   tagline: 'Energi Terbarukan, Harga Terjangkau!',
   description: 'Pusat produk energi terbarukan: panel surya, inverter, baterai lithium, paket PLTS, dan kebutuhan proyek.',
   email: 'info@ebtplaza.com', phone: '(022) 20522279',
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '6282112850215',
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '6285111023816',
   address: 'Jl. Terusan Jakarta, Puri Dago Raya No.342 Kav 31, Sukamiskin, Kec. Arcamanik, Kota Bandung, Jawa Barat 40293',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ebtplaza.vercel.app',
   company: 'EBTPlaza',

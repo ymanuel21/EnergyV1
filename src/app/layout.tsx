@@ -13,6 +13,7 @@ import { ThemeProvider } from '@components/providers/ThemeProvider';
 import { getThemeSettings } from '@/lib/api/theme';
 import { SITE_CONFIG } from '@/lib/site';
 import { loadSiteFromDb } from '@/lib/site-server';
+import { SiteProvider } from '@providers/SiteProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -46,11 +47,12 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const themeSettings = await getThemeSettings();
-  await loadSiteFromDb();
+  const site = await loadSiteFromDb();
 
   return (
     <html lang="id" className={inter.variable}>
       <body className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased">
+        <SiteProvider settings={site}>
         <ThemeProvider settings={themeSettings} />
         <SkipToContent />
         <ToastProvider>
@@ -67,6 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </WishlistProvider>
         </CartProvider>
         </ToastProvider>
+        </SiteProvider>
       </body>
     </html>
   );

@@ -9,7 +9,7 @@ import { RequiredLabel } from '@ui/RequiredLabel';
 import { FormLabel } from '@ui/FormLabel';
 import { ProductAutocomplete } from '@components/forms/ProductAutocomplete';
 import { useCart } from '@providers/CartProvider';
-import { SITE } from '@lib/constants';
+import { useSite } from '@providers/SiteProvider';
 import { formatCurrency } from '@lib/utils/format';
 import type { RfqItem } from '@/types/forms';
 
@@ -25,6 +25,7 @@ interface FormErrors {
 
 export default function RfqPage() {
   const cart = useCart();
+  const site = useSite();
   const [step, setStep] = useState<Step>('form');
   const [errors, setErrors] = useState<FormErrors>({});
   const [form, setForm] = useState({
@@ -284,7 +285,7 @@ export default function RfqPage() {
 
   function buildWhatsAppMessage(): string {
     const lines = [
-      `*Permintaan Penawaran — ${SITE.name}*`,
+      `*Permintaan Penawaran — ${site.name}*`,
       '',
       `*Kontak:*`,
       `*Customer:* ${form.customerType === 'BUSINESS' ? 'Business / Corporate' : 'Residential'}`,
@@ -310,7 +311,7 @@ export default function RfqPage() {
     return encodeURIComponent(lines.join('\n'));
   }
 
-  const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${buildWhatsAppMessage()}`;
+  const whatsappUrl = `https://wa.me/${site.whatsapp}?text=${buildWhatsAppMessage()}`;
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   if (step === 'confirm') {

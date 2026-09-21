@@ -67,11 +67,12 @@ export class EmailService {
     const adminUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://energyv1.vercel.app';
     const quoteUrl = `${adminUrl}/admin/quotes/${quote.id}`;
 
-    const subject = `New Quote Request — ${quote.name}`;
+    const subject = `New RFQ Request — ${quote.name} — ${quote.id}`;
 
     const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px;">
-        <h2 style="color: #1a1a1a;">New Quote Request</h2>
+        <h2 style="color: #1a1a1a;">New RFQ Request — EBT Plaza</h2>
+        <p style="color: #6b7280; font-size: 13px; margin: 0 0 16px;">Request ID: <code>${quote.id}</code></p>
         
         <div style="background: #f9fafb; border-radius: 8px; padding: 20px; margin: 16px 0;">
           <h3 style="color: #374151; margin: 0 0 12px;">Customer</h3>

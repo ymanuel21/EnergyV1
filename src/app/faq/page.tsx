@@ -4,6 +4,7 @@ import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { Accordion } from '@ui/Accordion';
 import { getAllFaqs } from '@/lib/api/faq';
+import { SITE } from '@lib/constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,7 +45,7 @@ export default async function FaqPage() {
         </p>
         <div className="mt-4 flex gap-3">
           <a
-            href="https://wa.me/6281234567890"
+            href={`https://wa.me/${SITE.whatsapp}`}
             target="_blank"
             rel="noopener"
             className="rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 transition-colors"

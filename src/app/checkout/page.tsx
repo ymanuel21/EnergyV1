@@ -11,7 +11,7 @@ import { formatCurrency } from '@lib/utils/format';
 import { createOrderPayload, saveOrderToSheets, buildWhatsAppMessage } from '@lib/api/sheets';
 import { CartIcon } from '@ui/Icons';
 import type { Metadata } from 'next';
-import { SITE } from '@lib/constants';
+import { useSite } from '@providers/SiteProvider';
 
 /** Compute subtotal for items where showPrice=true */
 function visibleSubtotal(items: { price: number; quantity: number; showPrice: boolean }[]) {
@@ -28,6 +28,7 @@ type CheckoutStep = 'shipping' | 'payment' | 'review';
 
 export default function CheckoutPage() {
   const cart = useCart();
+  const { whatsapp } = useSite();
   const [step, setStep] = useState<CheckoutStep>('shipping');
   const [formData, setFormData] = useState({
     name: '',
@@ -68,7 +69,7 @@ export default function CheckoutPage() {
     );
 
     saveOrderToSheets(order).then(() => {
-      const waUrl = buildWhatsAppMessage(SITE.whatsapp, order);
+      const waUrl = buildWhatsAppMessage(whatsapp, order);
       cart.clearCart();
       window.open(waUrl, '_blank');
     });

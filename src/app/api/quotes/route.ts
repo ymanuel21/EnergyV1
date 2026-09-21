@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // 2. Send email notification (fire-and-forget — never blocks or fails the response)
+    // 2. Send email notification (awaited — completes before the response; failures never roll back the quote)
     if (quote) {
       try {
         const prisma = await getPrisma();
@@ -40,9 +40,11 @@ export async function POST(request: Request) {
         });
         console.log('[Quotes] Email configured:', emailService.isConfigured, '| recipients:', recipients?.value || '(none)');
         if (recipients?.value) {
-          emailService.sendQuoteNotification(quote, recipients.value).catch(err => {
+          try {
+            await emailService.sendQuoteNotification(quote, recipients.value);
+          } catch (err) {
             console.error('[Quotes] Email notification failed:', err);
-          });
+          }
         } else {
           console.log('[Quotes] No recipients configured — skipping email.');
         }
