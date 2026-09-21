@@ -1,8 +1,12 @@
+'use client';
+
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
 import { Badge } from '@ui/Badge';
 import { Price } from '@ui/Price';
 import { HeartIcon } from '@ui/Icons';
+import { useWishlist } from '@providers/WishlistProvider';
+import { useToast } from '@providers/ToastProvider';
 import type { Product, ProductBadgeVariant } from '@/types/product';
 
 const BADGE_LABELS: Record<ProductBadgeVariant, string> = {
@@ -19,9 +23,13 @@ interface ProductCardProps {
   brandName?: string;
   brandSlug?: string;
   priceLabel?: string;  // pre-resolved pricing label from server
+  priority?: boolean;   // mark above-the-fold image as eager
 }
 
-export function ProductCard({ product, variant = 'grid', className = '', brandName, brandSlug, priceLabel }: ProductCardProps) {
+export function ProductCard({ product, variant = 'grid', className = '', brandName, brandSlug, priceLabel, priority = false }: ProductCardProps) {
+  const { isInWishlist, toggleItem } = useWishlist();
+  const { showToast } = useToast();
+  const wished = isInWishlist(product.id);
   // Use DB-provided brand data when available; fall back to flattened fields
   const brand = (brandName && brandSlug)
     ? { name: brandName, slug: brandSlug, logo: '' }
@@ -44,7 +52,8 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
           alt={product.name}
           width={400}
           height={400}
-          className="h-full w-full object-contain p-4 transition group-hover:scale-105"
+          priority={priority}
+          className="h-full w-full object-cover transition group-hover:scale-105"
           sizes={variant === 'carousel' ? '240px' : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw'}
         />
 
@@ -68,10 +77,19 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
 
         {/* Wishlist button */}
         <button
-          className="absolute right-2 bottom-2 rounded-full bg-white/90 p-1.5 text-muted hover:text-red-500 transition-colors"
-          aria-label={`Simpan ${product.name} ke wishlist`}
+          type="button"
+          className={`absolute right-2 bottom-2 rounded-full bg-white/90 p-1.5 transition-colors ${wished ? 'text-red-500' : 'text-muted hover:text-red-500'}`}
+          aria-label={wished ? `Hapus ${product.name} dari wishlist` : `Simpan ${product.name} ke wishlist`}
+          aria-pressed={wished}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const wasWished = wished;
+            toggleItem(product.id);
+            showToast(wasWished ? 'Dihapus dari wishlist' : 'Ditambahkan ke wishlist');
+          }}
         >
-          <HeartIcon className="h-4 w-4" />
+          <HeartIcon className={`h-4 w-4 ${wished ? 'fill-current' : ''}`} />
         </button>
       </Link>
 

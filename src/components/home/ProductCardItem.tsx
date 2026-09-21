@@ -17,7 +17,7 @@ export function ProductCardItem({ product: p, showPrice, showBadge, priceLabels,
       <div className={`overflow-hidden bg-surface ${isSingle ? 'sm:w-[55%] aspect-square sm:aspect-auto sm:h-full' : 'aspect-square'}`}>
         <SafeImage src={p.images?.[0] || ''} alt={p.name} width={400} height={400}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="h-full w-full object-contain p-4 group-hover:scale-105 transition duration-500" />
+          className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
       </div>
       <div className={`p-4 ${isSingle ? 'sm:w-[45%] flex flex-col justify-center' : ''}`}>
         <h3 className={`font-medium text-primary line-clamp-2 ${isSingle ? 'text-lg' : 'text-sm'}`}>{p.name}</h3>

@@ -5,6 +5,7 @@ import { Breadcrumb } from '@ui/Breadcrumb';
 import { Button } from '@ui/Button';
 import { Tabs } from '@ui/Tabs';
 import { ImageGallery } from '@components/product/ImageGallery';
+import { ProductDescription } from '@components/product/ProductDescription';
 import { PriceBlock } from '@components/product/PriceBlock';
 import { ProductBadgeGroup } from '@components/product/ProductBadge';
 import { AddToCartButton } from '@components/product/AddToCartButton';
@@ -207,7 +208,7 @@ export default async function ProductDetail({ params }: Props) {
                 label: 'Deskripsi',
                 content: (
                   <div className="prose max-w-none text-sm text-gray-700">
-                    <p>{product.description}</p>
+                    <ProductDescription text={product.description} />
                     <h3>Keunggulan</h3>
                     <ul>
                       {(product.specifications || []).map((spec: any) => (
