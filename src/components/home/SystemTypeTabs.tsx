@@ -44,12 +44,14 @@ export function SystemTypeTabs({ cards }: SystemTypeTabsProps) {
 
       {/* Active card */}
       <div className="rounded-2xl bg-white border border-border overflow-hidden">
-        {/* Image — fixed 16:9 box so the card height is identical on every tab.
-            object-contain keeps the full source image visible: no crop, no distortion.
-            The three sources have different aspect ratios (2.227 / 2.165 / 1.574), so
-            letterboxing is expected — the box no longer resizes with the image. */}
+        {/* Image — fixed box at the NARROWEST source ratio (Off-Grid 1920×1220 = 96/61
+            = 1.57377), so the narrowest/tallest image fills the box exactly and every
+            tab shares one identical height. Measured source ratios: On-Grid 1920×862 =
+            2.22738, Hybrid 1920×887 = 2.16460, Off-Grid 1920×1220 = 1.57377. object-contain
+            keeps the full source visible: no crop, no distortion — the two wider sources
+            letterbox vertically inside the box. */}
         {current.image && (
-          <div className="relative aspect-video w-full overflow-hidden bg-surface">
+          <div className="relative aspect-[1920/1220] w-full overflow-hidden bg-surface">
             <SafeImage
               src={current.image}
               alt={current.title}
