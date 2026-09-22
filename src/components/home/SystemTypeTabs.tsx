@@ -44,16 +44,18 @@ export function SystemTypeTabs({ cards }: SystemTypeTabsProps) {
 
       {/* Active card */}
       <div className="rounded-2xl bg-white border border-border overflow-hidden">
-        {/* Image — full width, no cropping, natural aspect ratio */}
+        {/* Image — fixed 16:9 box so the card height is identical on every tab.
+            object-contain keeps the full source image visible: no crop, no distortion.
+            The three sources have different aspect ratios (2.227 / 2.165 / 1.574), so
+            letterboxing is expected — the box no longer resizes with the image. */}
         {current.image && (
-          <div className="bg-surface">
+          <div className="relative aspect-video w-full overflow-hidden bg-surface">
             <SafeImage
               src={current.image}
               alt={current.title}
-              width={1920}
-              height={862}
-              sizes="100vw"
-              className="w-full h-auto"
+              fill
+              sizes="(max-width: 768px) 100vw, 1024px"
+              className="object-contain"
             />
           </div>
         )}
