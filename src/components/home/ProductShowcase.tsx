@@ -101,12 +101,6 @@ export function ProductShowcase({ products, showPrice, showBadge, showDescriptio
               </div>
             )}
 
-            {(active?.shortDescription || active?.description) && (
-              <p className="text-sm text-muted line-clamp-3 leading-relaxed mt-2">
-                {active.shortDescription || active.description}
-              </p>
-            )}
-
             {/* Tabs: Description | Spesifikasi | Pengiriman & Garansi */}
             <div className="flex-1 min-h-0 mt-3">
               <ProductInfoPanel
