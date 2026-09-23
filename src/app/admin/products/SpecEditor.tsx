@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-interface Specification { key: string; value: string; }
+interface Specification { key: string; value: string; category?: string; }
 
 interface SpecEditorProps {
   value: Specification[];
@@ -40,11 +40,12 @@ export function SpecEditor({ value, onChange }: SpecEditorProps) {
 
   const emit = (next: Specification[]) => {
     setRows(next);
-    const valid = next.filter(s => s.key.trim());
+    // keep a row when it has a label OR a value (value-only rows come from Paste & Parse)
+    const valid = next.filter(s => s.key.trim() || s.value.trim());
     onChange(valid);
   };
 
-  const update = (i: number, field: 'key' | 'value', val: string) => {
+  const update = (i: number, field: 'key' | 'value' | 'category', val: string) => {
     emit(rows.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
   };
 
@@ -95,11 +96,20 @@ export function SpecEditor({ value, onChange }: SpecEditorProps) {
             <button type="button" onClick={() => move(i, 'down')} disabled={i === rows.length - 1}
               className="text-[10px] text-muted hover:text-primary disabled:opacity-20 leading-none">▼</button>
           </div>
-          <div className="flex-1 sm:grid sm:grid-cols-12 gap-1.5">
-            <input value={spec.key} onChange={e => update(i, 'key', e.target.value)}
-              placeholder="e.g. Power" className={`${inputCls} sm:col-span-5`} />
-            <input value={spec.value} onChange={e => update(i, 'value', e.target.value)}
-              placeholder="e.g. 550Wp" className={`${inputCls} sm:col-span-5`} />
+          <div className="flex-1 space-y-1">
+            {/* Optional category (set by Paste & Parse; absent on manually-added rows so
+                their layout is unchanged). */}
+            {spec.category !== undefined && (
+              <input value={spec.category} onChange={e => update(i, 'category', e.target.value)}
+                placeholder="Kategori (opsional)"
+                className="w-full rounded border border-dashed border-border px-2 py-1 text-[10px] text-muted focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-card" />
+            )}
+            <div className="sm:grid sm:grid-cols-12 gap-1.5">
+              <input value={spec.key} onChange={e => update(i, 'key', e.target.value)}
+                placeholder="e.g. Power" className={`${inputCls} sm:col-span-5`} />
+              <input value={spec.value} onChange={e => update(i, 'value', e.target.value)}
+                placeholder="e.g. 550Wp" className={`${inputCls} sm:col-span-5`} />
+            </div>
           </div>
           <button type="button" onClick={() => remove(i)}
             className="shrink-0 pt-1.5 text-xs text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition">✕</button>

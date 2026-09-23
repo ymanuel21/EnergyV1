@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ProductDescription } from '@components/product/ProductDescription';
 
 interface ProductInfoPanelProps {
   product: {
@@ -61,7 +62,17 @@ export function ProductInfoPanel({ product, showDescription = true, showSpecific
       {/* Tab content */}
       <div className="mt-3 text-sm text-muted leading-relaxed min-h-[100px] flex-1">
         {activeTab === 'Description' && (
-          <p className="line-clamp-5">{(product.description || 'Deskripsi produk tidak tersedia saat ini.')}</p>
+          product.description ? (
+            /* Controlled preview: the description is long, so the formatted render is
+               clipped to the same height the old 5-line clamp produced (114 px) instead of
+               stretching the card. The bottom fades out so the cut reads as "continues"
+               rather than as a broken section. The full text stays in the DOM and on the PDP. */
+            <div className="max-h-[114px] overflow-hidden [mask-image:linear-gradient(to_bottom,black_72%,transparent)]">
+              <ProductDescription text={product.description} variant="card" />
+            </div>
+          ) : (
+            <p>Deskripsi produk tidak tersedia saat ini.</p>
+          )
         )}
 
         {activeTab === 'Spesifikasi' && (

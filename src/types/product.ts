@@ -31,6 +31,8 @@ export interface ProductImage {
 export interface Specification {
   label: string;
   value: string;
+  /** optional grouping label produced by the admin "Paste & Parse" tool */
+  category?: string;
 }
 
 export interface ProductDocument {

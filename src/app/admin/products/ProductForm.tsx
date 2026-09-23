@@ -7,6 +7,7 @@ import { SlugInput } from '../SlugInput';
 import { CurrencyInput } from '../CurrencyInput';
 import { BadgeSelector } from '../BadgeSelector';
 import { SpecEditor } from './SpecEditor';
+import { SpecPasteParser } from './SpecPasteParser';
 import { MultiImageUpload } from '../MultiImageUpload';
 import { DownloadManager } from './DownloadManager';
 import { RelatedProductsEditor } from './RelatedProductsEditor';
@@ -337,7 +338,15 @@ export function ProductForm({ defaultValues, brands, categories, onSubmit }: Pro
 
       {/* ── Specifications Tab ── */}
       {activeTab === 'Specifications' && (
-        <SpecEditor value={state.specifications} onChange={v => dispatch({ type: 'SET_SPECS', value: v })} />
+        <div>
+          {/* Paste & Parse — deterministic parser, preview + review before applying.
+              Apply only fills the editor below; nothing is saved until "Simpan". */}
+          <SpecPasteParser
+            currentSpecs={state.specifications}
+            onApply={rows => dispatch({ type: 'SET_SPECS', value: rows })}
+          />
+          <SpecEditor value={state.specifications} onChange={v => dispatch({ type: 'SET_SPECS', value: v })} />
+        </div>
       )}
 
       {/* ── Downloads Tab ── */}

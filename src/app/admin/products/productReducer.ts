@@ -28,7 +28,7 @@ export interface ProductState {
     images: string[];
     badges: string[];  // badge IDs
   };
-  specifications: { key: string; value: string }[];
+  specifications: { key: string; value: string; category?: string }[];
   downloads: { name: string; url: string; type?: string }[];
   related: { relatedProductId: string; type: string }[];
   seo: {
@@ -70,7 +70,7 @@ export type ProductAction =
   | { type: 'SET_IMAGES'; value: string[] }
   | { type: 'SET_BADGES'; value: string[] }
   // Specifications
-  | { type: 'SET_SPECS'; value: { key: string; value: string }[] }
+  | { type: 'SET_SPECS'; value: { key: string; value: string; category?: string }[] }
   // Downloads
   | { type: 'SET_DOWNLOADS'; value: { name: string; url: string; type?: string }[] }
   // Related
@@ -194,7 +194,7 @@ export function buildPayload(state: ProductState, productId?: string, brandSlug?
     images: state.media.images.length > 0 ? state.media.images : ['/images/placeholder/product-placeholder.png'],
     badges: state.media.badges,
     badgeIds: state.media.badges,
-    specifications: state.specifications.filter(s => s.key?.trim()),
+    specifications: state.specifications.filter(s => s.key?.trim() || s.value?.trim()),
     downloads: state.downloads,
     relations: state.related,
     seoTitle: state.seo.seoTitle || undefined,

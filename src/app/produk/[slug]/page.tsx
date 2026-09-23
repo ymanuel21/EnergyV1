@@ -6,6 +6,7 @@ import { Button } from '@ui/Button';
 import { Tabs } from '@ui/Tabs';
 import { ImageGallery } from '@components/product/ImageGallery';
 import { ProductDescription } from '@components/product/ProductDescription';
+import { SpecList, SpecTableRows } from '@components/product/SpecRows';
 import { PriceBlock } from '@components/product/PriceBlock';
 import { ProductBadgeGroup } from '@components/product/ProductBadge';
 import { AddToCartButton } from '@components/product/AddToCartButton';
@@ -210,13 +211,7 @@ export default async function ProductDetail({ params }: Props) {
                   <div className="prose max-w-none text-sm text-gray-700">
                     <ProductDescription text={product.description} />
                     <h3>Keunggulan</h3>
-                    <ul>
-                      {(product.specifications || []).map((spec: any) => (
-                        <li key={spec.key || spec.label}>
-                          <strong>{spec.key || spec.label}:</strong> {spec.value}
-                        </li>
-                      ))}
-                    </ul>
+                    <SpecList specs={product.specifications} />
                   </div>
                 ),
               },
@@ -227,12 +222,7 @@ export default async function ProductDetail({ params }: Props) {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <tbody>
-                        {(product.specifications || []).map((spec: any) => (
-                          <tr key={spec.key || spec.label} className="border-b border-gray-100">
-                            <td className="py-2 pr-4 font-medium text-gray-700">{spec.key || spec.label}</td>
-                            <td className="py-2 text-gray-600">{spec.value}</td>
-                          </tr>
-                        ))}
+                        <SpecTableRows specs={product.specifications} />
                       </tbody>
                     </table>
                   </div>
