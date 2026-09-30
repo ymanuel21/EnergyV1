@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { projectRepo } from '@/lib/repositories/project';
+import { SafeImage } from '@ui/SafeImage';
 
 export const metadata: Metadata = { title: 'Proyek — EBTPlaza', description: 'Portofolio instalasi energi surya.' };
 
@@ -27,9 +28,9 @@ export default async function ProjectsPage() {
           <Link key={p.id} href={`/proyek/${p.slug}`}
             className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md hover:border-primary/20 transition">
             {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
-              <div className="aspect-[4/3] overflow-hidden bg-surface">
-                <img src={p.coverImage || (Array.isArray(p.images) && p.images[0])} alt={p.title}
-                  className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
+              <div className="relative aspect-[4/3] overflow-hidden bg-surface">
+                <SafeImage src={p.coverImage || (Array.isArray(p.images) && p.images[0])} alt={p.title}
+                  fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition duration-500" />
               </div>
             ) : (
               <div className="aspect-[4/3] flex items-center justify-center bg-surface text-3xl text-muted">☀️</div>
