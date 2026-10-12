@@ -8,7 +8,7 @@ import { getAllProducts } from '@lib/api/products';
 
 export const metadata: Metadata = {
   title: 'Brand',
-  description: 'Jelajahi produk berdasarkan brand di EBTPlaza.',
+  description: 'Explore products by brand at EBTPlaza.',
   alternates: { canonical: '/brand' },
 };
 
@@ -17,7 +17,7 @@ export default async function BrandPage() {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Brand' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Brand' }]} />
 
       <div className="mt-4">
         <h1 className="text-2xl font-bold text-gray-900">Brand</h1>
@@ -36,7 +36,7 @@ export default async function BrandPage() {
               <BrandLogo name={brand.name} logo={brand.logo} size="md" />
               <div>
                 <h3 className="text-sm font-semibold text-gray-900">{brand.name}</h3>
-                <p className="text-xs text-gray-500">{count} produk</p>
+                <p className="text-xs text-gray-500">{count} products</p>
               </div>
             </Link>
           );

@@ -110,18 +110,18 @@ export default function RfqPage() {
                 const prod = await pRes.json();
                 // Take first product from array response
                 const p = Array.isArray(prod) ? prod[0] : prod;
-                newItems.push({ name: p?.name || slug, quantity: qty, notes: `Dari proyek: ${project.title}` });
+                newItems.push({ name: p?.name || slug, quantity: qty, notes: `From project: ${project.title}` });
               } else {
-                newItems.push({ name: `[Dihapus] ${slug}`, quantity: 1, notes: 'Produk tidak tersedia — perlu ditinjau' });
+                newItems.push({ name: `[Removed] ${slug}`, quantity: 1, notes: 'Product unavailable — needs review' });
               }
             } catch {
-              newItems.push({ name: slug, quantity: 1, notes: 'Verifikasi produk gagal' });
+              newItems.push({ name: slug, quantity: 1, notes: 'Product verification failed' });
             }
           }
         } else {
           // Fallback: generic item
           newItems.push({
-            name: `Solusi serupa dengan proyek: ${project.title}`,
+            name: `Solutions similar to the project: ${project.title}`,
             quantity: 1,
             notes: `Referensi: ${project.slug}`,
           });
@@ -137,7 +137,7 @@ export default function RfqPage() {
 
         applyProjectItems(newItems, project);
       } catch {
-        showToast('⚠️ Proyek tidak ditemukan');
+        showToast('⚠️ Project not found');
       }
     })();
   }, [projectSlug, importedSlug]);
@@ -151,7 +151,7 @@ export default function RfqPage() {
       ...prev,
       location: project.location || prev.location,
       projectName: project.title || prev.projectName,
-      notes: prev.notes || `Proyek Referensi:\n${project.title}\n\nLokasi: ${project.location || '—'}\n\nDiminta: Solusi energi terbarukan serupa.\n\nSource Project: ${project.slug}`,
+      notes: prev.notes || `Reference Project:\n${project.title}\n\nLocation: ${project.location || '—'}\n\nRequested: A similar renewable energy solution.\n\nSource Project: ${project.slug}`,
     }));
 
     // Clear sessionStorage for this project import
@@ -159,7 +159,7 @@ export default function RfqPage() {
       sessionStorage.setItem('rfq-source-project', project.slug);
     }
 
-    showToast(`✅ RFQ diisi dari ${project.title}`);
+    showToast(`✅ RFQ filled from ${project.title}`);
   }
 
   function handleMergeAppend() {
@@ -167,12 +167,12 @@ export default function RfqPage() {
     if (pendingProject) {
       setForm(prev => ({
         ...prev,
-        notes: prev.notes + `\n\n+ Ditambahkan dari: ${pendingProject.title} (${pendingProject.slug})`,
+        notes: prev.notes + `\n\n+ Added from: ${pendingProject.title} (${pendingProject.slug})`,
       }));
     }
     setImportedSlug(pendingProject?.slug || null);
     setShowMergeDialog(false);
-    showToast(`✅ ${pendingProjectItems.length} item ditambahkan dari ${pendingProject?.title}`);
+    showToast(`✅ ${pendingProjectItems.length} items added from ${pendingProject?.title}`);
   }
 
   function handleMergeReplace() {
@@ -198,11 +198,11 @@ export default function RfqPage() {
   function addItem() {
     setItemError(null);
     const name = newItem.name.trim();
-    if (!name)  { setItemError('Nama barang wajib diisi.'); return; }
-    if (newItem.quantity < 1) { setItemError('Jumlah minimal 1.'); return; }
+    if (!name)  { setItemError('Item name is required.'); return; }
+    if (newItem.quantity < 1) { setItemError('Minimum quantity is 1.'); return; }
 
     setItems((prev) => [...prev, { name, quantity: newItem.quantity, notes: newItem.notes || undefined }]);
-    showToast(`✅ ${name} berhasil ditambahkan.`);
+    showToast(`✅ ${name} added.`);
     setNewItem({ name: '', quantity: 1, notes: '' });
   }
 
@@ -220,11 +220,11 @@ export default function RfqPage() {
   // ── Validation ──
   function validate(): boolean {
     const e: FormErrors = {};
-    if (!form.name.trim()) e.name = 'Nama wajib diisi';
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Email tidak valid';
-    if (!form.phone.trim()) e.phone = 'Telepon wajib diisi';
-    if (form.customerType === 'BUSINESS' && !form.company.trim()) e.company = 'Nama perusahaan wajib diisi';
-    if (items.length === 0) e.items = 'Minimal 1 item';
+    if (!form.name.trim()) e.name = 'Name is required';
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Invalid email';
+    if (!form.phone.trim()) e.phone = 'Phone is required';
+    if (form.customerType === 'BUSINESS' && !form.company.trim()) e.company = 'Company name is required';
+    if (items.length === 0) e.items = 'At least 1 item';
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -242,15 +242,15 @@ export default function RfqPage() {
         `  ${i + 1}. ${item.name} — Qty: ${item.quantity}${item.notes ? ` (${item.notes})` : ''}`
       );
       const messageParts = [
-        `Jenis Customer: ${form.customerType === 'BUSINESS' ? 'Business / Corporate' : 'Residential'}`,
-        form.company ? `Perusahaan: ${form.company}` : '',
+        `Customer type: ${form.customerType === 'BUSINESS' ? 'Business / Corporate' : 'Residential'}`,
+        form.company ? `Company: ${form.company}` : '',
         form.position ? `Jabatan: ${form.position}` : '',
-        form.projectName ? `Nama Proyek: ${form.projectName}` : '',
-        form.location ? `Lokasi: ${form.location}` : '',
+        form.projectName ? `Project name: ${form.projectName}` : '',
+        form.location ? `Location: ${form.location}` : '',
         form.targetDate ? `Target: ${form.targetDate}` : '',
-        form.needsInstallation ? 'Butuh jasa instalasi: Ya' : '',
-        form.notes ? `Catatan: ${form.notes}` : '',
-        `--- Daftar Kebutuhan (${items.length} item) ---`,
+        form.needsInstallation ? 'Installation service needed: Yes' : '',
+        form.notes ? `Note: ${form.notes}` : '',
+        `--- Requirements List (${items.length} items) ---`,
         ...itemLines,
       ];
       const message = messageParts.filter(Boolean).join('\n');
@@ -279,30 +279,30 @@ export default function RfqPage() {
       setStep('confirm');
     } catch (err: any) {
       setSubmitting(false);
-      setSubmitError(err?.message || 'Gagal mengirim. Coba lagi.');
+      setSubmitError(err?.message || 'Failed to send. Please try again.');
     }
   }
 
   function buildWhatsAppMessage(): string {
     const lines = [
-      `*Permintaan Penawaran — ${site.name}*`,
+      `*Quotation Request — ${site.name}*`,
       '',
-      `*Kontak:*`,
+      `*Contact:*`,
       `*Customer:* ${form.customerType === 'BUSINESS' ? 'Business / Corporate' : 'Residential'}`,
-      `*Nama:* ${form.name}`,
+      `*Name:* ${form.name}`,
       `*Email:* ${form.email}`,
       form.phone ? `*Telp:* ${form.phone}` : '',
-      form.company ? `*Perusahaan:* ${form.company}` : '',
+      form.company ? `*Company:* ${form.company}` : '',
       form.position ? `*Jabatan:* ${form.position}` : '',
       '',
-      `*Proyek:*`,
-      form.projectName ? `Nama Proyek: ${form.projectName}` : '',
-      form.location ? `Lokasi: ${form.location}` : '',
+      `*Project:*`,
+      form.projectName ? `Project name: ${form.projectName}` : '',
+      form.location ? `Location: ${form.location}` : '',
       form.targetDate ? `Target: ${form.targetDate}` : '',
-      form.needsInstallation ? 'Butuh jasa instalasi: Ya' : '',
-      form.notes ? `Catatan: ${form.notes}` : '',
+      form.needsInstallation ? 'Installation service needed: Yes' : '',
+      form.notes ? `Note: ${form.notes}` : '',
       '',
-      `*Daftar Kebutuhan (${items.length} item):*`,
+      `*Requirements List (${items.length} items):*`,
       ...items.map((item, i) =>
         `  ${i + 1}. ${item.name} — Qty: ${item.quantity}${item.notes ? ` (${item.notes})` : ''}`
       ),
@@ -317,7 +317,7 @@ export default function RfqPage() {
   if (step === 'confirm') {
     return (
       <Container className="py-6">
-        <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Permintaan Penawaran' }]} />
+        <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Request a Quote' }]} />
 
         <div className="mx-auto mt-8 max-w-lg text-center">
           <div className="mb-4 flex justify-center">
@@ -330,7 +330,7 @@ export default function RfqPage() {
 
           <h1 className="text-2xl font-bold text-gray-900">Permintaan Terkirim!</h1>
           <p className="mt-2 text-sm text-gray-500">
-            Tim kami akan menghubungi Anda dalam 1×24 jam kerja.
+            Our team will contact you within 1×24 working hours.
           </p>
 
           <div className="mt-6 rounded-lg border border-gray-200 p-4 text-left text-sm">
@@ -353,10 +353,10 @@ export default function RfqPage() {
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347" />
               </svg>
-              Kirim via WhatsApp
+              Send via WhatsApp
             </a>
             <Button variant="outline" onClick={() => { resetForm(); setStep('form'); }}>
-              ← Buat permintaan baru
+              ← Create a new request
             </Button>
           </div>
         </div>
@@ -366,12 +366,12 @@ export default function RfqPage() {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Permintaan Penawaran' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Request a Quote' }]} />
 
       <div className="mt-4">
-        <h1 className="text-2xl font-bold text-gray-900">Permintaan Penawaran (RFQ)</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Request a Quote (RFQ)</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Lengkapi formulir di bawah ini. Anda dapat menambahkan item dari keranjang atau manual.
+          Complete the form below. You can add items from your cart or manually.
         </p>
       </div>
 
@@ -387,22 +387,22 @@ export default function RfqPage() {
         {/* Merge dialog */}
         {showMergeDialog && (
           <div className="rounded-lg border-2 border-primary bg-primary/5 p-5 animate-scale-in" role="dialog">
-            <p className="text-sm font-semibold text-primary mb-1">Anda sudah memiliki {items.length} item di RFQ</p>
+            <p className="text-sm font-semibold text-primary mb-1">You already have {items.length} items in the RFQ</p>
             <p className="text-xs text-muted mb-3">
-              {pendingProjectItems.length} item dari proyek &quot;{pendingProject?.title}&quot; siap ditambahkan.
+              {pendingProjectItems.length} items from project &quot;{pendingProject?.title}&quot; ready to add.
             </p>
             <div className="flex gap-2">
               <button type="button" onClick={handleMergeAppend}
                 className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-hover transition">
-                ➕ Tambahkan ({pendingProjectItems.length})
+                ➕ Add ({pendingProjectItems.length})
               </button>
               <button type="button" onClick={handleMergeReplace}
                 className="rounded-lg border border-border px-4 py-2 text-sm text-muted hover:bg-surface transition">
-                🔄 Ganti semua
+                🔄 Replace all
               </button>
               <button type="button" onClick={handleMergeCancel}
                 className="rounded-lg px-4 py-2 text-sm text-muted hover:text-primary transition">
-                Batal
+                Cancel
               </button>
             </div>
           </div>
@@ -438,10 +438,10 @@ export default function RfqPage() {
 
         {/* ── Contact ── */}
         <section className="rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Informasi Kontak</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Contact Information</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <RequiredLabel htmlFor="rfq-name">Nama</RequiredLabel>
+              <RequiredLabel htmlFor="rfq-name">Name</RequiredLabel>
               <input
                 id="rfq-name" required aria-required="true"
                 type="text"
@@ -469,7 +469,7 @@ export default function RfqPage() {
               {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
             </div>
             <div>
-              <RequiredLabel>Telepon / WhatsApp</RequiredLabel>
+              <RequiredLabel>Phone / WhatsApp</RequiredLabel>
               <input
                 type="tel"
                 value={form.phone}
@@ -481,7 +481,7 @@ export default function RfqPage() {
             <div>
               {form.customerType === 'BUSINESS' ? (
                 <>
-                  <RequiredLabel>Nama Perusahaan</RequiredLabel>
+                  <RequiredLabel>Company Name</RequiredLabel>
                   <input
                     type="text"
                     value={form.company}
@@ -492,13 +492,13 @@ export default function RfqPage() {
                 </>
               ) : (
                 <>
-                  <FormLabel>Nama Perusahaan</FormLabel>
+                  <FormLabel>Company Name</FormLabel>
                   <input
                     type="text"
                     value={form.company}
                     onChange={(e) => updateField('company', e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700 opacity-50"
-                    placeholder="Opsional"
+                    placeholder="Optional"
                   />
                 </>
               )}
@@ -511,7 +511,7 @@ export default function RfqPage() {
                   value={form.position}
                   onChange={(e) => updateField('position', e.target.value)}
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
-                  placeholder="Opsional"
+                  placeholder="Optional"
                 />
               </div>
             )}
@@ -520,10 +520,10 @@ export default function RfqPage() {
 
         {/* ── Project ── */}
         <section className="rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Detail Proyek</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Project Details</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <FormLabel>Nama Proyek</FormLabel>
+              <FormLabel>Project Name</FormLabel>
               <input
                 type="text"
                 value={form.projectName}
@@ -532,7 +532,7 @@ export default function RfqPage() {
               />
             </div>
             <div>
-              <FormLabel>Lokasi Proyek</FormLabel>
+              <FormLabel>Project Location</FormLabel>
               <input
                 type="text"
                 value={form.location}
@@ -557,18 +557,18 @@ export default function RfqPage() {
                   onChange={(e) => updateField('needsInstallation', e.target.checked)}
                   className="rounded border-gray-300 text-gray-800 focus:ring-gray-700"
                 />
-                <span className="text-sm text-gray-700">Membutuhkan jasa instalasi</span>
+                <span className="text-sm text-gray-700">Requires installation service</span>
               </label>
             </div>
           </div>
           <div>
-            <FormLabel>Catatan Teknis</FormLabel>
+            <FormLabel>Technical Notes</FormLabel>
             <textarea
               rows={3}
               value={form.notes}
               onChange={(e) => updateField('notes', e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700 resize-none"
-              placeholder="Spesifikasi teknis, preferensi brand, atau kebutuhan khusus..."
+              placeholder="Technical specifications, brand preferences, or special requirements..."
             />
           </div>
         </section>
@@ -576,14 +576,14 @@ export default function RfqPage() {
         {/* ── Items ── */}
         <section className="rounded-lg border border-border bg-card p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <RequiredLabel>Daftar Kebutuhan</RequiredLabel>
+            <RequiredLabel>Requirements List</RequiredLabel>
             {cart.items.length > 0 && (
               <button type="button"
                 onClick={importFromCart}
                 data-track="rfq-import-cart"
                 className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] h-8 px-3 border border-primary text-primary hover:bg-surface"
               >
-                📋 Import dari keranjang ({cart.itemCount})
+                📋 Import from cart ({cart.itemCount})
               </button>
             )}
           </div>
@@ -617,7 +617,7 @@ export default function RfqPage() {
             <ProductAutocomplete
               id="rfq-product"
               name="rfq-product"
-              placeholder="Nama Barang"
+              placeholder="Item Name"
               onSelect={(product) => setNewItem((prev) => ({ ...prev, name: product.name }))}
             />
             <input
@@ -632,7 +632,7 @@ export default function RfqPage() {
               data-track="rfq-add-item"
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] h-8 px-3 border border-primary text-primary hover:bg-surface"
             >
-              + Tambah
+              + Add
             </button>
           </div>
           {itemError && (
@@ -640,7 +640,7 @@ export default function RfqPage() {
           )}
           <input
             type="text"
-            placeholder="Catatan item (opsional)"
+            placeholder="Item note (optional)"
             value={newItem.notes}
             onChange={(e) => setNewItem((prev) => ({ ...prev, notes: e.target.value }))}
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700"
@@ -655,10 +655,10 @@ export default function RfqPage() {
         )}
         <div className="flex gap-3">
           <Button type="submit" variant="primary" size="lg" disabled={submitting} data-track="rfq-submit">
-            {submitting ? 'Mengirim...' : 'Kirim Permintaan'}
+            {submitting ? 'Mengirim...' : 'Send Request'}
           </Button>
           <Button type="button" variant="ghost" size="lg" onClick={() => window.history.back()}>
-            Batal
+            Cancel
           </Button>
         </div>
       </form>

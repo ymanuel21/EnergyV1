@@ -4,7 +4,7 @@ import { TestimonialSection, TestimonialData } from '@/components/testimonial/Te
 
 export function TestimonialGrid({ testimonials }: { testimonials: TestimonialData[] }) {
   if (!testimonials || testimonials.length === 0) {
-    return <p className="text-muted text-center py-12">Belum ada testimoni.</p>;
+    return <p className="text-muted text-center py-12">No testimonials yet.</p>;
   }
 
   return (

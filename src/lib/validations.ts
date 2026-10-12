@@ -23,15 +23,15 @@ export const productSchema = z.object({
 // Remaining fields are passed through without validation here.
 export const productCreateSchema = z
   .object({
-    name: z.string().trim().min(1, 'Nama produk wajib diisi.'),
+    name: z.string().trim().min(1, 'Product name is required.'),
     slug: z
       .string()
       .trim()
-      .min(1, 'Slug wajib diisi.')
-      .regex(/^[a-z0-9-]+$/, 'Slug hanya boleh menggunakan huruf kecil, angka, dan tanda hubung.'),
-    brandId: z.string().min(1, 'Brand wajib dipilih.'),
-    price: z.number().int('Harga harus berupa angka bulat.').min(0, 'Harga tidak boleh negatif.'),
-    stock: z.number().int('Stok harus berupa angka bulat.').min(0, 'Stok tidak boleh negatif.'),
+      .min(1, 'Slug is required.')
+      .regex(/^[a-z0-9-]+$/, 'Slug may only contain lowercase letters, numbers and hyphens.'),
+    brandId: z.string().min(1, 'Brand is required.'),
+    price: z.number().int('Price must be a whole number.').min(0, 'Price cannot be negative.'),
+    stock: z.number().int('Stock must be a whole number.').min(0, 'Stock cannot be negative.'),
     sku: z.string().nullable().optional(),
   })
   .passthrough();

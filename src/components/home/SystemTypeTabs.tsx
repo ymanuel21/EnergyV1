@@ -69,7 +69,7 @@ export function SystemTypeTabs({ cards }: SystemTypeTabsProps) {
               href={current.link}
               className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:gap-2.5 transition-all"
             >
-              Pelajari Selengkapnya <span className="text-base">→</span>
+              Learn More <span className="text-base">→</span>
             </Link>
           )}
         </div>

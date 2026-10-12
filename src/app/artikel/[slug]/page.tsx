@@ -13,7 +13,7 @@ interface Props { params: Promise<{ slug: string }>; }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  if (!article) return { title: 'Artikel Tidak Ditemukan' };
+  if (!article) return { title: 'Article Not Found' };
   return { title: article.title, description: article.excerpt, alternates: { canonical: `/artikel/${slug}` } };
 }
 
@@ -27,7 +27,7 @@ export default async function ArticleDetail({ params }: Props) {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Panduan', href: '/artikel' }, { label: article.title }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Guides', href: '/artikel' }, { label: article.title }]} />
       <article className="mx-auto mt-6 max-w-3xl">
         <div className="flex items-center gap-2 text-xs text-muted">
           <span>{article.category}</span><span>•</span>
@@ -49,7 +49,7 @@ export default async function ArticleDetail({ params }: Props) {
       </article>
       {related.length > 0 && (
         <div className="mx-auto mt-12 max-w-3xl border-t border-border pt-8">
-          <h2 className="text-lg font-semibold text-primary">Artikel Terkait</h2>
+          <h2 className="text-lg font-semibold text-primary">Related Articles</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             {related.map((r: any) => (
               <Link key={r.slug} href={`/artikel/${r.slug}`} className="rounded-lg border border-border bg-card p-4 hover:shadow-sm transition">

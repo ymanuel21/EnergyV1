@@ -36,14 +36,14 @@ export function AddToCartButton({
 
   function handleAdd() {
     addItem({ productId, slug, name, brandName, image, price, maxQuantity, weight, showPrice }, quantity);
-    showToast(`${name} ×${quantity} ditambahkan ke keranjang`);
+    showToast(`${name} ×${quantity} added to cart`);
     setQuantity(1);
   }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-4">
-        <label className="text-sm text-muted">Jumlah</label>
+        <label className="text-sm text-muted">Quantity</label>
         <QuantitySelector value={quantity} max={999} onChange={setQuantity} />
       </div>
       <Button
@@ -53,7 +53,7 @@ export function AddToCartButton({
         onClick={handleAdd}
         leftIcon={<CartIcon className="h-5 w-5" />}
       >
-        Tambah ke Keranjang
+        Add to Cart
       </Button>
     </div>
   );

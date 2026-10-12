@@ -1,0 +1,571 @@
+{
+ "pages": {
+  "kebijakan-pengiriman": {
+   "title": "Shipping Policy",
+   "content": "<p></p><p></p><p>We are committed to delivering every order safely, quickly and transparently through trusted logistics partners across Indonesia.</p><hr><h2>📍 Delivery Coverage</h2><p>We deliver to <strong>all regions of Indonesia</strong>, including:</p><p lineheight=\"1\">- Java</p><p lineheight=\"1\">- Bali</p><p lineheight=\"1\">- Sumatra</p><p lineheight=\"1\">- Kalimantan</p><p lineheight=\"1\">- Sulawesi</p><p lineheight=\"1\">- Nusa Tenggara</p><p lineheight=\"1\">- Maluku</p><p lineheight=\"1\">- Papua</p><p>---</p><h2>🚚 Estimated Delivery Times</h2><table style=\"min-width: 575px;\"><colgroup><col><col></colgroup><tbody><tr><th colspan=\"1\" rowspan=\"1\"><p>Region </p></th><th colspan=\"1\" rowspan=\"1\"><p>Estimate</p></th></tr><tr><td colspan=\"1\" rowspan=\"1\"><p>Java &amp; Bali</p></td><td colspan=\"1\" rowspan=\"1\"><p> <strong>2–5 business days</strong> </p></td></tr><tr><td colspan=\"1\" rowspan=\"1\"><p>Sumatra, Kalimantan, Sulawesi </p></td><td colspan=\"1\" rowspan=\"1\"><p><strong>5–10 business days</strong></p></td></tr><tr><td colspan=\"1\" rowspan=\"1\"><p>Eastern Indonesia</p></td><td colspan=\"1\" rowspan=\"1\"><p><strong>7–14 business days</strong></p></td></tr></tbody></table><p>&gt; <strong>Note</strong></p><p>&gt;</p><p>&gt; For large products such as <strong>solar panels</strong>, <strong>batteries</strong> or <strong>installation equipment</strong>, shipping uses a cargo service, so estimates may be longer depending on the destination.</p><p>---</p><p>## 💰 Shipping Cost</p><p>Shipping cost is calculated from the following factors:</p><ul><li>Product weight</li></ul><ul><li>Package dimensions</li></ul><ul><li>Destination</li></ul><ul><li>Type of shipping service</li></ul><p>The total shipping cost is displayed automatically before payment is completed.</p><p>---</p><p>## 📦 Order Tracking</p><p>Once your order is processed and shipped, you will receive:</p><ul><li>Tracking number</li></ul><ul><li>Courier name</li></ul><ul><li>Tracking information by email or WhatsApp</li></ul><p>Delivery status can be tracked directly on the courier's official website.</p><p>---</p><p>## ❓ Need Help?</p><p>If you have any questions about shipping or your order status, please contact our team via:</p><p>- <strong>Email:</strong> <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"mailto:info@ebtplaza.com\">info@ebtplaza.com</a></p><p>- <strong>WhatsApp:</strong> +62 821-1285-0215</p><p>We are here to help on business days.</p><p></p><p></p><p></p><p></p><p></p>"
+  },
+  "kebijakan-privasi": {
+   "title": "Privacy Policy",
+   "content": "# Privacy Policy\n\n## Data We Collect\n\n- Name, email and phone number (at checkout or when requesting a quote)\n- Shipping address\n- Order history\n\n## How We Use Data\n\nYour data is used to:\n- Process orders and deliveries\n- Communicate about orders\n- Send newsletters (if you subscribe)\n\n## Data Protection\n\n- Data is stored encrypted\n- Not shared with third parties without permission\n- You can request deletion of your data at any time\n\n## Contact\n\nFor privacy enquiries: info@ebtplaza.com"
+  },
+  "kebijakan-retur": {
+   "title": "Return Policy",
+   "content": "# Return Policy\n\n## Return Conditions\n\nA return may be requested within **7 days** of receiving the product, subject to the following conditions:\n\n- The product is in its original condition and unused\n- Packaging is complete and undamaged\n- Proof of purchase is included\n\n## Procedure\n\n1. Contact us by email or WhatsApp\n2. Include photos of the product and packaging\n3. Our team will provide return instructions\n4. Send the product to the address provided\n\n## Refunds\n\n- Funds are refunded within 7–14 business days after the product is received\n- Return shipping costs are borne by the buyer (unless the error was ours)\n- Clearance products cannot be returned"
+  },
+  "syarat-ketentuan": {
+   "title": "Terms & Conditions",
+   "content": "# Terms & Conditions\n\nBy using EBTPlaza's services, you agree to the following terms and conditions.\n\n## 1. General\n\n- Prices may change at any time without notice\n- Product stock availability cannot be guaranteed\n- We reserve the right to refuse an order for any reason\n\n## 2. Ordering\n\n- Orders are processed once payment is confirmed\n- Pricing errors will be re-confirmed before shipping\n\n## 3. Payment\n\n- Payment by bank transfer, Virtual Account, or QRIS\n- Orders are cancelled if payment is not received within 24 hours\n\n## 4. Warranty\n\n- Product warranty follows each brand's own terms\n- Damage caused by misuse is not covered by warranty\n\n## 5. Privacy\n\n- Customer personal data is protected in line with the Privacy Policy\n- Information is not shared with third parties without permission"
+  },
+  "tentang-kami": {
+   "title": "About Us",
+   "content": "<h1>About Us</h1><p><br></p><p>EBTPlaza is a renewable energy platform focused on providing solar power solutions for homes, businesses and large-scale projects in Indonesia.</p><p><br></p><h2>Our Vision</h2><p><br></p><p>To be a trusted partner in Indonesia's energy transition towards a sustainable future.</p><p><br></p><h2>Our Mission</h2><p><br></p><ul><li><p>To provide quality solar energy products at affordable prices</p></li><li><p>To educate the public about the benefits of renewable energy</p></li><li><p>To support green energy projects throughout Indonesia</p></li></ul><p><br></p><h2>Location</h2><p><br></p><p>Jl. Manyar Raya Rukan Manyar C11, RT.4/RW.1, Kapuk Muara, Penjaringan District, North Jakarta, Special Capital Region of Jakarta 14460</p><p><br></p><h2>Contact</h2><p><br></p><ul><li><p>Email: info@ebtplaza.com</p></li><li><p>Phone: (021) 50121010</p></li><li><p>Website: https://ebtplaza.vercel.app</p></li></ul><p></p>"
+  }
+ },
+ "articles": {
+  "panduan-memilih-panel-surya": {
+   "title": "Guide to Choosing Solar Panels for Your Home",
+   "excerpt": "Learn how to choose the right solar panel: monocrystalline vs polycrystalline, power rating, warranty and inverter compatibility.",
+   "content": "Choosing the right solar panel is the first step towards energy independence. Here is the complete guide.\n\n## 1. Types of Solar Panel\n\n### Monocrystalline\n- High efficiency (18-22%)\n- Uniform black colour\n- Good performance in hot weather\n- More expensive\n- Suitable for limited roof space\n\n### Polycrystalline\n- Medium efficiency (15-17%)\n- Bluish colour\n- More affordable\n- Suitable for large areas\n\n## 2. Power Rating (Watt Peak)\n\nFor households, calculate your requirement:\n- Small home (900 VA): 1.000-2.000 Wp\n- Medium home (1.300-2.200 VA): 2.000-4.000 Wp\n- Large home (>3.500 VA): 4.000-10.000 Wp\n\n## 3. Warranty\n\nA quality solar panel offers:\n- Product warranty: 10-12 years\n- Performance warranty: 25 years (at least 80% output)\n\n## 4. Inverter Compatibility\n\nMake sure the total panel power does not exceed the inverter capacity. Ideally 80-120% of the inverter rating.",
+   "category": "Guides",
+   "author": "EBTPlaza Team"
+  },
+  "jenis-jenis-inverter": {
+   "title": "Types of Inverter: On-Grid, Off-Grid and Hybrid",
+   "excerpt": "Understanding the differences between on-grid, off-grid and hybrid inverters for your solar system.",
+   "content": "The inverter is the brain of a solar power system. Here are the differences between the three main types.\n\n## On-Grid (Grid-Tie)\n- Connected to the PLN grid\n- Excess power is sold to PLN (net metering)\n- Cannot operate during a power outage\n- Most economical\n- Suitable for: urban homes with a stable supply\n\n## Off-Grid\n- Not connected to the PLN grid\n- Requires batteries\n- Operates independently 24/7\n- Higher cost (batteries)\n- Suitable for: remote areas, villas, islands\n\n## Hybrid\n- A combination of on-grid and batteries\n- Can export to PLN and store in batteries\n- Keeps operating during a power outage\n- Highest investment, maximum flexibility\n- Suitable for: homes that want backup power",
+   "category": "Guides",
+   "author": "EBTPlaza Team"
+  },
+  "perawatan-panel-surya": {
+   "title": "5 Tips for Solar Panel Maintenance So They Last 25+ Years",
+   "excerpt": "Practical tips for caring for solar panels: cleaning, visual inspection, performance monitoring and protection.",
+   "content": "Solar panels are designed to last 25+ years. With the right maintenance you can maximise your investment.\n\n## 1. Regular Cleaning\n- Clean off dust and dirt every 3-6 months\n- Use clean water and a soft cloth\n- Do NOT use soap or chemicals\n- Best time: morning, while the panels are still cool\n\n## 2. Visual Inspection\n- Check for cracks or physical damage every 6 months\n- Check cables and connectors for corrosion\n- Make sure the mounting is still secure\n\n## 3. Performance Monitoring\n- Use the inverter's monitoring app\n- Record daily production\n- A drop of more than 10% from normal is a sign of a problem\n\n## 4. Protection from Pests\n- Fit bird mesh to prevent birds nesting\n- Check cables for rodent damage\n\n## 5. Professional Servicing\n- Call a technician every 5 years for a thorough inspection\n- Includes checking the grounding and protection system",
+   "category": "Tips",
+   "author": "EBTPlaza Team"
+  },
+  "cara-menghitung-tagihan-listrik-setelah-pasang-plts": {
+   "title": "How to Calculate Your Electricity Bill Savings After Installing Solar",
+   "excerpt": "A simple simulation of how much of your electricity bill you can save with solar panels.",
+   "content": "Many people ask: \"How much do I actually save after installing solar?\" Let us do the maths.\n\n## Assumptions\n- Electricity supply: 1.300 VA\n- Monthly usage: 400 kWh\n- Electricity tariff: Rp 1.444/kWh\n- Solar system: 2.000 Wp (on-grid)\n- Average daily production: 8 kWh\n- Monthly production: 240 kWh\n\n## Calculation\n\n**Before solar:**\n400 kWh × Rp 1.444 = Rp 577.600 per month\n\n**After solar:**\n- Grid consumption: 400 - 240 = 160 kWh\n- PLN bill: 160 × Rp 1.444 = Rp 231.040\n- **Savings: Rp 346.560 per month**\n- **Savings: Rp 4.158.720 per year**\n\n## ROI (Return on Investment)\n\nWith a system cost of about Rp 20 million:\n- ROI = Rp 20.000.000 ÷ Rp 4.158.720 = ~4,8 years\n- After 5 years, electricity is FREE for the next 20+ years",
+   "category": "Education",
+   "author": "EBTPlaza Team"
+  }
+ },
+ "categories": {
+  "panel-surya": {
+   "name": "Solar Panels"
+  },
+  "baterai": {
+   "name": "Batteries"
+  },
+  "paket-plts": {
+   "name": "PLTS Packages"
+  },
+  "pompa-air-tenaga-surya": {
+   "name": "Solar Water Pumps"
+  },
+  "pju-tenaga-surya": {
+   "name": "Solar Street Lighting"
+  },
+  "aksesoris": {
+   "name": "Accessories"
+  },
+  "kabel-konektor-proteksi-kabel-pv": {
+   "name": "PV Cables"
+  },
+  "kabel-konektor-proteksi-konektor-mc4": {
+   "name": "MC4 Connectors"
+  },
+  "pju-tenaga-surya-lampu-sorot": {
+   "name": "Floodlights"
+  },
+  "pju-tenaga-surya-lampu-taman": {
+   "name": "Garden Lights"
+  },
+  "mounting-rangka": {
+   "name": "Mounting Frames"
+  }
+ },
+ "faqs": {
+  "1": {
+   "question": "How do I buy a product on EBTPlaza?",
+   "answer": "Choose the product you want, click \"Add to Cart\", then continue to checkout. You will be asked to enter your shipping details and choose a payment method."
+  },
+  "2": {
+   "question": "Which payment methods are available?",
+   "answer": "We accept bank transfer (BCA, Mandiri, BRI, BNI), Virtual Account, and QRIS for certain regions."
+  },
+  "3": {
+   "question": "How long does shipping take?",
+   "answer": "Shipping usually takes 2–7 business days depending on your location. Large products such as solar panels may take longer because they are shipped as cargo."
+  },
+  "4": {
+   "question": "Is there a warranty?",
+   "answer": "Yes, every product carries a different warranty. Warranty information is listed on each product detail page. It is typically 12 years for solar panels and 5–10 years for inverters."
+  },
+  "5": {
+   "question": "How do I submit a request for quotation (RFQ) for a project?",
+   "answer": "Visit the Request a Quote page, fill in the form with your project details, and our team will get back to you with a price quotation."
+  },
+  "6": {
+   "question": "Does EBTPlaza provide installation services?",
+   "answer": "We can recommend installation partners. Tick the \"I need installation services\" option when filling in the RFQ form and we will help connect you."
+  },
+  "8": {
+   "question": "What is the return policy?",
+   "answer": "Returns can be requested within 7 days of receiving the product, provided the product is in its original condition with complete packaging. See the Return Policy page for full details."
+  }
+ },
+ "navigation_links": {
+  "nav-ms5v0yp2-0": {
+   "label": "All Products"
+  },
+  "nav-ms5v0yp2-1": {
+   "label": "Brand"
+  },
+  "nav-ms5v0yp2-2": {
+   "label": "Promotions"
+  },
+  "nav-ms5v0yp2-3": {
+   "label": "New Products"
+  },
+  "nav-ms5v0yp2-4": {
+   "label": "Clearance"
+  },
+  "nav-ms5v0yp2-5": {
+   "label": "Request a Quote"
+  },
+  "nav-ms5v0yp2-7": {
+   "label": "Solar Energy Guide"
+  },
+  "nav-ms5v0yp2-8": {
+   "label": "FAQ"
+  },
+  "nav-ms5v0yp2-9": {
+   "label": "About Us"
+  },
+  "nav-ms5v0yp2-10": {
+   "label": "Shipping Policy"
+  },
+  "nav-ms5v0yp2-11": {
+   "label": "Return Policy"
+  },
+  "nav-ms5v0yp2-12": {
+   "label": "Terms & Conditions"
+  },
+  "nav-ms5v0yp2-13": {
+   "label": "Privacy Policy"
+  },
+  "nav-ms5v2d2z-100": {
+   "label": "About Us"
+  },
+  "nav-ms5v2d2z-101": {
+   "label": "Services"
+  },
+  "nav-ms5v2d2z-102": {
+   "label": "Solar System Types"
+  },
+  "nav-ms5v2d2z-103": {
+   "label": "Contact Us"
+  },
+  "nav-ms5v2d2z-104": {
+   "label": "Projects"
+  },
+  "nav-ms5v2d2z-105": {
+   "label": "News"
+  },
+  "nav-ms5v2d2z-106": {
+   "label": "Promotions"
+  },
+  "nav-ms5v2d2z-107": {
+   "label": "Clearance"
+  },
+  "nav-ms5v2d2z-109": {
+   "label": "Request a Quote"
+  },
+  "nav-ms5v2d2z-110": {
+   "label": "Help"
+  },
+  "nav-ms5v2d2z-111": {
+   "label": "All Products"
+  },
+  "nav-ms5v2d2z-112": {
+   "label": "Categories"
+  },
+  "nav-ms5v2d2z-113": {
+   "label": "Brand"
+  },
+  "nav-ms5v2d2z-114": {
+   "label": "Projects"
+  },
+  "nav-ms5v2d2z-115": {
+   "label": "Promotions"
+  },
+  "nav-ms5v2d2z-116": {
+   "label": "Clearance"
+  },
+  "nav-ms5v2d2z-117": {
+   "label": "Testimonials"
+  },
+  "nav-ms5v2d2z-118": {
+   "label": "Articles"
+  },
+  "nav-ms5v2d2z-119": {
+   "label": "FAQ"
+  },
+  "nav-ms5v2d2z-120": {
+   "label": "Request a Quote"
+  }
+ },
+ "settings": {
+  "tagline": {
+   "value": "Whatever your renewable energy needs, find them here"
+  },
+  "description": {
+   "value": "Your hub for renewable energy products: solar panels, inverters, lithium batteries, solar power systems, and project supplies."
+  },
+  "address": {
+   "value": "Manyar C11, RT.4/RW.1, Kapuk Muara, Penjaringan District, North Jakarta, Special Capital Region of Jakarta 14460"
+  }
+ },
+ "homepage_sections": {
+  "cms5t9izu0000l2cbj7j31de2": {
+   "title": "Solar power",
+   "subtitle": "for everyone."
+  },
+  "cmspwseqy000004l7j3ioyats": {
+   "title": "PLTS System Types",
+   "settings": {
+    "heading": "Choose the Right System",
+    "subheading": "Understand the differences between solar system types and find the one that suits your needs.",
+    "card1Title": "On-Grid Solar",
+    "card1Desc": "Connected to the PLN grid without batteries. Excess power is sold to PLN through an export-import meter.",
+    "card2Title": "Hybrid Solar",
+    "card2Desc": "A combination of the PLN grid and backup batteries. Power stays on during outages.",
+    "card3Title": "Off-Grid Solar",
+    "card3Desc": "A standalone system with no PLN connection. Relies entirely on solar panels and batteries for 24-hour power."
+   }
+  },
+  "cms5t9knm0002l2cbd84ev57w": {
+   "title": "Categories",
+   "subtitle": "Find what you need"
+  },
+  "cms5t9lu00004l2cb96tday8r": {
+   "title": "Featured Products",
+   "settings": {
+    "buttonLabel": "View All Products"
+   }
+  },
+  "sec-15f9f2224c213a0b": {
+   "title": "Reference Projects",
+   "subtitle": "Renewable Energy for Everyone.",
+   "settings": {
+    "eyebrow": "Reference Projects",
+    "heading": "Renewable Energy for Everyone.",
+    "subheading": "Explore the renewable energy projects we have completed.",
+    "buttonLabel": "View All Projects"
+   }
+  },
+  "cms5t9n1y0006l2cb3vqxu2y9": {
+   "title": "Official Brands"
+  },
+  "cmsaf0oj9000004l5bb13vv17": {
+   "title": "Testimonials"
+  },
+  "cms5t9od00008l2cblqii92ma": {
+   "title": "Need help choosing?",
+   "subtitle": "Our team is ready to help you find the right product for your energy needs.",
+   "settings": {
+    "buttonLabel": "Free Consultation"
+   }
+  }
+ },
+ "projects": {
+  "residential-tangerang-ongrid-3-3-kwp": {
+   "industry": "Residential",
+   "highlights": [
+    "Generator-free",
+    "24-hour power",
+    "Solar savings of Rp60 million/year",
+    "Environmentally friendly"
+   ]
+  },
+  "office-surabaya-4-4-kwp": {
+   "shortDescription": "Rooftop solar system for a three-storey shophouse. Ideal for small businesses looking to cut electricity costs.",
+   "industry": "Retail",
+   "highlights": [
+    "Bill down 50%",
+    "8 Jinko panels",
+    "Ideal for small business",
+    "3-day installation"
+   ],
+   "storyData": {
+    "result": "Bill down 50%. ROI in 4 years.",
+    "solution": "8 Jinko 550 Wp panels, on-grid.",
+    "challenge": "Shophouse bill of Rp1.8 million/month."
+   },
+   "seoData": {
+    "description": "Rooftop solar system for an office in Surabaya, 4.4 kWp. Jinko 550 Wp."
+   },
+   "impactData": {
+    "energyGenerated": "2,920 kWh/year"
+   }
+  },
+  "residential-bandung-5-4-kwp": {
+   "shortDescription": "Rooftop solar panel installation for a home in Bandung with an on-grid system. Electricity bill down 80%.",
+   "industry": "Residential",
+   "customer": "Mr. Hendra — Private Home",
+   "highlights": [
+    "Electricity bill down 80%",
+    "ROI within 6 years",
+    "10 bifacial panels",
+    "Real-time monitoring"
+   ],
+   "storyData": {
+    "result": "Production of 22 kWh/day. Bill down to Rp400-500 thousand/month.",
+    "solution": "10 LONGi 540 Wp panels with a BEZVOLT 6kW on-grid inverter.",
+    "challenge": "Electricity bill reached Rp2.5 million/month."
+   },
+   "seoData": {
+    "title": "Rooftop Solar Home Bandung 5.4 kWp — 80% Saving",
+    "description": "Rooftop solar panel installation in Bandung. LONGi 540 Wp."
+   },
+   "impactData": {
+    "energyGenerated": "8,030 kWh/year"
+   }
+  },
+  "pompa-air-tenaga-surya-ntt": {
+   "title": "Solar Water Pump NTT",
+   "shortDescription": "Solar water pump for rice-field irrigation in NTT. Farmers harvest three times a year.",
+   "industry": "Agriculture",
+   "customer": "Kelompok Tani Maju Bersama",
+   "battery": "12.8V 60Ah Lithium Battery",
+   "pvModule": "Mitsubishi 275 Wp Mono",
+   "highlights": [
+    "Pump without fuel",
+    "3 harvests a year",
+    "5 hectares irrigated",
+    "Community self-funded"
+   ],
+   "storyData": {
+    "result": "3 harvests a year. Income up significantly.",
+    "solution": "Off-grid solar water pump.",
+    "challenge": "Farmers harvested only once a year, relying on rain."
+   },
+   "seoData": {
+    "title": "Solar Water Pump NTT",
+    "description": "Solar water pump for irrigation in NTT. Mitsubishi 275 Wp."
+   },
+   "impactData": {
+    "energyGenerated": "3,200 kWh/year"
+   }
+  },
+  "plts-hybrid-kantor-jakarta-10-kwp": {
+   "title": "Hybrid Solar Plant Jakarta Office 10 kWp",
+   "shortDescription": "Hybrid system for an office building. Critical loads stay powered during outages.",
+   "industry": "Office",
+   "highlights": [
+    "Critical loads stay on",
+    "19 LONGi panels",
+    "Rp30 million saved",
+    "Green loan"
+   ],
+   "storyData": {
+    "result": "Outage-free. Bill down 40%.",
+    "solution": "19 LONGi panels plus hybrid batteries.",
+    "challenge": "Frequent outages at the office and servers needing backup."
+   },
+   "seoData": {
+    "title": "Hybrid Solar Plant Jakarta Office 10 kWp",
+    "description": "Hybrid office system in Jakarta. LONGi 540 Wp."
+   },
+   "impactData": {
+    "energyGenerated": "14,600 kWh/year"
+   }
+  },
+  "residential-poris-tangerang-1-1-kwp": {
+   "industry": "Residential",
+   "customer": "Mr. Budi"
+  },
+  "pju-tenaga-surya-garut-50-titik": {
+   "title": "Solar Street Lighting Garut — 50 Points",
+   "shortDescription": "50 solar street lighting points in Garut Regency. Lower regional budget spend, brighter villages.",
+   "industry": "Government",
+   "customer": "Pemkab Garut",
+   "pvModule": "Used Solar Panel 50-100 Wp",
+   "battery": "12.8V 60Ah Lithium Battery",
+   "highlights": [
+    "50 lighting points",
+    "No electricity bill",
+    "Brighter villages",
+    "Rp200 million saved from the regional budget"
+   ],
+   "storyData": {
+    "result": "Brighter villages. Crime rate down.",
+    "solution": "Standalone solar street lighting on each pole.",
+    "challenge": "50 street lights out of service and cables being stolen."
+   },
+   "seoData": {
+    "title": "Solar Street Lighting Garut — 50 Points",
+    "description": "Solar street lighting in Garut Regency."
+   },
+   "impactData": {
+    "energyGenerated": "5,000 kWh/year"
+   }
+  },
+  "plts-masjid-yogyakarta-4-kwp": {
+   "title": "Solar Plant Yogyakarta Mosque 4 kWp",
+   "shortDescription": "Solar panels for a mosque. Lower electricity costs so more funds go to social work.",
+   "industry": "Community",
+   "customer": "Masjid Al-Hidayah",
+   "highlights": [
+    "Bill down 70%",
+    "More funds for social work",
+    "Green initiative",
+    "Community involved"
+   ],
+   "storyData": {
+    "result": "Bill down 70%. Funds redirected to social work.",
+    "solution": "9 Canadian Solar panels, on-grid.",
+    "challenge": "Mosque bill of Rp1.5 million/month."
+   },
+   "seoData": {
+    "title": "Solar Plant Yogyakarta Mosque 4 kWp",
+    "description": "Solar panels for a mosque in Yogyakarta. Canadian Solar 440 Wp."
+   },
+   "impactData": {
+    "energyGenerated": "5,840 kWh/year"
+   }
+  },
+  "plts-greenhouse-lembang-8-kwp": {
+   "title": "Greenhouse Solar Plant Lembang 8 kWp",
+   "shortDescription": "Solar system for a vegetable greenhouse. Solar-powered pumps, grow lights and irrigation.",
+   "industry": "Agriculture",
+   "customer": "Greenhouse Hidroponik Sehat",
+   "highlights": [
+    "Solar-powered pump",
+    "LED grow lights",
+    "Automatic monitoring",
+    "Production up 30%"
+   ],
+   "storyData": {
+    "result": "Production up 30%. Bill down 70%.",
+    "solution": "18 Canadian Solar panels plus hybrid batteries.",
+    "challenge": "The greenhouse needed 24-hour power. Bill of Rp4 million/month."
+   },
+   "seoData": {
+    "title": "Greenhouse Solar Plant Lembang 8 kWp",
+    "description": "Hybrid greenhouse system. Canadian Solar 440 Wp."
+   },
+   "impactData": {
+    "energyGenerated": "11,680 kWh/year"
+   }
+  },
+  "plts-industri-tangerang-20-kwp": {
+   "title": "Industrial Solar Plant Tangerang 20 kWp",
+   "shortDescription": "Hybrid system for a garment factory. Electricity bill down 60%.",
+   "industry": "Manufacturing",
+   "customer": "PT Garmen Nusantara",
+   "battery": "12.8V 60Ah Lithium Battery",
+   "highlights": [
+    "Bill down 60%",
+    "47 panels",
+    "Hybrid with backup",
+    "CO₂ -15 tonnes/year"
+   ],
+   "storyData": {
+    "result": "Bill down to Rp5 million. Rp84 million saved a year.",
+    "solution": "47 Mitsubishi 275 Wp panels, hybrid with backup batteries.",
+    "challenge": "Factory consuming 8,000 kWh/month. Bill of Rp12 million/month."
+   },
+   "seoData": {
+    "description": "Hybrid system for a garment factory. Mitsubishi 275 Wp."
+   },
+   "impactData": {
+    "energyGenerated": "30,000 kWh/year"
+   }
+  },
+  "toko-cikarang-3-3-kwp": {
+   "industry": "Retail"
+  }
+ },
+ "testimonials": {
+  "cmsahzqmi0000v4cbpmenlgmm": {
+   "quote": "Tidy and professional installation. My electricity use is down 70%!"
+  },
+  "t-1785601506984-9glg4v": {
+   "name": "Mrs. Ratna",
+   "company": "Private Home",
+   "role": "Homemaker",
+   "quote": "I was hesitant about installing solar at first. But after 3 months my electricity bill dropped from Rp 2 million to Rp 400 thousand. Tidy installation, professional technicians. Now the neighbours keep asking about it."
+  },
+  "t-1785601507240-6yi6vy": {
+   "name": "Mr. Hendra",
+   "company": "Family Restaurant",
+   "role": "Owner",
+   "quote": "Our restaurant uses a lot of electricity — fridges, freezers, air conditioning. After installing a 10 kWp solar system, operating costs dropped 60%. ROI within 4 years. The EBTPlaza team's service was outstanding."
+  },
+  "t-1785601507482-7l7yn5": {
+   "name": "Mr. Dodi",
+   "quote": "The 50 kWp solar installation for our factory was completed on time. It has been running for a year with stable performance. Easy maintenance. Carbon footprint down 30 tonnes per year. Highly recommended."
+  },
+  "t-1785601507723-xgrt2v": {
+   "quote": "Our hotel in Ubud uses a 20 kWp hybrid solar system plus batteries. Guests appreciate the green energy concept. Electricity bills dropped sharply. Young travellers love the eco-friendly approach."
+  },
+  "t-1785601507965-bc98ov": {
+   "name": "Principal Supriyadi",
+   "company": "SMK Negeri 3",
+   "role": "School Principal",
+   "quote": "The solar system at our school has been a great help. Students learn about renewable energy directly from an operating system. The school's electricity costs fell by almost 50%. Thank you, EBTPlaza."
+  },
+  "t-1785601508207-fm5zcj": {
+   "role": "Director",
+   "quote": "The 5 kWp off-grid solar system saved the operation of our clinic in a remote area. We used to have frequent outages and spoiled vaccines. Now we have power 24 hours a day. A remarkable breakthrough."
+  },
+  "t-1785601508532-n8gd5y": {
+   "company": "Oil Palm Plantation",
+   "role": "Operations Manager",
+   "quote": "The 30 kWp hybrid solar system at our plantation cut diesel generator use by 70%. Huge fuel savings. A cleaner environment and significantly lower operating costs."
+  },
+  "t-1785601508838-y98kav": {
+   "name": "Mrs. Sari",
+   "quote": "Cold storage needs stable 24/7 power. After installing solar plus batteries, we never worry about outages any more. The produce stays fresh and customers are happy."
+  },
+  "t-1785601509146-dvfo8w": {
+   "name": "Mr. Ridwan",
+   "company": "Logistics Warehouse",
+   "quote": "Our warehouse in Tangerang now runs on a 15 kWp rooftop solar system. The bill dropped 55%. The LONGi panels installed are highly efficient. The installation team was disciplined and on time."
+  },
+  "t-1785601509453-n8xvql": {
+   "name": "Mrs. Dewi",
+   "company": "Modern Retail Store",
+   "quote": "After installing a 3 kWp solar system at our shop, the savings were felt in the very first month. Customers also prefer shopping at a business that cares about the environment. A win-win!"
+  },
+  "t-1785601509759-6yx7sk": {
+   "name": "Mr. Bambang",
+   "company": "Motorcycle Workshop",
+   "role": "Owner",
+   "quote": "Simple and hassle-free. From the first consultation through to the completed installation, everything went smoothly. My workshop now runs entirely on solar. The electricity cost is only Rp 50 thousand a month."
+  },
+  "t-1785601510002-ski51l": {
+   "name": "Mrs. Lina",
+   "company": "Beauty Clinic",
+   "quote": "As a clinic we need equipment that stays on. A solar system with BEZVOLT batteries was the answer. Stable power, lower bills. Many other clinics asked about it after seeing our results."
+  },
+  "t-1785601510244-zrrh85": {
+   "name": "Mr. Agus",
+   "role": "Department Head",
+   "quote": "Solar street lighting at 50 points along the main road works very well. Lower costs, no extra cabling. Residents are pleased and the city is brighter without a large outlay."
+  },
+  "t-1785601510579-ou1icg": {
+   "name": "Mrs. Fitri",
+   "company": "Organic Café",
+   "quote": "As a business that cares about the environment, rooftop solar was a natural step. Now 80% of the café's electricity comes from the sun. Our menu is greener than ever!"
+  },
+  "t-1785601510886-sy8t3w": {
+   "name": "Mr. Yanto",
+   "company": "Hydroponic Farmer",
+   "quote": "The solar water pump changed the way we farm. We used to rely on an expensive generator; now it is free from the sun. Yields are up and electricity costs us nothing. Other farmers are starting to follow."
+  }
+ }
+}

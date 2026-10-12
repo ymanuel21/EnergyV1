@@ -1,5 +1,6 @@
 import 'server-only';
 import { getPrisma } from '@/lib/db';
+import { applyEnList } from '@/lib/i18n/apply-en';
 
 export async function getPublicHomepageSections(pageId?: string, preview?: boolean) {
   try {
@@ -23,12 +24,19 @@ export async function getPublicHomepageSections(pageId?: string, preview?: boole
     });
 
     // Flatten: prefer draft in preview mode, else published
-    return sections.map(s => {
+    const flattened = sections.map(s => {
       const draft = s.versions.find((v: any) => v.status === 'draft');
       const pub = s.versions.find((v: any) => v.status === 'published');
       const v = preview ? (draft || pub) : pub;
-      return { ...s, title: v?.title || null, subtitle: v?.subtitle || null, settings: v?.settings || {}, status: v?.status || 'draft', versions: undefined };
+      const rawSettings = v?.settings;
+      const settings = typeof rawSettings === 'string'
+        ? (() => { try { return JSON.parse(rawSettings); } catch { return {}; } })()
+        : (rawSettings || {});
+      return { ...s, title: v?.title || null, subtitle: v?.subtitle || null, settings, status: v?.status || 'draft', versions: undefined };
     });
+    // English overlay, keyed by section id. Object-valued patches (settings) merge onto the
+    // existing settings object, so image paths, anchor ids and accent colours are preserved.
+    return applyEnList('homepage_sections', flattened);
   } catch {}
   return [];
 }

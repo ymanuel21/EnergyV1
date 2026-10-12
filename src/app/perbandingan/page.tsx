@@ -62,14 +62,14 @@ export default function ComparePage() {
   if (!productsLoaded) {
     return (
       <Container className="py-6">
-        <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Perbandingan' }]} />
+        <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Comparison' }]} />
         <button onClick={handleBack} className="mt-4 flex items-center gap-1.5 text-sm text-muted hover:text-primary transition">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
           Back
         </button>
         <div className="flex flex-col items-center justify-center py-24">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
-          <p className="mt-4 text-sm text-muted">Memuat perbandingan...</p>
+          <p className="mt-4 text-sm text-muted">Loading comparison...</p>
         </div>
       </Container>
     );
@@ -79,16 +79,16 @@ export default function ComparePage() {
   if (compareProducts.length === 0) {
     return (
       <Container className="py-6">
-        <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Perbandingan' }]} />
+        <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Comparison' }]} />
         <button onClick={handleBack} className="mt-4 flex items-center gap-1.5 text-sm text-muted hover:text-primary transition">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
           Back
         </button>
         <EmptyState
           icon={<CompareIcon className="h-12 w-12" />}
-          title="Belum ada produk yang dibandingkan"
-          description="Klik 'Bandingkan' di halaman produk untuk menambahkan ke sini. Maksimal 4 produk."
-          action={{ label: 'Lihat Produk', href: '/produk' }}
+          title="No products to compare yet"
+          description="Click 'Compare' on a product page to add it here. Maximum 4 products."
+          action={{ label: 'View Products', href: '/produk' }}
           className="mt-12"
         />
       </Container>
@@ -98,37 +98,37 @@ export default function ComparePage() {
   // ── Loaded ──
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Perbandingan' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Comparison' }]} />
       <button onClick={handleBack} className="mt-4 flex items-center gap-1.5 text-sm text-muted hover:text-primary transition">
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
         Back
       </button>
       <div className="mt-4 flex items-center justify-between">
-        <div><h1 className="text-2xl font-bold text-primary">Perbandingan Produk</h1><p className="mt-1 text-sm text-muted">{compareProducts.length}/4 produk dibandingkan</p></div>
-        <Button variant="ghost" size="sm" onClick={clearAll}>Hapus semua</Button>
+        <div><h1 className="text-2xl font-bold text-primary">Product Comparison</h1><p className="mt-1 text-sm text-muted">{compareProducts.length}/4 produk dibandingkan</p></div>
+        <Button variant="ghost" size="sm" onClick={clearAll}>Clear all</Button>
       </div>
       <div className="mt-6 overflow-x-auto">
         <table className="w-full table-fixed text-sm">
           <thead>
             <tr>
-              <th className="w-40 p-3 text-left font-medium text-primary">Spesifikasi</th>
+              <th className="w-40 p-3 text-left font-medium text-primary">Specifications</th>
               {compareProducts.map((p) => (
                 <th key={p.id} className="p-3 text-left align-top">
                   <div className="space-y-2">
                     <div className="relative h-48 w-full overflow-hidden rounded-lg bg-surface">
                       <SafeImage src={p.images[0]} alt={p.name} fill className="object-contain p-2" sizes="200px" />
-                      <button onClick={() => removeItem(p.slug)} className="absolute right-1 top-1 rounded-full bg-white/90 p-1 text-muted hover:text-red-500 transition-colors shadow-sm" aria-label={`Hapus ${p.name}`}>✕</button>
+                      <button onClick={() => removeItem(p.slug)} className="absolute right-1 top-1 rounded-full bg-white/90 p-1 text-muted hover:text-red-500 transition-colors shadow-sm" aria-label={`Remove ${p.name}`}>✕</button>
                     </div>
                     <Link href={`/produk/${p.slug}`} className="block text-sm font-medium text-primary line-clamp-2">{p.name}</Link>
                     <PriceDisplay product={p} showDiscount />
-                    <Button variant="primary" size="sm" className="w-full" onClick={() => addToCart(p.id)}>+ Keranjang</Button>
+                    <Button variant="primary" size="sm" className="w-full" onClick={() => addToCart(p.id)}>+ Cart</Button>
                   </div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {([['Brand', (p: Product) => getBrand(p.brandId)?.name ?? '-'],['Kondisi', (p: Product) => p.condition === 'new' ? 'Baru' : 'Bekas'],['Garansi', (p: Product) => p.warranty],['Stok', (p: Product) => `${p.stock} pcs`],['Berat', (p: Product) => `${p.weight} kg`],] as [string, (p: Product) => string][]).map(([label, getValue]) => (
+            {([['Brand', (p: Product) => getBrand(p.brandId)?.name ?? '-'],['Condition', (p: Product) => p.condition === 'new' ? 'New' : 'Used'],['Warranty', (p: Product) => p.warranty],['Stock', (p: Product) => `${p.stock} pcs`],['Weight', (p: Product) => `${p.weight} kg`],] as [string, (p: Product) => string][]).map(([label, getValue]) => (
               <tr key={label} className="border-t border-border">
                 <td className="p-3 font-medium text-primary">{label}</td>
                 {compareProducts.map((p) => (<td key={p.id} className="p-3 text-muted">{getValue(p)}</td>))}

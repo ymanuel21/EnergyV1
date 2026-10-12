@@ -14,8 +14,8 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const project = await projectRepo.findBySlug(slug);
-  if (!project) return { title: 'Proyek — EBTPlaza' };
-  return { title: `${(project as any).title} — Proyek — EBTPlaza` };
+  if (!project) return { title: 'Projects — EBTPlaza' };
+  return { title: `${(project as any).title} — Projects — EBTPlaza` };
 }
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -46,7 +46,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       const qty = quantities[ref] || 1;
       const name = nameMap.get(ref);
       if (name) return { slug: ref, name, quantity: qty };
-      return { slug: '', name: 'Produk tidak tersedia', quantity: qty };
+      return { slug: '', name: 'Product unavailable', quantity: qty };
     });
   }
 
@@ -56,8 +56,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <Container className="py-6">
-      <SmartBackButton fallbackRoute="/proyek" label="← Kembali ke Proyek" className="mb-3" />
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Proyek', href: '/proyek' }, { label: project.title }]} />
+      <SmartBackButton fallbackRoute="/proyek" label="← Back to Projects" className="mb-3" />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Projects', href: '/proyek' }, { label: project.title }]} />
 
       {/* Hero */}
       {allImages[0] && (
@@ -98,7 +98,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               )}
               {(project.storyData as any)?.result && (
                 <div className="rounded-xl border border-border bg-card p-5">
-                  <h3 className="text-sm font-semibold text-green-600 mb-2">Hasil</h3>
+                  <h3 className="text-sm font-semibold text-green-600 mb-2">Result</h3>
                   <p className="text-sm text-muted leading-relaxed">{(project.storyData as any).result}</p>
                 </div>
               )}
@@ -169,7 +169,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <ProductAccordion products={linkedProducts} />
 
           <Link href={`/permintaan-penawaran?project=${project.slug}`} className="block w-full rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-hover transition">
-            Minta Penawaran Serupa
+            Request a Similar Quote
           </Link>
         </div>
       </div>

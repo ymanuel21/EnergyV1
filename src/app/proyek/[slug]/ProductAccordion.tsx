@@ -25,9 +25,9 @@ export function ProductAccordion({ products }: { products: LinkedProduct[] }) {
         aria-controls="product-accordion-body"
       >
         <div>
-          <h3 className="text-sm font-semibold text-primary">Produk Digunakan</h3>
+          <h3 className="text-sm font-semibold text-primary">Used Products</h3>
           <p className="text-xs text-muted">
-            {count > 0 ? `${count} produk terkait` : 'Belum ada produk terkait'}
+            {count > 0 ? `${count} related products` : 'No related products yet'}
           </p>
         </div>
         {count > 0 && (
@@ -75,7 +75,7 @@ export function ProductAccordion({ products }: { products: LinkedProduct[] }) {
               </ul>
               <div className="mt-3 border-t border-border pt-2">
                 <p className="text-xs text-muted leading-relaxed">
-                  Semua produk di atas akan otomatis dimasukkan ketika memilih <strong>&quot;Minta Penawaran Serupa&quot;</strong>.
+                  All products above are added automatically when you choose <strong>&quot;Request a Similar Quote&quot;</strong>.
                 </p>
               </div>
             </>

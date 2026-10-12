@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Permintaan Penawaran (RFQ)',
-  description: 'Ajukan permintaan penawaran untuk kebutuhan proyek energi terbarukan Anda. Untuk kontraktor, perusahaan, dan pengadaan skala besar.',
+  title: 'Request a Quote (RFQ)',
+  description: 'Request a quotation for your renewable energy project needs. For contractors, companies and large-scale procurement.',
   alternates: { canonical: '/permintaan-penawaran' },
   robots: { index: false, follow: true },
 };

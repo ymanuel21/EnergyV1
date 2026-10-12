@@ -3,18 +3,18 @@ import { test, expect } from '@playwright/test';
 test.describe('FAQ', () => {
   test('page loads with FAQ items', async ({ page }) => {
     await page.goto('/faq');
-    await expect(page.getByText('FAQ (Bantuan)')).toBeVisible();
+    await expect(page.getByText('FAQ (Help)')).toBeVisible();
   });
 
   test('accordion expands and collapses content', async ({ page }) => {
     await page.goto('/faq');
 
-    const firstQuestion = page.getByText('Bagaimana cara membeli produk').first();
+    const firstQuestion = page.getByText('How do I buy a product').first();
     await firstQuestion.click();
-    await expect(page.getByText('Pilih produk yang diinginkan')).toBeVisible({ timeout: 3000 });
+    await expect(page.getByText('Choose the product you want')).toBeVisible({ timeout: 3000 });
 
     await firstQuestion.click();
-    await expect(page.getByText('Pilih produk yang diinginkan')).not.toBeVisible({ timeout: 3000 });
+    await expect(page.getByText('Choose the product you want')).not.toBeVisible({ timeout: 3000 });
   });
 
   test('contact CTAs link correctly', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('FAQ', () => {
     expect(href).toContain('wa.me');
 
     // "Ajukan Pertanyaan" links to RFQ
-    const rfqLink = page.getByRole('link', { name: 'Ajukan Pertanyaan' });
+    const rfqLink = page.getByRole('link', { name: 'Ask a Question' });
     await expect(rfqLink).toBeVisible();
   });
 });

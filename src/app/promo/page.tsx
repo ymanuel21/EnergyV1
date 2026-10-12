@@ -10,8 +10,8 @@ import { resolvePriceLabels } from '@/lib/services/resolve-price-labels';
 import { validateSort, validatePage } from '@/lib/utils/validation';
 
 export const metadata: Metadata = {
-  title: 'Promo & Penawaran',
-  description: 'Harga spesial produk energi terbarukan di EBTPlaza. Hemat lebih banyak!',
+  title: 'Promotions & Offers',
+  description: 'Special prices on renewable energy products at EBTPlaza. Save more!',
   alternates: { canonical: '/promo' },
 };
 
@@ -31,12 +31,12 @@ export default async function PromoPage({ searchParams }: Props) {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Promo' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Promotions' }]} />
 
       <div className="mt-4 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Promo & Penawaran</h1>
-          <p className="mt-1 text-sm text-gray-500">Harga spesial • Hemat lebih banyak! • {filtered.length} produk</p>
+          <h1 className="text-2xl font-bold text-gray-900">Promotions & Offers</h1>
+          <p className="mt-1 text-sm text-gray-500">Special prices • Save more! • {filtered.length} products</p>
         </div>
       </div>
 
@@ -60,7 +60,7 @@ export default async function PromoPage({ searchParams }: Props) {
         </>
       ) : (
         <div className="py-20 text-center">
-          <p className="text-gray-500">Tidak ada produk promo saat ini.</p>
+          <p className="text-gray-500">No promotional products at the moment.</p>
         </div>
       )}
     </Container>

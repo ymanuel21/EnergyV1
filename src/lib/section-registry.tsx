@@ -72,10 +72,10 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     icon: '🏠',
     defaultSettings: {
       tagline: 'Energi Terbarukan',
-      description: 'Produk berkualitas premium.',
+      description: 'Premium quality products.',
       cta: 'Jelajahi Katalog',
       ctaLink: '/produk',
-      secondaryCta: 'Minta Penawaran',
+      secondaryCta: 'Request a Quote',
       secondaryCtaLink: '/permintaan-penawaran',
       heroProductId: '',
       bgImage: '',
@@ -120,7 +120,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     type: 'category-grid',
     label: 'Category Grid',
     icon: '📂',
-    defaultSettings: { source: 'auto', columns: 4, cardStyle: 'image', maxCategories: 8, showViewAll: true, viewAllLabel: 'Lihat Semua Kategori', viewAllLink: '/kategori' },
+    defaultSettings: { source: 'auto', columns: 4, cardStyle: 'image', maxCategories: 8, showViewAll: true, viewAllLabel: 'View All Categories', viewAllLink: '/kategori' },
     fields: [
       { key: 'source', label: 'Content Source', type: 'select', options: [{ value: 'auto', label: 'Automatic' }, { value: 'manual', label: 'Manual' }], group: 'content' },
       { key: 'columns', label: 'Columns', type: 'select', options: ['2', '3', '4', '5'].map(v => ({ value: v, label: v })), group: 'styling' },
@@ -143,7 +143,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       source: 'manual', maxProducts: 1, layout: 'showcase',
       showPrice: true, showBadge: true,
       showDescription: true, showSpecifications: true, showShipping: true,
-      buttonLabel: 'Lihat Semua Produk', buttonLink: '/produk',
+      buttonLabel: 'View All Products', buttonLink: '/produk',
     },
     fields: [
       { key: 'source', label: 'Content Source', type: 'select', options: [
@@ -196,9 +196,9 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     defaultSettings: {
       source: 'latest', maxGridProjects: 3,
       showCustomer: true, showCapacity: true, showYear: true, showLocation: true,
-      eyebrow: 'Project Referensi', heading: 'Energi Terbarukan untuk Semua.',
-      subheading: 'Jelajahi proyek energi terbarukan yang telah kami selesaikan di berbagai sektor.',
-      buttonLabel: 'Lihat Semua Proyek', buttonLink: '/proyek',
+      eyebrow: 'Project Referensi', heading: 'Renewable Energy for Everyone.',
+      subheading: 'Explore the renewable energy projects we have completed across various sectors.',
+      buttonLabel: 'View All Projects', buttonLink: '/proyek',
       featuredProjectId: [], gridProjectIds: [],
       heroTitleOverride: '', heroDescriptionOverride: '',
     },
@@ -207,10 +207,10 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
       { key: 'heading', label: 'Heading', type: 'text', group: 'content' },
       { key: 'subheading', label: 'Description', type: 'textarea', group: 'content' },
       { key: 'source', label: 'Content Source', type: 'select', options: [{ value: 'latest', label: 'Latest Projects' }, { value: 'manual', label: 'Manual Selection' }], group: 'content' },
-      { key: 'featuredProjectId', label: 'Featured Project', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, single: true, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek unggulan...', displayFields: { name: 'title', image: 'coverImage', subtitle: 'category', category: 'location', slug: 'slug' } },
+      { key: 'featuredProjectId', label: 'Featured Project', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, single: true, searchApi: '/api/admin/search-projects', placeholder: 'Search featured projects...', displayFields: { name: 'title', image: 'coverImage', subtitle: 'category', category: 'location', slug: 'slug' } },
       { key: 'heroTitleOverride', label: 'Hero Title Override', type: 'text', group: 'content', showWhen: { source: 'manual' }, placeholder: 'Override title (empty = use project title)' },
       { key: 'heroDescriptionOverride', label: 'Hero Description Override', type: 'textarea', group: 'content', showWhen: { source: 'manual' }, placeholder: 'Override description (empty = use project description)' },
-      { key: 'gridProjectIds', label: 'Additional Projects', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, searchApi: '/api/admin/search-projects', placeholder: 'Cari proyek...', displayFields: { name: 'title', image: 'coverImage', subtitle: 'category', category: 'location', slug: 'slug' } },
+      { key: 'gridProjectIds', label: 'Additional Projects', type: 'product-picker', group: 'content', showWhen: { source: 'manual' }, searchApi: '/api/admin/search-projects', placeholder: 'Search projects...', displayFields: { name: 'title', image: 'coverImage', subtitle: 'category', category: 'location', slug: 'slug' } },
       { key: 'maxGridProjects', label: 'Max Grid Projects', type: 'number', group: 'content', min: 1 },
       { key: 'showCustomer', label: 'Show Customer', type: 'toggle', group: 'styling' },
       { key: 'showCapacity', label: 'Show Capacity', type: 'toggle', group: 'styling' },
@@ -228,7 +228,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     type: 'testimonials',
     label: 'Testimonials',
     icon: '💬',
-    defaultSettings: { source: 'latest', maxTestimonials: 6, cardLayout: 'card', showRating: true, showCompany: true, autoRotate: false, buttonLabel: 'Lihat Semua Testimoni', buttonLink: '/testimoni' },
+    defaultSettings: { source: 'latest', maxTestimonials: 6, cardLayout: 'card', showRating: true, showCompany: true, autoRotate: false, buttonLabel: 'View All Testimonials', buttonLink: '/testimoni' },
     fields: [
       { key: 'source', label: 'Source', type: 'select', options: [{ value: 'latest', label: 'Latest' }, { value: 'featured', label: 'Featured' }, { value: 'manual', label: 'Manual' }], group: 'content' },
       { key: 'maxTestimonials', label: 'Max Testimonials', type: 'number', group: 'content' },
@@ -248,7 +248,7 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     type: 'cta',
     label: 'CTA',
     icon: '📣',
-    defaultSettings: { buttonLabel: 'Konsultasi Gratis', buttonLink: '/permintaan-penawaran', secondaryButtonLabel: '', secondaryButtonLink: '', bgImage: '', bgColor: '#111827', alignment: 'center', padding: 'medium' },
+    defaultSettings: { buttonLabel: 'Free Consultation', buttonLink: '/permintaan-penawaran', secondaryButtonLabel: '', secondaryButtonLink: '', bgImage: '', bgColor: '#111827', alignment: 'center', padding: 'medium' },
     fields: [
       { key: 'buttonLabel', label: 'Primary Button', type: 'text', group: 'content' },
       { key: 'buttonLink', label: 'Primary Link', type: 'text', group: 'content' },
@@ -269,15 +269,15 @@ export const sectionRegistry: Record<string, SectionDefinition> = {
     label: 'PLTS System Types',
     icon: '⚡',
     defaultSettings: {
-      heading: 'Pilih Sistem yang Tepat',
-      subheading: 'Ketahui perbedaan sistem PLTS dan temukan yang sesuai dengan kebutuhan Anda.',
-      card1Title: 'PLTS On-Grid', card1Desc: 'Terhubung ke jaringan PLN tanpa baterai. Kelebihan daya dijual ke PLN melalui meteran ekspor-impor.',
+      heading: 'Choose the Right System',
+      subheading: 'Understand the differences between solar system types and find the one that suits your needs.',
+      card1Title: 'PLTS On-Grid', card1Desc: 'Connected to the PLN grid without batteries. Excess power is sold to PLN through an export-import meter.',
       card1Image: '', card1Link: '/kategori/panel-surya',
       card1Accent: '#F59E0B',
-      card2Title: 'PLTS Hybrid', card2Desc: 'Kombinasi jaringan PLN dengan baterai cadangan. Listrik tetap menyala saat terjadi pemadaman.',
+      card2Title: 'PLTS Hybrid', card2Desc: 'A combination of the PLN grid and backup batteries. Power stays on during outages.',
       card2Image: '', card2Link: '/kategori/inverter',
       card2Accent: '#10B981',
-      card3Title: 'PLTS Off-Grid', card3Desc: 'Sistem mandiri tanpa koneksi PLN. Sepenuhnya mengandalkan panel surya dan baterai untuk daya 24 jam.',
+      card3Title: 'PLTS Off-Grid', card3Desc: 'A standalone system with no PLN connection. Relies entirely on solar panels and batteries for 24-hour power.',
       card3Image: '', card3Link: '/kategori/baterai',
       card3Accent: '#3B82F6',
     },
@@ -384,15 +384,15 @@ function HeroRenderer({ section, data }: SectionRendererProps) {
         <div>
           <p className="text-xs font-medium uppercase tracking-[.25em] text-muted">{String(section.settings.tagline || 'Energi Terbarukan')}</p>
           <h1 className="mt-4 text-3xl font-light leading-tight tracking-tight text-primary sm:mt-6 sm:text-4xl lg:text-6xl">
-            {section.title || 'Tenaga surya'}<br />
-            <span className="font-semibold">{section.subtitle || 'untuk semua.'}</span>
+            {section.title || 'Solar power'}<br />
+            <span className="font-semibold">{section.subtitle || 'for everyone.'}</span>
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted max-w-md sm:mt-8 sm:text-lg">{String(section.settings.description || 'Produk berkualitas premium.')}</p>
+          <p className="mt-4 text-base leading-relaxed text-muted max-w-md sm:mt-8 sm:text-lg">{String(section.settings.description || 'Premium quality products.')}</p>
           <div className="mt-6 flex flex-col gap-2 sm:mt-10 sm:flex-row sm:gap-3">
             <Link href={String(section.settings.ctaLink || '/produk')} className="rounded-full bg-dark-bg px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 shadow-lg text-center transition sm:px-8 sm:py-3.5">
               {String(section.settings.cta || 'Jelajahi Katalog')}
             </Link>
-            <Link href="/permintaan-penawaran" className="rounded-full px-6 py-3 text-sm font-medium text-muted hover:text-primary text-center transition sm:px-8 sm:py-3.5">Minta Penawaran →</Link>
+            <Link href="/permintaan-penawaran" className="rounded-full px-6 py-3 text-sm font-medium text-muted hover:text-primary text-center transition sm:px-8 sm:py-3.5">Request a Quote →</Link>
           </div>
         </div>
         <div className="relative">
@@ -407,10 +407,10 @@ function HeroRenderer({ section, data }: SectionRendererProps) {
 
 function CategoryGridRenderer({ section }: SectionRendererProps) {
   const TOP_CATEGORIES = [
-    { n:'Panel Surya', d:'Monocrystalline, Polycrystalline, Bifacial — efisiensi tinggi untuk setiap kebutuhan', s:'panel-surya' },
-    { n:'Inverter', d:'Hybrid, On-Grid, Off-Grid, Micro — konversi daya yang andal', s:'inverter' },
-    { n:'Baterai', d:'Lithium LiFePO4, Rack Mounted, Wall, All-in-One ESS', s:'baterai' },
-    { n:'Paket PLTS', d:'Solusi lengkap untuk rumah, kantor, dan industri', s:'paket-plts' },
+    { n:'Solar Panels', d:'Monocrystalline, Polycrystalline, Bifacial — high efficiency for every need', s:'panel-surya' },
+    { n:'Inverter', d:'Hybrid, On-Grid, Off-Grid, Micro — reliable power conversion', s:'inverter' },
+    { n:'Batteries', d:'Lithium LiFePO4, Rack Mounted, Wall, All-in-One ESS', s:'baterai' },
+    { n:'Paket PLTS', d:'Complete solutions for homes, offices and industry', s:'paket-plts' },
   ];
   return (
     <section className="relative bg-card py-16 sm:py-32">
@@ -576,10 +576,10 @@ function CtaRenderer({ section }: SectionRendererProps) {
         <div className="absolute -bottom-20 -left-20 h-80 w-80 rounded-full bg-teal-500/10 blur-3xl" />
       </div>
       <div className="relative mx-auto max-w-2xl px-4 sm:px-8 py-16 sm:py-32 text-center">
-        <h2 className="text-2xl font-light tracking-tight text-white sm:text-3xl lg:text-4xl">{section.title || 'Butuh bantuan?'}</h2>
+        <h2 className="text-2xl font-light tracking-tight text-white sm:text-3xl lg:text-4xl">{section.title || 'Need help?'}</h2>
         {section.subtitle && <p className="mt-4 text-base text-muted sm:mt-6 sm:text-lg">{section.subtitle}</p>}
         <Link href={String(section.settings.buttonLink || '/permintaan-penawaran')} className="mt-6 inline-block rounded-full bg-card px-6 py-3 text-sm font-medium text-primary hover:bg-gray-100 shadow-lg transition sm:mt-8 sm:px-10 sm:py-4">
-          {String(section.settings.buttonLabel || 'Konsultasi Gratis')}
+          {String(section.settings.buttonLabel || 'Free Consultation')}
         </Link>
       </div>
     </section>
@@ -809,7 +809,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
       <div className="mt-10 text-center">
         <Link href={String(s.buttonLink || '/proyek')}
           className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-primary hover:bg-surface transition-colors">
-          {String(s.buttonLabel || 'Lihat Semua Proyek')} <span className="text-lg">→</span>
+          {String(s.buttonLabel || 'View All Projects')} <span className="text-lg">→</span>
         </Link>
       </div>
     </SectionWrapper>
@@ -889,7 +889,7 @@ function TestimonialsRenderer({ section, data }: SectionRendererProps) {
         <div className="mt-8 text-center">
           <Link href={String(section.settings.buttonLink || '/testimoni')}
             className="inline-block rounded-full border border-border px-6 py-2.5 text-sm text-muted hover:text-primary hover:border-primary transition">
-            {String(section.settings.buttonLabel || 'Lihat Semua Testimoni')}
+            {String(section.settings.buttonLabel || 'View All Testimonials')}
           </Link>
         </div>
       </div>

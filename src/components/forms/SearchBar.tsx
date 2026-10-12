@@ -47,7 +47,7 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
   return (
     <div ref={containerRef} className={`relative w-full ${expanded ? '' : 'max-w-lg'}`}>
       <form onSubmit={handleSubmit} className="relative">
-        <label htmlFor={expanded ? 'header-search-mobile' : 'header-search'} className="sr-only">Cari produk</label>
+        <label htmlFor={expanded ? 'header-search-mobile' : 'header-search'} className="sr-only">Search products</label>
         <input
           id={expanded ? 'header-search-mobile' : 'header-search'}
           ref={inputRef}
@@ -56,13 +56,13 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => onFocusMobile?.()}
-          placeholder="Cari produk..."
+          placeholder="Search products..."
           className="w-full rounded-lg border border-border py-2 pl-4 pr-12 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300"
         />
 
         {expanded && query && (
           <button type="button" onClick={handleClear}
-            className="absolute right-10 top-1/2 -translate-y-1/2 rounded p-1 text-muted hover:text-primary transition" aria-label="Hapus">
+            className="absolute right-10 top-1/2 -translate-y-1/2 rounded p-1 text-muted hover:text-primary transition" aria-label="Delete">
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>

@@ -17,8 +17,8 @@ test.describe('Product Detail', () => {
   test('tabs switch content', async ({ page }) => {
     await page.goto('/produk/panel-surya-mitsubishi-mje275fb-275wp');
 
-    // Click "Spesifikasi" tab
-    await page.getByRole('tab', { name: 'Spesifikasi' }).click();
+    // Click "Specifications" tab
+    await page.getByRole('tab', { name: 'Specifications' }).click();
     await expect(page.getByText('Daya Maksimum')).toBeVisible();
 
     // Click "Pengiriman & Garansi" tab

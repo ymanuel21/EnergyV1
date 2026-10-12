@@ -9,7 +9,7 @@ export function CompareHeaderButton() {
   const { items } = useCompare();
   return (
     <Link href="/perbandingan">
-      <IconButton label="Perbandingan" badge={items.length > 0 ? items.length : undefined}>
+      <IconButton label="Comparison" badge={items.length > 0 ? items.length : undefined}>
         <CompareIcon />
       </IconButton>
     </Link>

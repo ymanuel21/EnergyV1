@@ -21,11 +21,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const brand = await getBrandBySlug(slug);
-  if (!brand) return { title: 'Brand Tidak Ditemukan' };
+  if (!brand) return { title: 'Brand Not Found' };
 
   return {
     title: brand.name,
-    description: `Jelajahi produk ${brand.name} di EBTPlaza.`,
+    description: `Explore ${brand.name} products at EBTPlaza.`,
     alternates: { canonical: `/brand/${slug}` },
   };
 }
@@ -42,7 +42,7 @@ export default async function BrandProductPage({ params }: Props) {
     <Container className="py-6">
       <Breadcrumb
         items={[
-          { label: 'Beranda', href: '/' },
+          { label: 'Home', href: '/' },
           { label: 'Brand', href: '/brand' },
           { label: brand.name },
         ]}
@@ -51,7 +51,7 @@ export default async function BrandProductPage({ params }: Props) {
       <div className="mt-4">
         <h1 className="text-2xl font-bold text-gray-900">{brand.name}</h1>
         <p className="mt-1 text-sm text-gray-500">
-          {brandProducts.length} produk
+          {brandProducts.length} products
         </p>
       </div>
 
@@ -63,7 +63,7 @@ export default async function BrandProductPage({ params }: Props) {
         </div>
       ) : (
         <div className="py-20 text-center">
-          <p className="text-gray-500">Belum ada produk dari brand ini.</p>
+          <p className="text-gray-500">No products from this brand yet.</p>
         </div>
       )}
     </Container>

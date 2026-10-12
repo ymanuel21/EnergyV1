@@ -163,7 +163,7 @@ const { chromium } = require('playwright');
   var finalContent = await page3.content();
   var finalHasEco = finalContent.indexOf('EcoFlow 160W') >= 0;
   var finalHasDesc = finalContent.indexOf('Description') >= 0;
-  var finalHasSpec = finalContent.indexOf('Spesifikasi') >= 0;
+  var finalHasSpec = finalContent.indexOf('Specifications') >= 0;
   console.log('Homepage:', finalHasEco ? 'EcoFlow' : 'MISSING', finalHasDesc ? 'Desc' : 'NO-DESC', finalHasSpec ? 'Specs' : 'NO-SPECS');
   await page3.close();
 

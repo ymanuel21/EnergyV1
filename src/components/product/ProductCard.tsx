@@ -11,9 +11,9 @@ import type { Product, ProductBadgeVariant } from '@/types/product';
 
 const BADGE_LABELS: Record<ProductBadgeVariant, string> = {
   clearance: 'Clearance',
-  promo: 'Promo',
-  new: 'Baru',
-  cheapest: 'Termurah!',
+  promo: 'Promotions',
+  new: 'New',
+  cheapest: 'Lowest price!',
 };
 
 interface ProductCardProps {
@@ -79,14 +79,14 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
         <button
           type="button"
           className={`absolute right-2 bottom-2 rounded-full bg-white/90 p-1.5 transition-colors ${wished ? 'text-red-500' : 'text-muted hover:text-red-500'}`}
-          aria-label={wished ? `Hapus ${product.name} dari wishlist` : `Simpan ${product.name} ke wishlist`}
+          aria-label={wished ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
           aria-pressed={wished}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             const wasWished = wished;
             toggleItem(product.id);
-            showToast(wasWished ? 'Dihapus dari wishlist' : 'Ditambahkan ke wishlist');
+            showToast(wasWished ? 'Removed from wishlist' : 'Added to wishlist');
           }}
         >
           <HeartIcon className={`h-4 w-4 ${wished ? 'fill-current' : ''}`} />

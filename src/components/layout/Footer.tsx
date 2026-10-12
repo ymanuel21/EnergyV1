@@ -24,7 +24,7 @@ export async function Footer() {
           </div>
           {belanja.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-400 mb-3">Belanja</h3>
+              <h3 className="text-sm font-semibold text-gray-400 mb-3">Shop</h3>
               <ul className="space-y-2 text-sm text-muted">
                 {belanja.map((link: any) => (
                   <li key={link.href}>
@@ -36,7 +36,7 @@ export async function Footer() {
           )}
           {layanan.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-400 mb-3">Layanan</h3>
+              <h3 className="text-sm font-semibold text-gray-400 mb-3">Services</h3>
               <ul className="space-y-2 text-sm text-muted">
                 {layanan.map((link: any) => (
                   <li key={link.href}>

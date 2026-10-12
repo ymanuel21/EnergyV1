@@ -50,7 +50,7 @@ interface Props { params: Promise<{ slug: string }>; }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const page = await getPageBySlug(slug);
-  if (!page) return { title: 'Halaman Tidak Ditemukan' };
+  if (!page) return { title: 'Page Not Found' };
   return { title: page.title, description: page.description, alternates: { canonical: `/halaman/${slug}` } };
 }
 
@@ -61,7 +61,7 @@ export default async function StaticPage({ params }: Props) {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: page.title }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: page.title }]} />
       <article className="mx-auto mt-6 max-w-3xl">
         <h1 className="text-2xl font-bold text-primary sm:text-3xl">{page.title}</h1>
         <RenderContent content={page.content} />

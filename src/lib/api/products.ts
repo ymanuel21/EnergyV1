@@ -1,5 +1,6 @@
 import { getPrisma } from '@/lib/db';
 import type { Product } from '@/types/product';
+import { applyEn, applyEnList } from '@/lib/i18n/apply-en';
 
 interface ListParams {
   limit?: number;
@@ -38,18 +39,19 @@ export async function getAllProducts(params?: ListParams): Promise<Product[]> {
                      params?.sort === 'name' ? { name: 'asc' as const } :
                      { createdAt: 'desc' as const };
 
-    return prisma.product.findMany({
+    const rows = await prisma.product.findMany({
       where,
       orderBy,
       take: params?.limit || undefined,
       skip: params?.offset || undefined,
       include: { brand: true, badgeRelations: { include: { badge: true } }, categories: { include: { category: true } }, relations: { include: { relatedProduct: { include: { brand: true } } }, orderBy: { type: 'asc' } } },
-    }) as unknown as Product[];
+    });
+    return applyEnList('products', rows) as unknown as Product[];
   } catch {
     // Fallback to static data only if DB unavailable
     try {
       const { products } = await import('@/lib/data/products');
-      return products as Product[];
+      return applyEnList('products', products) as unknown as Product[];
     } catch { return []; }
   }
 }
@@ -80,7 +82,7 @@ export async function getProductsPaginated(params?: ListParams): Promise<Paginat
   ]);
 
   return {
-    items: items as unknown as Product[],
+    items: applyEnList('products', items) as unknown as Product[],
     total,
     limit,
     offset,
@@ -98,7 +100,7 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
     if (row && !row.isActive) return undefined; // Hide inactive products from public detail
     if (row && row.status !== 'published') return undefined; // Hide drafts/archived from public
     if (row && row.brand && !row.brand.isActive) return undefined; // Hide products of disabled brands
-    return row as unknown as Product | undefined;
+    return applyEn('products', row) as unknown as Product;
   } catch {
     const { products } = await import('@/lib/data/products');
     return (products as Product[]).find((p) => p.slug === slug);
@@ -111,5 +113,5 @@ export async function getProductsByCategory(categoryId: string): Promise<Product
     where: { categoryId, product: { isActive: true, status: 'published', brand: { isActive: true } } },
     include: { product: { include: { brand: true, badgeRelations: { include: { badge: true } } } } },
   });
-  return rows.map(r => r.product) as unknown as Product[];
+  return applyEnList('products', rows.map(r => r.product)) as unknown as Product[];
 }

@@ -100,23 +100,23 @@ export function buildWhatsAppMessage(
   order: OrderPayload
 ): string {
   const lines = [
-    'Halo, saya ingin melakukan pemesanan.',
+    'Hello, I would like to place an order.',
     '',
     `Order ID: ${order.orderId}`,
     '',
-    `Nama: ${order.name}`,
-    `Telepon: ${order.phone}`,
+    `Name: ${order.name}`,
+    `Phone: ${order.phone}`,
     `Email: ${order.email}`,
-    `Alamat: ${order.address}, ${order.city} ${order.postalCode}`,
+    `Address: ${order.address}, ${order.city} ${order.postalCode}`,
     '',
-    '--- Produk ---',
+    '--- Products ---',
     ...order.items.map(
       (item) => `- ${item.productName} ×${item.quantity} = Rp ${item.subtotal.toLocaleString('id-ID')}`
     ),
     '',
     `Total: Rp ${order.total.toLocaleString('id-ID')}`,
     '',
-    `Pembayaran: ${order.paymentMethod === 'transfer' ? 'Transfer Bank' : order.paymentMethod}`,
+    `Payment: ${order.paymentMethod === 'transfer' ? 'Bank Transfer' : order.paymentMethod}`,
     order.notes ? `\nCatatan: ${order.notes}` : '',
   ];
 

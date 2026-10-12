@@ -78,13 +78,13 @@ export default function CheckoutPage() {
   if (cart.items.length === 0) {
     return (
       <Container className="py-6">
-        <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Checkout' }]} />
+        <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Checkout' }]} />
         <h1 className="text-2xl font-bold text-gray-900">Checkout</h1>
         <EmptyState
           icon={<CartIcon className="h-12 w-12" />}
-          title="Keranjang kosong"
-          description="Tambahkan produk ke keranjang sebelum checkout."
-          action={{ label: 'Mulai Belanja', href: '/produk' }}
+          title="Your cart is empty"
+          description="Add products to your cart before checkout."
+          action={{ label: 'Start Shopping', href: '/produk' }}
           className="mt-12"
         />
       </Container>
@@ -95,8 +95,8 @@ export default function CheckoutPage() {
     <Container className="py-6">
       <Breadcrumb
         items={[
-          { label: 'Beranda', href: '/' },
-          { label: 'Keranjang', href: '/keranjang' },
+          { label: 'Home', href: '/' },
+          { label: 'Cart', href: '/keranjang' },
           { label: 'Checkout' },
         ]}
       />
@@ -121,7 +121,7 @@ export default function CheckoutPage() {
               {i + 1}
             </span>
             <span className={step === s ? 'font-medium text-gray-900' : 'text-gray-400'}>
-              {s === 'shipping' ? 'Pengiriman' : s === 'payment' ? 'Pembayaran' : 'Review'}
+              {s === 'shipping' ? 'Shipping' : s === 'payment' ? 'Payment' : 'Review'}
             </span>
             {i < 2 && <span className="text-gray-300 mx-1">→</span>}
           </span>
@@ -133,10 +133,10 @@ export default function CheckoutPage() {
         <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
           {step === 'shipping' && (
             <div className="space-y-4 rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900">Informasi Pengiriman</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Shipping Information</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="checkout-name" className="block text-sm font-medium text-gray-700 mb-1">Nama *</label>
+                  <label htmlFor="checkout-name" className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                   <input
                     id="checkout-name"
                     type="text"
@@ -158,7 +158,7 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Telepon</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                   <input
                     type="tel"
                     value={formData.phone}
@@ -167,7 +167,7 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="checkout-city" className="block text-sm font-medium text-gray-700 mb-1">Kota *</label>
+                  <label htmlFor="checkout-city" className="block text-sm font-medium text-gray-700 mb-1">City *</label>
                   <input
                     id="checkout-city"
                     type="text"
@@ -179,7 +179,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
               <div>
-                <label htmlFor="checkout-address" className="block text-sm font-medium text-gray-700 mb-1">Alamat *</label>
+                <label htmlFor="checkout-address" className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
                 <textarea
                   id="checkout-address"
                   required
@@ -191,7 +191,7 @@ export default function CheckoutPage() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Kode Pos</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
                   <input
                     type="text"
                     value={formData.postalCode}
@@ -201,12 +201,12 @@ export default function CheckoutPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Note</label>
                 <textarea
                   rows={2}
                   value={formData.notes}
                   onChange={(e) => updateField('notes', e.target.value)}
-                  placeholder="Opsional: catatan untuk kurir"
+                  placeholder="Optional: note for the courier"
                   className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none resize-none"
                 />
               </div>
@@ -220,17 +220,17 @@ export default function CheckoutPage() {
                     const city = formData.city.trim();
                     const address = formData.address.trim();
                     if (!name || !email || !city || !address) {
-                      alert('Mohon isi Nama, Email, Kota, dan Alamat terlebih dahulu.');
+                      alert('Please fill in Name, Email, City and Address first.');
                       return;
                     }
                     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                      alert('Format email tidak valid.');
+                      alert('Invalid email format.');
                       return;
                     }
                     setStep('payment');
                   }}
                 >
-                  Lanjutkan →
+                  Continue →
                 </Button>
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function CheckoutPage() {
 
           {step === 'payment' && (
             <div className="space-y-4 rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900">Metode Pembayaran</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Payment Method</h2>
               <div className="space-y-3">
                 {[
                   { value: 'transfer', label: 'Transfer Bank (BCA, Mandiri, BRI, BNI)', icon: '🏦' },
@@ -269,10 +269,10 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between">
                 <Button type="button" variant="ghost" onClick={() => setStep('shipping')}>
-                  ← Kembali
+                  ← Back
                 </Button>
                 <Button type="button" variant="primary" onClick={() => setStep('review')}>
-                  Review Pesanan →
+                  Review Order →
                 </Button>
               </div>
             </div>
@@ -280,11 +280,11 @@ export default function CheckoutPage() {
 
           {step === 'review' && (
             <div className="space-y-4 rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900">Review Pesanan</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Review Order</h2>
 
               <div className="space-y-3 text-sm">
                 <div>
-                  <p className="font-medium text-gray-700">Pengiriman ke:</p>
+                  <p className="font-medium text-gray-700">Delivery to:</p>
                   <p className="text-gray-600">{formData.name}</p>
                   <p className="text-gray-600">{formData.address}, {formData.city} {formData.postalCode}</p>
                   <p className="text-gray-600">{formData.email} • {formData.phone}</p>
@@ -308,10 +308,10 @@ export default function CheckoutPage() {
 
               <div className="flex justify-between">
                 <Button type="button" variant="ghost" onClick={() => setStep('payment')}>
-                  ← Kembali
+                  ← Back
                 </Button>
                 <Button type="submit" variant="primary" size="lg">
-                  Buat Pesanan{hasAnyVisiblePrice(cart.items) ? ` — ${formatCurrency(visibleSubtotal(cart.items))}` : ''}
+                  Place Order{hasAnyVisiblePrice(cart.items) ? ` — ${formatCurrency(visibleSubtotal(cart.items))}` : ''}
                 </Button>
               </div>
             </div>
@@ -320,7 +320,7 @@ export default function CheckoutPage() {
 
         {/* Order summary sidebar */}
         <div className="h-fit rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Pesanan Anda</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Your Order</h2>
           <div className="divide-y divide-gray-100">
             {cart.items.map((item) => (
               <div key={item.productId} className="flex gap-3 py-2">
@@ -331,7 +331,7 @@ export default function CheckoutPage() {
                     {formatCurrency(item.price * item.quantity)}
                   </span>
                 ) : (
-                  <span className="text-xs italic text-gray-400">Konfirmasi sales</span>
+                  <span className="text-xs italic text-gray-400">Confirm with sales</span>
                 )}
               </div>
             ))}
@@ -343,7 +343,7 @@ export default function CheckoutPage() {
                 <span>{formatCurrency(visibleSubtotal(cart.items))}</span>
               ) : (
                 <span className="italic text-sm font-normal text-gray-400">
-                  Harga akan dikonfirmasi oleh tim sales
+                  Price will be confirmed by our sales team
                 </span>
               )}
             </div>

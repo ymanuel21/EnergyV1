@@ -10,10 +10,10 @@ interface TrustPanelProps {
 }
 
 const DEFAULT_BENEFITS = [
-  'Produk Original & Bergaransi',
-  'Konsultasi Gratis',
+  'Original Products with Warranty',
+  'Free Consultation',
   'Dukungan Instalasi',
-  'Pengiriman ke Seluruh Indonesia',
+  'Delivery Across Indonesia',
   'Tim Ahli Energi Terbarukan',
 ];
 
@@ -21,7 +21,7 @@ export const TrustPanel: FC<TrustPanelProps> = ({
   title = 'Mengapa Memilih EBTPlaza?',
   description,
   benefits = DEFAULT_BENEFITS,
-  buttonLabel = 'Hubungi Tim Kami',
+  buttonLabel = 'Contact Our Team',
   buttonLink = '/permintaan-penawaran',
 }) => {
   return (

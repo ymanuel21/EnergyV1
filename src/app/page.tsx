@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Energi Cerdas, Tinggal Klik!',
+  title: 'Smart Energy, Just a Click Away!',
   alternates: { canonical: '/' },
 };
 

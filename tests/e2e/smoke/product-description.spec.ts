@@ -34,11 +34,11 @@ test.describe('Product card wishlist', () => {
 
     await heart.click();
     await expect(heart).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.getByText('Ditambahkan ke wishlist')).toBeVisible();
+    await expect(page.getByText('Added to wishlist')).toBeVisible();
 
     await heart.click();
     await expect(heart).toHaveAttribute('aria-pressed', 'false');
-    await expect(page.getByText('Dihapus dari wishlist')).toBeVisible();
+    await expect(page.getByText('Removed from wishlist')).toBeVisible();
   });
 });
 

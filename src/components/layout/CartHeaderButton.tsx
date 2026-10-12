@@ -16,7 +16,7 @@ export function CartHeaderButton() {
 
   return (
     <Link href="/keranjang">
-      <IconButton label="Keranjang" badge={badge}>
+      <IconButton label="Cart" badge={badge}>
         <CartIcon />
       </IconButton>
     </Link>

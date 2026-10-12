@@ -11,7 +11,7 @@ import { validateSort, validatePage } from '@/lib/utils/validation';
 
 export const metadata: Metadata = {
   title: 'Clearance',
-  description: 'Stok terbatas produk energi terbarukan di EBTPlaza. Termurah!',
+  description: 'Limited stock of renewable energy products at EBTPlaza. Lowest prices!',
   alternates: { canonical: '/barang-clearance' },
 };
 
@@ -31,11 +31,11 @@ export default async function ClearancePage({ searchParams }: Props) {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Clearance' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Clearance' }]} />
 
       <div className="mt-4">
         <h1 className="text-2xl font-bold text-gray-900">Clearance</h1>
-        <p className="mt-1 text-sm text-gray-500">Stok terbatas • Termurah! • {filtered.length} produk</p>
+        <p className="mt-1 text-sm text-gray-500">Limited stock • Lowest price! • {filtered.length} products</p>
       </div>
 
       {paginated.length > 0 ? (
@@ -58,7 +58,7 @@ export default async function ClearancePage({ searchParams }: Props) {
         </>
       ) : (
         <div className="py-20 text-center">
-          <p className="text-gray-500">Tidak ada produk clearance saat ini.</p>
+          <p className="text-gray-500">No clearance products at the moment.</p>
         </div>
       )}
     </Container>

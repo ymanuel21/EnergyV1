@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Wishlist', () => {
   test('displays empty state initially', async ({ page }) => {
     await page.goto('/wishlist');
-    await expect(page.getByText('Wishlist kosong')).toBeVisible();
+    await expect(page.getByText('Your wishlist is empty')).toBeVisible();
   });
 
   test('wishlist → add to cart flow completes', async ({ page }) => {
@@ -14,7 +14,7 @@ test.describe('Wishlist', () => {
     await expect(page.getByText('Mitsubishi Electric')).toBeVisible();
 
     // Click "+ Keranjang" specifically (not header cart icon)
-    await page.getByRole('button', { name: '+ Keranjang', exact: true }).click();
+    await page.getByRole('button', { name: '+ Cart', exact: true }).click();
 
     await page.goto('/keranjang');
 
@@ -31,8 +31,8 @@ test.describe('Wishlist', () => {
     await expect(page.getByText('Mitsubishi Electric')).toBeVisible();
 
     // "Hapus" specific button, not "Hapus semua"
-    await page.getByRole('button', { name: 'Hapus', exact: true }).click();
+    await page.getByRole('button', { name: 'Delete', exact: true }).click();
 
-    await expect(page.getByText('Wishlist kosong')).toBeVisible();
+    await expect(page.getByText('Your wishlist is empty')).toBeVisible();
   });
 });

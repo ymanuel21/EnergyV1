@@ -1,4 +1,5 @@
 import { getPrisma } from '@/lib/db';
+import { applyEn, applyEnList } from '@/lib/i18n/apply-en';
 
 function toSlug(title: string): string {
   return title
@@ -11,7 +12,8 @@ function toSlug(title: string): string {
 export class ProjectRepository {
   async findPublic() {
     const prisma = await getPrisma();
-    return prisma.project.findMany({ where: { published: true }, orderBy: { sortOrder: 'asc' } });
+    const rows = await prisma.project.findMany({ where: { published: true }, orderBy: { sortOrder: 'asc' } });
+    return applyEnList('projects', rows);
   }
   async findAll() {
     const prisma = await getPrisma();
@@ -19,11 +21,13 @@ export class ProjectRepository {
   }
   async findFeatured(limit = 6) {
     const prisma = await getPrisma();
-    return prisma.project.findMany({ where: { published: true, featured: true }, orderBy: { sortOrder: 'asc' }, take: limit });
+    const rows = await prisma.project.findMany({ where: { published: true, featured: true }, orderBy: { sortOrder: 'asc' }, take: limit });
+    return applyEnList('projects', rows);
   }
   async findBySlug(slug: string) {
     const prisma = await getPrisma();
-    return prisma.project.findUnique({ where: { slug, status: 'published' } });
+    const row = await prisma.project.findUnique({ where: { slug, status: 'published' } });
+    return row ? applyEn('projects', row) : row;
   }
   async create(data: any) {
     const prisma = await getPrisma();

@@ -47,7 +47,7 @@ export function Header() {
           <button
             onClick={() => setSearchExpanded(false)}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-surface hover:text-primary transition"
-            aria-label="Tutup pencarian"
+            aria-label="Close search"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -62,7 +62,7 @@ export function Header() {
       ) : (
         /* Normal header — rendered only when NOT expanded */
         <div className="mx-auto flex h-14 max-w-[var(--ebt-container,64rem)] items-center gap-4 px-2 sm:px-8">
-          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label={`Beranda ${SITE_CONFIG.name}`}>
+          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label={`Home ${SITE_CONFIG.name}`}>
             <span className="text-lg font-semibold tracking-tight text-primary">
               {logo.text}
             </span>
@@ -83,7 +83,7 @@ export function Header() {
             )}
             <CartHeaderButton />
             {featureFlags.isEnabled('enable_account_ui') && (
-              <IconButton label="Akun"><UserIcon /></IconButton>
+              <IconButton label="Account"><UserIcon /></IconButton>
             )}
             <MobileMenu />
           </div>

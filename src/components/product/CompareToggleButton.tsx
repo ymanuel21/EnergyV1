@@ -31,7 +31,7 @@ export function CompareToggleButton({ productSlug, size = 'sm' }: CompareToggleB
       onClick={() => toggleItem(productSlug)}
       data-testid="compare-toggle"
     >
-      {active ? '⇄ Dibandingkan' : '⇄ Bandingkan'}
+      {active ? '⇄ Dibandingkan' : '⇄ Compare'}
     </button>
   );
 }

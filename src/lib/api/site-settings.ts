@@ -1,12 +1,14 @@
 import 'server-only';
 import { getPrisma } from '@/lib/db';
 import { SITE } from '@/lib/constants';
+import { applyEnList } from '@/lib/i18n/apply-en';
 
 export async function getSiteSettings() {
   try {
     if (process.env.DATABASE_URL) {
       const prisma = await getPrisma();
-      const rows = await prisma.siteSetting.findMany();
+      const rawRows = await prisma.siteSetting.findMany();
+      const rows = applyEnList('settings', rawRows);
       if (rows.length > 0) {
         const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
         return {

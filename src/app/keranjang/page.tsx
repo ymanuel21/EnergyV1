@@ -29,12 +29,12 @@ export default function CartPage() {
   if (cart.items.length === 0) {
     return (
       <Container className="py-6">
-        <h1 className="text-2xl font-bold text-gray-900">Keranjang Belanja</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Shopping Cart</h1>
         <EmptyState
           icon={<CartIcon className="h-12 w-12" />}
-          title="Keranjang kosong"
-          description="Tambahkan produk ke keranjang untuk mulai berbelanja."
-          action={{ label: 'Mulai Belanja', href: '/produk' }}
+          title="Your cart is empty"
+          description="Add products to your cart to start shopping."
+          action={{ label: 'Start Shopping', href: '/produk' }}
           className="mt-12"
         />
       </Container>
@@ -46,10 +46,10 @@ export default function CartPage() {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Keranjang' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Cart' }]} />
 
       <div className="mt-4">
-        <h1 className="text-2xl font-bold text-gray-900">Keranjang Belanja</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Shopping Cart</h1>
         <p className="mt-1 text-sm text-gray-500">{cart.itemCount} item</p>
       </div>
 
@@ -105,7 +105,7 @@ export default function CartPage() {
                   ) : (
                     <div className="text-right">
                       <p className="text-xs italic text-gray-400">
-                        Harga akan dikonfirmasi oleh tim sales
+                        Price will be confirmed by our sales team
                       </p>
                     </div>
                   )}
@@ -115,7 +115,7 @@ export default function CartPage() {
                   onClick={() => cart.removeItem(item.productId)}
                   className="self-end text-xs text-gray-400 hover:text-red-500 transition-colors"
                 >
-                  Hapus
+                  Delete
                 </button>
               </div>
             </div>
@@ -124,24 +124,24 @@ export default function CartPage() {
 
         {/* Summary */}
         <div className="h-fit rounded-lg border border-gray-200 p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Ringkasan Belanja</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
 
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-gray-600">
-              <span>Subtotal ({cart.itemCount} item)</span>
+              <span>Subtotal ({cart.itemCount} items)</span>
               {showPrices ? (
                 <span>{formatCurrency(subtotal)}</span>
               ) : (
-                <span className="italic text-gray-400">Konfirmasi sales</span>
+                <span className="italic text-gray-400">Confirm with sales</span>
               )}
             </div>
             <div className="flex justify-between text-gray-600">
-              <span>Berat total</span>
+              <span>Total weight</span>
               <span>{cart.totalWeight} kg</span>
             </div>
             <div className="flex justify-between text-gray-600">
-              <span>Pengiriman</span>
-              <span className="text-gray-400">Dihitung saat checkout</span>
+              <span>Shipping</span>
+              <span className="text-gray-400">Calculated at checkout</span>
             </div>
           </div>
 
@@ -155,7 +155,7 @@ export default function CartPage() {
               <div>
                 <span className="text-base font-semibold text-gray-900">Total</span>
                 <p className="mt-1 italic text-sm font-normal text-gray-400">
-                  Harga akan dikonfirmasi oleh tim sales
+                  Price will be confirmed by our sales team
                 </p>
               </div>
             )}
@@ -170,7 +170,7 @@ export default function CartPage() {
           ) : (
             <Link href="/permintaan-penawaran">
               <Button variant="primary" size="lg" className="w-full">
-                Minta Penawaran
+                Request a Quote
               </Button>
             </Link>
           )}
@@ -179,7 +179,7 @@ export default function CartPage() {
             href="/produk"
             className="block text-center text-sm text-gray-900 hover:underline"
           >
-            ← Lanjutkan belanja
+            ← Continue shopping
           </Link>
         </div>
       </div>

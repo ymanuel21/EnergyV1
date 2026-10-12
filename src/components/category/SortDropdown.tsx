@@ -8,14 +8,14 @@ export interface SortDropdownProps {
 }
 
 const SORT_OPTIONS = [
-  { value: 'relevance', label: 'Paling Relevan' },
-  { value: 'newest', label: 'Terbaru' },
-  { value: 'price-asc', label: 'Harga Terendah' },
-  { value: 'price-desc', label: 'Harga Tertinggi' },
-  { value: 'rating', label: 'Rating Tertinggi' },
-  { value: 'bestseller', label: 'Paling Laris' },
-  { value: 'most-viewed', label: 'Paling Dilihat' },
-  { value: 'biggest-discount', label: 'Diskon Terbesar' },
+  { value: 'relevance', label: 'Most Relevant' },
+  { value: 'newest', label: 'Newest' },
+  { value: 'price-asc', label: 'Lowest Price' },
+  { value: 'price-desc', label: 'Highest Price' },
+  { value: 'rating', label: 'Highest Rating' },
+  { value: 'bestseller', label: 'Best Selling' },
+  { value: 'most-viewed', label: 'Most Viewed' },
+  { value: 'biggest-discount', label: 'Biggest Discount' },
 ];
 
 export function SortDropdown({ className }: SortDropdownProps) {

@@ -2,9 +2,9 @@ import type { ProductBadgeVariant } from '@/types/product';
 
 const BADGE_LABELS: Record<ProductBadgeVariant, string> = {
   clearance: 'Clearance',
-  promo: 'Promo',
-  new: 'Baru',
-  cheapest: 'Termurah!',
+  promo: 'Promotions',
+  new: 'New',
+  cheapest: 'Lowest price!',
 };
 
 const BADGE_COLORS: Record<ProductBadgeVariant, string> = {

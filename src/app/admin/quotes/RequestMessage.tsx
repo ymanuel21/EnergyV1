@@ -81,7 +81,7 @@ function parseMessage(message: string): ParsedMessage {
     } else if (trimmed.startsWith('Target:')) {
       result.targetDate = trimmed.replace('Target:', '').trim() || null;
       foundHeader = true;
-    } else if (trimmed.startsWith('Butuh jasa instalasi:')) {
+    } else if (trimmed.startsWith('Installation service needed:') || trimmed.startsWith('Butuh jasa instalasi:')) {
       result.needsInstallation = trimmed.toLowerCase().includes('ya');
       foundHeader = true;
     } else if (trimmed.startsWith('Catatan:')) {

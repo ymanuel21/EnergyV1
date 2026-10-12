@@ -79,7 +79,7 @@ export function MobileMenu() {
           )}
           {navLinks.footer_layanan.length > 0 && (
             <div>
-              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Layanan</h3>
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Services</h3>
               <ul className="space-y-0.5">
                 {navLinks.footer_layanan.map((link) => (
                   <li key={link.href}>

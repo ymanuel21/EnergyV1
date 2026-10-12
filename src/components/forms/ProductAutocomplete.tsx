@@ -14,7 +14,7 @@ interface ProductAutocompleteProps {
 export function ProductAutocomplete({
   id = 'product-search',
   name = 'productName',
-  placeholder = 'Cari produk...',
+  placeholder = 'Search products...',
   required = false,
   onSelect,
   className = '',

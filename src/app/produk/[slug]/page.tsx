@@ -37,7 +37,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  if (!product) return { title: 'Produk Tidak Ditemukan' };
+  if (!product) return { title: 'Product Not Found' };
 
   const brand = await getBrandById(product.brandId);
   const priceDisplay = await resolvePriceDisplay(product as any);
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: product.name,
     description: priceDisplay.mode === 'SHOW_PRICE'
-      ? `${brand?.name ?? ''} ${product.name} — Rp ${product.price.toLocaleString('id-ID')}. Beli sekarang di ${SITE.name}.`
+      ? `${brand?.name ?? ''} ${product.name} — Rp ${product.price.toLocaleString('id-ID')}. Buy now at ${SITE.name}.`
       : `${brand?.name ?? ''} ${product.name} — ${priceDisplay.label}. ${SITE.name}.`,
     alternates: { canonical: `/produk/${slug}` },
     openGraph: {
@@ -107,11 +107,11 @@ export default async function ProductDetail({ params }: Props) {
       />
 
       <Container className="py-6">
-        <SmartBackButton fallbackRoute="/produk" label="← Kembali ke Produk" className="mb-3" />
+        <SmartBackButton fallbackRoute="/produk" label="← Back to Products" className="mb-3" />
         {/* Breadcrumb */}
         <Breadcrumb
           items={[
-            { label: 'Beranda', href: '/' },
+            { label: 'Home', href: '/' },
             ...(category ? [{ label: category.name, href: `/kategori/${category.slug}` }] : []),
             ...(subcategory
               ? [{ label: subcategory.name, href: `/kategori/${subcategory.slug}` }]
@@ -179,13 +179,13 @@ export default async function ProductDetail({ params }: Props) {
 
             <Link
               href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(
-                `Halo Admin EBTPlaza 👋\n\nSaya tertarik dengan produk berikut:\n\n📦 Produk: ${product.name}\n🏷️ Brand: ${brand?.name ?? '-'}\n💰 ${priceDisplay.mode === 'SHOW_PRICE' ? `Harga: Rp ${product.price.toLocaleString('id-ID')}` : `Status: ${priceDisplay.label}`}\n🔗 Link Produk: ${SITE.url}/produk/${slug}\n\nApakah produk ini masih tersedia?\n\nMohon informasi mengenai:\n• Stok terbaru\n• Estimasi pengiriman\n• Garansi\n• Ongkos kirim ke lokasi saya\n\nTerima kasih.`
+                `Hello EBTPlaza Admin 👋\n\nI am interested in the following product:\n\n📦 Product: ${product.name}\n🏷️ Brand: ${brand?.name ?? '-'}\n💰 ${priceDisplay.mode === 'SHOW_PRICE' ? `Price: Rp ${product.price.toLocaleString('id-ID')}` : `Status: ${priceDisplay.label}`}\n🔗 Product Link: ${SITE.url}/produk/${slug}\n\nIs this product still available?\n\nPlease provide information about:\n• Latest stock\n• Estimated delivery\n• Warranty\n• Shipping cost to my location\n\nThank you.`
               )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="block w-full rounded-lg border border-green-500 py-2.5 text-center text-sm font-medium text-green-600 hover:bg-green-50 transition-colors"
             >
-              Konsultasi via WhatsApp
+              Chat on WhatsApp
             </Link>
 
             <div className="flex gap-3">
@@ -194,7 +194,7 @@ export default async function ProductDetail({ params }: Props) {
             </div>
 
             <p className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-600">
-              Kondisi: {product.condition === 'new' ? 'Baru' : product.condition === 'used' ? 'Bekas' : 'Baru - Sisa Proyek'} • Garansi: {product.warranty}
+              Condition: {product.condition === 'new' ? 'New' : product.condition === 'used' ? 'Used' : 'New — Project Leftover'} • Warranty: {product.warranty}
             </p>
           </div>
         </div>
@@ -222,7 +222,7 @@ export default async function ProductDetail({ params }: Props) {
               },
               {
                 id: 'specs',
-                label: 'Spesifikasi',
+                label: 'Specifications',
                 content: (
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -264,11 +264,11 @@ export default async function ProductDetail({ params }: Props) {
                 : []),
               {
                 id: 'shipping',
-                label: 'Pengiriman & Garansi',
+                label: 'Shipping & Warranty',
                 content: (
                   <div className="text-sm text-gray-600 space-y-2">
-                    <p>Garansi: {product.warranty}</p>
-                    <p>Pengiriman ke seluruh Indonesia. Biaya pengiriman dihitung saat checkout.</p>
+                    <p>Warranty: {product.warranty}</p>
+                    <p>Delivery across Indonesia. Shipping cost is calculated at checkout.</p>
                   </div>
                 ),
               },
@@ -280,7 +280,7 @@ export default async function ProductDetail({ params }: Props) {
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <ProductCarouselSection
-          title="Produk Terkait"
+          title="Related Products"
           products={relatedProducts}
         />
       )}

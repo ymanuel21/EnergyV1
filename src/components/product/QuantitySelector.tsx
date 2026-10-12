@@ -32,7 +32,7 @@ export function QuantitySelector({
         onClick={decrement}
         disabled={value <= min}
         className="px-3 py-2 text-muted hover:text-primary disabled:opacity-30 transition-colors"
-        aria-label="Kurangi jumlah"
+        aria-label="Decrease quantity"
       >
         −
       </button>
@@ -43,7 +43,7 @@ export function QuantitySelector({
         onClick={increment}
         disabled={value >= max}
         className="px-3 py-2 text-muted hover:text-primary disabled:opacity-30 transition-colors"
-        aria-label="Tambah jumlah"
+        aria-label="Increase quantity"
       >
         +
       </button>

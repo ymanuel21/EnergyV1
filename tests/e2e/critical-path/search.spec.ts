@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('Search', () => {
   test('search "panel surya" returns matching products', async ({ page }) => {
     await page.goto('/');
-    await page.getByPlaceholder('Cari produk').fill('panel surya');
-    await page.getByRole('button', { name: 'Cari' }).click();
+    await page.getByPlaceholder('Search products...').fill('panel surya');
+    await page.getByRole('button', { name: 'Search' }).click();
 
     await expect(page).toHaveURL(/\/cari\?q=panel/);
 
@@ -20,14 +20,14 @@ test.describe('Search', () => {
 
   test('empty search shows guidance', async ({ page }) => {
     await page.goto('/cari');
-    await expect(page.getByText('minimal 2 karakter')).toBeVisible();
+    await expect(page.getByText('at least 2 characters')).toBeVisible();
   });
 
   test('no results shows empty state with zero product cards', async ({ page }) => {
     await page.goto('/cari?q=xyznonexistentproduct123');
 
     // Business outcome: empty state shown AND no stale product cards
-    await expect(page.getByText('Tidak ada produk yang cocok')).toBeVisible();
+    await expect(page.getByText('No products found')).toBeVisible();
     await expect(page.locator('article')).toHaveCount(0);
   });
 

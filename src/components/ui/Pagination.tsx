@@ -71,7 +71,7 @@ export function Pagination({
         aria-disabled={current <= 1}
         tabIndex={current <= 1 ? -1 : undefined}
       >
-        ← Sebelumnya
+        ← Previous
       </Link>
 
       {pages.map((page, i) => {
@@ -110,7 +110,7 @@ export function Pagination({
         aria-disabled={current >= totalPages}
         tabIndex={current >= totalPages ? -1 : undefined}
       >
-        Selanjutnya →
+        Next →
       </Link>
     </nav>
   );

@@ -35,9 +35,9 @@ export function formatRelative(date: string | Date | null | undefined): string {
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
 
-  if (mins < 1) return 'Baru saja';
+  if (mins < 1) return 'Just now';
   if (mins < 60) return `${mins} menit lalu`;
   if (hours < 24) return `${hours} jam lalu`;
-  if (days < 7) return `${days} hari lalu`;
+  if (days < 7) return `${days} days ago`;
   return formatDate(date);
 }

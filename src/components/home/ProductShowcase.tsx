@@ -107,7 +107,7 @@ export function ProductShowcase({ products, showPrice, showBadge, showDescriptio
               </p>
             )}
 
-            {/* Tabs: Description | Spesifikasi | Pengiriman & Garansi */}
+            {/* Tabs: Description | Specifications | Shipping & Warranty */}
             <div className="flex-1 min-h-0 mt-3">
               <ProductInfoPanel
                 product={active}
@@ -121,7 +121,7 @@ export function ProductShowcase({ products, showPrice, showBadge, showDescriptio
               href={`/produk/${active?.slug || ''}`}
               className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-hover transition-colors w-fit"
             >
-              Lihat Detail Produk
+              View Product Details
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>

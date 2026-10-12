@@ -98,7 +98,7 @@ export async function resolvePriceDisplay(
     case 'STARTING_FROM':
       return {
         mode,
-        label: `Mulai dari Rp ${product.price.toLocaleString('id-ID')}`,
+        label: `From Rp ${product.price.toLocaleString('id-ID')}`,
         showPrice: true,
         showAddToCart: true,
         cta: null,
@@ -109,27 +109,27 @@ export async function resolvePriceDisplay(
     case 'CONTACT_FOR_PRICE':
       return {
         mode,
-        label: 'Hubungi Kami untuk Harga',
+        label: 'Contact Us for Pricing',
         showPrice: false,
         showAddToCart: true,
-        cta: 'Hubungi Sales',
+        cta: 'Contact Sales',
         ctaHref: product.slug ? `/permintaan-penawaran?product=${product.slug}` : undefined,
       };
 
     case 'REQUEST_QUOTE':
       return {
         mode,
-        label: 'Harga Berdasarkan Penawaran',
+        label: 'Price on Request',
         showPrice: false,
         showAddToCart: true,
-        cta: 'Minta Penawaran',
+        cta: 'Request a Quote',
         ctaHref: product.slug ? `/permintaan-penawaran?product=${product.slug}` : undefined,
       };
 
     case 'CUSTOM_TEXT':
       return {
         mode,
-        label: product.customPriceLabel || await getGlobalCustomLabel() || 'Hubungi Kami',
+        label: product.customPriceLabel || await getGlobalCustomLabel() || 'Contact Us',
         showPrice: false,
         showAddToCart: true,
         cta: null,

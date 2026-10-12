@@ -53,7 +53,7 @@ export function toProductCreateError(error: unknown, reportId: string): ProductC
       return {
         success: false,
         code: 'PROD_DATABASE_DUPLICATE_SLUG_001',
-        message: 'Slug sudah digunakan. Silakan gunakan slug yang berbeda.',
+        message: 'Slug is already in use. Please use a different slug.',
         field: 'slug',
         reportId,
       };
@@ -62,7 +62,7 @@ export function toProductCreateError(error: unknown, reportId: string): ProductC
       return {
         success: false,
         code: 'PROD_DATABASE_DUPLICATE_SKU_001',
-        message: 'SKU sudah digunakan oleh produk lain. Silakan gunakan SKU yang berbeda.',
+        message: 'The SKU is already used by another product. Please use a different SKU.',
         field: 'sku',
         reportId,
       };
@@ -70,7 +70,7 @@ export function toProductCreateError(error: unknown, reportId: string): ProductC
     return {
       success: false,
       code: 'PROD_DATABASE_UNIQUE_001',
-      message: 'Data yang Anda masukkan sudah digunakan oleh produk lain.',
+      message: 'The data you entered is already used by another product.',
       reportId,
     };
   }
@@ -80,7 +80,7 @@ export function toProductCreateError(error: unknown, reportId: string): ProductC
     return {
       success: false,
       code: 'PROD_DATABASE_FK_001',
-      message: 'Brand atau kategori yang dipilih tidak valid. Silakan pilih ulang.',
+      message: 'The selected brand or category is invalid. Please choose again.',
       reportId,
     };
   }
@@ -91,7 +91,7 @@ export function toProductCreateError(error: unknown, reportId: string): ProductC
     return {
       success: false,
       code: 'PROD_AUTH_001',
-      message: 'Sesi login Anda sudah berakhir. Silakan login kembali lalu coba lagi.',
+      message: 'Your session has expired. Please sign in again and retry.',
       reportId,
     };
   }
@@ -100,7 +100,7 @@ export function toProductCreateError(error: unknown, reportId: string): ProductC
   return {
     success: false,
     code: 'PROD_SERVER_001',
-    message: 'Produk tidak dapat disimpan karena terjadi masalah pada server. Silakan coba lagi.',
+    message: 'The product could not be saved because of a server problem. Please try again.',
     reportId,
   };
 }
@@ -112,7 +112,7 @@ export function toProductValidationError(
 ): ProductCreateError {
   const first = issues[0];
   const field = first && first.path.length ? String(first.path[0]) : undefined;
-  const message = first?.message ?? 'Data produk tidak valid.';
+  const message = first?.message ?? 'Invalid product data.';
   const code = field
     ? `PROD_VALIDATION_${field.toUpperCase().replace(/[^A-Z0-9]/g, '_')}_001`
     : 'PROD_VALIDATION_001';

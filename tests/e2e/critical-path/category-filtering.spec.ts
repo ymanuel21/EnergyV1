@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Category Filtering', () => {
   test('displays products for a category', async ({ page }) => {
     await page.goto('/kategori/panel-surya');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Panel Surya');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Solar Panels');
     // Verify product cards render
     const cards = page.locator('article');
     await expect(cards.first()).toBeVisible();
@@ -22,7 +22,7 @@ test.describe('Category Filtering', () => {
     const breadcrumb = page.getByRole('navigation', { name: 'Breadcrumb' });
     await expect(breadcrumb).toBeVisible();
     // Breadcrumb should contain a link to home
-    await expect(breadcrumb.getByRole('link', { name: 'Beranda' })).toBeVisible();
+    await expect(breadcrumb.getByRole('link', { name: 'Home' })).toBeVisible();
   });
 
   test('pagination navigates between pages', async ({ page }) => {

@@ -49,7 +49,7 @@ export async function ProductCarouselSection({
         {linkTo && (
           <div className="mt-6 sm:hidden">
             <Link href={linkTo} className="inline-flex items-center gap-1 text-sm font-medium text-muted">
-              Lihat semua <span>→</span>
+              View all <span>→</span>
             </Link>
           </div>
         )}

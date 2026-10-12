@@ -8,148 +8,148 @@ export interface StaticPage {
 export const staticPages: StaticPage[] = [
   {
     slug: 'tentang-kami',
-    title: 'Tentang Kami',
-    content: `# Tentang Kami
+    title: 'About Us',
+    content: `# About Us
 
-EBTPlaza adalah platform energi terbarukan yang berfokus pada penyediaan solusi tenaga surya untuk rumah, bisnis, dan proyek skala besar di Indonesia.
+EBTPlaza is a renewable energy platform focused on providing solar power solutions for homes, businesses and large-scale projects in Indonesia.
 
-## Visi Kami
+## Our Vision
 
-Menjadi mitra terpercaya dalam transisi energi Indonesia menuju masa depan yang berkelanjutan.
+To be a trusted partner in Indonesia's energy transition towards a sustainable future.
 
-## Misi Kami
+## Our Mission
 
-- Menyediakan produk energi surya berkualitas dengan harga terjangkau
-- Mengedukasi masyarakat tentang manfaat energi terbarukan
-- Mendukung proyek-proyek energi hijau di seluruh Indonesia
+- To provide quality solar energy products at affordable prices
+- To educate the public about the benefits of renewable energy
+- To support green energy projects throughout Indonesia
 
-## Lokasi
+## Location
 
 Jl. Terusan Jakarta, Puri Dago Raya No.342 Kav 31
-Sukamiskin, Kec. Arcamanik
-Kota Bandung, Jawa Barat 40293
+Sukamiskin, Arcamanik District
+Bandung City, West Java 40293
 
-## Kontak
+## Contact
 
 - Email: info@ebtplaza.com
-- Telepon: (022) 20522279
+- Phone: (022) 20522279
 - Website: https://ebtplaza.vercel.app`,
   },
   {
     slug: 'kebijakan-pengiriman',
-    title: 'Kebijakan Pengiriman',
-    content: `# Kebijakan Pengiriman
+    title: 'Shipping Policy',
+    content: `# Shipping Policy
 
-## Wilayah Pengiriman
+## Delivery Coverage
 
-Kami mengirim ke seluruh Indonesia melalui mitra logistik terpercaya.
+We ship across Indonesia through trusted logistics partners.
 
-## Estimasi Waktu
+## Estimated Delivery Times
 
-- **Jawa & Bali**: 2–5 hari kerja
-- **Sumatera, Kalimantan, Sulawesi**: 5–10 hari kerja
-- **Indonesia Timur**: 7–14 hari kerja
+- **Java & Bali**: 2–5 business days
+- **Sumatra, Kalimantan, Sulawesi**: 5–10 business days
+- **Eastern Indonesia**: 7–14 business days
 
-Untuk produk berukuran besar (panel surya, baterai), pengiriman menggunakan kargo dan mungkin memerlukan waktu lebih lama.
+For large products (solar panels, batteries), shipping uses a cargo service and may take longer.
 
-## Biaya Pengiriman
+## Shipping Cost
 
-Biaya pengiriman dihitung berdasarkan:
-- Berat dan dimensi produk
-- Jarak dan lokasi tujuan
-- Metode pengiriman yang dipilih
+Shipping cost is calculated from:
+- Product weight and dimensions
+- Distance and destination
+- The shipping method chosen
 
-Biaya akan ditampilkan saat checkout sebelum pembayaran.
+The cost is displayed at checkout before payment.
 
-## Pelacakan
+## Tracking
 
-Nomor resi akan dikirim melalui email setelah pesanan diproses.`,
+A tracking number is sent by email once your order is processed.`,
   },
   {
     slug: 'kebijakan-retur',
-    title: 'Kebijakan Retur',
-    content: `# Kebijakan Retur
+    title: 'Return Policy',
+    content: `# Return Policy
 
-## Syarat Retur
+## Return Conditions
 
-Retur dapat diajukan dalam **7 hari** setelah produk diterima dengan ketentuan:
+A return may be requested within **7 days** of receiving the product, subject to the following conditions:
 
-- Produk dalam kondisi asli dan belum digunakan
-- Kemasan lengkap dan tidak rusak
-- Menyertakan bukti pembelian
+- The product is in its original condition and unused
+- Packaging is complete and undamaged
+- Proof of purchase is included
 
-## Prosedur
+## Procedure
 
-1. Hubungi kami melalui email atau WhatsApp
-2. Sertakan foto produk dan kemasan
-3. Tim kami akan memberikan instruksi pengembalian
-4. Kirim produk ke alamat yang ditentukan
+1. Contact us by email or WhatsApp
+2. Include photos of the product and packaging
+3. Our team will provide return instructions
+4. Send the product to the address provided
 
-## Pengembalian Dana
+## Refunds
 
-- Dana dikembalikan dalam 7–14 hari kerja setelah produk diterima
-- Biaya pengiriman retur ditanggung pembeli (kecuali kesalahan kami)
-- Produk clearance tidak dapat diretur`,
+- Funds are refunded within 7–14 business days after the product is received
+- Return shipping costs are borne by the buyer (unless the error was ours)
+- Clearance products cannot be returned`,
   },
   {
     slug: 'syarat-ketentuan',
-    title: 'Syarat & Ketentuan',
-    content: `# Syarat & Ketentuan
+    title: 'Terms & Conditions',
+    content: `# Terms & Conditions
 
-Dengan menggunakan layanan EBTPlaza, Anda menyetujui syarat dan ketentuan berikut.
+By using EBTPlaza's services, you agree to the following terms and conditions.
 
-## 1. Umum
+## 1. General
 
-- Harga dapat berubah sewaktu-waktu tanpa pemberitahuan
-- Stok produk tidak dapat dijamin ketersediaannya
-- Kami berhak menolak pesanan karena alasan tertentu
+- Prices may change at any time without notice
+- Product stock availability cannot be guaranteed
+- We reserve the right to refuse an order for any reason
 
-## 2. Pemesanan
+## 2. Ordering
 
-- Pesanan diproses setelah pembayaran dikonfirmasi
-- Kesalahan harga akan dikonfirmasi ulang sebelum pengiriman
+- Orders are processed once payment is confirmed
+- Pricing errors will be re-confirmed before shipping
 
-## 3. Pembayaran
+## 3. Payment
 
-- Pembayaran melalui transfer bank, Virtual Account, atau QRIS
-- Pesanan dibatalkan jika pembayaran tidak diterima dalam 24 jam
+- Payment by bank transfer, Virtual Account, or QRIS
+- Orders are cancelled if payment is not received within 24 hours
 
-## 4. Garansi
+## 4. Warranty
 
-- Garansi produk sesuai dengan ketentuan masing-masing brand
-- Kerusakan akibat kesalahan penggunaan tidak ditanggung garansi
+- Product warranty follows each brand's own terms
+- Damage caused by misuse is not covered by warranty
 
-## 5. Privasi
+## 5. Privacy
 
-- Data pribadi pelanggan dilindungi sesuai Kebijakan Privasi
-- Informasi tidak dibagikan kepada pihak ketiga tanpa izin`,
+- Customer personal data is protected in line with the Privacy Policy
+- Information is not shared with third parties without permission`,
   },
   {
     slug: 'kebijakan-privasi',
-    title: 'Kebijakan Privasi',
-    content: `# Kebijakan Privasi
+    title: 'Privacy Policy',
+    content: `# Privacy Policy
 
-## Data yang Kami Kumpulkan
+## Data We Collect
 
-- Nama, email, dan nomor telepon (saat checkout atau RFQ)
-- Alamat pengiriman
-- Riwayat pesanan
+- Name, email and phone number (at checkout or when requesting a quote)
+- Shipping address
+- Order history
 
-## Penggunaan Data
+## How We Use Data
 
-Data Anda digunakan untuk:
-- Memproses pesanan dan pengiriman
-- Komunikasi terkait pesanan
-- Pengiriman newsletter (jika berlangganan)
+Your data is used to:
+- Process orders and deliveries
+- Communicate about orders
+- Send newsletters (if you subscribe)
 
-## Perlindungan Data
+## Data Protection
 
-- Data disimpan dengan enkripsi
-- Tidak dibagikan ke pihak ketiga tanpa izin
-- Anda dapat meminta penghapusan data kapan saja
+- Data is stored encrypted
+- Not shared with third parties without permission
+- You can request deletion of your data at any time
 
-## Kontak
+## Contact
 
-Untuk pertanyaan tentang privasi: info@ebtplaza.com`,
+For privacy enquiries: info@ebtplaza.com`,
   },
 ];

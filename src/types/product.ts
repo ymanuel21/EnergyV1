@@ -122,10 +122,10 @@ export const PRODUCT_CONDITIONS: ProductCondition[] = [
 ];
 
 export const CONDITION_LABELS: Record<ProductCondition, string> = {
-  'new': 'Baru',
-  'new-minor-defect': 'Baru - Minor Defect',
-  'new-project-leftover': 'Baru - Sisa Proyek',
+  'new': 'New',
+  'new-minor-defect': 'New — Minor Defect',
+  'new-project-leftover': 'New — Project Leftover',
   'open-box': 'Open Box',
-  'display': 'Bekas Display',
-  'used': 'Bekas Pakai',
+  'display': 'Used — Ex-Display',
+  'used': 'Used',
 };

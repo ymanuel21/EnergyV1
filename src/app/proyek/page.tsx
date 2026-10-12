@@ -4,7 +4,7 @@ import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { projectRepo } from '@/lib/repositories/project';
 
-export const metadata: Metadata = { title: 'Proyek — EBTPlaza', description: 'Portofolio instalasi energi surya.' };
+export const metadata: Metadata = { title: 'Projects — EBTPlaza', description: 'Solar energy installation portfolio.' };
 
 const CATEGORY_LABELS: Record<string, string> = {
   residential: 'Residential', commercial: 'Commercial', industrial: 'Industrial',
@@ -16,10 +16,10 @@ export default async function ProjectsPage() {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Proyek' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Projects' }]} />
       <div className="mt-4">
-        <h1 className="text-2xl font-bold text-primary">Proyek Referensi</h1>
-        <p className="mt-1 text-sm text-muted">{projects.length} proyek</p>
+        <h1 className="text-2xl font-bold text-primary">Reference Projects</h1>
+        <p className="mt-1 text-sm text-muted">{projects.length} projects</p>
       </div>
 
       <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -46,7 +46,7 @@ export default async function ProjectsPage() {
           </Link>
         ))}
       </div>
-      {projects.length === 0 && <p className="text-center py-16 text-muted">Belum ada proyek.</p>}
+      {projects.length === 0 && <p className="text-center py-16 text-muted">No projects yet.</p>}
     </Container>
   );
 }

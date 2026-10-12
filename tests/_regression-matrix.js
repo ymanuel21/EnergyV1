@@ -71,7 +71,7 @@ const { chromium } = require('playwright');
   await page.waitForTimeout(4000);
   const pubContent = await page.content();
   const hasEcoFlow = pubContent.includes('EcoFlow 160W');
-  const hasTabs = pubContent.includes('Description') && pubContent.includes('Spesifikasi');
+  const hasTabs = pubContent.includes('Description') && pubContent.includes('Specifications');
   const hasCTA = pubContent.includes('Lihat Detail Produk');
   console.log('6. PUBLIC:', hasEcoFlow && hasTabs && hasCTA ? '✅ matches' : `⚠️ Eco=${hasEcoFlow} Tabs=${hasTabs} CTA=${hasCTA}`);
 

@@ -30,13 +30,13 @@ export function PriceBlock({ price, originalPrice, stock, overrideLabel, classNa
               {formatCurrency(originalPrice!)}
             </span>
             <span className="rounded bg-red-100 px-2 py-0.5 text-sm font-semibold text-red-700">
-              Hemat {discount}%
+              Save {discount}%
             </span>
           </>
         )}
       </div>
       <p className="text-sm">
-        <span className="text-green-600 font-medium">Stok tersedia</span>
+        <span className="text-green-600 font-medium">In stock</span>
         <span className="text-muted"> ({stock} pcs)</span>
       </p>
     </div>

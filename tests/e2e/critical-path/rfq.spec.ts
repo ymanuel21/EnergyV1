@@ -3,23 +3,23 @@ import { test, expect } from '@playwright/test';
 test.describe('RFQ Submission', () => {
   test('form renders all sections', async ({ page }) => {
     await page.goto('/permintaan-penawaran');
-    await expect(page.getByText('Informasi Kontak', { exact: false })).toBeVisible();
-    await expect(page.getByText('Detail Proyek', { exact: false })).toBeVisible();
-    await expect(page.getByText('Daftar Kebutuhan')).toBeVisible();
+    await expect(page.getByText('Contact Information', { exact: false })).toBeVisible();
+    await expect(page.getByText('Project Details', { exact: false })).toBeVisible();
+    await expect(page.getByText('Requirements List')).toBeVisible();
   });
 
   test('validation prevents empty submission', async ({ page }) => {
     await page.goto('/permintaan-penawaran');
 
     // Wait for client-side hydration
-    await page.waitForSelector('button:has-text("Kirim Permintaan")');
+    await page.waitForSelector('button:has-text("Send Request")');
 
-    await page.getByRole('button', { name: 'Kirim Permintaan' }).click();
+    await page.getByRole('button', { name: 'Send Request' }).click();
 
     // Validation errors appear in the form
-    await expect(page.getByText('Nama wajib diisi').first()).toBeVisible({ timeout: 5000 });
-    await expect(page.getByText('Email tidak valid').first()).toBeVisible();
-    await expect(page.getByText('Minimal 1 item').first()).toBeVisible();
+    await expect(page.getByText('Name is required').first()).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText('Invalid email').first()).toBeVisible();
+    await expect(page.getByText('At least 1 item').first()).toBeVisible();
   });
 
   test('import from cart populates RFQ items', async ({ page }) => {
@@ -39,7 +39,7 @@ test.describe('RFQ Submission', () => {
     await page.getByLabel('Email *').fill('test@example.com');
     await page.getByPlaceholder('Nama Barang').fill('Panel Surya');
     await page.getByRole('button', { name: /Tambah/ }).click();
-    await page.getByRole('button', { name: 'Kirim Permintaan' }).click();
+    await page.getByRole('button', { name: 'Send Request' }).click();
 
     await expect(page.getByText('Permintaan Terkirim!')).toBeVisible();
     await expect(page.getByText('Test User — test@example.com')).toBeVisible();

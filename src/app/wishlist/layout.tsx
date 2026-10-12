@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Wishlist',
-  description: 'Produk yang Anda simpan di wishlist EBTPlaza.',
+  description: 'The products you saved to your EBTPlaza wishlist.',
   alternates: { canonical: '/wishlist' },
 };
 

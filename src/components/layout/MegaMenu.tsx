@@ -112,7 +112,7 @@ export function MegaMenu() {
         aria-haspopup="menu"
       >
         <HamburgerIcon className="h-5 w-5" />
-        Semua Kategori
+        All Categories
       </button>
 
       <div
@@ -136,9 +136,9 @@ export function MegaMenu() {
             >
               <span className="flex min-w-0 items-baseline gap-2.5">
                 <span className="text-sm font-semibold text-primary group-hover:text-primary-hover transition-colors">
-                  Semua Produk
+                  All Products
                 </span>
-                <span className="text-xs text-muted">Lihat semua produk</span>
+                <span className="text-xs text-muted">View all products</span>
               </span>
               <ChevronRightIcon className="h-4 w-4 shrink-0 text-muted group-hover:text-primary transition-colors" />
             </Link>

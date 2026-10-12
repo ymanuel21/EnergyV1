@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Compare', () => {
   test('displays empty state initially', async ({ page }) => {
     await page.goto('/perbandingan');
-    await expect(page.getByText('Belum ada produk yang dibandingkan')).toBeVisible();
+    await expect(page.getByText('No products to compare yet')).toBeVisible();
   });
 
   test('add products to compare — table renders with specs', async ({ page }) => {
@@ -21,8 +21,8 @@ test.describe('Compare', () => {
 
     // Spec rows visible
     await expect(page.getByRole('cell', { name: 'Brand', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Kondisi', exact: true })).toBeVisible();
-    await expect(page.getByRole('cell', { name: 'Garansi', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Condition', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Warranty', exact: true })).toBeVisible();
   });
 
   test('max 4 products enforced', async ({ page }) => {

@@ -19,14 +19,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const q = sp.q?.trim();
   if (!q) {
     return {
-      title: 'Cari Produk',
-      description: `Cari panel surya, inverter, baterai, dan produk energi terbarukan lainnya di ${SITE.name}.`,
+      title: 'Search Products',
+      description: `Search solar panels, inverters, batteries and other renewable energy products at ${SITE.name}.`,
       robots: { index: false, follow: true },
     };
   }
   return {
-    title: `"${q}" — Hasil Pencarian`,
-    description: `Hasil pencarian untuk "${q}" di ${SITE.name}.`,
+    title: `"${q}" — Search Results`,
+    description: `Search results for "${q}" at ${SITE.name}.`,
     robots: { index: false, follow: true },
   };
 }
@@ -44,22 +44,22 @@ export default async function SearchPage({ searchParams }: Props) {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Pencarian' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Search' }]} />
 
       <div className="mt-4">
         <h1 className="text-2xl font-bold text-gray-900">
-          {q ? `Hasil pencarian: "${q}"` : 'Cari Produk'}
+          {q ? `Search results: "${q}"` : 'Search Products'}
         </h1>
         {q && (
           <p className="mt-1 text-sm text-gray-500">
-            {matched.length > 0 ? `${matched.length} produk ditemukan` : 'Tidak ada produk ditemukan'}
+            {matched.length > 0 ? `${matched.length} products found` : 'No products found'}
           </p>
         )}
       </div>
 
       {q.length < 2 ? (
         <div className="py-20 text-center">
-          <p className="text-gray-500">Masukkan minimal 2 karakter untuk mencari produk.</p>
+          <p className="text-gray-500">Enter at least 2 characters to search for products.</p>
         </div>
       ) : paginated.length > 0 ? (
         <>

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Keranjang Belanja',
-  description: 'Keranjang belanja Anda di EBTPlaza.',
+  title: 'Shopping Cart',
+  description: 'Your shopping cart at EBTPlaza.',
   alternates: { canonical: '/keranjang' },
 };
 

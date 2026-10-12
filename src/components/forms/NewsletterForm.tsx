@@ -15,7 +15,7 @@ export function NewsletterForm() {
         Newsletter
       </h3>
       <p className="mb-3 text-sm text-muted">
-        Info produk &amp; promo energi terbarukan.
+        Renewable energy product and promotion updates.
       </p>
       <form className="flex gap-2" onSubmit={handleSubmit}>
         <label htmlFor="newsletter-email" className="sr-only">
@@ -25,7 +25,7 @@ export function NewsletterForm() {
           id="newsletter-email"
           type="email"
           required
-          placeholder="Email Anda"
+          placeholder="Your email"
           className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-700 focus:ring-1 focus:ring-gray-700 outline-none"
         />
         <Button type="submit" variant="primary" size="sm">

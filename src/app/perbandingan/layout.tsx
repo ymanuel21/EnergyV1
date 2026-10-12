@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Perbandingan',
-  description: 'Bandingkan produk energi terbarukan di EBTPlaza.',
+  title: 'Comparison',
+  description: 'Compare renewable energy products at EBTPlaza.',
   alternates: { canonical: '/perbandingan' },
 };
 

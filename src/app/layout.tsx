@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'EBTPlaza',
-    locale: 'id_ID',
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
@@ -50,7 +50,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const site = await loadSiteFromDb();
 
   return (
-    <html lang="id" className={inter.variable}>
+    <html lang="en" className={inter.variable}>
       <body className="flex min-h-screen flex-col bg-white font-sans text-gray-900 antialiased">
         <SiteProvider settings={site}>
         <ThemeProvider settings={themeSettings} />

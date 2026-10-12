@@ -17,7 +17,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
   if (!images.length) {
     return (
       <div className="aspect-square rounded-lg bg-surface flex items-center justify-center">
-        <span className="text-muted">Tidak ada gambar</span>
+        <span className="text-muted">No image</span>
       </div>
     );
   }
@@ -28,7 +28,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
       <button
         onClick={() => setZoomOpen(true)}
         className="relative aspect-square w-full overflow-hidden rounded-lg bg-surface"
-        aria-label={`${productName} — Klik untuk zoom`}
+        aria-label={`${productName} — Click to zoom`}
       >
         <SafeImage
           src={images[selected]}
@@ -40,7 +40,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
           sizes="(max-width: 1024px) 100vw, 50vw"
         />
         <span className="absolute bottom-2 right-2 rounded bg-black/50 px-2 py-1 text-xs text-white">
-          Klik untuk zoom
+          Click to zoom
         </span>
       </button>
 

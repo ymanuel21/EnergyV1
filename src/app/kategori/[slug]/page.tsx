@@ -26,15 +26,15 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategoryBySlug(slug);
-  if (!category) return { title: 'Kategori Tidak Ditemukan' };
+  if (!category) return { title: 'Category Not Found' };
 
   return {
     title: category.name,
-    description: `Jelajahi koleksi ${category.name} di EBTPlaza. ${category.productCount} produk tersedia.`,
+    description: `Explore the ${category.name} collection at EBTPlaza. ${category.productCount} products available.`,
     alternates: { canonical: `/kategori/${slug}` },
     openGraph: {
       title: `${category.name} — EBTPlaza`,
-      description: `Jelajahi koleksi ${category.name} di EBTPlaza. ${category.productCount} produk tersedia.`,
+      description: `Explore the ${category.name} collection at EBTPlaza. ${category.productCount} products available.`,
     },
     robots: { index: true, follow: true },
   };
@@ -56,11 +56,11 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: category.name }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: category.name }]} />
 
       <div className="mt-4">
         <h1 className="text-2xl font-bold text-gray-900">{category.name}</h1>
-        <p className="mt-1 text-sm text-gray-500">{sorted.length} produk ditemukan</p>
+        <p className="mt-1 text-sm text-gray-500">{sorted.length} products found</p>
       </div>
 
       <div className="mt-4 flex items-center justify-between">
@@ -85,7 +85,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         </>
       ) : (
         <div className="py-20 text-center">
-          <p className="text-gray-500">Tidak ada produk dalam kategori ini.</p>
+          <p className="text-gray-500">No products in this category.</p>
         </div>
       )}
     </Container>

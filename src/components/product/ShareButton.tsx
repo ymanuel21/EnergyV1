@@ -53,7 +53,7 @@ export function ClipboardCopyButton() {
     >
       {isIdle && 'Salin Link'}
       {isSuccess && '✓ Tersalin'}
-      {isError && '⚠ Gagal menyalin'}
+      {isError && '⚠ Copy failed'}
     </button>
   );
 }

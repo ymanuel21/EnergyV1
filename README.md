@@ -250,6 +250,38 @@ npx playwright test tests/e2e/critical-path/
 | `critical-path/` | Category, search, cart, checkout, RFQ | Core user flows |
 | `regression/` | Compare, articles | Secondary features |
 | `admin/` | Login, logout, dashboard, CRUD | Admin panel |
+| `localization/` | Every public route | Fails if any Indonesian text is rendered |
+
+---
+
+## Localization (English)
+
+The customer-facing site publishes English only. Read
+[`docs/i18n/IMPLEMENTATION.md`](docs/i18n/IMPLEMENTATION.md) for the full record;
+[`docs/i18n/TRANSLATION_BRIEF.md`](docs/i18n/TRANSLATION_BRIEF.md) holds the term base and rules, and
+`ENGLISH_LOCALIZATION_AUDIT.md` holds the Phase 1 inventory.
+
+Two moving parts, each reversible on its own:
+
+1. **Content overlay** — `src/lib/i18n/`. English copy for database rows is merged over rows on the
+   public read path (`src/lib/api/*`). **The database is never written to**, so removing the directory
+   and the `applyEn*` calls restores the site exactly, and admin screens keep showing Indonesian.
+2. **Code copy** — Indonesian strings in components, pages, metadata and the fallback datasets were
+   translated in place; `git revert` restores them. The dictionary is
+   `docs/i18n/code-copy.en.json`, applied by `scripts/apply-code-copy.py`.
+
+```bash
+# Typecheck, build, and check for Indonesian left in customer-facing source
+npx tsc -p tsconfig.json --noEmit
+npm run build
+python3 scripts/apply-code-copy.py --residue
+
+# Crawl every public route and fail on any Indonesian text
+npx playwright test tests/e2e/localization
+```
+
+Deliberately untranslated: the admin CMS (`src/app/admin/**`, `src/components/admin/**`), dev scripts,
+and CMS page templates — internal tooling for Indonesian-speaking staff.
 
 ---
 
