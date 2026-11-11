@@ -1,6 +1,15 @@
 'use client';
 
-import Link from 'next/link';
+import Link, { useLinkStatus } from 'next/link';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import { cn } from '@lib/utils/cn';
 
 export interface PaginationProps {
@@ -25,15 +34,114 @@ function buildHref(baseUrl: string, params: Record<string, string>, page: number
   return qs ? `${baseUrl}?${qs}` : baseUrl;
 }
 
-export function Pagination({
-  current,
-  total,
-  baseUrl,
-  params = {},
-  siblingCount = 1,
+// ═══ Pending state ═══
+// Derived exclusively from useLinkStatus(), which reports whether the enclosing
+// <Link> has a navigation in flight. No timers and no hand-managed lock: when the
+// navigation completes or is cancelled the flag clears and controls restore themselves.
+
+type RegisterPending = (id: string, label: string) => () => void;
+
+const RegisterPendingContext = createContext<RegisterPending | null>(null);
+const PendingContext = createContext<{ pending: boolean; label: string | null }>({
+  pending: false,
+  label: null,
+});
+
+function PendingProvider({ children }: { children: ReactNode }) {
+  const [pendingByLink, setPendingByLink] = useState<Record<string, string>>({});
+
+  const register = useCallback<RegisterPending>((id, label) => {
+    setPendingByLink((prev) => (prev[id] === label ? prev : { ...prev, [id]: label }));
+    return () => {
+      setPendingByLink((prev) => {
+        if (!(id in prev)) return prev;
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+    };
+  }, []);
+
+  const value = useMemo(() => {
+    const labels = Object.values(pendingByLink);
+    return {
+      pending: labels.length > 0,
+      label: labels.length > 0 ? labels[labels.length - 1] : null,
+    };
+  }, [pendingByLink]);
+
+  return (
+    <RegisterPendingContext.Provider value={register}>
+      <PendingContext.Provider value={value}>{children}</PendingContext.Provider>
+    </RegisterPendingContext.Provider>
+  );
+}
+
+/** Spinner + registration. Must be rendered inside the <Link> it observes. */
+function PendingIndicator({ id, label }: { id: string; label: string }) {
+  const { pending } = useLinkStatus();
+  const register = useContext(RegisterPendingContext);
+
+  useEffect(() => {
+    if (!pending || !register) return;
+    return register(id, label);
+  }, [pending, id, label, register]);
+
+  if (!pending) return null;
+
+  return (
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      viewBox="0 0 16 16"
+      fill="none"
+      className="mr-1 inline-block h-3 w-3 animate-spin motion-reduce:animate-none"
+    >
+      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2" />
+      <path d="M14 8a6 6 0 0 0-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+interface PaginationLinkProps {
+  href: string;
+  className: string;
+  /** Spoken destination, e.g. "halaman 2 dari 19" */
+  label: string;
+  /** Boundary control that cannot be followed */
+  disabled?: boolean;
+  isCurrent?: boolean;
+  children: ReactNode;
+}
+
+function PaginationLink({
+  href,
   className,
-}: PaginationProps) {
-  if (total <= 1) return null;
+  label,
+  disabled = false,
+  isCurrent = false,
+  children,
+}: PaginationLinkProps) {
+  const { pending } = useContext(PendingContext);
+  const blocked = pending || disabled;
+
+  return (
+    <Link
+      href={href}
+      className={cn(className, pending && 'pointer-events-none opacity-60')}
+      aria-current={isCurrent ? 'page' : undefined}
+      aria-disabled={blocked || undefined}
+      tabIndex={disabled ? -1 : undefined}
+      onClick={pending ? (event) => event.preventDefault() : undefined}
+    >
+      {!disabled && <PendingIndicator id={href} label={label} />}
+      {children}
+    </Link>
+  );
+}
+
+function PaginationNav({ current, total, baseUrl, params = {}, siblingCount = 1, className }: PaginationProps) {
+  const { pending, label } = useContext(PendingContext);
 
   const totalPages = Math.max(1, total);
   const pages: (number | 'ellipsis-start' | 'ellipsis-end')[] = [];
@@ -60,19 +168,27 @@ export function Pagination({
   }
 
   return (
-    <nav className={cn('flex items-center justify-center gap-1', className)} aria-label="Pagination">
-      <Link
+    <nav
+      className={cn('flex items-center justify-center gap-1', className)}
+      aria-label="Pagination"
+      aria-busy={pending || undefined}
+    >
+      <span role="status" aria-live="polite" className="sr-only">
+        {pending && label ? `Memuat ${label}` : ''}
+      </span>
+
+      <PaginationLink
         href={current > 1 ? buildHref(baseUrl, params, current - 1) : '#'}
         className={`rounded-lg px-3 py-2 text-sm transition-colors ${
           current <= 1
             ? 'pointer-events-none text-gray-300'
             : 'text-muted hover:text-primary hover:bg-surface'
         }`}
-        aria-disabled={current <= 1}
-        tabIndex={current <= 1 ? -1 : undefined}
+        label={`halaman ${Math.max(1, current - 1)} dari ${totalPages}`}
+        disabled={current <= 1}
       >
         ← Sebelumnya
-      </Link>
+      </PaginationLink>
 
       {pages.map((page, i) => {
         if (typeof page === 'string') {
@@ -84,7 +200,7 @@ export function Pagination({
         }
 
         return (
-          <Link
+          <PaginationLink
             key={page}
             href={buildHref(baseUrl, params, page)}
             className={cn(
@@ -93,25 +209,36 @@ export function Pagination({
                 ? 'bg-primary text-white pointer-events-none'
                 : 'text-muted hover:text-primary hover:bg-surface'
             )}
-            aria-current={page === current ? 'page' : undefined}
+            label={`halaman ${page} dari ${totalPages}`}
+            isCurrent={page === current}
           >
             {page}
-          </Link>
+          </PaginationLink>
         );
       })}
 
-      <Link
+      <PaginationLink
         href={current < totalPages ? buildHref(baseUrl, params, current + 1) : '#'}
         className={`rounded-lg px-3 py-2 text-sm transition-colors ${
           current >= totalPages
             ? 'pointer-events-none text-gray-300'
             : 'text-muted hover:text-primary hover:bg-surface'
         }`}
-        aria-disabled={current >= totalPages}
-        tabIndex={current >= totalPages ? -1 : undefined}
+        label={`halaman ${Math.min(totalPages, current + 1)} dari ${totalPages}`}
+        disabled={current >= totalPages}
       >
         Selanjutnya →
-      </Link>
+      </PaginationLink>
     </nav>
+  );
+}
+
+export function Pagination(props: PaginationProps) {
+  if (props.total <= 1) return null;
+
+  return (
+    <PendingProvider>
+      <PaginationNav {...props} />
+    </PendingProvider>
   );
 }
