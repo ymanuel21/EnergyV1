@@ -20,6 +20,8 @@ import { resolvePriceDisplay } from '@/lib/services/product-pricing';
 import { getAllCategories } from '@/lib/api/categories';
 import { getBrandById } from '@/lib/api/brands';
 import { SITE } from '@lib/constants';
+import { COMING_SOON_SRC } from '@/lib/image-placeholders';
+import { firstRealImage } from '@/lib/image-placeholders';
 import { notFound } from 'next/navigation';
 import { ProductViewTracker } from '@components/product/ProductTracker';
 import { SmartBackButton } from '@/components/ui/SmartBackButton';
@@ -52,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: product.name,
       description: (product.description || '').substring(0, 160),
-      images: product.images?.[0] ? [{ url: product.images[0] }] : undefined,
+      images: firstRealImage(product.images) ? [{ url: firstRealImage(product.images)! }] : undefined,
     },
   };
 }
@@ -92,7 +94,7 @@ export default async function ProductDetail({ params }: Props) {
             '@context': 'https://schema.org',
             '@type': 'Product',
             name: product.name,
-            image: product.images?.[0],
+            image: firstRealImage(product.images),
             description: product.description,
             sku: product.sku,
             mpn: product.model,
@@ -170,7 +172,7 @@ export default async function ProductDetail({ params }: Props) {
               slug={product.slug}
               name={product.name}
               brandName={brand?.name ?? ''}
-              image={product.images?.[0] || '/images/placeholder/product-placeholder.png'}
+              image={firstRealImage(product.images) || COMING_SOON_SRC}
               price={product.price}
               maxQuantity={product.stock}
               weight={product.weight}

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
+import { firstRealImage } from '@/lib/image-placeholders';
 
 interface ProductCardItemProps {
   product: any;
@@ -15,7 +16,7 @@ export function ProductCardItem({ product: p, showPrice, showBadge, priceLabels,
     <Link href={`/produk/${p.slug}`}
       className={`group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition block ${isSingle ? 'flex flex-col sm:flex-row' : ''}`}>
       <div className={`overflow-hidden bg-surface ${isSingle ? 'sm:w-[55%] aspect-square sm:aspect-auto sm:h-full' : 'aspect-square'}`}>
-        <SafeImage src={p.images?.[0] || ''} alt={p.name} width={400} height={400}
+        <SafeImage src={firstRealImage(p.images) || ''} alt={p.name} width={400} height={400}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="h-full w-full object-cover group-hover:scale-105 transition duration-500" />
       </div>

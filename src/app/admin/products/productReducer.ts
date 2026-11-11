@@ -2,6 +2,7 @@
 // Each tab owns one section. Reducer is pure. Validation runs outside.
 
 import { deriveFamilyKey } from '@/lib/product-family';
+import { stripPlaceholderImages } from '@/lib/image-placeholders';
 
 export interface ProductState {
   overview: {
@@ -191,7 +192,13 @@ export function buildPayload(state: ProductState, productId?: string, brandSlug?
     originalPrice: state.pricing.originalPrice,
     priceDisplayMode: state.pricing.priceDisplayMode || undefined,
     customPriceLabel: state.pricing.customPriceLabel || undefined,
-    images: state.media.images.length > 0 ? state.media.images : ['/images/placeholder/product-placeholder.png'],
+    // A product with no image must save as an EMPTY array. This previously wrote the
+    // grey /images/placeholder/product-placeholder.png sentinel into the record, which
+    // then rendered as a blank grey square (it is a real, loadable file, so no image
+    // component could detect it). The Coming Soon fallback is applied at render time.
+    // Sentinels are stripped first: otherwise editing an affected product would simply
+    // re-save the sentinel it was loaded with.
+    images: stripPlaceholderImages(state.media.images),
     badges: state.media.badges,
     badgeIds: state.media.badges,
     specifications: state.specifications.filter(s => s.key?.trim() || s.value?.trim()),

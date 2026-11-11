@@ -8,6 +8,8 @@ import { projectRepo } from '@/lib/repositories/project';
 import { ProductAccordion } from './ProductAccordion';
 import { SmartBackButton } from '@/components/ui/SmartBackButton';
 import { PhotoGallery } from '@/components/project/PhotoGallery';
+import { SafeImage } from '@ui/SafeImage';
+import { PhotoPlaceholder } from '@ui/PhotoPlaceholder';
 
 export const dynamic = 'force-dynamic';
 
@@ -60,11 +62,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
       <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Proyek', href: '/proyek' }, { label: project.title }]} />
 
       {/* Hero */}
-      {allImages[0] && (
-        <div className="mt-4 aspect-[2/1] w-full overflow-hidden rounded-2xl bg-surface">
-          <img src={allImages[0]} alt={project.title} className="h-full w-full object-cover" />
-        </div>
-      )}
+      <div className="relative mt-4 aspect-[2/1] w-full overflow-hidden rounded-2xl bg-surface">
+        {allImages[0] ? (
+          <SafeImage src={allImages[0]} alt={project.title} fill sizes="100vw" className="object-cover" />
+        ) : (
+          <PhotoPlaceholder fit="cover" sizes="100vw" />
+        )}
+      </div>
 
       {/* Gallery — Lightbox */}
       <PhotoGallery images={allImages.slice(1)} title={project.title} />
@@ -109,7 +113,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           {images.length > 0 && (
             <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
               {images.map((img: string, i: number) => (
-                <img key={i} src={img} alt={`${project.title} - ${i + 1}`} className="aspect-square rounded-xl object-cover bg-surface" />
+                <div key={i} className="relative aspect-square overflow-hidden rounded-xl bg-surface">
+                  <SafeImage src={img} alt={`${project.title} - ${i + 1}`} fill sizes="(max-width: 640px) 50vw, 33vw" className="object-cover" />
+                </div>
               ))}
             </div>
           )}

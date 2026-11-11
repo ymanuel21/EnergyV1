@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { SafeImage } from '@ui/SafeImage';
+import { firstRealImage } from '@/lib/image-placeholders';
 import { ProductInfoPanel } from './ProductInfoPanel';
 import Link from 'next/link';
 
@@ -73,7 +74,7 @@ export function ProductShowcase({ products, showPrice, showBadge, showDescriptio
           {/* Image — clickable */}
           <Link href={`/produk/${active?.slug || ''}`}
             className={`bg-surface flex items-center justify-center p-6 sm:p-8 ${isSingle ? 'sm:w-[48%]' : 'sm:w-[42%]'} aspect-square sm:aspect-auto sm:h-auto`}>
-            <SafeImage key={active?.id || active?.slug} src={active?.images?.[0] || ''} alt={active?.name || ''} width={500} height={500}
+            <SafeImage key={active?.id || active?.slug} src={firstRealImage(active?.images) || ''} alt={active?.name || ''} width={500} height={500}
               sizes="(max-width: 640px) 100vw, 45vw"
               className="h-full w-full object-contain group-hover:scale-105 transition duration-500 sm:max-h-full" />
           </Link>

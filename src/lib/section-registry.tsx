@@ -351,6 +351,8 @@ function SectionWrapper({ section, children }: { section: any; children: React.R
 /* ===== RENDERERS ===== */
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
+import { firstRealImage } from '@/lib/image-placeholders';
+import { PhotoPlaceholder } from '@ui/PhotoPlaceholder';
 function HeroRenderer({ section, data }: SectionRendererProps) {
   const productIdRaw = section.settings.heroProductId;
   const productId = Array.isArray(productIdRaw) ? productIdRaw[0] : productIdRaw;
@@ -500,7 +502,7 @@ function FeaturedProductsRenderer({ section, data }: SectionRendererProps) {
               <Link key={p.id || p.slug} href={`/produk/${p.slug}`}
                 className={`group rounded-xl border border-border bg-card overflow-hidden hover:shadow-md transition ${layout === 'carousel' ? 'shrink-0 w-[280px] snap-start' : ''}`}>
                 <div className="aspect-square overflow-hidden bg-surface">
-                  <SafeImage src={p.images?.[0] || ''} alt={p.name} width={400} height={400}
+                  <SafeImage src={firstRealImage(p.images) || ''} alt={p.name} width={400} height={400}
                     className="h-full w-full object-contain p-4 group-hover:scale-105 transition duration-500" />
                 </div>
                 <div className="p-4">
@@ -650,7 +652,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
                 {(featured.coverImage || (Array.isArray(featured.images) && featured.images[0])) ? (
                   <SafeImage src={featured.coverImage || featured.images[0]} alt={featured.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover group-hover:scale-105 transition duration-700" />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-6xl">☀️</div>
+                  <PhotoPlaceholder fit="cover" />
                 )}
               </div>
               <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
@@ -682,7 +684,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
                     {(p.coverImage || (Array.isArray(p.images) && p.images[0])) ? (
                       <SafeImage src={p.coverImage || p.images[0]} alt={p.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition duration-500" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-4xl">☀️</div>
+                      <PhotoPlaceholder fit="cover" />
                     )}
                   </div>
                   <div className="p-4">
@@ -735,7 +737,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
               <SafeImage src={featured.coverImage || featured.images[0]} alt={featured.title}
                 fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover group-hover:scale-105 transition duration-700" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-6xl">☀️</div>
+              <PhotoPlaceholder fit="cover" />
             )}
           </div>
           <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
@@ -783,7 +785,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
                     <SafeImage src={p.coverImage || p.images[0]} alt={p.title}
                       fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition duration-500" />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-amber-50 to-emerald-50 text-4xl">☀️</div>
+                    <PhotoPlaceholder fit="cover" />
                   )}
                 </div>
                 <div className="p-4">
@@ -818,6 +820,7 @@ function ProjectsRenderer({ section, data }: SectionRendererProps) {
 
 import { TestimonialSection } from '@/components/testimonial/TestimonialSection';
 import { ClickableCard } from '@/components/testimonial/ClickableCard';
+import { AvatarPhoto } from '@/components/testimonial/AvatarPhoto';
 
 function getTestimonialsForSection(
   testimonials: any[],
@@ -864,11 +867,7 @@ function TestimonialsRenderer({ section, data }: SectionRendererProps) {
             <ClickableCard key={t.id} testimonial={t}>
               <div className="rounded-xl border border-border bg-card p-6 h-full">
                 <div className="flex items-center gap-3 mb-4">
-                  {t.photo ? (
-                    <img src={t.photo} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm">👤</div>
-                  )}
+                  <AvatarPhoto src={t.photo} name={t.name} size={40} />
                   <div>
                     <p className="text-sm font-medium text-primary">{t.name}</p>
                     {(t.company || t.role || t.createdAt) && (

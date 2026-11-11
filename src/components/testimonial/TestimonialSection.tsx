@@ -1,7 +1,10 @@
 'use client';
 
+import { PhotoPlaceholder } from '@ui/PhotoPlaceholder';
+
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { AvatarPhoto } from '@/components/testimonial/AvatarPhoto';
 
 export interface TestimonialData {
   id: string;
@@ -37,11 +40,7 @@ function Modal({ t, onClose }: { t: TestimonialData; onClose: () => void }) {
         </button>
         <div className="p-6 sm:p-8">
           <div className="flex items-center gap-4 mb-4">
-            {t.photo ? (
-              <img src={t.photo} alt={t.name} className="w-16 h-16 rounded-full object-cover" />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl">👤</div>
-            )}
+            <AvatarPhoto src={t.photo} name={t.name} size={64} />
             <div>
               <h2 className="text-lg font-semibold text-gray-900">{t.name}</h2>
               {(t.company || t.role) && (
@@ -103,11 +102,7 @@ export function TestimonialSection({ testimonials, variant = 'default' }: Testim
               // Compact: homepage variant (wrapper div provides border/padding)
               <>
                 <div className="flex items-center gap-3 mb-4">
-                  {t.photo ? (
-                    <img src={t.photo} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-sm">👤</div>
-                  )}
+                  <AvatarPhoto src={t.photo} name={t.name} size={40} />
                   <div>
                     <p className="text-sm font-medium text-primary">{t.name}</p>
                     {(t.company || t.role || t.createdAt) && (
@@ -125,11 +120,7 @@ export function TestimonialSection({ testimonials, variant = 'default' }: Testim
               // Default: /testimoni full card
               <>
                 <div className="flex items-center gap-3 mb-4">
-                  {t.photo ? (
-                    <img src={t.photo} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-surface flex items-center justify-center text-lg">👤</div>
-                  )}
+                  <AvatarPhoto src={t.photo} name={t.name} size={48} />
                   <div>
                     <p className="text-sm font-medium text-primary">{t.name}</p>
                     {(t.company || t.role || t.createdAt) && (

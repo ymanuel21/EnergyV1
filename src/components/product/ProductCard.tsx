@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
+import { firstRealImage } from '@/lib/image-placeholders';
 import { Badge } from '@ui/Badge';
 import { Price } from '@ui/Price';
 import { HeartIcon } from '@ui/Icons';
@@ -48,7 +49,7 @@ export function ProductCard({ product, variant = 'grid', className = '', brandNa
       {/* Image */}
       <Link href={`/produk/${product.slug}`} className="relative aspect-square overflow-hidden bg-surface">
         <SafeImage
-          src={product.images[0]}
+          src={firstRealImage(product.images) ?? ''}
           alt={product.name}
           width={400}
           height={400}

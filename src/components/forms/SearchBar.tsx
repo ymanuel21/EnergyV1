@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useProductAutocomplete } from '@/lib/hooks/useProductAutocomplete';
 import type { ProductSuggestion } from '@/lib/hooks/useProductAutocomplete';
+import { isPlaceholderImage } from '@/lib/image-placeholders';
 
 interface SearchBarProps {
   onFocusMobile?: () => void;
@@ -88,7 +89,7 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
               onMouseEnter={() => { /* handled by hook */ }}
               className={`flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-surface ${i === selected ? 'bg-surface' : ''}`}
             >
-              {s.images?.[0] && (
+              {s.images?.[0] && !isPlaceholderImage(s.images[0]) && (
                 <img src={s.images[0]} alt="" className="h-10 w-10 rounded object-contain bg-white border border-border shrink-0" />
               )}
               <div className="min-w-0 flex-1">

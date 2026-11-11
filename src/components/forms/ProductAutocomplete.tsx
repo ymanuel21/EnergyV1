@@ -1,6 +1,7 @@
 'use client';
 
 import { useProductAutocomplete } from '@/lib/hooks/useProductAutocomplete';
+import { isPlaceholderImage } from '@/lib/image-placeholders';
 
 interface ProductAutocompleteProps {
   id?: string;
@@ -66,7 +67,7 @@ export function ProductAutocomplete({
               onMouseEnter={() => setSelected(i)}
               className={`flex cursor-pointer items-center gap-3 px-4 py-3 text-left transition hover:bg-surface ${i === selected ? 'bg-surface' : ''}`}
             >
-              {s.images?.[0] && (
+              {s.images?.[0] && !isPlaceholderImage(s.images[0]) && (
                 <img src={s.images[0]} alt="" className="h-10 w-10 rounded object-contain bg-white border border-border shrink-0" />
               )}
               <div className="min-w-0 flex-1">

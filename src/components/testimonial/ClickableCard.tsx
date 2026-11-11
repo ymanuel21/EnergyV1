@@ -1,7 +1,10 @@
 'use client';
 
+import { PhotoPlaceholder } from '@ui/PhotoPlaceholder';
+
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { AvatarPhoto } from '@/components/testimonial/AvatarPhoto';
 
 interface TestimonialData {
   id: string;
@@ -37,11 +40,7 @@ function Modal({ t, onClose }: { t: TestimonialData; onClose: () => void }) {
         </button>
         <div className="p-6 sm:p-8">
           <div className="flex items-center gap-4 mb-4">
-            {t.photo ? (
-              <img src={t.photo} alt={t.name} className="w-16 h-16 rounded-full object-cover" />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-2xl">👤</div>
-            )}
+            <AvatarPhoto src={t.photo} name={t.name} size={64} />
             <div>
               <h2 className="text-lg font-semibold text-gray-900">{t.name}</h2>
               {(t.company || t.role) && (

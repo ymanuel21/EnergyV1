@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { cn } from '@lib/utils/cn';
 import { Modal } from '@ui/Modal';
 import { SafeImage } from '@ui/SafeImage';
+import { PhotoPlaceholder } from '@ui/PhotoPlaceholder';
+import { stripPlaceholderImages } from '@/lib/image-placeholders';
 
 interface ImageGalleryProps {
   images: string[];
@@ -14,10 +16,18 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
   const [selected, setSelected] = useState(0);
   const [zoomOpen, setZoomOpen] = useState(false);
 
-  if (!images.length) {
+  // Drop legacy/grey sentinel entries so they can never appear as gallery images or
+  // thumbnails. If nothing real remains, the whole gallery becomes the Coming Soon card.
+  const gallery = stripPlaceholderImages(images);
+
+  if (!gallery.length) {
     return (
-      <div className="aspect-square rounded-lg bg-surface flex items-center justify-center">
-        <span className="text-muted">Tidak ada gambar</span>
+      <div className="aspect-square overflow-hidden rounded-lg bg-surface">
+        <PhotoPlaceholder
+          fit="cover"
+          priority
+          sizes="(max-width: 1024px) 100vw, 50vw"
+        />
       </div>
     );
   }
@@ -31,7 +41,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
         aria-label={`${productName} — Klik untuk zoom`}
       >
         <SafeImage
-          src={images[selected]}
+          src={gallery[selected]}
           alt={productName}
           width={800}
           height={800}
@@ -45,9 +55,9 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
       </button>
 
       {/* Thumbnails */}
-      {images.length > 1 && (
+      {gallery.length > 1 && (
         <div className="mt-3 flex gap-2 overflow-x-auto">
-          {images.map((img, i) => (
+          {gallery.map((img, i) => (
             <button
               key={i}
               onClick={() => setSelected(i)}
@@ -74,7 +84,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
       <Modal open={zoomOpen} onClose={() => setZoomOpen(false)} size="lg" showCloseButton>
         <div className="relative">
           <SafeImage
-            src={images[selected]}
+            src={gallery[selected]}
             alt={productName}
             width={1200}
             height={1200}

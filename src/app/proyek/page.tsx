@@ -4,6 +4,7 @@ import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
 import { projectRepo } from '@/lib/repositories/project';
 import { SafeImage } from '@ui/SafeImage';
+import { PhotoPlaceholder } from '@ui/PhotoPlaceholder';
 
 export const metadata: Metadata = { title: 'Proyek — EBTPlaza', description: 'Portofolio instalasi energi surya.' };
 
@@ -33,7 +34,7 @@ export default async function ProjectsPage() {
                   fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition duration-500" />
               </div>
             ) : (
-              <div className="aspect-[4/3] flex items-center justify-center bg-surface text-3xl text-muted">☀️</div>
+              <div className="aspect-[4/3] bg-surface"><PhotoPlaceholder fit="cover" /></div>
             )}
             <div className="p-5">
               <div className="flex items-start gap-2">
