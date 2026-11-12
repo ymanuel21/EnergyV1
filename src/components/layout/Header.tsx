@@ -10,11 +10,12 @@ import { MegaMenu } from './MegaMenu';
 import { MobileMenu } from './MobileMenu';
 import { CompareHeaderButton } from './CompareHeaderButton';
 import { LanguageSwitcher } from './LanguageSwitcher';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { SITE_CONFIG } from '@/lib/site';
 import { featureFlags } from '@/lib/platform';
 export function Header() {
   const t = useTranslations('header');
+  const locale = useLocale();
   const { logo } = SITE_CONFIG;
   const [searchExpanded, setSearchExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -32,7 +33,7 @@ export function Header() {
       .then(r => r.json())
       .then(data => setHeaderLinks(data.header || []))
       .catch(() => {});
-  }, []);
+  }, [locale]);
 
   // Lock body scroll when search expanded
   useEffect(() => {

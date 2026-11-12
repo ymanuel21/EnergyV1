@@ -4,13 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { HamburgerIcon } from '@ui/Icons';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { SITE_CONFIG } from '@/lib/site';
 
 interface NavLink { label: string; href: string; }
 
 export function MobileMenu() {
   const t = useTranslations();
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [navLinks, setNavLinks] = useState<{ header: NavLink[]; mobile: NavLink[]; footer_layanan: NavLink[] }>({ header: [], mobile: [], footer_layanan: [] });
@@ -22,7 +23,7 @@ export function MobileMenu() {
       .then(r => r.json())
       .then(data => setNavLinks(data))
       .catch(() => {});
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) { if (e.key === 'Escape') setOpen(false); }
