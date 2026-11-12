@@ -1,4 +1,5 @@
 import { getPrisma } from '@/lib/db';
+import { localizeRow, localizeRows } from '@/lib/i18n/server';
 
 export class CategoryRepository {
   async findAll(isActive?: boolean) {
@@ -33,7 +34,7 @@ export class HomepageRepository {
       where, orderBy: { sortOrder: 'asc' },
       include: { versions: { where: { status: 'published' }, take: 1 } },
     });
-    return sections.map((s: any) => { const v = s.versions?.[0]; return { ...s, title: v?.title, subtitle: v?.subtitle, settings: v?.settings || {} }; });
+    return localizeRows('homepage_sections', sections.map((s: any) => { const v = s.versions?.[0]; return { ...s, title: v?.title, subtitle: v?.subtitle, settings: v?.settings || {} }; }));
   }
   async findAll() {
     const prisma = await getPrisma();
@@ -71,7 +72,7 @@ export const homepageRepo = new HomepageRepository();
 export class NavigationRepository {
   async findPublic() {
     const prisma = await getPrisma();
-    const rows = await prisma.navigationLink.findMany({ where: { enabled: true }, orderBy: { sortOrder: 'asc' } });
+    const rows = await localizeRows('navigation_links', await prisma.navigationLink.findMany({ where: { enabled: true }, orderBy: { sortOrder: 'asc' } }));
     const map: Record<string, { label: string; href: string }[]> = {};
     for (const r of rows) { if (!map[r.group]) map[r.group] = []; map[r.group].push({ label: r.label, href: r.href }); }
     return map;
@@ -85,8 +86,17 @@ export const navigationRepo = new NavigationRepository();
 
 // Projects
 export class ProjectRepository {
-  async findPublic() { const prisma = await getPrisma(); return prisma.project.findMany({ where: { published: true }, orderBy: { year: 'desc' } }); }
-  async findAll() { const prisma = await getPrisma(); return prisma.project.findMany({ orderBy: { createdAt: 'desc' } }); }
+  /** Public read - degrade to an empty list; a DB outage must not 500 a page. */
+  async findPublic() {
+    try {
+      const prisma = await getPrisma();
+      const rows = await prisma.project.findMany({ where: { published: true }, orderBy: { year: 'desc' } });
+      return localizeRows('projects', rows);
+    } catch (e) {
+      console.error('[public-read] projectRepo.findPublic failed:', (e as Error).message);
+      return [];
+    }
+  }  async findAll() { const prisma = await getPrisma(); return prisma.project.findMany({ orderBy: { createdAt: 'desc' } }); }
   async create(data: any) { const prisma = await getPrisma(); return prisma.project.create({ data }); }
   async publish(id: string) { const prisma = await getPrisma(); return prisma.project.update({ where: { id }, data: { published: true } }); }
 }
@@ -94,8 +104,17 @@ export const projectRepo = new ProjectRepository();
 
 // Testimonials
 export class TestimonialRepository {
-  async findPublic() { const prisma = await getPrisma(); return prisma.testimonial.findMany({ where: { status: 'published' }, orderBy: { sortOrder: 'asc' } }); }
-  async findAll() { const prisma = await getPrisma(); return prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } }); }
+  /** Public read - degrade to an empty list; a DB outage must not 500 a page. */
+  async findPublic() {
+    try {
+      const prisma = await getPrisma();
+      const rows = await prisma.testimonial.findMany({ where: { status: 'published' }, orderBy: { sortOrder: 'asc' } });
+      return localizeRows('testimonials', rows);
+    } catch (e) {
+      console.error('[public-read] testimonialRepo.findPublic failed:', (e as Error).message);
+      return [];
+    }
+  }  async findAll() { const prisma = await getPrisma(); return prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } }); }
   async create(data: any) { const prisma = await getPrisma(); return prisma.testimonial.create({ data }); }
 }
 export const testimonialRepo = new TestimonialRepository();

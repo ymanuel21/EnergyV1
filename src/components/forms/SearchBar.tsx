@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useProductAutocomplete } from '@/lib/hooks/useProductAutocomplete';
@@ -13,6 +15,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarProps) {
+  const t = useTranslations();
   const router = useRouter();
 
   const onSelect = (suggestion: ProductSuggestion) => {
@@ -48,7 +51,7 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
   return (
     <div ref={containerRef} className={`relative w-full ${expanded ? '' : 'max-w-lg'}`}>
       <form onSubmit={handleSubmit} className="relative">
-        <label htmlFor={expanded ? 'header-search-mobile' : 'header-search'} className="sr-only">Cari produk</label>
+        <label htmlFor={expanded ? 'header-search-mobile' : 'header-search'} className="sr-only">{t('search.placeholder')}</label>
         <input
           id={expanded ? 'header-search-mobile' : 'header-search'}
           ref={inputRef}
@@ -57,7 +60,7 @@ export function SearchBar({ onFocusMobile, onCloseMobile, expanded }: SearchBarP
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => onFocusMobile?.()}
-          placeholder="Cari produk..."
+          placeholder={t('search.placeholder')}
           className="w-full rounded-lg border border-border py-2 pl-4 pr-12 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-300"
         />
 

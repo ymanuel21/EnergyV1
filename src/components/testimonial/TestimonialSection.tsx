@@ -1,7 +1,7 @@
 'use client';
 
 import { PhotoPlaceholder } from '@ui/PhotoPlaceholder';
-
+import { useTranslations } from 'next-intl';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { AvatarPhoto } from '@/components/testimonial/AvatarPhoto';
@@ -19,6 +19,7 @@ export interface TestimonialData {
 }
 
 function Modal({ t, onClose }: { t: TestimonialData; onClose: () => void }) {
+  const tr = useTranslations();
   useEffect(() => {
     function handleKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose(); }
     document.addEventListener('keydown', handleKey);
@@ -58,7 +59,7 @@ function Modal({ t, onClose }: { t: TestimonialData; onClose: () => void }) {
           {Array.isArray(t.productIds) && t.productIds.length > 0 && (
             <div className="mt-6 pt-4 border-t border-gray-100">
               <Link href={`/proyek/${t.productIds[0]}`} onClick={onClose} className="text-sm font-medium text-blue-600 hover:text-blue-800">
-                Lihat Proyek Terkait →
+                {tr('testimonial.viewRelatedProjects')}
               </Link>
             </div>
           )}
@@ -75,6 +76,7 @@ interface TestimonialSectionProps {
 }
 
 export function TestimonialSection({ testimonials, variant = 'default' }: TestimonialSectionProps) {
+  const tr = useTranslations();
   const [selected, setSelected] = useState<TestimonialData | null>(null);
   const close = useCallback(() => setSelected(null), []);
 
@@ -135,7 +137,7 @@ export function TestimonialSection({ testimonials, variant = 'default' }: Testim
                 <p className="text-sm text-muted italic line-clamp-3">&ldquo;{t.quote}&rdquo;</p>
                 {Array.isArray(t.productIds) && (t.productIds as string[]).length > 0 && (
                   <div className="mt-4 pt-3 border-t border-border">
-                    <span className="text-xs text-primary">Lihat Proyek Terkait →</span>
+                    <span className="text-xs text-primary">{tr('testimonial.viewRelatedProjects')}</span>
                   </div>
                 )}
               </>

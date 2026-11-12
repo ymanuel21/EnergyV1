@@ -1,6 +1,14 @@
 import 'server-only';
 import { getPrisma } from '@/lib/db';
+import { cache } from '@/lib/platform';
+import { localizeRow, localizeRows, getLang } from '@/lib/i18n/server';
 
+/** Phase 1: the public category tree is stable data (it changes only when an
+ *  admin saves a category), so it is cached for 5 minutes instead of being
+ *  re-read on every request. Admin writes call cache.invalidate('categories').
+ *  The key is locale-scoped so an English read can never serve Indonesian rows. */
+const CACHE_TTL_SECONDS = 300;
+const CACHE_KEY = 'categories:public';
 // Compute effective visibility for a category: the category's own isVisible
 // AND every ancestor's isVisible.  Returns false if any ancestor is hidden.
 function computeEffectiveVisible(
@@ -28,11 +36,15 @@ function computeEffectiveVisible(
 export async function getAllCategories(): Promise<any[]> {
   try {
     if (process.env.DATABASE_URL) {
-      const prisma = await getPrisma();
-      const rows = await prisma.category.findMany({
-        where: { isVisible: true },
-      });
-      if (rows.length > 0) {
+      const lang = await getLang();
+      const key = `${CACHE_KEY}:${lang}`;
+      let rows = cache.get<any[]>(key);
+      if (!rows) {
+        const prisma = await getPrisma();
+        const rowsRaw = await prisma.category.findMany({ where: { isVisible: true } });
+        rows = await localizeRows('categories', rowsRaw);
+        if (rows.length > 0) cache.set(key, rows, CACHE_TTL_SECONDS);
+      }      if (rows.length > 0) {
         // Build a lookup map for ancestor traversal.
         const byId = new Map(rows.map((c) => [c.id, c]));
 
@@ -92,15 +104,15 @@ export async function getCategoryBySlug(slug: string): Promise<any> {
   try {
     if (process.env.DATABASE_URL) {
       const prisma = await getPrisma();
-      const row = await prisma.category.findUnique({
+      const raw = await prisma.category.findUnique({
         where: { slug },
         include: { children: true, parent: true },
       });
-      if (!row) return null;
-      if (!row.isVisible) return null;
+      if (!raw) return null;
+      if (!raw.isVisible) return null;
 
-      // Walk up the ancestor chain to verify effective visibility.
-      let cur: any = row;
+      // Walk up the ancestor chain to verify effective visibility (on the raw row).
+      let cur: typeof raw | { parentId: string | null } = raw;
       while (cur.parentId) {
         const ancestor = await prisma.category.findUnique({
           where: { id: cur.parentId },
@@ -111,7 +123,14 @@ export async function getCategoryBySlug(slug: string): Promise<any> {
         cur = ancestor;
       }
 
-      return row;
+      // Translate the category and its nested relations separately: `children`/`parent` are
+      // display-only, so they must not carry the parent's row into the overlay.
+      const { children, parent, ...row } = raw;
+      return {
+        ...await localizeRow('categories', row),
+        children: await localizeRows('categories', children),
+        parent: parent ? await localizeRow('categories', parent) : parent,
+      };
     }
   } catch (e) { console.error('Prisma getCategoryBySlug failed:', (e as Error).message); }
   return (await import('@/lib/data/categories')).categories.find((c: any) => c.slug === slug);

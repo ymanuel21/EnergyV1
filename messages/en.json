@@ -1,0 +1,421 @@
+{
+  "common": {
+    "products": "--- Products ---",
+    "back": "Back",
+    "cancel": "Cancel",
+    "contactSales": "Contact Sales",
+    "contactUs": "Contact Us",
+    "contactUsForPricing": "Contact Us for Pricing",
+    "delete": "Delete",
+    "goBackToThePreviousPage": "Go back to the previous page",
+    "helloIWouldLikeToPlaceAn": "Hello, I would like to place an order.",
+    "home": "Home",
+    "justNow": "Just now",
+    "learnMore": "Learn More",
+    "name": "Name",
+    "newMinorDefect": "New — Minor Defect",
+    "next": "Next →",
+    "note": "Note",
+    "optional": "Optional",
+    "phone": "Phone",
+    "postalCode": "Postal Code",
+    "priceOnRequest": "Price on Request",
+    "projects": "Projects",
+    "testimonials": "Testimonials",
+    "usedExDisplay": "Used — Ex-Display",
+    "viewAll": "View all",
+    "tagline": "Renewable Energy at Affordable Prices!",
+    "siteDescription": "Your hub for renewable energy products: solar panels, inverters, lithium batteries, solar power systems and project supplies.",
+    "searchAction": "Search",
+    "previous": "← Previous"
+  },
+  "home": {
+    "1Year": "1 Year",
+    "aCombinationOfThePLNGridAnd": "A combination of the PLN grid and backup batteries. Power stays on during outages.",
+    "aStandaloneSystemWithNoPLNConnection": "A standalone system with no PLN connection. Relies entirely on solar panels and batteries for 24-hour power.",
+    "chooseTheRightSystem": "Choose the Right System",
+    "completeSolutionsForHomesOfficesAndIndustry": "Complete solutions for homes, offices and industry",
+    "condition": "Condition",
+    "connectedToThePLNGridWithoutBatteries": "Connected to the PLN grid without batteries. Excess power is sold to PLN through an export-import meter.",
+    "contactOurTeam": "Contact Our Team",
+    "deliveryAcrossIndonesia": "Delivery Across Indonesia",
+    "detailedSpecificationsAreAvailableOnTheFull": "Detailed specifications are available on the full product page.",
+    "exploreTheRenewableEnergyProjectsWeHave": "Explore the renewable energy projects we have completed across various sectors.",
+    "freeConsultation": "Free Consultation",
+    "hybridOnGridOffGridMicroReliable": "Hybrid, On-Grid, Off-Grid, Micro — reliable power conversion",
+    "monocrystallinePolycrystallineBifacialHighEfficiencyForEvery": "Monocrystalline, Polycrystalline, Bifacial — high efficiency for every need",
+    "needHelp": "Need help?",
+    "none": "None",
+    "originalProductsWithWarranty": "Original Products with Warranty",
+    "outputPower": "Output Power",
+    "premiumQualityProducts": "Premium quality products.",
+    "productDescriptionIsNotAvailableAtThe": "Product description is not available at the moment.",
+    "rating": "Rating",
+    "renewableEnergyForEveryone": "Renewable Energy for Everyone.",
+    "requestAQuote": "Request a Quote →",
+    "searchFeaturedProjects": "Search featured projects...",
+    "searchProjects": "Search projects...",
+    "solarPower": "Solar power",
+    "type": "Type",
+    "understandTheDifferencesBetweenSolarSystemTypes": "Understand the differences between solar system types and find the one that suits your needs.",
+    "viewAllCategories": "View All Categories",
+    "viewAllProducts": "View All Products",
+    "viewAllProjects": "View All Projects",
+    "viewAllTestimonials": "View All Testimonials",
+    "viewProductDetails": "View Product Details",
+    "voltage": "Voltage",
+    "warranty": "Warranty",
+    "weight": "Weight",
+    "forEveryone": "for everyone.",
+    "viewProjectDetails": "View Project Details"
+  },
+  "navigation": {
+    "aboutUs": "About Us",
+    "allCategories": "All Categories",
+    "batteries": "Batteries",
+    "cablesConnectorsProtection": "Cables, Connectors & Protection",
+    "mountingFrames": "Mounting & Frames",
+    "newProducts": "New Products",
+    "returnPolicy": "Return Policy",
+    "shippingPolicy": "Shipping Policy",
+    "solarPanels": "Solar Panels",
+    "solarWaterPumps": "Solar Water Pumps",
+    "viewAllProducts": "View all products",
+    "viewAllBrands": "View All Brands →",
+    "tutupMenu": "Tutup menu",
+    "bukaMenu": "Buka menu",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "brand": "Brand",
+    "clearance": "Clearance",
+    "fAQ": "FAQ",
+    "inverter": "Inverter",
+    "paketPlts": "Paket PLTS",
+    "solarChargeController": "Solar Charge Controller"
+  },
+  "header": {
+    "account": "Account",
+    "closeSearch": "Close search",
+    "mainNavigation": "Main navigation",
+    "wishlist": "Wishlist",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "checkout": {
+    "addProductsToYourCartBeforeCheckout": "Add products to your cart before checkout.",
+    "address": "Address *",
+    "cart": "Cart",
+    "city": "City *",
+    "completeYourPurchaseAtEBTPlaza": "Complete your purchase at EBTPlaza.",
+    "confirmWithSales": "Confirm with sales",
+    "continue": "Continue →",
+    "deliveryTo": "Delivery to:",
+    "invalidEmailFormat": "Invalid email format.",
+    "name": "Name *",
+    "optionalNoteForTheCourier": "Optional: note for the courier",
+    "payment": "Payment",
+    "paymentMethod": "Payment Method",
+    "pleaseFillInNameEmailCityAnd": "Please fill in Name, Email, City and Address first.",
+    "priceWillBeConfirmedByOurSales": "Price will be confirmed by our sales team",
+    "reviewOrder": "Review Order",
+    "reviewOrder2": "Review Order →",
+    "shipping": "Shipping",
+    "shippingInformation": "Shipping Information",
+    "startShopping": "Start Shopping",
+    "total": "Total",
+    "yourOrder": "Your Order",
+    "yourCartIsEmpty": "Your cart is empty",
+    "email": "Email *",
+    "codBayarDiTempat": "COD (Bayar di Tempat)",
+    "qris": "QRIS",
+    "virtualAccount": "Virtual Account",
+    "transferBankBCAMandiriBRIBNI": "Transfer Bank (BCA, Mandiri, BRI, BNI)",
+    "checkout": "Checkout"
+  },
+  "cart": {
+    "addProductsToYourCartToStart": "Add products to your cart to start shopping.",
+    "calculatedAtCheckout": "Calculated at checkout",
+    "orderSummary": "Order Summary",
+    "requestAQuote": "Request a Quote",
+    "shoppingCart": "Shopping Cart",
+    "totalWeight": "Total weight",
+    "yourShoppingCartAtEBTPlaza": "Your shopping cart at EBTPlaza.",
+    "continueToPayment": "Continue to Payment"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "addedToWishlist": "Added to wishlist",
+    "bestSelling": "Best Selling",
+    "biggestDiscount": "Biggest Discount",
+    "chatOnWhatsApp": "Chat on WhatsApp",
+    "clickToZoom": "Click to zoom",
+    "decreaseQuantity": "Decrease quantity",
+    "deliveryAcrossIndonesiaShippingCostIsCalculated": "Delivery across Indonesia. Shipping cost is calculated at checkout.",
+    "exploreAllRenewableEnergyProductsSolarPanels": "Explore all renewable energy products: solar panels, inverters, batteries and more.",
+    "highestPrice": "Highest Price",
+    "highestRating": "Highest Rating",
+    "inStock": "In stock",
+    "increaseQuantity": "Increase quantity",
+    "lowestPrice": "Lowest Price",
+    "lowestPrice2": "Lowest price!",
+    "mostRelevant": "Most Relevant",
+    "mostViewed": "Most Viewed",
+    "new": "New",
+    "newProjectLeftover": "New — Project Leftover",
+    "newest": "Newest",
+    "noImage": "No image",
+    "noProductsAreAvailableAtTheMoment": "No products are available at the moment.",
+    "productNotFound": "Product Not Found",
+    "promotions": "Promotions",
+    "quantity": "Quantity",
+    "relatedProducts": "Related Products",
+    "removedFromWishlist": "Removed from wishlist",
+    "shippingWarranty": "Shipping & Warranty",
+    "used": "Used",
+    "backToProducts": "← Back to Products",
+    "compare": "⇄ Compare",
+    "copyFailed": "⚠ Copy failed",
+    "wishlistToggle": "♥ Wishlist",
+    "terjadiKesalahan": "Terjadi kesalahan",
+    "cobaLagi": "Coba lagi",
+    "somethingWentWrong": "Something went wrong",
+    "tryAgain": "Try again",
+    "sortBy": "Sort by",
+    "specifications": "Specifications",
+    "deskripsi": "Deskripsi",
+    "noDescription": "Product description is not available at the moment."
+  },
+  "errors": {
+    "allProducts": "All Products",
+    "backToHome": "Back to Home",
+    "help": "Help",
+    "pageNotFound404": "Page Not Found (404)",
+    "pageNotFound": "Page not found",
+    "thePageYouAreLookingForMay": "The page you are looking for may have been moved, or it is no longer available."
+  },
+  "project": {
+    "allProductsAboveAreAddedAutomaticallyWhen": "All products above are added automatically when you choose",
+    "capacity": "Capacity",
+    "noProjectsYet": "No projects yet.",
+    "noRelatedProductsYet": "No related products yet",
+    "projectsEBTPlaza": "Projects — EBTPlaza",
+    "referenceProjects": "Reference Projects",
+    "requestASimilarQuote": "Request a Similar Quote",
+    "solarEnergyInstallationPortfolio": "Solar energy installation portfolio.",
+    "usedProducts": "Used Products",
+    "backToProjects": "← Back to Projects",
+    "informasiProyek": "Informasi Proyek",
+    "spesifikasiTeknis": "Spesifikasi Teknis",
+    "jenisSistem": "Jenis Sistem",
+    "modulPV": "Modul PV",
+    "coReduction": "CO₂ Reduction",
+    "penghematanTahunan": "Penghematan Tahunan",
+    "energiDihasilkan": "Energi Dihasilkan",
+    "imageGallery": "Image gallery",
+    "closeGallery": "Close gallery",
+    "projectInfo": "Project Info",
+    "technicalSpecs": "Technical Specs",
+    "systemType": "System Type",
+    "pvModule": "PV Module",
+    "annualSavings": "Annual Savings",
+    "energyGenerated": "Energy Generated",
+    "viewProjectDetails": "View Project Details"
+  },
+  "article": {
+    "articleNotFound": "Article Not Found",
+    "guidesTipsAndEducationAboutSolarEnergy": "Guides, tips and education about solar energy, solar panels, inverters and batteries.",
+    "readMore": "Read more →",
+    "relatedArticles": "Related Articles",
+    "solarEnergyGuide": "Solar Energy Guide",
+    "guides": "Guides"
+  },
+  "faq": {
+    "askAQuestion": "Ask a Question",
+    "contactUsViaWhatsAppOrEmail": "Contact us via WhatsApp or email.",
+    "faqHelp": "FAQ (Help)",
+    "frequentlyAskedQuestions": "Frequently asked questions",
+    "frequentlyAskedQuestionsAboutEBTPlazaShippingPayment": "Frequently asked questions about EBTPlaza — shipping, payment, warranty and more.",
+    "noFAQsYet": "No FAQs yet.",
+    "stillHaveQuestions": "Still have questions?"
+  },
+  "contact": {
+    "askOurTeamOnWhatsApp": "Ask our team on WhatsApp"
+  },
+  "rfq": {
+    "atLeast1Item": "At least 1 item",
+    "companyName": "Company Name",
+    "companyNameIsRequired": "Company name is required",
+    "completeTheFormBelowYouCanAdd": "Complete the form below. You can add items from your cart or manually.",
+    "contactInformation": "Contact Information",
+    "failedToSendPleaseTryAgain": "Failed to send. Please try again.",
+    "invalidEmail": "Invalid email",
+    "itemName": "Item Name",
+    "itemNameIsRequired": "Item name is required.",
+    "itemNoteOptional": "Item note (optional)",
+    "minimumQuantityIs1": "Minimum quantity is 1.",
+    "nameIsRequired": "Name is required",
+    "ourTeamWillContactYouWithin1": "Our team will contact you within 1×24 working hours.",
+    "phoneWhatsApp": "Phone / WhatsApp",
+    "phoneIsRequired": "Phone is required",
+    "productUnavailableNeedsReview": "Product unavailable — needs review",
+    "productVerificationFailed": "Product verification failed",
+    "projectDetails": "Project Details",
+    "projectLocation": "Project Location",
+    "projectName": "Project Name",
+    "requestAQuoteRFQ": "Request a Quote (RFQ)",
+    "requestAQuotationForYourRenewableEnergy": "Request a quotation for your renewable energy project needs. For contractors, companies and large-scale procurement.",
+    "requirementsList": "Requirements List",
+    "requiresInstallationService": "Requires installation service",
+    "sendRequest": "Send Request",
+    "sendViaWhatsApp": "Send via WhatsApp",
+    "technicalNotes": "Technical Notes",
+    "technicalSpecificationsBrandPreferencesOrSpecialRequirements": "Technical specifications, brand preferences, or special requirements...",
+    "projectNotFound": "⚠️ Project not found",
+    "requestSent": "Request Sent!",
+    "jenisPelanggan": "Jenis Pelanggan",
+    "businessCorporate": "Business / Corporate",
+    "procurementTarget": "Procurement Target",
+    "customerType": "Customer Type"
+  },
+  "catalog": {
+    "brandNotFound": "Brand Not Found",
+    "categoryNotFound": "Category Not Found",
+    "exploreProductsByBrandAtEBTPlaza": "Explore products by brand at EBTPlaza.",
+    "noProductsFromThisBrandYet": "No products from this brand yet.",
+    "noProductsInThisCategory": "No products in this category.",
+    "products": "Products",
+    "productsFound": "{count} products found",
+    "projectPortfolio": "Project Portfolio",
+    "allCategories": "All Categories",
+    "guide": "Guide",
+    "allProducts": "All Products"
+  },
+  "compare": {
+    "clearAll": "Clear all",
+    "clickCompareOnAProductPageTo": "Click 'Compare' on a product page to add it here. Maximum 4 products.",
+    "compareRenewableEnergyProductsAtEBTPlaza": "Compare renewable energy products at EBTPlaza.",
+    "comparison": "Comparison",
+    "loadingComparison": "Loading comparison...",
+    "noProductsToCompareYet": "No products to compare yet",
+    "productComparison": "Product Comparison",
+    "viewProducts": "View Products"
+  },
+  "testimonial": {
+    "customerTestimonials": "Customer Testimonials",
+    "noTestimonialsYet": "No testimonials yet.",
+    "testimonialsEBTPlaza": "Testimonials — EBTPlaza",
+    "viewRelatedProjects": "View Related Projects →",
+    "whatOurCustomersSay": "What our customers say."
+  },
+  "search": {
+    "enterAtLeast2CharactersToSearch": "Enter at least 2 characters to search for products.",
+    "noProductsFound": "No products found",
+    "searchProducts": "Search Products",
+    "placeholder": "Search products..."
+  },
+  "clearance": {
+    "limitedStockOfRenewableEnergyProductsAt": "Limited stock of renewable energy products at EBTPlaza. Lowest prices!",
+    "noClearanceProductsAtTheMoment": "No clearance products at the moment.",
+    "summaryLimited": "Limited stock • Lowest price! • {count} products"
+  },
+  "promo": {
+    "noPromotionalProductsAtTheMoment": "No promotional products at the moment.",
+    "promotionsOffers": "Promotions & Offers",
+    "specialPricesOnRenewableEnergyProductsAt": "Special prices on renewable energy products at EBTPlaza. Save more!",
+    "summarySpecial": "Special prices • Save more! • {count} products"
+  },
+  "pages": {
+    "pageNotFound": "Page Not Found"
+  },
+  "forms": {
+    "renewableEnergyProductAndPromotionUpdates": "Renewable energy product and promotion updates.",
+    "searchProducts": "Search products",
+    "searchProducts2": "Search products...",
+    "yourEmail": "Your email"
+  },
+  "wishlist": {
+    "saveTheProductsYouLike": "Save the products you like.",
+    "theProductsYouSavedToYourEBTPlaza": "The products you saved to your EBTPlaza wishlist.",
+    "yourWishlistIsEmpty": "Your wishlist is empty",
+    "heading": "Wishlist"
+  },
+  "footer": {
+    "services": "Services",
+    "shop": "Shop"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "languageSwitcher": "Switch language"
+  },
+  "meta": {
+    "smartEnergyJustAClickAway": "Smart Energy, Just a Click Away!",
+    "permintaan-penawaran": {
+      "title": "Request a Quote (RFQ)",
+      "description": "Request a quotation for your renewable energy project needs. For contractors, companies and large-scale procurement."
+    },
+    "artikel": {
+      "title": "Solar Energy Guide",
+      "description": "Guides, tips and education about solar energy, solar panels, inverters and batteries."
+    },
+    "faq": {
+      "title": "FAQ (Help)",
+      "description": "Frequently asked questions about EBTPlaza — shipping, payment, warranty and more."
+    },
+    "brand": {
+      "description": "Explore products by brand at EBTPlaza."
+    },
+    "checkout": {
+      "description": "Complete your purchase at EBTPlaza."
+    },
+    "testimoni": {
+      "title": "Testimonials — EBTPlaza",
+      "description": "What our customers say."
+    },
+    "barang-clearance": {
+      "description": "Limited stock of renewable energy products at EBTPlaza. Lowest prices!"
+    },
+    "perbandingan": {
+      "title": "Comparison",
+      "description": "Compare renewable energy products at EBTPlaza."
+    },
+    "keranjang": {
+      "title": "Shopping Cart",
+      "description": "Your shopping cart at EBTPlaza."
+    },
+    "produk": {
+      "title": "All Products",
+      "description": "Explore all renewable energy products: solar panels, inverters, batteries and more."
+    },
+    "page": {
+      "tsx": {
+        "title": "Smart Energy, Just a Click Away!"
+      }
+    },
+    "promo": {
+      "title": "Promotions & Offers",
+      "description": "Special prices on renewable energy products at EBTPlaza. Save more!"
+    },
+    "wishlist": {
+      "description": "The products you saved to your EBTPlaza wishlist."
+    },
+    "not-found": {
+      "tsx": {
+        "title": "Page Not Found (404)"
+      }
+    },
+    "proyek": {
+      "title": "Projects — EBTPlaza",
+      "description": "Solar energy installation portfolio."
+    }
+  },
+  "notFound": {
+    "heading": "Page not found",
+    "description": "The page you are looking for may have been moved or is no longer available.",
+    "backHome": "Back to Home",
+    "help": "Help"
+  },
+  "mobile": {
+    "navigation": "Navigation",
+    "menu": "Menu"
+  }
+}

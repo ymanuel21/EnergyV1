@@ -3,6 +3,33 @@
  * All SITE/SITE_CONFIG consumers import from here.
  */
 
+import { defaultLocale, type Locale } from '@/i18n/config';
+
+/**
+ * The public production origin. Every canonical URL, the XML sitemap and the
+ * sitemap reference in robots.txt must be built from this origin.
+ *
+ * A `*.vercel.app` host is a *deployment* host, never the brand domain. It was
+ * being emitted as the canonical URL and as every sitemap URL in production
+ * (verified 2026-10-27), which points Google at the deployment host instead of
+ * ebtplaza.com and makes the sitemap advertise URLs on a different host than
+ * the one serving it.
+ */
+export const CANONICAL_SITE_URL = 'https://ebtplaza.com';
+
+/** Resolve the public origin: explicit override first, deployment hosts rejected. */
+export function resolvePublicSiteUrl(raw?: string | null): string {
+  const value = (raw ?? process.env.NEXT_PUBLIC_SITE_URL ?? '').trim();
+  if (value) {
+    try {
+      const host = new URL(value).hostname.toLowerCase();
+      if (!host.endsWith('.vercel.app')) return value.replace(/\/+$/, '');
+    } catch {
+      /* malformed value - fall through to the canonical origin */
+    }
+  }
+  return CANONICAL_SITE_URL;
+}
 export interface SiteSettings {
   name: string; shortName: string; tagline: string; description: string;
   email: string; phone: string; whatsapp: string; address: string; url: string;
@@ -18,16 +45,31 @@ export const DEFAULTS: SiteSettings = {
   email: 'info@ebtplaza.com', phone: '(022) 20522279',
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '6285111023816',
   address: 'Jl. Terusan Jakarta, Puri Dago Raya No.342 Kav 31, Sukamiskin, Kec. Arcamanik, Kota Bandung, Jawa Barat 40293',
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://ebtplaza.vercel.app',
+  url: resolvePublicSiteUrl(),
   company: 'EBTPlaza',
   logo: { letter: 'E', text: 'EBTPlaza' },
   og: { type: 'website' as const, siteName: 'EBTPlaza', locale: 'id_ID', twitterCard: 'summary_large_image' as const },
 };
 
-let _cached: SiteSettings | null = null;
+/**
+ * Cached settings, keyed by language.
+ *
+ * These defaults are the Indonesian originals. The English layer is applied by
+ * `loadSiteFromDb()` on top of the database rows, so Indonesian never goes through a dictionary.
+ *
+ * The cache is keyed by language because a single shared slot would let whichever request ran
+ * first pin its language for every other visitor on the process.
+ */
+const _cached = new Map<Locale, SiteSettings>();
 
-export function setCachedSite(settings: SiteSettings) { _cached = settings; }
-export function getSiteSync(): SiteSettings { return _cached ?? DEFAULTS; }
+export function setCachedSite(settings: SiteSettings, lang: Locale = defaultLocale) {
+  _cached.set(lang, settings);
+}
+
+/** Settings for `lang`, falling back to the Indonesian defaults. */
+export function getSiteSync(lang: Locale = defaultLocale): SiteSettings {
+  return _cached.get(lang) ?? DEFAULTS;
+}
 
 // SITE proxy — getters read from cached or defaults
 export const SITE = {

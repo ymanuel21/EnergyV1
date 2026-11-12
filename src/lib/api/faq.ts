@@ -1,4 +1,5 @@
 import 'server-only';
+import { localizeRows } from '@/lib/i18n/server';
 import { getPrisma } from '@/lib/db';
 
 export interface FaqItem {
@@ -22,7 +23,7 @@ export async function getAllFaqs(): Promise<FaqItem[]> {
     if (process.env.DATABASE_URL) {
       const prisma = await getPrisma();
       const rows = await prisma.faq.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' }, select: { question: true, answer: true } });
-      if (rows.length > 0) return rows;
+      if (rows.length > 0) return localizeRows('faqs', rows);
     }
   } catch (e) { console.error('Prisma getAllFaqs failed:', (e as Error).message); }
   return STATIC_FAQ;

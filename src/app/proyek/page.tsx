@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Container } from '@ui/Container';
@@ -6,7 +7,10 @@ import { projectRepo } from '@/lib/repositories/project';
 import { SafeImage } from '@ui/SafeImage';
 import { PhotoPlaceholder } from '@ui/PhotoPlaceholder';
 
-export const metadata: Metadata = { title: 'Proyek — EBTPlaza', description: 'Portofolio instalasi energi surya.' };
+export async function generateMetadata(): Promise<Metadata> {
+  const tr = await getTranslations();
+  return { title: { absolute: tr('meta.proyek.title') }, description: tr('meta.proyek.description') };
+}
 
 const CATEGORY_LABELS: Record<string, string> = {
   residential: 'Residential', commercial: 'Commercial', industrial: 'Industrial',
@@ -14,13 +18,14 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default async function ProjectsPage() {
+  const tr = await getTranslations();
   const projects = await projectRepo.findPublic();
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Proyek' }]} />
+      <Breadcrumb items={[{ label: tr('common.home'), href: '/' }, { label: tr('common.projects') }]} />
       <div className="mt-4">
-        <h1 className="text-2xl font-bold text-primary">Proyek Referensi</h1>
+        <h1 className="text-2xl font-bold text-primary">{tr('catalog.projectPortfolio')}</h1>
         <p className="mt-1 text-sm text-muted">{projects.length} proyek</p>
       </div>
 

@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { HamburgerIcon, ChevronRightIcon } from '@ui/Icons';
@@ -9,6 +11,7 @@ import { featureFlags } from '@/lib/platform';
 import type { Category } from '@/types/product';
 
 export function MegaMenu() {
+  const t = useTranslations();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -112,7 +115,7 @@ export function MegaMenu() {
         aria-haspopup="menu"
       >
         <HamburgerIcon className="h-5 w-5" />
-        Semua Kategori
+        {t('catalog.allCategories')}
       </button>
 
       <div
@@ -136,7 +139,7 @@ export function MegaMenu() {
             >
               <span className="flex min-w-0 items-baseline gap-2.5">
                 <span className="text-sm font-semibold text-primary group-hover:text-primary-hover transition-colors">
-                  Semua Produk
+                  {t('catalog.allProducts')}
                 </span>
                 <span className="text-xs text-muted">Lihat semua produk</span>
               </span>

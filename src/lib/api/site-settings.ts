@@ -1,4 +1,5 @@
 import 'server-only';
+import { localizeRows } from '@/lib/i18n/server';
 import { getPrisma } from '@/lib/db';
 import { SITE } from '@/lib/constants';
 
@@ -6,7 +7,7 @@ export async function getSiteSettings() {
   try {
     if (process.env.DATABASE_URL) {
       const prisma = await getPrisma();
-      const rows = await prisma.siteSetting.findMany();
+      const rows = await localizeRows('settings', await prisma.siteSetting.findMany());
       if (rows.length > 0) {
         const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
         return {

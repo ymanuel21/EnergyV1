@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { useState } from 'react';
 import { ProductDescription } from '@components/product/ProductDescription';
 
@@ -18,21 +20,22 @@ interface ProductInfoPanelProps {
   showShipping?: boolean;
 }
 
-const KEY_SPECS = ['Daya Output', 'Power Output', 'Watt Peak', 'Rating', 'Tipe', 'Type', 'Kapasitas', 'Capacity', 'Tegangan', 'Voltage'];
+const KEY_SPECS = ['Output Power', 'Power Output', 'Watt Peak', 'Rating', 'Type', 'Type', 'Capacity', 'Capacity', 'Voltage', 'Voltage'];
 
 function getHighlightedSpecs(specifications?: Array<{ key: string; value: string }>) {
   if (!specifications?.length) return [];
   return specifications.filter(s => KEY_SPECS.some(k => s.key.toLowerCase().includes(k.toLowerCase())));
 }
 
-const allTabs = ['Description', 'Spesifikasi', 'Pengiriman & Garansi'] as const;
+const allTabs = ['Description', 'Specifications', 'Shipping & Warranty'] as const;
 type Tab = (typeof allTabs)[number];
 
 export function ProductInfoPanel({ product, showDescription = true, showSpecifications = true, showShipping = true }: ProductInfoPanelProps) {
+  const tr = useTranslations();
   const tabs = allTabs.filter(t => {
     if (t === 'Description') return showDescription;
-    if (t === 'Spesifikasi') return showSpecifications;
-    if (t === 'Pengiriman & Garansi') return showShipping;
+    if (t === 'Specifications') return showSpecifications;
+    if (t === 'Shipping & Warranty') return showShipping;
     return true;
   });
   const [activeTab, setActiveTab] = useState<Tab>(tabs[0] || 'Description');
@@ -71,11 +74,10 @@ export function ProductInfoPanel({ product, showDescription = true, showSpecific
               <ProductDescription text={product.description} variant="card" />
             </div>
           ) : (
-            <p>Deskripsi produk tidak tersedia saat ini.</p>
-          )
-        )}
+            <p>{tr('product.noDescription')}</p>
+          )        )}
 
-        {activeTab === 'Spesifikasi' && (
+        {activeTab === 'Specifications' && (
           keySpecs.length > 0 ? (
             <div className="space-y-2">
               {keySpecs.map((s, i) => (
@@ -86,29 +88,29 @@ export function ProductInfoPanel({ product, showDescription = true, showSpecific
               ))}
             </div>
           ) : (
-            <p className="text-xs">Spesifikasi detail tersedia di halaman produk lengkap.</p>
+            <p className="text-xs">{tr('home.detailedSpecificationsAreAvailableOnTheFull')}</p>
           )
         )}
 
-        {activeTab === 'Pengiriman & Garansi' && (
+        {activeTab === 'Shipping & Warranty' && (
           <div className="space-y-2 text-xs">
             <div className="flex justify-between border-b border-border/50 pb-2">
-              <span className="text-muted">Garansi</span>
-              <span className="font-medium text-primary">{product.warranty || '1 Tahun'}</span>
+              <span className="text-muted">{tr('home.warranty')}</span>
+              <span className="font-medium text-primary">{product.warranty || '1 Year'}</span>
             </div>
             {product.weight != null && (
               <div className="flex justify-between border-b border-border/50 pb-2">
-                <span className="text-muted">Berat</span>
+                <span className="text-muted">{tr('home.weight')}</span>
                 <span className="font-medium text-primary">{product.weight} kg</span>
               </div>
             )}
             <div className="flex justify-between border-b border-border/50 pb-2">
-              <span className="text-muted">Kondisi</span>
-              <span className="font-medium text-primary">{product.condition || 'Baru'}</span>
+              <span className="text-muted">{tr('home.condition')}</span>
+              <span className="font-medium text-primary">{product.condition || 'New'}</span>
             </div>
             <div className="flex justify-between border-b border-border/50 pb-2">
-              <span className="text-muted">Pengiriman</span>
-              <span className="font-medium text-primary">2-7 hari kerja</span>
+              <span className="text-muted">{tr('checkout.shipping')}</span>
+              <span className="font-medium text-primary">2-7 business days</span>
             </div>
           </div>
         )}

@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { SafeImage } from '@ui/SafeImage';
@@ -17,6 +19,7 @@ interface SystemTypeTabsProps {
 }
 
 export function SystemTypeTabs({ cards }: SystemTypeTabsProps) {
+  const t = useTranslations();
   const [active, setActive] = useState(0);
   const current = cards[active];
   if (!current) return null;
@@ -73,7 +76,7 @@ export function SystemTypeTabs({ cards }: SystemTypeTabsProps) {
               href={current.link}
               className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:gap-2.5 transition-all"
             >
-              Pelajari Selengkapnya <span className="text-base">→</span>
+              {t('common.learnMore')} <span className="text-base">→</span>
             </Link>
           )}
         </div>

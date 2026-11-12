@@ -2,10 +2,14 @@ import Link from 'next/link';
 import { SITE_CONFIG } from '@/lib/site';
 import { getPublicNavigationLinks } from '@/lib/api/navigation';
 import { cache } from '@/lib/platform';
+import { getLang } from '@/lib/i18n/server';
 
 export async function Footer() {
   const { name, email, phone, tagline, address } = SITE_CONFIG;
-  const nav = await cache.getOrSet('nav:footer', 300, () =>
+  // The nav rows are localized before they reach here, so the cache key must include the
+  // language — otherwise the first visitor's locale is served to everyone for 5 minutes.
+  const lang = await getLang();
+  const nav = await cache.getOrSet(`nav:footer:${lang}`, 300, () =>
     getPublicNavigationLinks().catch(() => ({} as Record<string, { label: string; href: string }[]>))
   );
   const belanja = nav.footer_belanja || [];

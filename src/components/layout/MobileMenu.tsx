@@ -4,11 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { HamburgerIcon } from '@ui/Icons';
+import { useTranslations } from 'next-intl';
 import { SITE_CONFIG } from '@/lib/site';
 
 interface NavLink { label: string; href: string; }
 
 export function MobileMenu() {
+  const t = useTranslations();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [navLinks, setNavLinks] = useState<{ header: NavLink[]; mobile: NavLink[]; footer_layanan: NavLink[] }>({ header: [], mobile: [], footer_layanan: [] });
@@ -44,7 +46,7 @@ export function MobileMenu() {
             </div>
             <span className="text-base font-extrabold text-primary">{SITE_CONFIG.logo.text}</span>
           </Link>
-          <button onClick={() => setOpen(false)} className="rounded-lg p-1.5 text-muted hover:text-muted hover:bg-surface" aria-label="Tutup menu">
+          <button onClick={() => setOpen(false)} className="rounded-lg p-1.5 text-muted hover:text-muted hover:bg-surface" aria-label={t('header.closeMenu')}>
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -53,7 +55,7 @@ export function MobileMenu() {
         <nav className="h-[calc(100%-57px)] overflow-y-auto px-5 py-4">
           {navLinks.header.length > 0 && (
             <div className="mb-6">
-              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Navigasi</h3>
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">{t('mobile.navigation')}</h3>
               <ul className="space-y-0.5">
                 {navLinks.header.map((link) => (
                   <li key={link.href}>
@@ -66,7 +68,7 @@ export function MobileMenu() {
           )}
           {navLinks.mobile.length > 0 && (
             <div className="mb-6">
-              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Menu</h3>
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">{t('mobile.menu')}</h3>
               <ul className="space-y-0.5">
                 {navLinks.mobile.map((link) => (
                   <li key={link.href}>
@@ -79,7 +81,7 @@ export function MobileMenu() {
           )}
           {navLinks.footer_layanan.length > 0 && (
             <div>
-              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Layanan</h3>
+              <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">{t('footer.services')}</h3>
               <ul className="space-y-0.5">
                 {navLinks.footer_layanan.map((link) => (
                   <li key={link.href}>
@@ -100,7 +102,7 @@ export function MobileMenu() {
     <>
       <button onClick={() => setOpen(true)}
         className="inline-flex items-center justify-center rounded-lg p-2 text-muted hover:text-primary hover:bg-surface lg:hidden"
-        aria-label="Buka menu" aria-expanded={open}>
+        aria-label={t('header.openMenu')} aria-expanded={open}>
         <HamburgerIcon className="h-5 w-5" />
       </button>
       {menuPortal}

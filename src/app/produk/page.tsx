@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import type { SortOption } from '@/types/product';
 import { Container } from '@ui/Container';
@@ -9,11 +10,10 @@ import { getProductsPaginated } from '@/lib/api/products';
 import { resolvePriceDisplay } from '@/lib/services/product-pricing';
 import { validateSort, validatePage } from '@/lib/utils/validation';
 
-export const metadata: Metadata = {
-  title: 'Semua Produk',
-  description: 'Jelajahi seluruh produk energi terbarukan: panel surya, inverter, baterai, dan lainnya.',
-  alternates: { canonical: '/produk' },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const tr = await getTranslations();
+  return { title: tr('meta.produk.title'), description: tr('meta.produk.description') };
+}
 
 interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -22,6 +22,7 @@ interface Props {
 const PAGE_SIZE = 12;
 
 export default async function AllProductsPage({ searchParams }: Props) {
+  const tr = await getTranslations();
   const sp = await searchParams;
   const sort = validateSort(sp.sort as string | undefined);
   const page = validatePage(sp.page as string | undefined);
@@ -51,11 +52,11 @@ export default async function AllProductsPage({ searchParams }: Props) {
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Semua Produk' }]} />
+      <Breadcrumb items={[{ label: tr('common.home'), href: '/' }, { label: tr('meta.produk.title') }]} />
 
       <div className="mt-4 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Semua Produk</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{tr('meta.produk.title')}</h1>
           <p className="mt-1 text-sm text-gray-500">
             {total} produk tersedia
           </p>

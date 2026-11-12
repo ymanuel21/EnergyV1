@@ -1,4 +1,5 @@
 import { getPrisma } from '@/lib/db';
+import { localizeRow, localizeRows } from '@/lib/i18n/server';
 
 function toSlug(title: string): string {
   return title
@@ -9,21 +10,39 @@ function toSlug(title: string): string {
 }
 
 export class ProjectRepository {
+  /** Public read - degrade to an empty list; a DB outage must not 500 a page. */
   async findPublic() {
-    const prisma = await getPrisma();
-    return prisma.project.findMany({ where: { published: true }, orderBy: { sortOrder: 'asc' } });
+    try {
+      const prisma = await getPrisma();
+      const rows = await prisma.project.findMany({ where: { published: true }, orderBy: { sortOrder: 'asc' } });
+      return localizeRows('projects', rows);
+    } catch (e) {
+      console.error('[public-read] projectRepo.findPublic failed:', (e as Error).message);      return [];
+    }
   }
   async findAll() {
     const prisma = await getPrisma();
     return prisma.project.findMany({ orderBy: { sortOrder: 'asc' } });
   }
   async findFeatured(limit = 6) {
-    const prisma = await getPrisma();
-    return prisma.project.findMany({ where: { published: true, featured: true }, orderBy: { sortOrder: 'asc' }, take: limit });
+    try {
+      const prisma = await getPrisma();
+      const rows = await prisma.project.findMany({ where: { published: true, featured: true }, orderBy: { sortOrder: 'asc' }, take: limit });
+      return localizeRows('projects', rows);
+    } catch (e) {
+      console.error('ProjectRepository.findFeatured failed:', (e as Error).message);
+      return [];
+    }
   }
   async findBySlug(slug: string) {
-    const prisma = await getPrisma();
-    return prisma.project.findUnique({ where: { slug, status: 'published' } });
+    try {
+      const prisma = await getPrisma();
+      const row = await prisma.project.findUnique({ where: { slug, status: 'published' } });
+      return row ? localizeRow('projects', row) : row;
+    } catch (e) {
+      console.error('ProjectRepository.findBySlug failed:', (e as Error).message);
+      return undefined;
+    }
   }
   async create(data: any) {
     const prisma = await getPrisma();

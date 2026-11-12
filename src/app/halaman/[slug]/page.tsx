@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { Container } from '@ui/Container';
 import { Breadcrumb } from '@ui/Breadcrumb';
@@ -55,13 +56,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function StaticPage({ params }: Props) {
+  const tr = await getTranslations();
   const { slug } = await params;
   const page = await getPageBySlug(slug);
   if (!page) notFound();
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: page.title }]} />
+      <Breadcrumb items={[{ label: tr('common.home'), href: '/' }, { label: page.title }]} />
       <article className="mx-auto mt-6 max-w-3xl">
         <h1 className="text-2xl font-bold text-primary sm:text-3xl">{page.title}</h1>
         <RenderContent content={page.content} />

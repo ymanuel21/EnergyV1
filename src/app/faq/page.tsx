@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Container } from '@ui/Container';
@@ -8,21 +9,21 @@ import { SITE } from '@lib/constants';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'FAQ (Bantuan)',
-  description: 'Pertanyaan yang sering diajukan tentang EBTPlaza — pengiriman, pembayaran, garansi, dan lainnya.',
-  alternates: { canonical: '/faq' },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const tr = await getTranslations();
+  return { title: tr('meta.faq.title'), description: tr('meta.faq.description') };
+}
 
 export default async function FaqPage() {
+  const tr = await getTranslations();
   const faqItems = await getAllFaqs();
 
   return (
     <Container className="py-6">
-      <Breadcrumb items={[{ label: 'Beranda', href: '/' }, { label: 'Bantuan' }]} />
+      <Breadcrumb items={[{ label: tr('common.home'), href: '/' }, { label: tr('meta.faq.title') }]} />
 
       <div className="mt-4">
-        <h1 className="text-2xl font-bold text-gray-900">FAQ (Bantuan)</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{tr('meta.faq.title')}</h1>
         <p className="mt-1 text-sm text-gray-500">Pertanyaan yang sering diajukan</p>
       </div>
 
@@ -39,7 +40,7 @@ export default async function FaqPage() {
       </div>
 
       <div className="mt-8 rounded-lg bg-gray-50 p-6">
-        <h2 className="text-lg font-semibold text-gray-900">Masih ada pertanyaan?</h2>
+        <h2 className="text-lg font-semibold text-gray-900">{tr('faq.stillHaveQuestions')}</h2>
         <p className="mt-1 text-sm text-gray-900">
           Hubungi kami via WhatsApp atau email.
         </p>

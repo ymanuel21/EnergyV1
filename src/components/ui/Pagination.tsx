@@ -1,6 +1,7 @@
 'use client';
 
 import Link, { useLinkStatus } from 'next/link';
+import { useTranslations } from 'next-intl';
 import {
   createContext,
   useCallback,
@@ -142,6 +143,7 @@ function PaginationLink({
 
 function PaginationNav({ current, total, baseUrl, params = {}, siblingCount = 1, className }: PaginationProps) {
   const { pending, label } = useContext(PendingContext);
+  const t = useTranslations('common');
 
   const totalPages = Math.max(1, total);
   const pages: (number | 'ellipsis-start' | 'ellipsis-end')[] = [];
@@ -187,9 +189,8 @@ function PaginationNav({ current, total, baseUrl, params = {}, siblingCount = 1,
         label={`halaman ${Math.max(1, current - 1)} dari ${totalPages}`}
         disabled={current <= 1}
       >
-        ← Sebelumnya
+        {t('previous')}
       </PaginationLink>
-
       {pages.map((page, i) => {
         if (typeof page === 'string') {
           return (
@@ -227,9 +228,8 @@ function PaginationNav({ current, total, baseUrl, params = {}, siblingCount = 1,
         label={`halaman ${Math.min(totalPages, current + 1)} dari ${totalPages}`}
         disabled={current >= totalPages}
       >
-        Selanjutnya →
-      </PaginationLink>
-    </nav>
+        {t('next')}
+      </PaginationLink>    </nav>
   );
 }
 

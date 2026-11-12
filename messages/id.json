@@ -1,0 +1,421 @@
+{
+  "common": {
+    "products": "--- Produk ---",
+    "back": "Kembali",
+    "cancel": "Batal",
+    "contactSales": "Hubungi Sales",
+    "contactUs": "Hubungi Kami",
+    "contactUsForPricing": "Hubungi Kami untuk Harga",
+    "delete": "Hapus",
+    "goBackToThePreviousPage": "Kembali ke halaman sebelumnya",
+    "helloIWouldLikeToPlaceAn": "Halo, saya ingin melakukan pemesanan.",
+    "home": "Beranda",
+    "justNow": "Baru saja",
+    "learnMore": "Pelajari Selengkapnya",
+    "name": "Nama",
+    "newMinorDefect": "Baru - Minor Defect",
+    "next": "Selanjutnya →",
+    "note": "Catatan",
+    "optional": "Opsional",
+    "phone": "Telepon",
+    "postalCode": "Kode Pos",
+    "priceOnRequest": "Harga Berdasarkan Penawaran",
+    "projects": "Proyek",
+    "testimonials": "Testimoni",
+    "usedExDisplay": "Bekas Display",
+    "viewAll": "Lihat semua",
+    "tagline": "Energi Terbarukan, Harga Terjangkau!",
+    "siteDescription": "Pusat produk energi terbarukan: panel surya, inverter, baterai lithium, paket PLTS, dan kebutuhan proyek.",
+    "searchAction": "Pencarian",
+    "previous": "← Sebelumnya"
+  },
+  "home": {
+    "1Year": "1 Tahun",
+    "aCombinationOfThePLNGridAnd": "Kombinasi jaringan PLN dengan baterai cadangan. Listrik tetap menyala saat terjadi pemadaman.",
+    "aStandaloneSystemWithNoPLNConnection": "Sistem mandiri tanpa koneksi PLN. Sepenuhnya mengandalkan panel surya dan baterai untuk daya 24 jam.",
+    "chooseTheRightSystem": "Pilih Sistem yang Tepat",
+    "completeSolutionsForHomesOfficesAndIndustry": "Solusi lengkap untuk rumah, kantor, dan industri",
+    "condition": "Kondisi",
+    "connectedToThePLNGridWithoutBatteries": "Terhubung ke jaringan PLN tanpa baterai. Kelebihan daya dijual ke PLN melalui meteran ekspor-impor.",
+    "contactOurTeam": "Hubungi Tim Kami",
+    "deliveryAcrossIndonesia": "Pengiriman ke Seluruh Indonesia",
+    "detailedSpecificationsAreAvailableOnTheFull": "Spesifikasi detail tersedia di halaman produk lengkap.",
+    "exploreTheRenewableEnergyProjectsWeHave": "Jelajahi proyek energi terbarukan yang telah kami selesaikan di berbagai sektor.",
+    "freeConsultation": "Konsultasi Gratis",
+    "hybridOnGridOffGridMicroReliable": "Hybrid, On-Grid, Off-Grid, Micro — konversi daya yang andal",
+    "monocrystallinePolycrystallineBifacialHighEfficiencyForEvery": "Monocrystalline, Polycrystalline, Bifacial — efisiensi tinggi untuk setiap kebutuhan",
+    "needHelp": "Butuh bantuan?",
+    "none": "Tidak Ada",
+    "originalProductsWithWarranty": "Produk Original & Bergaransi",
+    "outputPower": "Daya Output",
+    "premiumQualityProducts": "Produk berkualitas premium.",
+    "productDescriptionIsNotAvailableAtThe": "Deskripsi produk tidak tersedia saat ini.",
+    "rating": "Kekuatan",
+    "renewableEnergyForEveryone": "Energi Terbarukan untuk Semua.",
+    "requestAQuote": "Minta Penawaran →",
+    "searchFeaturedProjects": "Cari proyek unggulan...",
+    "searchProjects": "Cari proyek...",
+    "solarPower": "Tenaga surya",
+    "type": "Tipe",
+    "understandTheDifferencesBetweenSolarSystemTypes": "Ketahui perbedaan sistem PLTS dan temukan yang sesuai dengan kebutuhan Anda.",
+    "viewAllCategories": "Lihat Semua Kategori",
+    "viewAllProducts": "Lihat Semua Produk",
+    "viewAllProjects": "Lihat Semua Proyek",
+    "viewAllTestimonials": "Lihat Semua Testimoni",
+    "viewProductDetails": "Lihat Detail Produk",
+    "voltage": "Tegangan",
+    "warranty": "Garansi",
+    "weight": "Berat",
+    "forEveryone": "untuk semua.",
+    "viewProjectDetails": "Lihat Detail Proyek"
+  },
+  "navigation": {
+    "aboutUs": "Tentang Kami",
+    "allCategories": "Semua Kategori",
+    "batteries": "Baterai",
+    "cablesConnectorsProtection": "Kabel, Konektor & Proteksi",
+    "mountingFrames": "Mounting & Rangka",
+    "newProducts": "Produk Baru",
+    "returnPolicy": "Kebijakan Retur",
+    "shippingPolicy": "Kebijakan Pengiriman",
+    "solarPanels": "Panel Surya",
+    "solarWaterPumps": "Pompa Air Tenaga Surya",
+    "viewAllProducts": "Lihat semua produk",
+    "viewAllBrands": "View All Brands →",
+    "tutupMenu": "Close menu",
+    "bukaMenu": "Open menu",
+    "closeMenu": "Tutup menu",
+    "openMenu": "Buka menu",
+    "brand": "Brand",
+    "clearance": "Clearance",
+    "fAQ": "FAQ",
+    "inverter": "Inverter",
+    "paketPlts": "Paket PLTS",
+    "solarChargeController": "Solar Charge Controller"
+  },
+  "header": {
+    "account": "Akun",
+    "closeSearch": "Tutup pencarian",
+    "mainNavigation": "Navigasi utama",
+    "wishlist": "Wishlist",
+    "openMenu": "Buka menu",
+    "closeMenu": "Tutup menu"
+  },
+  "checkout": {
+    "addProductsToYourCartBeforeCheckout": "Tambahkan produk ke keranjang sebelum checkout.",
+    "address": "Alamat *",
+    "cart": "Keranjang",
+    "city": "Kota *",
+    "completeYourPurchaseAtEBTPlaza": "Selesaikan pembelian Anda di EBTPlaza.",
+    "confirmWithSales": "Konfirmasi sales",
+    "continue": "Lanjutkan →",
+    "deliveryTo": "Pengiriman ke:",
+    "invalidEmailFormat": "Format email tidak valid.",
+    "name": "Nama *",
+    "optionalNoteForTheCourier": "Opsional: catatan untuk kurir",
+    "payment": "Pembayaran",
+    "paymentMethod": "Metode Pembayaran",
+    "pleaseFillInNameEmailCityAnd": "Mohon isi Nama, Email, Kota, dan Alamat terlebih dahulu.",
+    "priceWillBeConfirmedByOurSales": "Harga akan dikonfirmasi oleh tim sales",
+    "reviewOrder": "Review Pesanan",
+    "reviewOrder2": "Review Pesanan →",
+    "shipping": "Pengiriman",
+    "shippingInformation": "Informasi Pengiriman",
+    "startShopping": "Mulai Belanja",
+    "total": "Total",
+    "yourOrder": "Pesanan Anda",
+    "yourCartIsEmpty": "Keranjang kosong",
+    "email": "Email *",
+    "codBayarDiTempat": "COD (Bayar di Tempat)",
+    "qris": "QRIS",
+    "virtualAccount": "Virtual Account",
+    "transferBankBCAMandiriBRIBNI": "Transfer Bank (BCA, Mandiri, BRI, BNI)",
+    "checkout": "Checkout"
+  },
+  "cart": {
+    "addProductsToYourCartToStart": "Tambahkan produk ke keranjang untuk mulai berbelanja.",
+    "calculatedAtCheckout": "Dihitung saat checkout",
+    "orderSummary": "Ringkasan Belanja",
+    "requestAQuote": "Minta Penawaran",
+    "shoppingCart": "Keranjang Belanja",
+    "totalWeight": "Berat total",
+    "yourShoppingCartAtEBTPlaza": "Keranjang belanja Anda di EBTPlaza.",
+    "continueToPayment": "Lanjutkan ke Pembayaran"
+  },
+  "product": {
+    "addToCart": "Tambah ke Keranjang",
+    "addedToWishlist": "Ditambahkan ke wishlist",
+    "bestSelling": "Paling Laris",
+    "biggestDiscount": "Diskon Terbesar",
+    "chatOnWhatsApp": "Konsultasi via WhatsApp",
+    "clickToZoom": "Klik untuk zoom",
+    "decreaseQuantity": "Kurangi jumlah",
+    "deliveryAcrossIndonesiaShippingCostIsCalculated": "Pengiriman ke seluruh Indonesia. Biaya pengiriman dihitung saat checkout.",
+    "exploreAllRenewableEnergyProductsSolarPanels": "Jelajahi seluruh produk energi terbarukan: panel surya, inverter, baterai, dan lainnya.",
+    "highestPrice": "Harga Tertinggi",
+    "highestRating": "Rating Tertinggi",
+    "inStock": "Stok tersedia",
+    "increaseQuantity": "Tambah jumlah",
+    "lowestPrice": "Harga Terendah",
+    "lowestPrice2": "Termurah!",
+    "mostRelevant": "Paling Relevan",
+    "mostViewed": "Paling Dilihat",
+    "new": "Baru",
+    "newProjectLeftover": "Baru - Sisa Proyek",
+    "newest": "Terbaru",
+    "noImage": "Tidak ada gambar",
+    "noProductsAreAvailableAtTheMoment": "Tidak ada produk tersedia saat ini.",
+    "productNotFound": "Produk Tidak Ditemukan",
+    "promotions": "Promo",
+    "quantity": "Jumlah",
+    "relatedProducts": "Produk Terkait",
+    "removedFromWishlist": "Dihapus dari wishlist",
+    "shippingWarranty": "Pengiriman & Garansi",
+    "used": "Bekas Pakai",
+    "backToProducts": "← Kembali ke Produk",
+    "compare": "⇄ Bandingkan",
+    "copyFailed": "⚠ Gagal menyalin",
+    "wishlistToggle": "♥ Wishlist",
+    "terjadiKesalahan": "Something went wrong",
+    "cobaLagi": "Try again",
+    "somethingWentWrong": "Terjadi kesalahan",
+    "tryAgain": "Coba lagi",
+    "sortBy": "Urutkan",
+    "specifications": "Specifications",
+    "deskripsi": "Deskripsi",
+    "noDescription": "Deskripsi produk tidak tersedia saat ini."
+  },
+  "errors": {
+    "allProducts": "Semua Produk",
+    "backToHome": "Kembali ke Beranda",
+    "help": "Bantuan",
+    "pageNotFound404": "Halaman Tidak Ditemukan (404)",
+    "pageNotFound": "Halaman tidak ditemukan",
+    "thePageYouAreLookingForMay": "Halaman yang Anda cari mungkin telah dipindahkan atau tidak tersedia."
+  },
+  "project": {
+    "allProductsAboveAreAddedAutomaticallyWhen": "Semua produk di atas akan otomatis dimasukkan ketika memilih",
+    "capacity": "Kapasitas",
+    "noProjectsYet": "Belum ada proyek.",
+    "noRelatedProductsYet": "Belum ada produk terkait",
+    "projectsEBTPlaza": "Proyek — EBTPlaza",
+    "referenceProjects": "Proyek Referensi",
+    "requestASimilarQuote": "Minta Penawaran Serupa",
+    "solarEnergyInstallationPortfolio": "Portofolio instalasi energi surya.",
+    "usedProducts": "Produk Digunakan",
+    "backToProjects": "← Kembali ke Proyek",
+    "informasiProyek": "Project Info",
+    "spesifikasiTeknis": "Technical Specs",
+    "jenisSistem": "System Type",
+    "modulPV": "PV Module",
+    "coReduction": "CO₂ Reduction",
+    "penghematanTahunan": "Annual Savings",
+    "energiDihasilkan": "Energy Generated",
+    "imageGallery": "Galeri gambar",
+    "closeGallery": "Tutup galeri",
+    "projectInfo": "Informasi Proyek",
+    "technicalSpecs": "Spesifikasi Teknis",
+    "systemType": "Jenis Sistem",
+    "pvModule": "Modul PV",
+    "annualSavings": "Penghematan Tahunan",
+    "energyGenerated": "Energi Dihasilkan",
+    "viewProjectDetails": "Lihat Detail Proyek"
+  },
+  "article": {
+    "articleNotFound": "Artikel Tidak Ditemukan",
+    "guidesTipsAndEducationAboutSolarEnergy": "Panduan, tips, dan edukasi tentang energi surya, panel surya, inverter, dan baterai.",
+    "readMore": "Baca selengkapnya →",
+    "relatedArticles": "Artikel Terkait",
+    "solarEnergyGuide": "Panduan Energi Surya",
+    "guides": "Panduan"
+  },
+  "faq": {
+    "askAQuestion": "Ajukan Pertanyaan",
+    "contactUsViaWhatsAppOrEmail": "Hubungi kami via WhatsApp atau email.",
+    "faqHelp": "FAQ (Bantuan)",
+    "frequentlyAskedQuestions": "Pertanyaan yang sering diajukan",
+    "frequentlyAskedQuestionsAboutEBTPlazaShippingPayment": "Pertanyaan yang sering diajukan tentang EBTPlaza — pengiriman, pembayaran, garansi, dan lainnya.",
+    "noFAQsYet": "Belum ada FAQ.",
+    "stillHaveQuestions": "Masih ada pertanyaan?"
+  },
+  "contact": {
+    "askOurTeamOnWhatsApp": "Tanya CS via WhatsApp"
+  },
+  "rfq": {
+    "atLeast1Item": "Minimal 1 item",
+    "companyName": "Nama Perusahaan",
+    "companyNameIsRequired": "Nama perusahaan wajib diisi",
+    "completeTheFormBelowYouCanAdd": "Lengkapi formulir di bawah ini. Anda dapat menambahkan item dari keranjang atau manual.",
+    "contactInformation": "Informasi Kontak",
+    "failedToSendPleaseTryAgain": "Gagal mengirim. Coba lagi.",
+    "invalidEmail": "Email tidak valid",
+    "itemName": "Nama Barang",
+    "itemNameIsRequired": "Nama barang wajib diisi.",
+    "itemNoteOptional": "Catatan item (opsional)",
+    "minimumQuantityIs1": "Jumlah minimal 1.",
+    "nameIsRequired": "Nama wajib diisi",
+    "ourTeamWillContactYouWithin1": "Tim kami akan menghubungi Anda dalam 1×24 jam kerja.",
+    "phoneWhatsApp": "Telepon / WhatsApp",
+    "phoneIsRequired": "Telepon wajib diisi",
+    "productUnavailableNeedsReview": "Produk tidak tersedia — perlu ditinjau",
+    "productVerificationFailed": "Verifikasi produk gagal",
+    "projectDetails": "Detail Proyek",
+    "projectLocation": "Lokasi Proyek",
+    "projectName": "Nama Proyek",
+    "requestAQuoteRFQ": "Permintaan Penawaran (RFQ)",
+    "requestAQuotationForYourRenewableEnergy": "Ajukan permintaan penawaran untuk kebutuhan proyek energi terbarukan Anda. Untuk kontraktor, perusahaan, dan pengadaan skala besar.",
+    "requirementsList": "Daftar Kebutuhan",
+    "requiresInstallationService": "Membutuhkan jasa instalasi",
+    "sendRequest": "Kirim Permintaan",
+    "sendViaWhatsApp": "Kirim via WhatsApp",
+    "technicalNotes": "Catatan Teknis",
+    "technicalSpecificationsBrandPreferencesOrSpecialRequirements": "Spesifikasi teknis, preferensi brand, atau kebutuhan khusus...",
+    "projectNotFound": "⚠️ Proyek tidak ditemukan",
+    "requestSent": "Permintaan Terkirim!",
+    "jenisPelanggan": "Customer Type",
+    "businessCorporate": "Business / Corporate",
+    "procurementTarget": "Target Pengadaan",
+    "customerType": "Jenis Pelanggan"
+  },
+  "catalog": {
+    "brandNotFound": "Brand Tidak Ditemukan",
+    "categoryNotFound": "Kategori Tidak Ditemukan",
+    "exploreProductsByBrandAtEBTPlaza": "Jelajahi produk berdasarkan brand di EBTPlaza.",
+    "noProductsFromThisBrandYet": "Belum ada produk dari brand ini.",
+    "noProductsInThisCategory": "Tidak ada produk dalam kategori ini.",
+    "products": "Produk",
+    "productsFound": "{count} produk ditemukan",
+    "projectPortfolio": "Portofolio Proyek",
+    "allCategories": "Semua Kategori",
+    "guide": "Panduan",
+    "allProducts": "Semua Produk"
+  },
+  "compare": {
+    "clearAll": "Hapus semua",
+    "clickCompareOnAProductPageTo": "Klik 'Bandingkan' di halaman produk untuk menambahkan ke sini. Maksimal 4 produk.",
+    "compareRenewableEnergyProductsAtEBTPlaza": "Bandingkan produk energi terbarukan di EBTPlaza.",
+    "comparison": "Perbandingan",
+    "loadingComparison": "Memuat perbandingan...",
+    "noProductsToCompareYet": "Belum ada produk yang dibandingkan",
+    "productComparison": "Perbandingan Produk",
+    "viewProducts": "Lihat Produk"
+  },
+  "testimonial": {
+    "customerTestimonials": "Testimoni Pelanggan",
+    "noTestimonialsYet": "Belum ada testimoni.",
+    "testimonialsEBTPlaza": "Testimoni — EBTPlaza",
+    "viewRelatedProjects": "Lihat Proyek Terkait →",
+    "whatOurCustomersSay": "Apa kata pelanggan kami."
+  },
+  "search": {
+    "enterAtLeast2CharactersToSearch": "Masukkan minimal 2 karakter untuk mencari produk.",
+    "noProductsFound": "Tidak ada produk ditemukan",
+    "searchProducts": "Cari Produk",
+    "placeholder": "Cari produk..."
+  },
+  "clearance": {
+    "limitedStockOfRenewableEnergyProductsAt": "Stok terbatas produk energi terbarukan di EBTPlaza. Termurah!",
+    "noClearanceProductsAtTheMoment": "Tidak ada produk clearance saat ini.",
+    "summaryLimited": "Stok terbatas • Termurah! • {count} produk"
+  },
+  "promo": {
+    "noPromotionalProductsAtTheMoment": "Tidak ada produk promo saat ini.",
+    "promotionsOffers": "Promo & Penawaran",
+    "specialPricesOnRenewableEnergyProductsAt": "Harga spesial produk energi terbarukan di EBTPlaza. Hemat lebih banyak!",
+    "summarySpecial": "Harga spesial • Hemat lebih banyak! • {count} produk"
+  },
+  "pages": {
+    "pageNotFound": "Halaman Tidak Ditemukan"
+  },
+  "forms": {
+    "renewableEnergyProductAndPromotionUpdates": "Info produk &amp; promo energi terbarukan.",
+    "searchProducts": "Cari produk",
+    "searchProducts2": "Cari produk...",
+    "yourEmail": "Email Anda"
+  },
+  "wishlist": {
+    "saveTheProductsYouLike": "Simpan produk yang Anda sukai.",
+    "theProductsYouSavedToYourEBTPlaza": "Produk yang Anda simpan di wishlist EBTPlaza.",
+    "yourWishlistIsEmpty": "Wishlist kosong",
+    "heading": "Wishlist"
+  },
+  "footer": {
+    "services": "Layanan",
+    "shop": "Belanja"
+  },
+  "a11y": {
+    "skipToContent": "Lewati ke konten",
+    "languageSwitcher": "Ganti bahasa"
+  },
+  "meta": {
+    "smartEnergyJustAClickAway": "Energi Cerdas, Tinggal Klik!",
+    "permintaan-penawaran": {
+      "title": "Permintaan Penawaran (RFQ)",
+      "description": "Ajukan permintaan penawaran untuk kebutuhan proyek energi terbarukan Anda. Untuk kontraktor, perusahaan, dan pengadaan skala besar."
+    },
+    "artikel": {
+      "title": "Panduan Energi Surya",
+      "description": "Panduan, tips, dan edukasi tentang energi surya, panel surya, inverter, dan baterai."
+    },
+    "faq": {
+      "title": "FAQ (Bantuan)",
+      "description": "Pertanyaan yang sering diajukan tentang EBTPlaza — pengiriman, pembayaran, garansi, dan lainnya."
+    },
+    "brand": {
+      "description": "Jelajahi produk berdasarkan brand di EBTPlaza."
+    },
+    "checkout": {
+      "description": "Selesaikan pembelian Anda di EBTPlaza."
+    },
+    "testimoni": {
+      "title": "Testimoni — EBTPlaza",
+      "description": "Apa kata pelanggan kami."
+    },
+    "barang-clearance": {
+      "description": "Stok terbatas produk energi terbarukan di EBTPlaza. Termurah!"
+    },
+    "perbandingan": {
+      "title": "Perbandingan",
+      "description": "Bandingkan produk energi terbarukan di EBTPlaza."
+    },
+    "keranjang": {
+      "title": "Keranjang Belanja",
+      "description": "Keranjang belanja Anda di EBTPlaza."
+    },
+    "produk": {
+      "title": "Semua Produk",
+      "description": "Jelajahi seluruh produk energi terbarukan: panel surya, inverter, baterai, dan lainnya."
+    },
+    "page": {
+      "tsx": {
+        "title": "Energi Cerdas, Tinggal Klik!"
+      }
+    },
+    "promo": {
+      "title": "Promo & Penawaran",
+      "description": "Harga spesial produk energi terbarukan di EBTPlaza. Hemat lebih banyak!"
+    },
+    "wishlist": {
+      "description": "Produk yang Anda simpan di wishlist EBTPlaza."
+    },
+    "not-found": {
+      "tsx": {
+        "title": "Halaman Tidak Ditemukan (404)"
+      }
+    },
+    "proyek": {
+      "title": "Proyek — EBTPlaza",
+      "description": "Portofolio instalasi energi surya."
+    }
+  },
+  "notFound": {
+    "heading": "Halaman tidak ditemukan",
+    "description": "Halaman yang Anda cari mungkin telah dipindahkan atau tidak tersedia.",
+    "backHome": "Kembali ke Beranda",
+    "help": "Bantuan"
+  },
+  "mobile": {
+    "navigation": "Navigasi",
+    "menu": "Menu"
+  }
+}

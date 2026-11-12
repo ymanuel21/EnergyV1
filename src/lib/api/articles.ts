@@ -1,14 +1,15 @@
 import 'server-only';
+import { localizeRow, localizeRows } from '@/lib/i18n/server';
 import type { Article } from '@/types/article';
 import { prismaOrFallback } from '@/lib/db';
 
 export async function getAllArticles(): Promise<Article[]> {
   return prismaOrFallback<Article[]>(
     async (prisma) => {
-      const rows = await prisma.article.findMany({
+      const rows = await localizeRows('articles', await prisma.article.findMany({
         where: { isPublished: true },
         orderBy: { sortOrder: 'asc' },
-      });
+      }));
       return rows.map((a: any) => ({
         slug: a.slug,
         title: a.title,
@@ -30,7 +31,7 @@ export async function getAllArticles(): Promise<Article[]> {
 export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
   return prismaOrFallback<Article | undefined>(
     async (prisma) => {
-      const a: any = await prisma.article.findUnique({ where: { slug } });
+      const a: any = await localizeRow('articles', await prisma.article.findUnique({ where: { slug } }));
       if (!a) return undefined;
       return {
         slug: a.slug,
