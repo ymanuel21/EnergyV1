@@ -34,8 +34,18 @@ export function LanguageSwitcher({ className = '' }: { className?: string }) {
       role="group"
       aria-label={t('languageSwitcher')}
       aria-busy={isSwitching}
-      className={`flex items-center rounded-lg border border-border bg-surface/60 p-0.5 ${className}`}
+      className={`flex items-center rounded-lg border border-border bg-surface/60 p-0.5 transition-opacity ${isSwitching ? 'pointer-events-none opacity-60' : ''} ${className}`}
     >
+      {isSwitching && (
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"
+          className="mr-1 h-3 w-3 animate-spin motion-reduce:animate-none">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2" />
+          <path d="M14 8a6 6 0 0 0-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      )}
+      <span role="status" aria-live="polite" className="sr-only">
+        {isSwitching ? t('switching') : ''}
+      </span>
       {locales.map((code) => {
         const isActive = code === locale;
         const label = localeLabels[code];

@@ -345,7 +345,8 @@
   },
   "a11y": {
     "skipToContent": "Lewati ke konten",
-    "languageSwitcher": "Ganti bahasa"
+    "languageSwitcher": "Ganti bahasa",
+    "switching": "Mengubah bahasa…"
   },
   "meta": {
     "smartEnergyJustAClickAway": "Energi Cerdas, Tinggal Klik!",

@@ -345,7 +345,8 @@
   },
   "a11y": {
     "skipToContent": "Skip to content",
-    "languageSwitcher": "Switch language"
+    "languageSwitcher": "Switch language",
+    "switching": "Switching language…"
   },
   "meta": {
     "smartEnergyJustAClickAway": "Smart Energy, Just a Click Away!",
